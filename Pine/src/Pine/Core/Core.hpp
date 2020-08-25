@@ -1,4 +1,4 @@
-#pragma once
+#pragma 
 
 #include "Log/Log.hpp"
 #include "Window/Window.hpp"

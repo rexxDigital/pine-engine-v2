@@ -113,6 +113,8 @@ namespace {
 		}
 	}
 
+	
+
 }
 
 Pine::Model::Model() {
@@ -132,7 +134,7 @@ const std::vector<Pine::Mesh*>& Pine::Model::GetMeshList() const {
 }
 
 bool Pine::Model::LoadFromFile() {
-
+	
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
 	const auto scene = importer.ReadFile(m_FilePath.string(), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenNormals);

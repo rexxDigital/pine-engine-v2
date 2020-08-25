@@ -80,15 +80,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>IntermediateBuild\$(Configuration)\</IntDir>
-    <IncludePath>C:\Users\admin\source\repos\Pine\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\admin\source\repos\Pine\Libraries\binary;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\binary;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>IntermediateBuild\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
-    <IncludePath>C:\Users\admin\source\repos\Pine\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\admin\source\repos\Pine\Libraries\binary;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\binary;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -184,6 +184,7 @@
     <ClInclude Include="src\Pine\Core\Window\Window.hpp" />
     <ClInclude Include="src\Pine\Entitylist\EntityList.hpp" />
     <ClInclude Include="src\Pine\Entity\Entity.hpp" />
+    <ClInclude Include="src\Pine\Gui\Console\Console.hpp" />
     <ClInclude Include="src\Pine\Gui\Gui.hpp" />
     <ClInclude Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.hpp" />
     <ClInclude Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.hpp" />
@@ -219,6 +220,7 @@
     <ClCompile Include="src\Pine\Core\Window\Window.cpp" />
     <ClCompile Include="src\Pine\Entitylist\EntityList.cpp" />
     <ClCompile Include="src\Pine\Entity\Entity.cpp" />
+    <ClCompile Include="src\Pine\Gui\Console\Console.cpp" />
     <ClCompile Include="src\Pine\Gui\Gui.cpp" />
     <ClCompile Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.cpp" />
     <ClCompile Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.cpp" />
