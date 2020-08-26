@@ -16,6 +16,10 @@ namespace {
 }
 
 void Pine::RenderManager::Run() {
+	if (g_TargetCamera == nullptr) {
+		return;
+	}
+
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
 	// Also quicker!
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;

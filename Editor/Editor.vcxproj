@@ -148,6 +148,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Gui\Gui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Gui\Gui.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Pine\Pine.vcxproj">
+      <Project>{e486519c-83fd-4dd0-8844-57cd7f63b01e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
