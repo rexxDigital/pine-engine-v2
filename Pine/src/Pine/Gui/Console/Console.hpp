@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Pine::Console {
+namespace Pine::Gui::Console {
 
 	void Run();
 
