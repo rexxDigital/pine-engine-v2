@@ -10,6 +10,8 @@
 namespace
 {
 	RenderCallback callback;
+
+	Pine::FrameBuffer* g_TargetFrameBuffer = nullptr;
 }
 
 bool Pine::Setup()
@@ -79,10 +81,22 @@ void Pine::Run()
 		{
 			callback();
 		}
+		
+		// Setup frame buffer
+		if (g_TargetFrameBuffer != nullptr) {
+			g_TargetFrameBuffer->Bind();
+		}
+		else {
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
 
 		RenderManager::Run();
 		
+		// Reset the frame buffer for rendering.
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		Gui::Render();
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -102,4 +116,14 @@ void Pine::Terminate()
 void Pine::SetRenderingCallback(RenderCallback fn)
 {
 	callback = fn;
+}
+
+void Pine::SetFrameBuffer(FrameBuffer* framebuffer)
+{
+	g_TargetFrameBuffer = framebuffer;
+}
+
+Pine::FrameBuffer* Pine::GetFrameBuffer()
+{
+	return g_TargetFrameBuffer;
 }

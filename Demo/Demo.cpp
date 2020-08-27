@@ -14,27 +14,25 @@ Pine::Entity* entity = nullptr;
 
 void SetupSampleScene()
 {
-	auto model = Pine::Assets::GetAsset<Pine::Model>("Assets\\cube.obj");
+	auto model = Pine::Assets::GetAsset<Pine::Model>("Assets\\bunny.obj");
 	auto mesh = model->GetMeshList()[0];
 
-	mesh->GetMaterial()->SetDiffuse(Pine::Assets::GetAsset<Pine::Texture>("Assets\\box.png"));
-	mesh->GetMaterial()->SetSpecular(Pine::Assets::GetAsset<Pine::Texture>("Assets\\box_specular.png"));
 	mesh->GetMaterial()->AmbientColor() = glm::vec3(0.3f, 0.3f, 0.3f);
 
 	mesh->GetMaterial()->SpecularColor() = glm::vec3(1.f, 1.f, 1.f);
 	mesh->GetMaterial()->DiffuseColor() = glm::vec3(0.5f, 0.5f, 0.5f);
-	mesh->GetMaterial()->SetShininiess(2.f);
+	mesh->GetMaterial()->SetShininiess(16.f);
 
 	entity = Pine::EntityList::CreateEntity("Test Entity");
 
 	entity->AddComponent(new Pine::ModelRenderer());
 	entity->GetComponent<Pine::ModelRenderer>()->SetTargetModel(model);
-	entity->GetTransform()->Position.y = -0.5f;
+	entity->GetTransform()->Position.y = -0.1f;
 
 	auto camera = Pine::EntityList::CreateEntity("Camera");
 	
 	camera->AddComponent(new Pine::Camera());
-	camera->GetTransform()->Position.z = -3.f;
+	camera->GetTransform()->Position.z = -.3f;
 
 	Pine::RenderManager::SetCamera(camera->GetComponent<Pine::Camera>());
 

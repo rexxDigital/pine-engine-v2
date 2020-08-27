@@ -13,6 +13,7 @@
 #include "Assets/Assets.hpp"
 #include "OpenGL/VertexArray/VertexArray.hpp"
 #include "OpenGL/ShaderProgram/ShaderProgram.hpp"
+#include "OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Renderer3D/Renderer3D.hpp"
 
 typedef void (*RenderCallback)();
@@ -30,4 +31,8 @@ namespace Pine
 
 	// Setup a rendering function, that the engine will call each frame for rendering
 	void SetRenderingCallback(RenderCallback fn);
+
+	// Set/get the target frame buffer.
+	void SetFrameBuffer(FrameBuffer* framebuffer);
+	FrameBuffer* GetFrameBuffer();
 }
