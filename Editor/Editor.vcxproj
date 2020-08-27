@@ -147,11 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Application.cpp" />
     <ClCompile Include="Gui\Gui.cpp" />
+    <ClCompile Include="Gui\Windows\EntityList\Entitylist.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gui\Gui.hpp" />
+    <ClInclude Include="Gui\Windows\EntityList\Entitylist.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pine\Pine.vcxproj">

@@ -28,6 +28,9 @@ namespace Pine
 		std::string m_Name = "Entity";
 
 		std::vector<IComponent*> m_Components;
+		std::vector<Entity*> m_Children;
+
+		Entity* m_Parent = nullptr;
 	public:
 		Entity(uint64_t id);
 		~Entity();
@@ -63,6 +66,18 @@ namespace Pine
 
 		const std::vector<IComponent*>& GetComponents() const;
 
+		const std::vector<Entity*>& GetChildren() const;
+
+		void SetParent(Entity* parent);
+		Entity* GetParent() const;
+		
+		Entity* CreateChild();
+		void RemoveChild(Entity* entity);
+
+		// This will unlink and remove all children linked to this entity.
+		// So removing them in the entity list as well!
+		void DeleteChildren();
+		
 	};
 
 }
