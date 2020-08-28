@@ -2,6 +2,7 @@
 
 typedef void (*GuiRenderCallback)();
 
+
 namespace Pine::Gui {
 
 	void SetGuiRenderCallback(GuiRenderCallback callback);
@@ -9,5 +10,6 @@ namespace Pine::Gui {
 	void Setup();
 	void Dispose();
 	void Render();
+
 
 }

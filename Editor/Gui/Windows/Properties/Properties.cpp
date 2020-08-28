@@ -1,0 +1,45 @@
+#include "Properties.hpp"
+#include "ImGui/imgui.h"
+#include "../../Gui.hpp"
+#include <Pine/Entity/Entity.hpp>
+
+namespace {
+	
+	void DisplayEntity(Pine::Entity* e) {
+
+		bool active = e->GetActive();
+		if (ImGui::Checkbox("Active", &active)) {
+			e->SetActive(active);
+		}
+
+		char buff[64];
+		strcpy_s(buff, e->GetName().c_str());
+		if (ImGui::InputText("##EntityName", buff, 64)) {
+			e->SetName(buff);
+		}
+
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+
+	}
+
+}
+
+void Editor::Gui::Properties::Run() {
+	
+	const auto selectedEntity = Editor::Gui::GetSelectedEntity();
+
+	ImGui::Begin("Properties", nullptr, 0);
+	{
+		if (selectedEntity != nullptr) {
+			DisplayEntity(selectedEntity);
+		}
+		else {
+			ImGui::Text("Please select an entity or an asset to preview\nit's properties here.");
+		}
+
+	}
+	ImGui::End();
+
+}

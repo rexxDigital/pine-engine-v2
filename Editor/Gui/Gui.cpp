@@ -2,9 +2,15 @@
 #include "ImGui/imgui.h"
 #include "Pine/OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Windows/EntityList/Entitylist.hpp"
+#include "Windows/Viewport/Viewport.hpp"
+#include "Windows/Properties/Properties.hpp"
+#include "Windows/AssetBrowser/AssetBrowser.hpp"
+#include "Windows/Console/Console.hpp"
+#include "Windows/Profiler/Profiler.hpp"
 
 namespace {
 
+	Pine::Entity* g_SelectedEntity = nullptr;
 	Pine::FrameBuffer* g_ViewportFrameBuffer = nullptr;
 
 	void SetupDockSpace() {
@@ -63,6 +69,19 @@ void Editor::Gui::Run() {
 	}
 
 	EntityList::Run();
+	Viewport::Run();
+	Properties::Run();
+	AssetBrowser::Run();
+	Console::Run();
+	Profiler::Run();
 	
 	EndDockingSpace();
+}
+
+Pine::Entity* Editor::Gui::GetSelectedEntity() {
+	return g_SelectedEntity;
+}
+
+void Editor::Gui::SetSelectedEntity(Pine::Entity* entity) {
+	g_SelectedEntity = entity;
 }

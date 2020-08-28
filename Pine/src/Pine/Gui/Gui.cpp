@@ -9,7 +9,6 @@
 namespace {
 	GuiRenderCallback g_GuiRenderCallback;
 
-
 	void SetupGuiStyle() {
 		auto* style = &ImGui::GetStyle();
 
@@ -24,7 +23,7 @@ namespace {
 
 		style->ChildBorderSize = 0.f;
 		style->FrameBorderSize = 0.f;
-		style->PopupBorderSize = 0.f;
+		style->PopupBorderSize = 1.f;
 		style->TabBorderSize = 0.f;
 		style->WindowBorderSize = 0.f;
 
@@ -41,7 +40,7 @@ namespace {
 		colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
 		colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 1.00f);
 		colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-		colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+		colors[ImGuiCol_PopupBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
 		colors[ImGuiCol_Border] = ImVec4(0.28f, 0.28f, 0.28f, 1.00f);
 		colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 		colors[ImGuiCol_FrameBg] = ImVec4(0.13f, 0.13f, 0.13f, 1.00f);
@@ -64,7 +63,7 @@ namespace {
 		colors[ImGuiCol_Header] = ImVec4(0.37f, 0.98f, 0.26f, 0.31f);
 		colors[ImGuiCol_HeaderHovered] = ImVec4(0.17f, 0.72f, 0.20f, 0.80f);
 		colors[ImGuiCol_HeaderActive] = ImVec4(0.24f, 0.56f, 0.15f, 1.00f);
-		colors[ImGuiCol_Separator] = ImVec4(0.16f, 0.16f, 0.16f, 0.50f);
+		colors[ImGuiCol_Separator] = ImVec4(0.32f, 0.32f, 0.32f, 0.50f);
 		colors[ImGuiCol_SeparatorHovered] = ImVec4(0.16f, 0.16f, 0.16f, 0.50f);
 		colors[ImGuiCol_SeparatorActive] = ImVec4(0.16f, 0.16f, 0.16f, 0.50f);
 		colors[ImGuiCol_ResizeGrip] = ImVec4(0.28f, 0.98f, 0.26f, 0.25f);
@@ -88,6 +87,9 @@ namespace {
 		colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 		colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
 		colors[ImGuiCol_ButtonHovered] = ImVec4(0.15f, 0.56f, 0.17f, 1.00f);
+		colors[ImGuiCol_TitleBg] = ImVec4(0.21f, 0.21f, 0.21f, 0.53f);
+		colors[ImGuiCol_TabUnfocused] = ImVec4(0.08f, 0.17f, 0.08f, 1.00f);
+		colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.19f, 0.43f, 0.17f, 1.00f);
 	}
 
 }
@@ -136,3 +138,5 @@ void Pine::Gui::Render() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+
