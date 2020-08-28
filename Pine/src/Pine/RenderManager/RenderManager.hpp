@@ -7,7 +7,8 @@ namespace Pine {
 namespace Pine::RenderManager {
 
 	void SetCamera(Camera* camera);
-
+	Camera* GetCamera();
+	
 	void Run();
 
 }

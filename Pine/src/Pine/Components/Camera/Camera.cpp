@@ -5,6 +5,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "../../../ImGui/imgui.h"
+#include "../../RenderManager/RenderManager.hpp"
+
 void Pine::Camera::BuildProjectionMatrix() {
 	const auto size = Window::GetSize();
 
@@ -84,4 +87,42 @@ void Pine::Camera::OnRender() {
 
 void Pine::Camera::OnUpdate(float deltaTime) {
 
+}
+
+void Pine::Camera::OnRenderGui()
+{
+	ImGui::Text("Near Plane");
+	
+	if (ImGui::DragFloat("##NearPlane", &m_NearPlane, 0.01f, 0.001f, 1000.f))
+	{
+		BuildProjectionMatrix();
+	}
+
+	ImGui::Text("Far Plane");
+
+	if (ImGui::DragFloat("##FarPlane", &m_FarPlane, 0.01f, 100.f, 1000.f))
+	{
+		BuildProjectionMatrix();
+	}
+
+	ImGui::Text("Field of View");
+	
+	if (ImGui::SliderFloat("##FoV", &m_FieldOfView, 30.f, 150.f))
+	{
+		BuildProjectionMatrix();
+	}
+
+	ImGui::Separator();
+
+	if (RenderManager::GetCamera() == this)
+		ImGui::Text("This camera is currently the active camera.");
+	else
+	{
+		ImGui::Text("This camera is not currently the active camera.");
+
+		if (ImGui::Button("Set active camera", ImVec2(-1.f, 30.f)))
+		{
+			Pine::RenderManager::SetCamera(this);
+		}
+	}
 }

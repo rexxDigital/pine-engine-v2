@@ -186,6 +186,7 @@
     <ClInclude Include="src\Pine\Entity\Entity.hpp" />
     <ClInclude Include="src\Pine\Gui\Console\Console.hpp" />
     <ClInclude Include="src\Pine\Gui\Gui.hpp" />
+    <ClInclude Include="src\Pine\Gui\Widgets\Common\CommonWidgets.hpp" />
     <ClInclude Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.hpp" />
     <ClInclude Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.hpp" />
     <ClInclude Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.hpp" />
@@ -223,6 +224,7 @@
     <ClCompile Include="src\Pine\Entity\Entity.cpp" />
     <ClCompile Include="src\Pine\Gui\Console\Console.cpp" />
     <ClCompile Include="src\Pine\Gui\Gui.cpp" />
+    <ClCompile Include="src\Pine\Gui\Widgets\Common\CommonWidgets.cpp" />
     <ClCompile Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.cpp" />
     <ClCompile Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.cpp" />

@@ -1,6 +1,9 @@
 #include "Transform.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "../../../ImGui/imgui.h"
+#include "../../Gui/Widgets/Common/CommonWidgets.hpp"
+
 void Pine::Transform::BuildTransformationMatrix() {
 	m_TransformationMatrix = glm::mat4(1.f);
 
@@ -52,6 +55,14 @@ void Pine::Transform::OnRender() {
 	BuildTransformationMatrix();
 }
 
-const glm::mat4& Pine::Transform::GetTransformationMatrix() {
+void Pine::Transform::OnRenderGui()
+{
+	Gui::Widgets::Vector3("Position", Position);
+	Gui::Widgets::Vector3("Rotation", Rotation);
+	Gui::Widgets::Vector3("Scale", Scale);
+}
+
+const glm::mat4& Pine::Transform::GetTransformationMatrix() const
+{
 	return m_TransformationMatrix;
 }

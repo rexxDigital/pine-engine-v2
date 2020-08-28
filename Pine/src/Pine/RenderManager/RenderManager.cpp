@@ -98,3 +98,8 @@ void Pine::RenderManager::Run() {
 void Pine::RenderManager::SetCamera(Camera* camera) {
 	g_TargetCamera = camera;
 }
+
+Pine::Camera* Pine::RenderManager::GetCamera()
+{
+	return g_TargetCamera;
+}

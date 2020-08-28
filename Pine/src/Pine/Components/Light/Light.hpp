@@ -19,6 +19,7 @@ namespace Pine {
 
 		virtual void OnSetup() override;
 		virtual void OnUpdate(float deltaTime) override;
+		void OnRenderGui() override;
 	};
 
 }

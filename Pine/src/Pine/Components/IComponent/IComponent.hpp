@@ -12,6 +12,14 @@ namespace Pine
 		Light
 	};
 
+	inline const char* SComponentNames[] = {
+		"Invalid",
+		"Transform",
+		"Model Renderer",
+		"Camera",
+		"Light"
+	};
+
 	class Entity;
 
 	class IComponent
@@ -36,6 +44,7 @@ namespace Pine
 		virtual void OnUpdate(float deltaTime) = 0;
 		virtual void OnRender();
 		virtual void OnDestroy();
+		virtual void OnRenderGui();
 	};
 
 }

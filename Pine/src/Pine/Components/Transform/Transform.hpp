@@ -23,8 +23,9 @@ namespace Pine
 		void OnSetup() override;
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
-
-		const glm::mat4& GetTransformationMatrix();
+		void OnRenderGui() override;
+		
+		const glm::mat4& GetTransformationMatrix() const;
 
 		glm::vec3 Position = glm::vec3(0.f, 0.f, 0.f);
 		glm::vec3 Rotation = glm::vec3(0.f, 0.f, 0.f);
