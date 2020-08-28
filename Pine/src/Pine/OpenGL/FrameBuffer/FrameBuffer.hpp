@@ -8,6 +8,9 @@ namespace Pine {
 
 		unsigned int m_TextureBuffer = 0;
 		unsigned int m_DepthBuffer = 0;
+
+		int m_Width = 0;
+		int m_Height = 0;
 	public:
 
 		FrameBuffer();
@@ -15,6 +18,9 @@ namespace Pine {
 		unsigned int GetId() const;
 		unsigned int GetTextureId() const;
 		unsigned int GetDepthId() const;
+
+		int GetWidth() const;
+		int GetHeight() const;
 
 		void Bind() const;
 		void Unbind() const;

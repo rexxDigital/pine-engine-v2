@@ -74,20 +74,20 @@ void Pine::Run()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.f, 0.f, 0.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		if (callback)
-		{
-			callback();
-		}
-		
 		// Setup frame buffer
 		if (g_TargetFrameBuffer != nullptr) {
 			g_TargetFrameBuffer->Bind();
 		}
 		else {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		glClearColor(0.f, 0.f, 0.f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, g_TargetFrameBuffer->GetWidth(), g_TargetFrameBuffer->GetHeight());
+
+		if (callback) {
+			callback();
 		}
 
 		RenderManager::Run();

@@ -28,7 +28,7 @@ void SetupSampleScene() {
 
 	mesh->GetMaterial()->AmbientColor() = glm::vec3(0.3f, 0.3f, 0.3f);
 
-	mesh->GetMaterial()->SpecularColor() = glm::vec3(1.f, 1.f, 1.f);
+	mesh->GetMaterial()->SpecularColor() = glm::vec3(0.f, 0.f, 0.f);
 	mesh->GetMaterial()->DiffuseColor() = glm::vec3(0.5f, 0.5f, 0.5f);
 	mesh->GetMaterial()->SetShininiess(16.f);
 

@@ -45,7 +45,7 @@ Pine::FrameBuffer* Editor::Gui::GetViewportFrameBuffer()
 void Editor::Gui::Setup()
 {
 	g_ViewportFrameBuffer = new Pine::FrameBuffer();
-	g_ViewportFrameBuffer->Create(1280, 720);
+	g_ViewportFrameBuffer->Create(700, 400);
 }
 
 void Editor::Gui::Dispose()

@@ -26,7 +26,7 @@ namespace {
 		{
 			if (ImGui::CollapsingHeader(Pine::SComponentNames[static_cast<int>(component->GetType())], ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				// Show active checkbox
+				// Show active check box
 				bool active = component->GetActive();
 				ImGui::Checkbox(std::string("Active##" + std::to_string(e->GetId()) + std::to_string(static_cast<int>(component->GetType()))).c_str(), &active);
 				component->SetActive(active);

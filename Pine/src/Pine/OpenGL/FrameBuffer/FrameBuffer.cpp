@@ -20,6 +20,14 @@ unsigned int Pine::FrameBuffer::GetDepthId() const
 	return m_DepthBuffer;
 }
 
+int Pine::FrameBuffer::GetWidth() const {
+	return m_Width;
+}
+
+int Pine::FrameBuffer::GetHeight() const {
+	return m_Height;
+}
+
 void Pine::FrameBuffer::Bind() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_Id);
@@ -65,4 +73,7 @@ void Pine::FrameBuffer::Create(int width, int height)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,  m_DepthBuffer, 0);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	m_Width = width;
+	m_Height = height;
 }
