@@ -5,7 +5,7 @@
 #include <Pine/Components/ModelRenderer/ModelRenderer.hpp>
 #include <Pine/Entitylist/EntityList.hpp>
 #include <Pine/Components/Camera/Camera.hpp>
-#include <Pine/RenderManager/RenderManager.hpp>
+#include <Pine/Rendering/RenderManager/RenderManager.hpp>
 #include <Pine/Components/Light/Light.hpp>
 
 Pine::Entity* entity = nullptr;

@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../../../ImGui/imgui.h"
-#include "../../RenderManager/RenderManager.hpp"
+#include "../../Rendering/RenderManager/RenderManager.hpp"
 
 void Pine::Camera::BuildProjectionMatrix() {
 	const auto size = Window::GetSize();

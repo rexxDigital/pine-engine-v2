@@ -51,13 +51,7 @@
     <ClInclude Include="src\Pine\Assets\Material\Material.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Renderer3D\Renderer3D.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Pine\Entitylist\EntityList.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pine\RenderManager\RenderManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pine\Components\ModelRenderer\ModelRenderer.hpp">
@@ -129,7 +123,16 @@
     <ClInclude Include="src\Pine\Gui\Widgets\Common\CommonWidgets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Assets\Texture\Texture2D.hpp">
+    <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,16 +167,10 @@
     <ClCompile Include="src\Pine\Assets\Material\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pine\Renderer3D\Renderer3D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pine\Entity\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Entitylist\EntityList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pine\RenderManager\RenderManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Assets\Mesh\Mesh.cpp">
@@ -239,8 +236,23 @@
     <ClCompile Include="src\Pine\Gui\Widgets\Common\CommonWidgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pine\Assets\Texture\Texture2D.cpp">
+    <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Pine\Assets\Texture3D\Texture3D.hpp" />
   </ItemGroup>
 </Project>

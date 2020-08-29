@@ -1,13 +1,13 @@
 #include "RenderManager.hpp"
 #include <unordered_map>
 #include <vector>
-#include "../Components/ModelRenderer/ModelRenderer.hpp"
-#include "../Entitylist/EntityList.hpp"
+#include "../../Components/ModelRenderer/ModelRenderer.hpp"
+#include "../../Entitylist/EntityList.hpp"
 #include "../Renderer3D/Renderer3D.hpp"
-#include "../Components/Camera/Camera.hpp"
-#include "../UniformBuffers/UniformBuffers.hpp"
-#include "../Components/Light/Light.hpp"
-#include "../Core/Log/Log.hpp"
+#include "../../Components/Camera/Camera.hpp"
+#include "../../UniformBuffers/UniformBuffers.hpp"
+#include "../../Components/Light/Light.hpp"
+#include "../../Core/Log/Log.hpp"
 
 namespace {
 

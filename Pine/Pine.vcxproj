@@ -171,7 +171,7 @@
     <ClInclude Include="src\Pine\Assets\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Pine\Assets\Model\Model.hpp" />
     <ClInclude Include="src\Pine\Assets\Shader\Shader.hpp" />
-    <ClInclude Include="src\Pine\Assets\Texture\Texture2D.hpp" />
+    <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\Pine\Components\Camera\Camera.hpp" />
     <ClInclude Include="src\Pine\Components\IComponent\IComponent.hpp" />
     <ClInclude Include="src\Pine\Components\Light\Light.hpp" />
@@ -193,8 +193,9 @@
     <ClInclude Include="src\Pine\OpenGL\UniformVariable\UniformVariable.hpp" />
     <ClInclude Include="src\Pine\OpenGL\VertexArray\VertexArray.hpp" />
     <ClInclude Include="src\Pine\Pine.hpp" />
-    <ClInclude Include="src\Pine\Renderer3D\Renderer3D.hpp" />
-    <ClInclude Include="src\Pine\RenderManager\RenderManager.hpp" />
+    <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp" />
+    <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp" />
+    <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Pine\UniformBuffers\UniformBuffers.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +211,8 @@
     <ClCompile Include="src\Pine\Assets\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Pine\Assets\Model\Model.cpp" />
     <ClCompile Include="src\Pine\Assets\Shader\Shader.cpp" />
-    <ClCompile Include="src\Pine\Assets\Texture\Texture2D.cpp" />
+    <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp" />
+    <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp" />
     <ClCompile Include="src\Pine\Components\Camera\Camera.cpp" />
     <ClCompile Include="src\Pine\Components\IComponent\IComponent.cpp" />
     <ClCompile Include="src\Pine\Components\Light\Light.cpp" />
@@ -231,9 +233,13 @@
     <ClCompile Include="src\Pine\OpenGL\UniformVariable\UniformVariable.cpp" />
     <ClCompile Include="src\Pine\OpenGL\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\Pine\Pine.cpp" />
-    <ClCompile Include="src\Pine\Renderer3D\Renderer3D.cpp" />
-    <ClCompile Include="src\Pine\RenderManager\RenderManager.cpp" />
+    <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp" />
+    <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp" />
+    <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Pine\UniformBuffers\UniformBuffers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Pine\Assets\Texture3D\Texture3D.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
 #pragma once
-#include "../OpenGL/VertexArray/VertexArray.hpp"
-#include "../Assets/Mesh/Mesh.hpp"
+#include "../../OpenGL/VertexArray/VertexArray.hpp"
+#include "../../Assets/Mesh/Mesh.hpp"
 
 namespace Pine::Renderer3D
 {

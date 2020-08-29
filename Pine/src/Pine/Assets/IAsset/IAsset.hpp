@@ -12,7 +12,8 @@ namespace Pine
 		Mesh,
 		Model,
 		Shader,
-		Texture
+		Texture2D,
+		Texture3D
 	};
 
 	inline const char* SAssetType[] = {
@@ -21,7 +22,8 @@ namespace Pine
 		"Mesh",
 		"Model",
 		"Shader",
-		"Texture"
+		"Texture2D",
+		"Texture3D (Cube map)"
 	};
 
 	class IAsset

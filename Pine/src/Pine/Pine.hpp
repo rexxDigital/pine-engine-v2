@@ -14,7 +14,7 @@
 #include "OpenGL/VertexArray/VertexArray.hpp"
 #include "OpenGL/ShaderProgram/ShaderProgram.hpp"
 #include "OpenGL/FrameBuffer/FrameBuffer.hpp"
-#include "Renderer3D/Renderer3D.hpp"
+#include "Rendering/Renderer3D/Renderer3D.hpp"
 
 typedef void (*RenderCallback)();
 

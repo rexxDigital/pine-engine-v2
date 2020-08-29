@@ -6,7 +6,7 @@
 #include "../../Core/Log/Log.hpp"
 
 Pine::Texture2D::Texture2D() {
-    m_Type = EAssetType::Texture;
+    m_Type = EAssetType::Texture2D;
 }
 
 unsigned int Pine::Texture2D::GetId() const {

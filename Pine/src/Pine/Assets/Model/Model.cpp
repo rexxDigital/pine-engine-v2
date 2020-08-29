@@ -6,6 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "../../Core/Log/Log.hpp"
+#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
 namespace {
 
@@ -158,4 +159,14 @@ void Pine::Model::Dispose() {
 		mesh->Dispose();
 		delete mesh;
 	}
+}
+
+void Pine::Model::GenerateAssetPreview() {
+	m_PreviewFrameBuffer = new FrameBuffer();
+
+	m_PreviewFrameBuffer->Create(128, 128);
+
+
+
+
 }

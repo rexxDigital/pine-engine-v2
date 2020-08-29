@@ -17,6 +17,7 @@ namespace Pine {
 		bool LoadFromFile() override;
 		bool SaveToFile() override;
 		void Dispose() override;
+		void GenerateAssetPreview() override;
 
 	};
 

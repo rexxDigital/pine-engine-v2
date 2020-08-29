@@ -1,7 +1,7 @@
 #pragma once
 #include "../IAsset/IAsset.hpp"
 #include "../Shader/Shader.hpp"
-#include "../Texture/Texture2D.hpp"
+#include "../Texture2D/Texture2D.hpp"
 
 #include <glm/vec3.hpp>
 

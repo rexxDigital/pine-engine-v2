@@ -3,9 +3,10 @@
 
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
-#include "Texture/Texture2D.hpp"
+#include "Texture2D/Texture2D.hpp"
 
 #include <unordered_map>
+#include "Texture3D/Texture3D.hpp"
 
 
 namespace {
@@ -20,7 +21,9 @@ namespace {
 		if (Pine::String::EndsWith(fileName, ".obj"))
 			return Pine::EAssetType::Model;
 		if (Pine::String::EndsWith(fileName, ".png") || Pine::String::EndsWith(fileName, ".jpg"))
-			return Pine::EAssetType::Texture;
+			return Pine::EAssetType::Texture2D;
+		if (Pine::String::EndsWith(fileName, ".cmap"))
+			return Pine::EAssetType::Texture3D;
 
 		return Pine::EAssetType::Invalid;
 	}
@@ -35,8 +38,10 @@ namespace {
 			return new Pine::Shader();
 		case Pine::EAssetType::Model:
 			return new Pine::Model();
-		case Pine::EAssetType::Texture:
+		case Pine::EAssetType::Texture2D:
 			return new Pine::Texture2D();
+		case Pine::EAssetType::Texture3D:
+			return new Pine::Texture3D();
 		default:
 			return nullptr;
 		}
@@ -53,6 +58,11 @@ Pine::IAsset* Pine::Assets::LoadFromFile(const std::string& filePath) {
 	const auto type = TranslateAssetType(filePath);
 
 	if (type == EAssetType::Invalid) {
+		return nullptr;
+	}
+
+	// Quick hack to prevent loading sky box images twice.
+	if (type == EAssetType::Texture2D && std::filesystem::exists(std::filesystem::path(filePath).parent_path().string() + "\\IGNORE_TEXTURES")) {
 		return nullptr;
 	}
 

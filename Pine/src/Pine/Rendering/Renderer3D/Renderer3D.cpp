@@ -1,6 +1,6 @@
 #include "Renderer3D.hpp"
 #include <GL/glew.h>
-#include "../UniformBuffers/UniformBuffers.hpp"
+#include "../../UniformBuffers/UniformBuffers.hpp"
 
 namespace {
 	// The mesh we're supposed to render.
