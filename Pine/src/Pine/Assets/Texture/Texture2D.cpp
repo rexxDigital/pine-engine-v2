@@ -1,27 +1,31 @@
-#include "Texture.hpp"
+#include "Texture2D.hpp"
 #include <GL/glew.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "../../Core/Log/Log.hpp"
 
-Pine::Texture::Texture() {
+Pine::Texture2D::Texture2D() {
     m_Type = EAssetType::Texture;
 }
 
-unsigned int Pine::Texture::GetId() const {
+unsigned int Pine::Texture2D::GetId() const {
     return m_Id;
 }
 
-int Pine::Texture::GetWidth() const {
+int Pine::Texture2D::GetWidth() const {
     return m_Width;
 }
 
-int Pine::Texture::GetHeight() const {
+int Pine::Texture2D::GetHeight() const {
     return m_Height;
 }
 
-bool Pine::Texture::LoadFromFile() {
+const int Pine::Texture2D::GetAssetPreview() const {
+    return m_Id;
+}
+
+bool Pine::Texture2D::LoadFromFile() {
     int width, height, channels;
 
     const auto data = stbi_load(m_FilePath.string().c_str(), &width, &height, &channels, 0);
@@ -53,10 +57,15 @@ bool Pine::Texture::LoadFromFile() {
     return true;
 }
 
-bool Pine::Texture::SaveToFile() {
+bool Pine::Texture2D::SaveToFile() {
     return false;
 }
 
-void Pine::Texture::Dispose() {
+void Pine::Texture2D::Dispose() {
     glDeleteTextures(1, &m_Id);
+}
+
+void Pine::Texture2D::GenerateAssetPreview() {
+    // No need to forgive me for this, it's C++!
+    m_PreviewFrameBuffer = reinterpret_cast<FrameBuffer*>(0x1);
 }

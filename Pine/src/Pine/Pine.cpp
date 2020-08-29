@@ -57,6 +57,7 @@ bool Pine::Setup()
 
 	Renderer3D::Setup();
 	Gui::Setup();
+	Assets::RefreshDirectoryCache();
 
 	Log::Message("Pine was successfully initialized!");
 

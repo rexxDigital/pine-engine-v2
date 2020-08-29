@@ -1,4 +1,5 @@
 #include "IAsset.hpp"
+#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
 void Pine::IAsset::SetFilePath(const std::string& str)
 {
@@ -13,4 +14,20 @@ const std::filesystem::path& Pine::IAsset::GetPath() const
 Pine::EAssetType Pine::IAsset::GetType() const
 {
 	return m_Type;
+}
+
+bool Pine::IAsset::HasAvailablePreview() const {
+	return m_PreviewFrameBuffer != nullptr;
+}
+
+const int Pine::IAsset::GetAssetPreview() const {
+	if (m_PreviewFrameBuffer) {
+		return m_PreviewFrameBuffer->GetId();
+	}
+
+	return -1;
+}
+
+void Pine::IAsset::GenerateAssetPreview() {
+
 }

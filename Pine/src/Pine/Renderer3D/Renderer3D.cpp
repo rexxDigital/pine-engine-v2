@@ -11,7 +11,7 @@ namespace {
 	Pine::UniformVariable* g_ShaderTransformationVariable = nullptr;
 
 	// The texture we use if there is no texture applied, 1x1 white.
-	Pine::Texture* g_DefaultTexture = nullptr;
+	Pine::Texture2D* g_DefaultTexture = nullptr;
 
 	// Some optimizations for OpenGL's current texture.
 	int g_CurrentBoundTexture[32] = { };
@@ -41,7 +41,7 @@ void Pine::Renderer3D::PrepareMesh(Pine::Mesh* mesh) {
 	}
 	 
 	// Diffuse texture
-	Texture* diffuseTexture = g_DefaultTexture;
+	Texture2D* diffuseTexture = g_DefaultTexture;
 	if (material->GetDiffuse() != nullptr) {
 		diffuseTexture = material->GetDiffuse();
 	}
@@ -55,7 +55,7 @@ void Pine::Renderer3D::PrepareMesh(Pine::Mesh* mesh) {
 	}
 
 	// Specular map texture
-	Texture* specularMapTexture = g_DefaultTexture;
+	Texture2D* specularMapTexture = g_DefaultTexture;
 	if (material->GetSpecular() != nullptr) {
 		specularMapTexture = material->GetSpecular();
 	}
@@ -111,7 +111,7 @@ void Pine::Renderer3D::SetShader(Pine::Shader* shader) {
 }
 
 void Pine::Renderer3D::Setup() {
-	g_DefaultTexture = Assets::GetAsset<Texture>("Engine\\DefaultTexture.png");
+	g_DefaultTexture = Assets::GetAsset<Texture2D>("Engine\\DefaultTexture.png");
 }
 
 void Pine::Renderer3D::Dispose() {

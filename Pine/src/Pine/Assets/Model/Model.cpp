@@ -86,13 +86,13 @@ namespace {
 				aiString file_path;
 				material->GetTexture(aiTextureType_DIFFUSE, 0, &file_path);
 
-				eMaterial->SetDiffuse(reinterpret_cast<Pine::Texture*>(Pine::Assets::LoadFromFile(file_path.C_Str())));
+				eMaterial->SetDiffuse(reinterpret_cast<Pine::Texture2D*>(Pine::Assets::LoadFromFile(file_path.C_Str())));
 			}
 
 			if (material->GetTextureCount(aiTextureType_SPECULAR) > 0) {
 				aiString file_path;
 				material->GetTexture(aiTextureType_SPECULAR, 0, &file_path);
-				eMaterial->SetSpecular(reinterpret_cast<Pine::Texture*>(Pine::Assets::LoadFromFile(file_path.C_Str())));
+				eMaterial->SetSpecular(reinterpret_cast<Pine::Texture2D*>(Pine::Assets::LoadFromFile(file_path.C_Str())));
 			}
 		}
 

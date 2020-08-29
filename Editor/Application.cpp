@@ -53,6 +53,8 @@ void SetupSampleScene() {
 
 int main()
 {
+	std::cout << "Icons made by https://www.flaticon.com/authors/freepik from https://www.flaticon.com/" << std::endl;
+
     if (!Pine::Setup()) {
         return 1;
     }

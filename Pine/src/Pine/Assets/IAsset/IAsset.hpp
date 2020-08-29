@@ -1,6 +1,8 @@
 #pragma once
 #include <filesystem>
 
+namespace Pine { class FrameBuffer; }
+
 namespace Pine
 {
 	enum class EAssetType
@@ -13,11 +15,21 @@ namespace Pine
 		Texture
 	};
 
+	inline const char* SAssetType[] = {
+		"Invalid",
+		"Material",
+		"Mesh",
+		"Model",
+		"Shader",
+		"Texture"
+	};
+
 	class IAsset
 	{
 	protected:
 		std::filesystem::path m_FilePath;
 		EAssetType m_Type = EAssetType::Invalid;
+		FrameBuffer* m_PreviewFrameBuffer = nullptr;
 	public:
 		virtual ~IAsset() = default;
 
@@ -25,9 +37,14 @@ namespace Pine
 		const std::filesystem::path& GetPath() const;
 
 		EAssetType GetType() const;
+		
+		// For asset previews in the editor, GetAssetPreview should return texture id.
+		bool HasAvailablePreview() const;
+		virtual const int GetAssetPreview() const;
 
 		virtual bool LoadFromFile() = 0;
 		virtual bool SaveToFile() = 0;
 		virtual void Dispose() = 0;
+		virtual void GenerateAssetPreview();
 	};
 }

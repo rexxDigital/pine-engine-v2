@@ -3,21 +3,23 @@
 
 namespace Pine {
 
-	class Texture : public IAsset {
+	class Texture2D : public IAsset {
 	private:
 		unsigned int m_Id = 0;
 		int m_Width = 0;
 		int m_Height = 0;
 	public:
-		Texture();
+		Texture2D();
 
 		unsigned int GetId() const;
 		int GetWidth() const;
 		int GetHeight() const;
+		const int GetAssetPreview() const override;
 
 		bool LoadFromFile() override;
 		bool SaveToFile() override;
 		void Dispose() override;
+		void GenerateAssetPreview() override;
 	};
 
 }

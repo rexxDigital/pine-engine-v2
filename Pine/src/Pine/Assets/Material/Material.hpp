@@ -1,7 +1,7 @@
 #pragma once
 #include "../IAsset/IAsset.hpp"
 #include "../Shader/Shader.hpp"
-#include "../Texture/Texture.hpp"
+#include "../Texture/Texture2D.hpp"
 
 #include <glm/vec3.hpp>
 
@@ -17,8 +17,8 @@ namespace Pine
 
 		float m_Shininiess = 16.f;
 
-		Texture* m_Diffuse = nullptr;
-		Texture* m_Specular = nullptr;
+		Texture2D* m_Diffuse = nullptr;
+		Texture2D* m_Specular = nullptr;
 
 		Shader* m_Shader = nullptr;
 	public:
@@ -28,11 +28,11 @@ namespace Pine
 		glm::vec3& SpecularColor();
 		glm::vec3& AmbientColor();
 		
-		Texture* GetDiffuse() const;
-		Texture* GetSpecular() const;
+		Texture2D* GetDiffuse() const;
+		Texture2D* GetSpecular() const;
 
-		void SetDiffuse(Texture* texture);
-		void SetSpecular(Texture* texture);
+		void SetDiffuse(Texture2D* texture);
+		void SetSpecular(Texture2D* texture);
 
 		float GetShininiess() const;
 		void SetShininiess(float shininiess);

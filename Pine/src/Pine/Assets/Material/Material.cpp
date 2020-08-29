@@ -19,19 +19,19 @@ glm::vec3& Pine::Material::AmbientColor() {
 	return m_AmbientColor;
 }
 
-Pine::Texture* Pine::Material::GetDiffuse() const {
+Pine::Texture2D* Pine::Material::GetDiffuse() const {
 	return m_Diffuse;
 }
 
-Pine::Texture* Pine::Material::GetSpecular() const {
+Pine::Texture2D* Pine::Material::GetSpecular() const {
 	return m_Specular;
 }
 
-void Pine::Material::SetDiffuse(Texture* texture) {
+void Pine::Material::SetDiffuse(Texture2D* texture) {
 	m_Diffuse = texture;
 }
 
-void Pine::Material::SetSpecular(Texture* texture) {
+void Pine::Material::SetSpecular(Texture2D* texture) {
 	m_Specular = texture;
 }
 
@@ -63,8 +63,8 @@ bool Pine::Material::LoadFromFile()
 		m_SpecularColor = Serialization::LoadVec3(j, "SpecularColor");
 		m_AmbientColor = Serialization::LoadVec3(j, "AmbientColor");
 
-		m_Diffuse = dynamic_cast<Texture*>(Serialization::LoadAsset(j, "Diffuse"));
-		m_Specular = dynamic_cast<Texture*>(Serialization::LoadAsset(j, "Specular"));
+		m_Diffuse = dynamic_cast<Texture2D*>(Serialization::LoadAsset(j, "Diffuse"));
+		m_Specular = dynamic_cast<Texture2D*>(Serialization::LoadAsset(j, "Specular"));
 
 	}
 	catch (...) {

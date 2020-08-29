@@ -22,3 +22,26 @@ void Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
 	
 	ImGui::Columns(1);
 }
+
+Pine::IAsset* Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type) {
+	const std::string& path = currentAsset->GetPath().string();
+
+	ImGui::Text("%s (%s)", str.c_str(), Pine::SAssetType[static_cast<int>(type)]);
+	ImGui::InputText(std::string("##AssetPicker" + str).c_str(), (char*)path.data(), path.size(), ImGuiInputTextFlags_ReadOnly);
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset")) {
+
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("...")) {
+
+	}
+
+	return currentAsset;
+}

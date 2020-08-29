@@ -171,7 +171,7 @@
     <ClInclude Include="src\Pine\Assets\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Pine\Assets\Model\Model.hpp" />
     <ClInclude Include="src\Pine\Assets\Shader\Shader.hpp" />
-    <ClInclude Include="src\Pine\Assets\Texture\Texture.hpp" />
+    <ClInclude Include="src\Pine\Assets\Texture\Texture2D.hpp" />
     <ClInclude Include="src\Pine\Components\Camera\Camera.hpp" />
     <ClInclude Include="src\Pine\Components\IComponent\IComponent.hpp" />
     <ClInclude Include="src\Pine\Components\Light\Light.hpp" />
@@ -210,7 +210,7 @@
     <ClCompile Include="src\Pine\Assets\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Pine\Assets\Model\Model.cpp" />
     <ClCompile Include="src\Pine\Assets\Shader\Shader.cpp" />
-    <ClCompile Include="src\Pine\Assets\Texture\Texture.cpp" />
+    <ClCompile Include="src\Pine\Assets\Texture\Texture2D.cpp" />
     <ClCompile Include="src\Pine\Components\Camera\Camera.cpp" />
     <ClCompile Include="src\Pine\Components\IComponent\IComponent.cpp" />
     <ClCompile Include="src\Pine\Components\Light\Light.cpp" />

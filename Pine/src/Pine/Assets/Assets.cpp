@@ -3,18 +3,16 @@
 
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
-#include "Texture/Texture.hpp"
+#include "Texture/Texture2D.hpp"
 
 #include <unordered_map>
 
 
-namespace
-{
+namespace {
 	std::unordered_map<std::string, Pine::IAsset*> m_Assets;
 
 	// Gets a EAssetType from common file extension types, for instance .obj -> Model
-	Pine::EAssetType TranslateAssetType(const std::string& fileName)
-	{
+	Pine::EAssetType TranslateAssetType(const std::string& fileName) {
 		if (Pine::String::EndsWith(fileName, ".mat"))
 			return Pine::EAssetType::Material;
 		if (Pine::String::EndsWith(fileName, ".shr"))
@@ -27,50 +25,46 @@ namespace
 		return Pine::EAssetType::Invalid;
 	}
 
-	Pine::IAsset* CreateAssetType(Pine::EAssetType type)
-	{
-		switch (type)
-		{
-			case Pine::EAssetType::Invalid:
-				return nullptr;
-			case Pine::EAssetType::Material:
-				return new Pine::Material();
-			case Pine::EAssetType::Shader:
-				return new Pine::Shader();
-			case Pine::EAssetType::Model:
-				return new Pine::Model();
-			case Pine::EAssetType::Texture:
-				return new Pine::Texture();
-			default: 
-				return nullptr;
+	Pine::IAsset* CreateAssetType(Pine::EAssetType type) {
+		switch (type) {
+		case Pine::EAssetType::Invalid:
+			return nullptr;
+		case Pine::EAssetType::Material:
+			return new Pine::Material();
+		case Pine::EAssetType::Shader:
+			return new Pine::Shader();
+		case Pine::EAssetType::Model:
+			return new Pine::Model();
+		case Pine::EAssetType::Texture:
+			return new Pine::Texture2D();
+		default:
+			return nullptr;
 		}
 	}
+
+	std::unique_ptr<Pine::Assets::DirectoryCache_t> g_AssetsDirectoryCache = nullptr;
 }
 
-Pine::IAsset* Pine::Assets::LoadFromFile(const std::string& filePath)
-{
+Pine::IAsset* Pine::Assets::LoadFromFile(const std::string& filePath) {
 	if (m_Assets.count(filePath) > 0) {
 		return m_Assets[filePath];
 	}
-	
+
 	const auto type = TranslateAssetType(filePath);
 
-	if (type == EAssetType::Invalid)
-	{
+	if (type == EAssetType::Invalid) {
 		return nullptr;
 	}
 
 	const auto asset = CreateAssetType(type);
 
-	if (!asset) 
-	{
+	if (!asset) {
 		return nullptr;
 	}
 
 	asset->SetFilePath(filePath);
 
-	if (!asset->LoadFromFile())
-	{
+	if (!asset->LoadFromFile()) {
 		// We have a strict "please report the issue in the LoadFromFile method", no logging.
 		return nullptr;
 	}
@@ -80,17 +74,14 @@ Pine::IAsset* Pine::Assets::LoadFromFile(const std::string& filePath)
 	return asset;
 }
 
-int Pine::Assets::LoadFromDirectory(const std::string& directoryPath)
-{
+int Pine::Assets::LoadFromDirectory(const std::string& directoryPath) {
 	uint32_t loadedAssets = 0;
 
-	for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(directoryPath))
-	{
+	for (const auto& dirEntry : std::filesystem::recursive_directory_iterator(directoryPath)) {
 		if (dirEntry.is_directory())
 			continue;
 
-		if (LoadFromFile(dirEntry.path().string()))
-		{
+		if (LoadFromFile(dirEntry.path().string())) {
 			loadedAssets++;
 		}
 	}
@@ -103,22 +94,45 @@ int Pine::Assets::LoadFromDirectory(const std::string& directoryPath)
 	return loadedAssets;
 }
 
-Pine::IAsset* Pine::Assets::GetAsset(const std::string& assetPath)
-{
+Pine::IAsset* Pine::Assets::GetAsset(const std::string& assetPath) {
 	if (m_Assets.count(assetPath) == 0)
 		return nullptr;
 
 	return m_Assets[assetPath];
 }
 
-void Pine::Assets::Dispose()
-{
+void Pine::Assets::Dispose() {
 	Log::Message("Disposing assets...");
 
-	for (auto element : m_Assets)
-	{
+	for (auto element : m_Assets) {
 		auto asset = element.second;
 
 		asset->Dispose();
 	}
+}
+
+Pine::Assets::DirectoryCache_t* Pine::Assets::GetAssetsDirectoryCache() {
+	return g_AssetsDirectoryCache.get();
+}
+
+std::unique_ptr<Pine::Assets::DirectoryCache_t> CreateDirectoryCache(const std::string& dir) {
+	auto dirCache = std::make_unique<Pine::Assets::DirectoryCache_t>();
+
+	dirCache->path = dir;
+	dirCache->isDirectory = std::filesystem::is_directory(dir);
+	
+	if (!dirCache->isDirectory) {
+		dirCache->assetPointer = Pine::Assets::GetAsset(dir);
+	}
+	else {
+		for (auto item : std::filesystem::directory_iterator(dir)) {
+			dirCache->items.push_back(CreateDirectoryCache(item.path().string()));
+		}
+	}
+
+	return std::move(dirCache);
+}
+
+void Pine::Assets::RefreshDirectoryCache() {
+	g_AssetsDirectoryCache = CreateDirectoryCache("Assets");
 }
