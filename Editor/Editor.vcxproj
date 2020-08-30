@@ -150,22 +150,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Gui\ComponentRenderer\ComponentRenderer.cpp" />
     <ClCompile Include="Gui\Gui.cpp" />
+    <ClCompile Include="Gui\Widgets\Widgets.cpp" />
     <ClCompile Include="Gui\Windows\AssetBrowser\AssetBrowser.cpp" />
     <ClCompile Include="Gui\Windows\Console\Console.cpp" />
     <ClCompile Include="Gui\Windows\EntityList\Entitylist.cpp" />
     <ClCompile Include="Gui\Windows\Profiler\Profiler.cpp" />
     <ClCompile Include="Gui\Windows\Properties\Properties.cpp" />
     <ClCompile Include="Gui\Windows\Viewport\Viewport.cpp" />
+    <ClCompile Include="Utils\PreviewManager\PreviewManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Gui\ComponentRenderer\ComponentRenderer.hpp" />
     <ClInclude Include="Gui\Gui.hpp" />
+    <ClInclude Include="Gui\Widgets\Widgets.hpp" />
     <ClInclude Include="Gui\Windows\AssetBrowser\AssetBrowser.hpp" />
     <ClInclude Include="Gui\Windows\Console\Console.hpp" />
     <ClInclude Include="Gui\Windows\EntityList\Entitylist.hpp" />
     <ClInclude Include="Gui\Windows\Profiler\Profiler.hpp" />
     <ClInclude Include="Gui\Windows\Properties\Properties.hpp" />
     <ClInclude Include="Gui\Windows\Viewport\Viewport.hpp" />
+    <ClInclude Include="Utils\PreviewManager\PreviewManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pine\Pine.vcxproj">

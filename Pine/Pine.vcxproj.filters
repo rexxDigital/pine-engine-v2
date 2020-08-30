@@ -120,9 +120,6 @@
     <ClInclude Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Gui\Widgets\Common\CommonWidgets.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -133,9 +130,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pine\Rendering\PreviewManager\PreviewManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -236,9 +230,6 @@
     <ClCompile Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pine\Gui\Widgets\Common\CommonWidgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -252,9 +243,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pine\Rendering\PreviewManager\PreviewManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,13 +1,12 @@
 #include "PreviewManager.hpp"
-#include "../../Entity/Entity.hpp"
-#include "../../Components/Camera/Camera.hpp"
-#include "../../Components/Light/Light.hpp"
-#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
-#include "../../UniformBuffers/UniformBuffers.hpp"
-#include "../Skybox/Skybox.hpp"
+
 
 #include <glm/ext/matrix_transform.hpp>
 #include <GL/glew.h>
+#include <Pine/Entity/Entity.hpp>
+#include <Pine/Components/Camera/Camera.hpp>
+#include <Pine/OpenGL/FrameBuffer/FrameBuffer.hpp>
+#include <Pine/UniformBuffers/UniformBuffers.hpp>
 
 namespace {
 	Pine::FrameBuffer* g_FrameBuffer = nullptr;

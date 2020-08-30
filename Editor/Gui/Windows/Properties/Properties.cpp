@@ -31,8 +31,6 @@ namespace {
 				ImGui::Checkbox(std::string("Active##" + std::to_string(e->GetId()) + std::to_string(static_cast<int>(component->GetType()))).c_str(), &active);
 				component->SetActive(active);
 
-				// Using the engine's way to display the UI items.
-				component->OnRenderGui();
 			}
 
 			ImGui::Spacing();

@@ -44,7 +44,6 @@ namespace Pine
 		virtual void OnUpdate(float deltaTime) = 0;
 		virtual void OnRender();
 		virtual void OnDestroy();
-		virtual void OnRenderGui();
 	};
 
 }

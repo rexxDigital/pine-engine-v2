@@ -8,7 +8,6 @@
 #include "Gui/Gui.hpp"
 #include "Rendering/Skybox/Skybox.hpp"
 #include "Assets/Texture3D/Texture3D.hpp"
-#include "Rendering/PreviewManager/PreviewManager.hpp"
 
 namespace
 {
@@ -61,7 +60,6 @@ bool Pine::Setup()
 	Renderer3D::Setup();
 	Gui::Setup();
 	Skybox::Setup();
-	PreviewManager::Setup();
 
 	Skybox::SetSkyboxCubemap(Assets::GetAsset<Pine::Texture3D>("Engine\\Skyboxes\\DefaultSkybox.cmap"));
 
@@ -123,7 +121,6 @@ void Pine::Terminate()
 	Renderer3D::Dispose();
 	Gui::Dispose();
 	Skybox::Dispose();
-	PreviewManager::Dispose();
 
 	Window::Internal::Destroy();
 }

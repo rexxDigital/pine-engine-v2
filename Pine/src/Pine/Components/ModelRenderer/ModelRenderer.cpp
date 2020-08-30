@@ -1,6 +1,5 @@
 #include "ModelRenderer.hpp"
 
-#include "../../Gui/Widgets/Common/CommonWidgets.hpp"
 Pine::ModelRenderer::ModelRenderer() {
 	m_ComponentType = EComponentType::ModelRenderer;
 }
@@ -22,6 +21,3 @@ void Pine::ModelRenderer::OnUpdate(float deltaTime) {
 void Pine::ModelRenderer::OnRender() {
 }
 
-void Pine::ModelRenderer::OnRenderGui() {
-	Gui::Widgets::AssetPicker(m_TargetModel, "Target model", EAssetType::Model);
-}

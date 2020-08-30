@@ -34,7 +34,6 @@ namespace Pine {
 		void OnSetup() override;
 		void OnRender() override;
 		void OnUpdate(float deltaTime) override;
-		void OnRenderGui() override;
 		
 	};
 

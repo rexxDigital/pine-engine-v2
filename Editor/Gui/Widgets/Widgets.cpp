@@ -1,10 +1,9 @@
-#include "CommonWidgets.hpp"
+#include "Widgets.hpp"
 
-#include "../../../../ImGui/imgui.h"
-#include "../../../Assets/Assets.hpp"
+#include <ImGui/imgui.h>
+#include <Pine/Assets/Assets.hpp>
 
-void Pine::Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
-{
+void Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec) {
 	ImGui::Text(str.c_str());
 
 	ImGui::Columns(3, nullptr, false);
@@ -16,21 +15,20 @@ void Pine::Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
 	ImGui::SetNextItemWidth(80.f);
 	ImGui::DragFloat(std::string("Y##" + str).c_str(), &vec.y, 0.1f, -FLT_MAX, FLT_MAX, "%.1f");
 	ImGui::NextColumn();
-	
+
 	ImGui::SetNextItemWidth(80.f);
 	ImGui::DragFloat(std::string("Z##" + str).c_str(), &vec.z, 0.1f, -FLT_MAX, FLT_MAX, "%.1f");
-	
-	
+
 	ImGui::Columns(1);
 }
 
-Pine::IAsset* Pine::Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type) {
+Pine::IAsset* Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type) {
 	static auto unknownImage = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\030-corrupt file.png");
-	
+
 	const std::string& path = currentAsset->GetPath().string();
 
 	ImGui::Text("%s (%s)", str.c_str(), Pine::SAssetType[static_cast<int>(type)]);
-	
+
 	int image = unknownImage->GetId();
 	if (currentAsset->HasAvailablePreview()) {
 		image = currentAsset->GetAssetPreview();
@@ -63,7 +61,7 @@ Pine::IAsset* Pine::Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const 
 	return currentAsset;
 }
 
-Pine::IAsset* Pine::Gui::Widgets::AssetBrowser(Pine::IAsset* selectedAsset, Pine::EAssetType filter /*= Pine::EAssetType::Invalid*/) {
+Pine::IAsset* Gui::Widgets::AssetBrowser(Pine::IAsset* selectedAsset, Pine::EAssetType filter /*= Pine::EAssetType::Invalid*/) {
 	// Cached icons
 	static auto folderIcon = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\006-folder.png");
 	static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\030-corrupt file.png");
@@ -91,7 +89,7 @@ Pine::IAsset* Pine::Gui::Widgets::AssetBrowser(Pine::IAsset* selectedAsset, Pine
 				icon = asset->GetAssetPreview();
 			}
 		}
-		
+
 		ImGui::PushID(item->name.c_str());
 		ImGui::BeginGroup();
 
@@ -103,15 +101,15 @@ Pine::IAsset* Pine::Gui::Widgets::AssetBrowser(Pine::IAsset* selectedAsset, Pine
 				else {
 					currentPath = item.get();
 				}
-			
+
 				ImGui::EndGroup();
 				ImGui::PopID();
 
 				break;
 			}
 		}
-		
-		ImGui::Text(item->name.c_str()); 
+
+		ImGui::Text(item->name.c_str());
 
 		ImGui::EndGroup();
 		ImGui::PopID();

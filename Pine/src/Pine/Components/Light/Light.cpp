@@ -26,12 +26,3 @@ void Pine::Light::OnSetup() {}
 
 void Pine::Light::OnUpdate(float deltaTime) {}
 
-void Pine::Light::OnRenderGui()
-{
-	ImGui::Text("Light Color");
-	ImGui::ColorEdit3("##LightColor", reinterpret_cast<float*>(&m_LightColor));
-
-	ImGui::Text("Light Type");
-	ImGui::Combo("##LightType", reinterpret_cast<int*>(&m_LightType), "Directional\0Spot light");
-
-}
