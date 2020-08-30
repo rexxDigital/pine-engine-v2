@@ -8,10 +8,12 @@ namespace Pine::Assets
 	// Used for assets preview
 	struct DirectoryCache_t {
 		std::string path = "";
+		std::string name = "";
 		bool isDirectory = false;
 		bool readOnly = false;
 		IAsset* assetPointer = nullptr;
 		std::vector<std::unique_ptr<DirectoryCache_t>> items;
+		DirectoryCache_t* parent = nullptr;
 	};
 
 	DirectoryCache_t* GetAssetsDirectoryCache();
@@ -33,6 +35,8 @@ namespace Pine::Assets
 		auto asset = GetAsset(assetPath);
 		return dynamic_cast<T*>(asset);
 	}
+
+	void GenerateAssetPreviews();
 
 	// Disposes all loaded assets
 	void Dispose();

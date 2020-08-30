@@ -125,18 +125,31 @@ Pine::Assets::DirectoryCache_t* Pine::Assets::GetAssetsDirectoryCache() {
 	return g_AssetsDirectoryCache.get();
 }
 
-std::unique_ptr<Pine::Assets::DirectoryCache_t> CreateDirectoryCache(const std::string& dir) {
+std::unique_ptr<Pine::Assets::DirectoryCache_t> CreateDirectoryCache(const std::string& dir, Pine::Assets::DirectoryCache_t* parent) {
 	auto dirCache = std::make_unique<Pine::Assets::DirectoryCache_t>();
 
 	dirCache->path = dir;
+	dirCache->name = std::filesystem::path(dir).filename().string();
 	dirCache->isDirectory = std::filesystem::is_directory(dir);
-	
+	dirCache->parent = parent;
+
 	if (!dirCache->isDirectory) {
 		dirCache->assetPointer = Pine::Assets::GetAsset(dir);
 	}
 	else {
+		if (dirCache->parent != nullptr) {
+			auto parentDir = std::make_unique<Pine::Assets::DirectoryCache_t>();
+
+			parentDir->path = dirCache->parent->path;
+			parentDir->name = "...";
+			parentDir->isDirectory = true;
+			parentDir->parent = dirCache->parent;
+
+			dirCache->items.push_back(std::move(parentDir));
+		}
+
 		for (auto item : std::filesystem::directory_iterator(dir)) {
-			dirCache->items.push_back(CreateDirectoryCache(item.path().string()));
+			dirCache->items.push_back(CreateDirectoryCache(item.path().string(), dirCache.get()));
 		}
 	}
 
@@ -144,5 +157,19 @@ std::unique_ptr<Pine::Assets::DirectoryCache_t> CreateDirectoryCache(const std::
 }
 
 void Pine::Assets::RefreshDirectoryCache() {
-	g_AssetsDirectoryCache = CreateDirectoryCache("Assets");
+	g_AssetsDirectoryCache = CreateDirectoryCache("Assets", nullptr);
+}
+
+void Pine::Assets::GenerateAssetPreviews() {
+
+	int genAssets = 0;
+
+	for (auto asset : m_Assets) {
+		if (!asset.second->HasAvailablePreview()) {
+			asset.second->GenerateAssetPreview();
+			genAssets++;
+		}
+	}
+
+	Log::Message("Generated " + std::to_string(genAssets) + " asset preview(s).");
 }

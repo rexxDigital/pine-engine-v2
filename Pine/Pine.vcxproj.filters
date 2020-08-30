@@ -135,6 +135,9 @@
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pine\Rendering\PreviewManager\PreviewManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pine\Pine.cpp">
@@ -249,6 +252,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Rendering\PreviewManager\PreviewManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

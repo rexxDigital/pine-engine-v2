@@ -1,8 +1,9 @@
 #include "CommonWidgets.hpp"
 
 #include "../../../../ImGui/imgui.h"
+#include "../../../Assets/Assets.hpp"
 
-void Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
+void Pine::Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
 {
 	ImGui::Text(str.c_str());
 
@@ -23,7 +24,7 @@ void Gui::Widgets::Vector3(const std::string& str, glm::vec3& vec)
 	ImGui::Columns(1);
 }
 
-Pine::IAsset* Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type) {
+Pine::IAsset* Pine::Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type) {
 	static auto unknownImage = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\030-corrupt file.png");
 	
 	const std::string& path = currentAsset->GetPath().string();
@@ -35,10 +36,10 @@ Pine::IAsset* Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::s
 		image = currentAsset->GetAssetPreview();
 	}
 
-	ImGui::Image(reinterpret_cast<ImTextureID>(image), ImVec2(24, 24));
+	ImGui::Image(reinterpret_cast<ImTextureID>(image), ImVec2(24, 24), ImVec2(1.f, 1.f), ImVec2(0.f, 0.f));
 
 	if (!currentAsset->HasAvailablePreview() && ImGui::IsItemHovered()) {
-		ImGui::SetTooltip("No preview avaliable.");
+		ImGui::SetTooltip("No preview available.");
 	}
 
 	ImGui::SameLine();
@@ -60,4 +61,67 @@ Pine::IAsset* Gui::Widgets::AssetPicker(Pine::IAsset* currentAsset, const std::s
 	}
 
 	return currentAsset;
+}
+
+Pine::IAsset* Pine::Gui::Widgets::AssetBrowser(Pine::IAsset* selectedAsset, Pine::EAssetType filter /*= Pine::EAssetType::Invalid*/) {
+	// Cached icons
+	static auto folderIcon = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\006-folder.png");
+	static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>("Engine\\Icons\\030-corrupt file.png");
+
+	static auto currentPath = Pine::Assets::GetAssetsDirectoryCache();
+	auto root = Pine::Assets::GetAssetsDirectoryCache();
+
+	const bool inRootDirectory = root == currentPath;
+
+	ImGui::BeginChild("##AssetBrowserArea", ImVec2(-1.f, -1.f), false);
+
+	ImGui::Columns(11, nullptr, false);
+
+	for (auto& item : currentPath->items) {
+		auto asset = item->assetPointer;
+
+		int icon = unknownFileIcon->GetId();
+		std::string name = item->name;
+
+		if (item->isDirectory) {
+			icon = folderIcon->GetId();
+		}
+		else {
+			if (asset && asset->HasAvailablePreview()) {
+				icon = asset->GetAssetPreview();
+			}
+		}
+		
+		ImGui::PushID(item->name.c_str());
+		ImGui::BeginGroup();
+
+		if (ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon), ImVec2(48, 48), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 3)) {
+			if (item->isDirectory) {
+				if (item->name == "...") {
+					currentPath = item->parent;
+				}
+				else {
+					currentPath = item.get();
+				}
+			
+				ImGui::EndGroup();
+				ImGui::PopID();
+
+				break;
+			}
+		}
+		
+		ImGui::Text(item->name.c_str()); 
+
+		ImGui::EndGroup();
+		ImGui::PopID();
+
+		ImGui::NextColumn();
+	}
+
+	ImGui::Columns(1);
+
+	ImGui::EndChild();
+
+	return nullptr;
 }

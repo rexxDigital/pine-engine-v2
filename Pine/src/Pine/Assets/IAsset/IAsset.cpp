@@ -22,7 +22,7 @@ bool Pine::IAsset::HasAvailablePreview() const {
 
 const int Pine::IAsset::GetAssetPreview() const {
 	if (m_PreviewFrameBuffer) {
-		return m_PreviewFrameBuffer->GetId();
+		return m_PreviewFrameBuffer->GetTextureId();
 	}
 
 	return -1;
