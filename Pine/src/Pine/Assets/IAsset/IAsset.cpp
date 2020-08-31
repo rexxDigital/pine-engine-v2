@@ -15,19 +15,3 @@ Pine::EAssetType Pine::IAsset::GetType() const
 {
 	return m_Type;
 }
-
-bool Pine::IAsset::HasAvailablePreview() const {
-	return m_PreviewFrameBuffer != nullptr;
-}
-
-const int Pine::IAsset::GetAssetPreview() const {
-	if (m_PreviewFrameBuffer) {
-		return m_PreviewFrameBuffer->GetTextureId();
-	}
-
-	return -1;
-}
-
-void Pine::IAsset::GenerateAssetPreview() {
-
-}

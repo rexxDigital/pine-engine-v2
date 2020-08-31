@@ -48,6 +48,9 @@
     <ClCompile Include="Gui\ComponentRenderer\ComponentRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\DirectoryCache\DirectoryCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gui\Gui.hpp">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gui\ComponentRenderer\ComponentRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DirectoryCache\DirectoryCache.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

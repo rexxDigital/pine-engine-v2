@@ -7,7 +7,6 @@
 #include <assimp/postprocess.h>
 #include "../../Core/Log/Log.hpp"
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
-#include "../../Rendering/PreviewManager/PreviewManager.hpp"
 #include "../../Rendering/Renderer3D/Renderer3D.hpp"
 
 namespace {
@@ -161,16 +160,4 @@ void Pine::Model::Dispose() {
 		mesh->Dispose();
 		delete mesh;
 	}
-}
-
-void Pine::Model::GenerateAssetPreview() {
-	m_PreviewFrameBuffer = new FrameBuffer();
-	m_PreviewFrameBuffer->Create(128, 128);
-
-	PreviewManager::PrepareRender(m_PreviewFrameBuffer);
-
-	Renderer3D::PrepareMesh(m_MeshList[0]);
-	Renderer3D::RenderMesh(PreviewManager::GetRenderTransformationMatrix());
-	
-	PreviewManager::FinishRender();
 }

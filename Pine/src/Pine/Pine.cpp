@@ -73,9 +73,6 @@ void Pine::Run()
 	Window::Show();
 	EntityList::RunOnSetup();
 
-	Assets::RefreshDirectoryCache();
-	Assets::GenerateAssetPreviews();
-
 	const auto window = Window::Internal::GetWindowPointer();
 
 	glEnable(GL_DEPTH_TEST);

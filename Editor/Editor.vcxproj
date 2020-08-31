@@ -159,6 +159,7 @@
     <ClCompile Include="Gui\Windows\Profiler\Profiler.cpp" />
     <ClCompile Include="Gui\Windows\Properties\Properties.cpp" />
     <ClCompile Include="Gui\Windows\Viewport\Viewport.cpp" />
+    <ClCompile Include="Utils\DirectoryCache\DirectoryCache.cpp" />
     <ClCompile Include="Utils\PreviewManager\PreviewManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="Gui\Windows\Profiler\Profiler.hpp" />
     <ClInclude Include="Gui\Windows\Properties\Properties.hpp" />
     <ClInclude Include="Gui\Windows\Viewport\Viewport.hpp" />
+    <ClInclude Include="Utils\DirectoryCache\DirectoryCache.hpp" />
     <ClInclude Include="Utils\PreviewManager\PreviewManager.hpp" />
   </ItemGroup>
   <ItemGroup>

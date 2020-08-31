@@ -14,12 +14,10 @@ namespace Pine {
 		unsigned int GetId() const;
 		int GetWidth() const;
 		int GetHeight() const;
-		const int GetAssetPreview() const override;
 
 		bool LoadFromFile() override;
 		bool SaveToFile() override;
 		void Dispose() override;
-		void GenerateAssetPreview() override;
 	};
 
 }

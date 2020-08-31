@@ -21,10 +21,6 @@ int Pine::Texture2D::GetHeight() const {
     return m_Height;
 }
 
-const int Pine::Texture2D::GetAssetPreview() const {
-    return m_Id;
-}
-
 bool Pine::Texture2D::LoadFromFile() {
     int width, height, channels;
 
@@ -63,9 +59,4 @@ bool Pine::Texture2D::SaveToFile() {
 
 void Pine::Texture2D::Dispose() {
     glDeleteTextures(1, &m_Id);
-}
-
-void Pine::Texture2D::GenerateAssetPreview() {
-    // No need to forgive me for this, it's C++!
-    m_PreviewFrameBuffer = reinterpret_cast<FrameBuffer*>(0x1);
 }

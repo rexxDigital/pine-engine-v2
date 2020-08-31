@@ -39,14 +39,9 @@ namespace Pine
 		const std::filesystem::path& GetPath() const;
 
 		EAssetType GetType() const;
-		
-		// For asset previews in the editor, GetAssetPreview should return texture id.
-		bool HasAvailablePreview() const;
-		virtual const int GetAssetPreview() const;
 
 		virtual bool LoadFromFile() = 0;
 		virtual bool SaveToFile() = 0;
 		virtual void Dispose() = 0;
-		virtual void GenerateAssetPreview();
 	};
 }
