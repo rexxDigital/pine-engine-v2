@@ -2,6 +2,7 @@
 
 #include "IAsset/IAsset.hpp"
 #include <memory>
+#include <unordered_map>
 
 namespace Pine::Assets
 {
@@ -25,4 +26,6 @@ namespace Pine::Assets
 
 	// Disposes all loaded assets
 	void Dispose();
+
+	const std::unordered_map<std::string, IAsset*>& GetAssets();
 }

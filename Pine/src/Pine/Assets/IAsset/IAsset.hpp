@@ -30,6 +30,7 @@ namespace Pine
 	{
 	protected:
 		std::filesystem::path m_FilePath;
+		std::string m_FileName = "";
 		EAssetType m_Type = EAssetType::Invalid;
 		FrameBuffer* m_PreviewFrameBuffer = nullptr;
 	public:
@@ -38,6 +39,8 @@ namespace Pine
 		void SetFilePath(const std::string& str);
 		const std::filesystem::path& GetPath() const;
 
+		const std::string& GetFileName() const;
+		
 		EAssetType GetType() const;
 
 		virtual bool LoadFromFile() = 0;

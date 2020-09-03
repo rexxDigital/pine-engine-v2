@@ -63,9 +63,11 @@ namespace Pine
 		}
 
 		void AddComponent(IComponent* component);
-
+		
+		bool RemoveComponent(IComponent* component);
+		bool RemoveComponent(int index);
+		
 		const std::vector<IComponent*>& GetComponents() const;
-
 		const std::vector<Entity*>& GetChildren() const;
 
 		void SetParent(Entity* parent);

@@ -7,6 +7,8 @@
 namespace
 {
 	GLFWwindow* m_Window = nullptr;
+
+	glm::ivec2 g_CachedWindowSize;
 }
 
 bool Pine::Window::Internal::Create()
@@ -64,6 +66,16 @@ void Pine::Window::SetSize(int w, int h)
 void Pine::Window::SetTitle(const std::string& str)
 {
 	glfwSetWindowTitle(m_Window, str.c_str());
+}
+
+void Pine::Window::UpdateCachedSize( )
+{
+	g_CachedWindowSize = GetSize( );
+}
+
+glm::ivec2 Pine::Window::GetCachedSize( )
+{
+	return g_CachedWindowSize;
 }
 
 glm::ivec2 Pine::Window::GetSize() {

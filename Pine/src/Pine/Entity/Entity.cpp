@@ -119,3 +119,32 @@ void Pine::Entity::AddComponent(IComponent* component) {
 
 	m_Components.push_back(component);
 }
+
+bool Pine::Entity::RemoveComponent(IComponent* component)
+{
+	int i = 0;
+	for (auto comp : m_Components)
+	{
+		if (comp == component)
+		{
+			m_Components.erase(m_Components.begin() + i);
+			return true;
+		}
+
+		i++;
+	}
+
+	return false;
+}
+
+bool Pine::Entity::RemoveComponent(const int index)
+{
+	if (0 > index || index >= m_Components.size())
+	{
+		return false;
+	}
+
+	m_Components.erase(m_Components.begin() + index);
+
+	return true;
+}

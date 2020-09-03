@@ -8,6 +8,7 @@
 #include "../../UniformBuffers/UniformBuffers.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Core/Log/Log.hpp"
+#include "../../Core/Window/Window.hpp"
 
 namespace {
 
@@ -20,6 +21,9 @@ void Pine::RenderManager::Run() {
 		return;
 	}
 
+	RenderingConfiguration::Width = Window::GetCachedSize( ).x;
+	RenderingConfiguration::Height = Window::GetCachedSize( ).y;
+	
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
 	// Also quicker!
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;

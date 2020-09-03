@@ -5,10 +5,10 @@
 
 void Editor::Gui::AssetBrowser::Run() {
 	
-
+	
 	ImGui::Begin("Asset Browser", nullptr, 0);
 	{
-	//	Gui::Widgets::AssetBrowser(nullptr, Pine::EAssetType::Invalid);
+		::Gui::Widgets::AssetBrowser(nullptr, Pine::EAssetType::Invalid);
 	}
 	ImGui::End();
 

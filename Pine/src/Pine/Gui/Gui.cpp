@@ -21,7 +21,7 @@ namespace {
 		style->ScrollbarSize = 10.f; 
 		style->GrabMinSize = 6.f; 
 
-		style->ChildBorderSize = 0.f;
+		style->ChildBorderSize = 1.f;
 		style->FrameBorderSize = 0.f;
 		style->PopupBorderSize = 1.f;
 		style->TabBorderSize = 0.f;

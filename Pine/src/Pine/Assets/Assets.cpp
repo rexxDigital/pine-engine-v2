@@ -1,11 +1,11 @@
 #include "Assets.hpp"
 #include "../Core/Core.hpp"
+#include "../Core/Log/Log.hpp"
 
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
 #include "Texture2D/Texture2D.hpp"
 
-#include <unordered_map>
 #include "Texture3D/Texture3D.hpp"
 
 
@@ -117,4 +117,9 @@ void Pine::Assets::Dispose() {
 
 		asset->Dispose();
 	}
+}
+
+const std::unordered_map<std::string, Pine::IAsset*>& Pine::Assets::GetAssets()
+{
+	return m_Assets;
 }

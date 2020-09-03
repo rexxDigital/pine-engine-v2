@@ -8,74 +8,90 @@
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 #include <Pine/Components/Light/Light.hpp>
 
+
+#include "Utils/AssetPreviewGenerator/AssetPreviewGenerator.hpp"
+#include "Utils/DirectoryCache/DirectoryCache.hpp"
+#include "Utils/PreviewManager/PreviewManager.hpp"
+
 Pine::Entity* entity = nullptr;
 
-void OnRender() {
+void OnRender( ) {
 
 }
 
-void OnRenderGui() {
+void OnRenderGui( ) {
 
-    Editor::Gui::Run();
+	Editor::Gui::Run( );
 
 }
 
-void SetupSampleScene() {
-	Pine::Assets::LoadFromDirectory("Assets");
+void SetupSampleScene( ) {
+	Pine::Assets::LoadFromDirectory( "Assets" );
 
-	auto model = Pine::Assets::GetAsset<Pine::Model>("Assets\\cube.obj");
-	auto mesh = model->GetMeshList()[0];
+	const auto model = Pine::Assets::GetAsset<Pine::Model>( "Assets\\cube.obj" );
+	const auto mesh = model->GetMeshList( )[ 0 ];
 
-	mesh->GetMaterial()->AmbientColor() = glm::vec3(0.3f, 0.3f, 0.3f);
+	mesh->GetMaterial( )->AmbientColor( ) = glm::vec3( 0.3f, 0.3f, 0.3f );
 
-	mesh->GetMaterial()->SpecularColor() = glm::vec3(0.f, 0.f, 0.f);
-	mesh->GetMaterial()->DiffuseColor() = glm::vec3(0.5f, 0.5f, 0.5f);
-	mesh->GetMaterial()->SetShininiess(16.f);
+	mesh->GetMaterial( )->SpecularColor( ) = glm::vec3( 0.f, 0.f, 0.f );
+	mesh->GetMaterial( )->DiffuseColor( ) = glm::vec3( 0.5f, 0.5f, 0.5f );
+	mesh->GetMaterial( )->SetShininiess( 16.f );
 
-	entity = Pine::EntityList::CreateEntity("Test Entity");
+	entity = Pine::EntityList::CreateEntity( "Test Entity" );
 
-	entity->AddComponent(new Pine::ModelRenderer());
-	entity->GetComponent<Pine::ModelRenderer>()->SetTargetModel(model);
-	entity->GetTransform()->Position.y = -2.f;
+	entity->AddComponent( new Pine::ModelRenderer( ) );
+	entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
+	entity->GetTransform( )->Position.y = -2.f;
 
-	auto camera = Pine::EntityList::CreateEntity("Camera");
+	auto camera = Pine::EntityList::CreateEntity( "Camera" );
 
-	camera->AddComponent(new Pine::Camera());
-	camera->GetTransform()->Position.z = -5.f;
+	camera->AddComponent( new Pine::Camera( ) );
+	camera->GetTransform( )->Position.z = -5.f;
 
-	Pine::RenderManager::SetCamera(camera->GetComponent<Pine::Camera>());
+	Pine::RenderManager::SetCamera( camera->GetComponent<Pine::Camera>( ) );
 
-	auto light = Pine::EntityList::CreateEntity("light");
+	auto light = Pine::EntityList::CreateEntity( "light" );
 
-	light->AddComponent(new Pine::Light());
-	light->GetTransform()->Position = glm::vec3(0.f, 0.f, -20.f);
+	light->AddComponent( new Pine::Light( ) );
+	light->GetTransform( )->Position = glm::vec3( 0.f, 0.f, -20.f );
 }
 
-int main()
+int main( )
 {
 	std::cout << "Icons made by https://www.flaticon.com/authors/freepik from https://www.flaticon.com/" << std::endl;
 
-    if (!Pine::Setup()) {
-        return 1;
-    }
+	if ( !Pine::Setup( ) ) {
+		return 1;
+	}
 
-    Pine::Window::SetSize(1280, 720);
-    Editor::Gui::Setup();
+	Pine::Window::SetSize( 1280, 720 );
 
-	SetupSampleScene();
-	
+	Editor::Gui::Setup( );
+
+	SetupSampleScene( );
+
+	PreviewManager::Setup( );
+
+	Editor::DirectoryCache::SetRootDirectory( "Assets" );
+	Editor::DirectoryCache::Refresh( );
+
+	Editor::AssetPreviewGenerator::Setup( );
+	Editor::AssetPreviewGenerator::Generate( );
+
 	// Setup rendering callbacks
-    Pine::SetRenderingCallback(OnRender);
-    Pine::Gui::SetGuiRenderCallback(OnRenderGui);
+	Pine::SetRenderingCallback( OnRender );
+	Pine::Gui::SetGuiRenderCallback( OnRenderGui );
 
-    // Setup frame buffer.
-    Pine::SetFrameBuffer(Editor::Gui::GetViewportFrameBuffer());
-	
-    Pine::Run();
+	// Setup frame buffer.
+	Pine::SetFrameBuffer( Editor::Gui::GetViewportFrameBuffer( ) );
 
-    Editor::Gui::Dispose();
-	
-    Pine::Terminate();
+	Pine::Run( );
 
-    return 0;
+	Editor::Gui::Dispose( );
+	PreviewManager::Dispose( );
+	Editor::AssetPreviewGenerator::Dispose( );
+
+	Pine::Terminate( );
+
+	return 0;
 }

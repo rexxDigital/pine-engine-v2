@@ -116,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -131,7 +131,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -159,6 +159,7 @@
     <ClCompile Include="Gui\Windows\Profiler\Profiler.cpp" />
     <ClCompile Include="Gui\Windows\Properties\Properties.cpp" />
     <ClCompile Include="Gui\Windows\Viewport\Viewport.cpp" />
+    <ClCompile Include="Utils\AssetPreviewGenerator\AssetPreviewGenerator.cpp" />
     <ClCompile Include="Utils\DirectoryCache\DirectoryCache.cpp" />
     <ClCompile Include="Utils\PreviewManager\PreviewManager.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="Gui\Windows\Profiler\Profiler.hpp" />
     <ClInclude Include="Gui\Windows\Properties\Properties.hpp" />
     <ClInclude Include="Gui\Windows\Viewport\Viewport.hpp" />
+    <ClInclude Include="Utils\AssetPreviewGenerator\AssetPreviewGenerator.hpp" />
     <ClInclude Include="Utils\DirectoryCache\DirectoryCache.hpp" />
     <ClInclude Include="Utils\PreviewManager\PreviewManager.hpp" />
   </ItemGroup>

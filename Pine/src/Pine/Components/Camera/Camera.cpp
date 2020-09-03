@@ -9,9 +9,7 @@
 #include "../../Rendering/RenderManager/RenderManager.hpp"
 
 void Pine::Camera::BuildProjectionMatrix() {
-	const auto size = Window::GetSize();
-
-	m_AspectRatio = static_cast<float>(size.x) / static_cast<float>(size.y);
+	m_AspectRatio = static_cast<float>( RenderingConfiguration::Width ) / static_cast<float>( RenderingConfiguration::Height );
 	m_ProjectionMatrix = glm::perspective(glm::radians(m_FieldOfView), m_AspectRatio, m_NearPlane, m_FarPlane);
 }
 
@@ -61,7 +59,6 @@ void Pine::Camera::SetNearPlane(float value) {
 
 void Pine::Camera::SetFarPlane(float value) {
 	m_FarPlane = value;
-	BuildProjectionMatrix();
 }
 
 void Pine::Camera::SetFieldOfViewPlane(float value) {
@@ -82,6 +79,7 @@ void Pine::Camera::OnSetup() {
 }
 
 void Pine::Camera::OnRender() {
+	BuildProjectionMatrix( );
 	BuildViewMatrix();
 }
 
