@@ -108,7 +108,7 @@ void Pine::Gui::Setup() {
 
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	io.Fonts->AddFontFromFileTTF("Engine\\Roboto-Regular.ttf", 15.f);
+	io.Fonts->AddFontFromFileTTF("Assets\\Engine\\Roboto-Regular.ttf", 15.f);
 
 	ImGui_ImplGlfw_InitForOpenGL(Window::Internal::GetWindowPointer(), true);
 	ImGui_ImplOpenGL3_Init("#version 420");

@@ -28,7 +28,7 @@ void OnRenderGui( ) {
 void SetupSampleScene( ) {
 	Pine::Assets::LoadFromDirectory( "Assets" );
 
-	const auto model = Pine::Assets::GetAsset<Pine::Model>( "Assets\\cube.obj" );
+	const auto model = Pine::Assets::GetAsset<Pine::Model>( "Assets\\Engine\\Sphere.obj" );
 	const auto mesh = model->GetMeshList( )[ 0 ];
 
 	mesh->GetMaterial( )->AmbientColor( ) = glm::vec3( 0.3f, 0.3f, 0.3f );

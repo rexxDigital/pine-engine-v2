@@ -18,7 +18,7 @@ namespace {
 			return Pine::EAssetType::Material;
 		if (Pine::String::EndsWith(fileName, ".shr"))
 			return Pine::EAssetType::Shader;
-		if (Pine::String::EndsWith(fileName, ".obj"))
+		if (Pine::String::EndsWith(fileName, ".obj") || Pine::String::EndsWith( fileName, ".fbx" ) )
 			return Pine::EAssetType::Model;
 		if (Pine::String::EndsWith(fileName, ".png") || Pine::String::EndsWith(fileName, ".jpg"))
 			return Pine::EAssetType::Texture2D;

@@ -16,8 +16,8 @@ namespace PreviewManager {
 	
 	void Dispose(); 
 
-	void UseStaticTransformationMatrix( );
-	void UseRotatingTransformationMatrix( );
+	void UseStaticTransformationMatrix( Pine::Mesh* mesh );
+	void UseRotatingTransformationMatrix( Pine::Mesh* mesh );
 	
 	glm::mat4& GetRenderTransformationMatrix();
 

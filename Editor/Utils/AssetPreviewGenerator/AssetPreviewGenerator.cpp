@@ -25,14 +25,16 @@ namespace
 		preview->texture = texture->GetId( );
 	}
 
-	void GenerateModelPreview( Pine::IAsset* asset, Editor::AssetPreviewGenerator::AssetPreview_t* preview, Pine::FrameBuffer* buffer )
+	void GenerateModelPreview( Pine::IAsset* asset, Editor::AssetPreviewGenerator::AssetPreview_t* preview, Pine::FrameBuffer* buffer, bool rotating )
 	{
 		const auto model = dynamic_cast< Pine::Model* >( asset );
 
-		if (!buffer )
+		if ( !buffer )
 		{
-			buffer = new Pine::FrameBuffer( );
-			buffer->Create( 64, 64 );
+			preview->frameBuffer = new Pine::FrameBuffer( );
+			preview->frameBuffer->Create( 64, 64 );
+
+			buffer = preview->frameBuffer;
 		}
 
 		Pine::RenderingConfiguration::Width = buffer->GetWidth(  );
@@ -44,18 +46,62 @@ namespace
 
 		for ( auto mesh : model->GetMeshList( ) )
 		{
+			if ( rotating )
+			{
+				PreviewManager::UseRotatingTransformationMatrix( mesh );
+			}
+			else
+			{
+				PreviewManager::UseStaticTransformationMatrix( mesh );
+			}
+			
 			PreviewManager::RenderMesh( mesh );
 		}
 
 		PreviewManager::FinishRender( );
+	}
 
-		preview->texture = buffer->GetTextureId( );
-		preview->invertUVs = false;
+	void GenerateMaterialPreview( Pine::IAsset* asset, Editor::AssetPreviewGenerator::AssetPreview_t* preview, Pine::FrameBuffer* buffer )
+	{
+		static auto sphereModel = Pine::Assets::GetAsset<Pine::Model>( "Assets\\Engine\\Sphere.obj" );
+		
+		auto material = dynamic_cast< Pine::Material* >( asset );
+
+		if (!material )
+		{
+			return;
+		}
+
+		if ( !preview->frameBuffer )
+		{
+			preview->frameBuffer = new Pine::FrameBuffer( );
+			preview->frameBuffer->Create( 64, 64 );
+
+			buffer = preview->frameBuffer;
+		}
+
+		Pine::RenderingConfiguration::Width = buffer->GetWidth( );
+		Pine::RenderingConfiguration::Height = buffer->GetHeight( );
+
+		buffer->Bind( );
+
+		PreviewManager::PrepareRender( buffer );
+
+		for ( auto mesh : sphereModel->GetMeshList(  ) )
+		{
+			PreviewManager::UseStaticTransformationMatrix( mesh );
+
+			mesh->SetMaterial( material );
+			
+			PreviewManager::RenderMesh( mesh );
+		}
+
+		PreviewManager::FinishRender( );
 	}
 
 	Editor::AssetPreviewGenerator::AssetPreview_t* GenerateAssetPreview( Pine::IAsset* asset )
 	{
-		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Engine\\Icons\\028-delete file.png" );
+		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\028-delete file.png" );
 
 		auto preview = Editor::AssetPreviewGenerator::GetAssetPreview( asset );
 
@@ -67,8 +113,6 @@ namespace
 		preview->asset = asset;
 		preview->texture = unknownFileIcon->GetId( );
 
-		PreviewManager::UseStaticTransformationMatrix( );
-		
 		if ( asset->GetType( ) == Pine::EAssetType::Texture2D )
 		{
 			GenerateTexturePreview( asset, preview );
@@ -76,7 +120,18 @@ namespace
 
 		if ( asset->GetType( ) == Pine::EAssetType::Model )
 		{
-			GenerateModelPreview( asset, preview, preview->frameBuffer );
+			GenerateModelPreview( asset, preview, preview->frameBuffer, false );
+
+			preview->texture = preview->frameBuffer->GetTextureId( );
+			preview->invertUVs = true;
+		}
+
+		if ( asset->GetType(  ) == Pine::EAssetType::Material )
+		{
+			GenerateMaterialPreview( asset, preview, preview->frameBuffer );
+
+			preview->texture = preview->frameBuffer->GetTextureId( );
+			preview->invertUVs = true;
 		}
 
 		return preview;
@@ -103,8 +158,6 @@ bool Editor::AssetPreviewGenerator::GenerateFullscreenAssetPreview( Pine::IAsset
 		preview = new AssetPreview_t( );
 	}
 
-	PreviewManager::UseRotatingTransformationMatrix( );
-
 	if ( asset->GetType( ) == Pine::EAssetType::Texture2D )
 	{
 		GenerateTexturePreview( asset, preview );
@@ -113,7 +166,17 @@ bool Editor::AssetPreviewGenerator::GenerateFullscreenAssetPreview( Pine::IAsset
 
 	if ( asset->GetType( ) == Pine::EAssetType::Model )
 	{
-		GenerateModelPreview( asset, preview, g_FullscreenFrameBuffer );
+		GenerateModelPreview( asset, preview, g_FullscreenFrameBuffer, true );
+		GenerateModelPreview( asset, preview, preview->frameBuffer, false );
+		
+		return true;
+	}
+
+	if ( asset->GetType( ) == Pine::EAssetType::Material )
+	{
+		GenerateMaterialPreview( asset, preview, g_FullscreenFrameBuffer );
+		GenerateMaterialPreview( asset, preview, preview->frameBuffer );
+
 		return true;
 	}
 

@@ -57,6 +57,13 @@ namespace {
 		eMesh->SetIndices(indices);
 		eMesh->SetUvs(uvs);
 
+		// Setup generated AABB
+		const auto min = mesh->mAABB.mMin;
+		const auto max = mesh->mAABB.mMax;
+
+		eMesh->SetMins( glm::vec3( min.x, min.y, min.z ) );
+		eMesh->SetMaxs( glm::vec3( max.x, max.y, max.z ) );
+
 		// Process all the materials loaded by ASSIMP, and then assign them to the engine's mesh material.
 		auto material = scene->mMaterials[mesh->mMaterialIndex];
 		// Make sure the material is valid, and that it's not the automatically generated default material.
@@ -139,7 +146,7 @@ bool Pine::Model::LoadFromFile() {
 	
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
-	const auto scene = importer.ReadFile(m_FilePath.string(), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenSmoothNormals);
+	const auto scene = importer.ReadFile(m_FilePath.string(), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenSmoothNormals | aiProcess_GenBoundingBoxes);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		Log::Error("Assimp loading error " + m_FilePath.string() + ", " + importer.GetErrorString());

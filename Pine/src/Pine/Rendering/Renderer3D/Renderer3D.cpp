@@ -111,7 +111,7 @@ void Pine::Renderer3D::SetShader(Pine::Shader* shader) {
 }
 
 void Pine::Renderer3D::Setup() {
-	g_DefaultTexture = Assets::GetAsset<Texture2D>("Engine\\DefaultTexture.png");
+	g_DefaultTexture = Assets::GetAsset<Texture2D>("Assets\\Engine\\DefaultTexture.png");
 }
 
 void Pine::Renderer3D::Dispose() {

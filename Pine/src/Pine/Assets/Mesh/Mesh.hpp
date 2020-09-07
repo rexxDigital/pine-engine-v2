@@ -13,6 +13,9 @@ namespace Pine {
 	
 		uint64_t m_RenderCount = 0;
 		bool m_HasElementBuffer = false;
+
+		glm::vec3 m_Mins;
+		glm::vec3 m_Maxs;
 	public:
 		Mesh();
 
@@ -23,6 +26,12 @@ namespace Pine {
 
 		uint64_t GetRenderCount() const;
 		bool HasElementBuffer() const;
+
+		const glm::vec3& GetMins( ) const;
+		const glm::vec3& GetMaxs( ) const;
+		
+		void SetMaxs( glm::vec3 aabb );
+		void SetMins( glm::vec3 aabb );
 
 		void SetVertices(const std::vector<float>& vertices);
 		void SetIndices(const std::vector<int>& indices);

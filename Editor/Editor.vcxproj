@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Gui\AssetRenderer\AssetRenderer.cpp" />
     <ClCompile Include="Gui\ComponentRenderer\ComponentRenderer.cpp" />
     <ClCompile Include="Gui\Gui.cpp" />
     <ClCompile Include="Gui\Widgets\Widgets.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Utils\PreviewManager\PreviewManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Gui\AssetRenderer\AssetRenderer.hpp" />
     <ClInclude Include="Gui\ComponentRenderer\ComponentRenderer.hpp" />
     <ClInclude Include="Gui\Gui.hpp" />
     <ClInclude Include="Gui\Widgets\Widgets.hpp" />

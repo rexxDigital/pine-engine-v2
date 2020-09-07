@@ -7,39 +7,42 @@
 
 namespace {
 
-	void RenderTransform(Pine::Transform* transform) {
-		if (!transform)
+	void RenderTransform( Pine::Transform* transform ) {
+		if ( !transform )
 		{
 			return;
 		}
-		
-		Gui::Widgets::Vector3("Position", transform->Position);
-		Gui::Widgets::Vector3("Rotation", transform->Rotation);
-		Gui::Widgets::Vector3("Scale", transform->Scale);
+
+		Gui::Widgets::Vector3( "Position", transform->Position );
+		Gui::Widgets::Vector3( "Rotation", transform->Rotation );
+		Gui::Widgets::Vector3( "Scale", transform->Scale );
 	}
 
-	void RenderModelRenderer(Pine::ModelRenderer* modelRenderer)
+	void RenderModelRenderer( Pine::ModelRenderer* modelRenderer )
 	{
-		if (!modelRenderer)
+		if ( !modelRenderer )
 		{
 			return;
 		}
-		
-		Gui::Widgets::AssetPicker(modelRenderer->GetTargetModel(), "Target Model", Pine::EAssetType::Model);
-		
+
+		if ( const auto newModel = Gui::Widgets::AssetPicker( modelRenderer->GetTargetModel( ), "Target Model", Pine::EAssetType::Model ) )
+		{
+			modelRenderer->SetTargetModel( dynamic_cast< Pine::Model* >( newModel ) );
+		}
+
 	}
-	
+
 
 }
 
-void Gui::ComponentRenderer::Render(Pine::IComponent* component) {
+void Gui::ComponentRenderer::Render( Pine::IComponent* component ) {
 
-	switch (component->GetType()) {
+	switch ( component->GetType( ) ) {
 	case Pine::EComponentType::Transform:
-		RenderTransform(dynamic_cast<Pine::Transform*>(component));
+		RenderTransform( dynamic_cast< Pine::Transform* >( component ) );
 		break;
 	case Pine::EComponentType::ModelRenderer:
-		RenderModelRenderer(dynamic_cast<Pine::ModelRenderer*>(component));
+		RenderModelRenderer( dynamic_cast< Pine::ModelRenderer* >( component ) );
 		break;
 	default:
 		break;

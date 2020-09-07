@@ -45,14 +45,14 @@ bool Pine::Setup( )
 	// We will have to setup the uniform buffers first.
 	UniformBuffers::Setup( );
 
-	if ( Assets::LoadFromDirectory( "Engine\\Shaders" ) == 0 ) {
+	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders" ) == 0 ) {
 		Log::Fatal( "Failed to load engine shaders." );
 		return false;
 	}
 
 	Log::Message( "Loading engine assets..." );
 
-	if ( Assets::LoadFromDirectory( "Engine" ) == 0 ) {
+	if ( Assets::LoadFromDirectory( "Assets\\Engine" ) == 0 ) {
 		Log::Fatal( "Failed to load engine assets." );
 		return false;
 	}
@@ -61,7 +61,7 @@ bool Pine::Setup( )
 	Gui::Setup( );
 	Skybox::Setup( );
 
-	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
+	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
 
 	Log::Message( "Pine was successfully initialized!" );
 

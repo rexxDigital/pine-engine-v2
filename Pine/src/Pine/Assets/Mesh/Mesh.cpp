@@ -4,7 +4,7 @@ Pine::Mesh::Mesh() {
 	m_VertexArray = std::make_unique<VertexArray>();
 	m_VertexArray->Create();
 
-	m_Material = Assets::GetAsset<Pine::Material>("Engine\\Materials\\Default.mat");
+	m_Material = Assets::GetAsset<Pine::Material>("Assets\\Engine\\Materials\\Default.mat");
 }
 
 Pine::Material* Pine::Mesh::GetMaterial() const {
@@ -25,6 +25,26 @@ uint64_t Pine::Mesh::GetRenderCount() const {
 
 bool Pine::Mesh::HasElementBuffer() const {
 	return m_HasElementBuffer;
+}
+
+const glm::vec3& Pine::Mesh::GetMins( ) const
+{
+	return m_Mins;
+}
+
+const glm::vec3& Pine::Mesh::GetMaxs( ) const
+{
+	return m_Maxs;
+}
+
+void Pine::Mesh::SetMaxs( glm::vec3 aabb )
+{
+	m_Mins = aabb;
+}
+
+void Pine::Mesh::SetMins( glm::vec3 aabb )
+{
+	m_Maxs = aabb;
 }
 
 void Pine::Mesh::SetVertices(const std::vector<float>& vertices) {

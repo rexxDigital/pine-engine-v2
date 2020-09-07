@@ -9,15 +9,17 @@ namespace Pine
 		Transform,
 		ModelRenderer,
 		Camera,
-		Light
+		Light,
+		NativeScript
 	};
 
-	inline const char* SComponentNames[] = {
+	inline const char* SComponentNames[ ] = {
 		"Invalid",
 		"Transform",
 		"Model Renderer",
 		"Camera",
-		"Light"
+		"Light",
+		"Native Script"
 	};
 
 	class Entity;
@@ -26,24 +28,26 @@ namespace Pine
 	{
 	protected:
 		bool m_Active = true;
-		
+
 		EComponentType m_ComponentType = EComponentType::Invalid;
 		Pine::Entity* m_Parent = nullptr;
 	public:
-		virtual ~IComponent() = default;
+		virtual ~IComponent( ) = default;
 
-		EComponentType GetType() const;
+		EComponentType GetType( ) const;
 
-		void SetParent(Pine::Entity* parent);
-		Pine::Entity* GetParent();
+		void SetParent( Pine::Entity* parent );
+		Pine::Entity* GetParent( );
 
-		const bool GetActive() const;
-		void SetActive(bool value);
+		const bool GetActive( ) const;
+		void SetActive( bool value );
 
-		virtual void OnSetup() = 0;
-		virtual void OnUpdate(float deltaTime) = 0;
-		virtual void OnRender();
-		virtual void OnDestroy();
+		virtual void OnSetup( ) = 0;
+		virtual void OnUpdate( float deltaTime ) = 0;
+		virtual void OnRender( );
+		virtual void OnDestroy( );
+
+		virtual IComponent* Clone( ) = 0;
 	};
 
 }

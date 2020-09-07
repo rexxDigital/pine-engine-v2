@@ -64,7 +64,7 @@ void Pine::Skybox::Setup() {
 	g_SkyboxVertexArray->Bind();
 	g_SkyboxVertexArray->StoreFloatBuffer(skyboxVertices, 3, 0);
 
-	g_SkyboxShader = Pine::Assets::GetAsset<Pine::Shader>("Engine\\Shaders\\Skybox.shr");
+	g_SkyboxShader = Pine::Assets::GetAsset<Pine::Shader>("Assets\\Engine\\Shaders\\Skybox.shr");
 }
 
 void Pine::Skybox::Dispose() {

@@ -1,5 +1,7 @@
 #include "Widgets.hpp"
 
+
+#include <iostream>
 #include <ImGui/imgui.h>
 #include <Pine/Assets/Assets.hpp>
 
@@ -29,21 +31,31 @@ void Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 }
 
 Pine::IAsset* Gui::Widgets::AssetPicker( Pine::IAsset* currentAsset, const std::string& str, Pine::EAssetType type ) {
-	static auto unknownImage = Pine::Assets::GetAsset<Pine::Texture2D>( "Engine\\Icons\\030-corrupt file.png" );
-	const std::string& path = currentAsset->GetPath( ).string( );
+	static auto unknownImage = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\030-corrupt file.png" );
+	std::string path = "<DROP ASSET HERE>";
 
-	ImGui::Text( "%s (%s)", str.c_str( ), Pine::SAssetType[ static_cast< int >( type ) ] );
+	Pine::IAsset* returnValue = nullptr;
+	
+	if ( currentAsset )
+	{
+		path = currentAsset->GetPath( ).string( );
+	}
+	
+	ImGui::Text( "%s:", str.c_str( ) );
 
-	ImGui::BeginChild( str.c_str( ), ImVec2( -1.f, 90.f ), true );
+	ImGui::BeginChild( str.c_str( ), ImVec2( -1.f, 64.f ), true );
 
 	unsigned int image = unknownImage->GetId( );
 
-	if ( auto preview = Editor::AssetPreviewGenerator::GetAssetPreview(currentAsset ) )
+	if ( currentAsset != nullptr )
 	{
-		image = preview->texture;
+		if ( auto preview = Editor::AssetPreviewGenerator::GetAssetPreview( currentAsset ) )
+		{
+			image = preview->texture;
+		}
 	}
 
-	ImGui::Image( reinterpret_cast< ImTextureID >( image ), ImVec2( 64, 64 ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+	ImGui::Image( reinterpret_cast< ImTextureID >( image ), ImVec2( 48, 48 ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
 	ImGui::SameLine( );
 
@@ -58,26 +70,36 @@ Pine::IAsset* Gui::Widgets::AssetPicker( Pine::IAsset* currentAsset, const std::
 		ImGui::Text( currentAsset->GetFileName( ).c_str( ) );
 	}
 
-	ImGui::SetNextItemWidth( -1.f );
 	ImGui::InputText( std::string( "##AssetPicker" + str ).c_str( ), const_cast< char* >( path.data( ) ), path.size( ), ImGuiInputTextFlags_ReadOnly );
 
 	if ( ImGui::BeginDragDropTarget( ) ) {
-		if ( const ImGuiPayload* payload = ImGui::AcceptDragDropPayload( "Asset" ) ) {
+		if ( const ImGuiPayload* payload = ImGui::AcceptDragDropPayload( "_ASSET" ) ) {
+			std::uintptr_t assetPtr = 0;
+			memcpy( &assetPtr, payload->Data, sizeof( std::uintptr_t ) );
+			auto asset = reinterpret_cast< Pine::IAsset* >( assetPtr );
 
+			if ( asset->GetType(  ) == type )
+			{
+				returnValue = asset;
+			}
 		}
 
 		ImGui::EndDragDropTarget( );
 	}
 
-	if ( ImGui::Button( "Open" ) ) {
-
+	if ( currentAsset != nullptr )
+	{
+		ImGui::SameLine( );
+		
+		if ( ImGui::Button( "Open" ) ) {
+			Editor::Gui::SetSelectedAsset( currentAsset );
+		}
 	}
 
-
 	ImGui::EndChild( );
 	ImGui::EndChild( );
 
-	return currentAsset;
+	return returnValue;
 }
 
 namespace
@@ -88,12 +110,12 @@ namespace
 	void DisplayItem( Editor::DirectoryCache::ItemCache_t* item )
 	{
 		// Cached icons
-		static auto folderIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Engine\\Icons\\006-folder.png" );
-		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Engine\\Icons\\030-corrupt file.png" );
+		static auto folderIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\006-folder.png" );
+		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\030-corrupt file.png" );
 
 		auto asset = item->assetPointer;
 
-		const bool selected = Editor::Gui::GetSelectedAsset(  ) == asset;
+		const bool selected = Editor::Gui::GetSelectedAsset( ) != nullptr && Editor::Gui::GetSelectedAsset(  ) == asset;
 
 		bool invertedUvs = false;
 		int icon = unknownFileIcon->GetId( );
@@ -154,6 +176,21 @@ namespace
 			ImGui::PopStyleColor( );
 		}
 
+		if ( asset != nullptr && ImGui::BeginDragDropSource( ImGuiDragDropFlags_SourceAllowNullID ) )
+		{
+			auto ptr = std::uintptr_t( asset );
+			
+			ImGui::SetDragDropPayload( "_ASSET", &ptr, sizeof(std::uintptr_t) );
+
+			ImGui::Image( reinterpret_cast< ImTextureID >( icon ), ImVec2( 48.f, 48.f ), invertedUvs ? ImVec2( 1.f, 1.f ) : ImVec2( 0.f, 0.f ), invertedUvs ? ImVec2( 0.f, 0.f ) : ImVec2( 1.f, 1.f ) );
+
+			ImGui::SameLine( );
+			
+			ImGui::Text( "%s", item->name.c_str(  ) );
+
+			ImGui::EndDragDropSource( );
+		}
+		
 		ImGui::Text( item->name.c_str( ) );
 
 		ImGui::EndGroup( );

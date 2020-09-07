@@ -4,7 +4,7 @@
 Pine::Material::Material()
 {
 	m_Type = EAssetType::Material;
-	m_Shader = Assets::GetAsset<Pine::Shader>("Engine\\Shaders\\Default.shr");
+	m_Shader = Assets::GetAsset<Pine::Shader>("Assets\\Engine\\Shaders\\Default.shr");
 }
 
 glm::vec3& Pine::Material::DiffuseColor() {

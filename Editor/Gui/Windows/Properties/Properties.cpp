@@ -5,6 +5,7 @@
 #include <Pine/Entity/Entity.hpp>
 
 #include "../../../Utils/AssetPreviewGenerator/AssetPreviewGenerator.hpp"
+#include "../../AssetRenderer/AssetRenderer.hpp"
 
 namespace {
 
@@ -57,16 +58,24 @@ namespace {
 
 	void DisplayAsset( Pine::IAsset* asset )
 	{
-		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Engine\\Icons\\030-corrupt file.png" );
+		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\030-corrupt file.png" );
 
 		unsigned id = unknownFileIcon->GetId(  );
 
-		if ( Editor::AssetPreviewGenerator::GenerateFullscreenAssetPreview( asset ) )
-			id = Editor::AssetPreviewGenerator::GetFullscreenFrameBuffer( )->GetTextureId( );
-		else if ( auto preview = Editor::AssetPreviewGenerator::GetAssetPreview( asset ) )
-			id = preview->texture;
+		bool invertUvs = false;
 		
-		ImGui::Image( reinterpret_cast< ImTextureID >( id ), ImVec2( 128.f, 128.f ) );
+		if ( Editor::AssetPreviewGenerator::GenerateFullscreenAssetPreview( asset ) )
+		{
+			id = Editor::AssetPreviewGenerator::GetFullscreenFrameBuffer( )->GetTextureId( );
+			invertUvs = true;
+		}
+		else if ( const auto preview = Editor::AssetPreviewGenerator::GetAssetPreview( asset ) )
+		{
+			id = preview->texture;
+			invertUvs = preview->invertUVs;
+		}
+	
+		ImGui::Image( reinterpret_cast< ImTextureID >( id ), ImVec2( 128.f, 128.f ), invertUvs ? ImVec2(1.f, 1.f) : ImVec2(0.f, 0.f), invertUvs ? ImVec2( 0.f, 0.f ) : ImVec2( 1.f, 1.f ) );
 		ImGui::SameLine( );
 
 		ImGui::BeginChild( "##AssetPreviewData", ImVec2( -1.f, 128.f ) );
@@ -81,8 +90,7 @@ namespace {
 		ImGui::Separator( );
 		ImGui::Spacing( );
 
-		
-		
+		Gui::AssetRenderer::Render( asset );
 	}
 
 }
