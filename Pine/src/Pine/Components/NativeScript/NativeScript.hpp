@@ -9,6 +9,8 @@ namespace Pine
 	private:
 	public:
 		NativeScript( );
+
+		IComponent* Clone() override;
 	};
 
 }

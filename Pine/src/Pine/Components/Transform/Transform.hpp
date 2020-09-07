@@ -23,6 +23,7 @@ namespace Pine
 		void OnSetup() override;
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
+		IComponent* Clone() override;
 
 		const glm::mat4& GetTransformationMatrix() const;
 

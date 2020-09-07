@@ -26,3 +26,8 @@ void Pine::Light::OnSetup() {}
 
 void Pine::Light::OnUpdate(float deltaTime) {}
 
+Pine::IComponent* Pine::Light::Clone( )
+{
+	return new Pine::Light( );
+}
+

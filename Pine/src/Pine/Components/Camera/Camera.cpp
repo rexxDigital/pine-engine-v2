@@ -86,3 +86,8 @@ void Pine::Camera::OnRender() {
 void Pine::Camera::OnUpdate(float deltaTime) {
 
 }
+
+Pine::IComponent* Pine::Camera::Clone( )
+{
+	return new Pine::Camera( );
+}

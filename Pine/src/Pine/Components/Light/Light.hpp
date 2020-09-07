@@ -24,6 +24,7 @@ namespace Pine {
 
 		void OnSetup() override;
 		void OnUpdate(float deltaTime) override;
+		IComponent* Clone() override;
 	};
 
 }

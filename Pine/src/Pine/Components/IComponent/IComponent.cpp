@@ -28,3 +28,13 @@ void Pine::IComponent::OnRender() {
 void Pine::IComponent::OnDestroy() {
 
 }
+
+void Pine::IComponent::LoadFromJson( nlohmann::json& j )
+{
+	
+}
+
+void Pine::IComponent::SaveToJson( nlohmann::json& j )
+{
+	
+}

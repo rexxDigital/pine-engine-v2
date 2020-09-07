@@ -1,4 +1,5 @@
 #pragma once
+#include <json.hpp>
 
 namespace Pine
 {
@@ -48,6 +49,9 @@ namespace Pine
 		virtual void OnDestroy( );
 
 		virtual IComponent* Clone( ) = 0;
+
+		virtual void LoadFromJson( nlohmann::json& j );
+		virtual void SaveToJson( nlohmann::json& j );
 	};
 
 }

@@ -21,3 +21,8 @@ void Pine::ModelRenderer::OnUpdate(float deltaTime) {
 void Pine::ModelRenderer::OnRender() {
 }
 
+Pine::IComponent* Pine::ModelRenderer::Clone( )
+{
+	return new Pine::ModelRenderer( );
+}
+

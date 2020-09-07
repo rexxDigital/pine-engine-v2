@@ -54,6 +54,11 @@ void Pine::Transform::OnRender() {
 	BuildTransformationMatrix();
 }
 
+Pine::IComponent* Pine::Transform::Clone( )
+{
+	return new Pine::Transform( );
+}
+
 
 const glm::mat4& Pine::Transform::GetTransformationMatrix() const
 {
