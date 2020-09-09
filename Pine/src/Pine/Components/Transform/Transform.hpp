@@ -25,6 +25,9 @@ namespace Pine
 		void OnRender() override;
 		IComponent* Clone() override;
 
+		void SaveToJson(nlohmann::json& j) override;
+		void LoadFromJson(nlohmann::json& j) override;
+
 		const glm::mat4& GetTransformationMatrix() const;
 
 		glm::vec3 Position = glm::vec3(0.f, 0.f, 0.f);

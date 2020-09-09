@@ -36,10 +36,34 @@ glm::vec3 Pine::Serialization::LoadVec3(const nlohmann::json& j, const std::stri
 	}
 }
 
+void Pine::Serialization::SaveVec3( nlohmann::json& j, const glm::vec3& vec )
+{
+	j[ "x" ] = vec.x;
+	j[ "y" ] = vec.y;
+	j[ "z" ] = vec.z;
+}
+
+void Pine::Serialization::SaveAsset( nlohmann::json& j, IAsset* asset )
+{
+	// This might get changed in the future, hence it's done this way, in this wrapper.
+
+	if ( !asset )
+	{
+		j = "null";
+		return;
+	}
+
+	j = asset->GetPath(  ).string(  );
+}
+
 Pine::IAsset* Pine::Serialization::LoadAsset(const nlohmann::json& j, const std::string& name) {
 	try {
-
 		if (j.contains(name)) {
+			if ( j.at( name  ) == "null" )
+			{
+				return nullptr;
+			}
+			
 			if (const auto asset = Assets::GetAsset(j.at(name))) {
 				return asset;
 			}

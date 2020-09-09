@@ -87,6 +87,16 @@ void Pine::Camera::OnUpdate(float deltaTime) {
 
 }
 
+void Pine::Camera::SaveToJson( nlohmann::json& j )
+{
+	
+}
+
+void Pine::Camera::LoadFromJson( nlohmann::json& j )
+{
+	
+}
+
 Pine::IComponent* Pine::Camera::Clone( )
 {
 	return new Pine::Camera( );

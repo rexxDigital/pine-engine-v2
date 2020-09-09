@@ -1,6 +1,7 @@
 #include "Assets.hpp"
 #include "../Core/Core.hpp"
 #include "../Core/Log/Log.hpp"
+#include "Blueprint/Blueprint.hpp"
 
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
@@ -24,7 +25,9 @@ namespace {
 			return Pine::EAssetType::Texture2D;
 		if (Pine::String::EndsWith(fileName, ".cmap"))
 			return Pine::EAssetType::Texture3D;
-
+		if ( Pine::String::EndsWith( fileName, ".bpt" ) )
+			return Pine::EAssetType::Blueprint;
+		
 		return Pine::EAssetType::Invalid;
 	}
 
@@ -42,6 +45,8 @@ namespace {
 			return new Pine::Texture2D();
 		case Pine::EAssetType::Texture3D:
 			return new Pine::Texture3D();
+		case Pine::EAssetType::Blueprint:
+			return new Pine::Blueprint( );
 		default:
 			return nullptr;
 		}

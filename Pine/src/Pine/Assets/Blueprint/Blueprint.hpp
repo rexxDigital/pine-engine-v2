@@ -1,5 +1,7 @@
 #pragma once
 
+#include <json.hpp>
+
 #include "../IAsset/IAsset.hpp"
 
 namespace Pine
@@ -8,17 +10,20 @@ namespace Pine
 
 	class Blueprint : public IAsset
 	{
-	private:
+	protected:
 
 		Pine::Entity* m_Entity = nullptr;
 
-		void SaveEntity( Pine::Entity* target, Pine::Entity* entity );
-		
+		void CopyEntity( Pine::Entity* target, const Pine::Entity* entity ) const;
+
 	public:
+		Blueprint( );
+		
 		void CreateFromEntity( Pine::Entity* entity );
 
 		void SpawnEntity( ) const;
 		bool HasValidEntity( ) const;
+		nlohmann::json ToJson( ) const;
 		
 		bool LoadFromFile( ) override;
 		bool SaveToFile( ) override;

@@ -73,7 +73,7 @@ namespace Pine
 		void SetParent(Entity* parent);
 		Entity* GetParent() const;
 		
-		Entity* CreateChild();
+		Entity* CreateChild(bool createEntity = true);
 		void RemoveChild(Entity* entity);
 
 		// This will unlink and remove all children linked to this entity.

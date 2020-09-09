@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../../../ImGui/imgui.h"
+#include "../../Core/Serialization/Serialization.hpp"
 
 void Pine::Transform::BuildTransformationMatrix() {
 	m_TransformationMatrix = glm::mat4(1.f);
@@ -56,9 +57,28 @@ void Pine::Transform::OnRender() {
 
 Pine::IComponent* Pine::Transform::Clone( )
 {
-	return new Pine::Transform( );
+	auto transform = new Pine::Transform( );
+
+	transform->Position = Position;
+	transform->Rotation = Rotation;
+	transform->Scale = Scale;
+	
+	return transform;
 }
 
+void Pine::Transform::SaveToJson( nlohmann::json& j )
+{
+	Serialization::SaveVec3( j[ "pos" ], Position );
+	Serialization::SaveVec3( j[ "rot" ], Rotation );
+	Serialization::SaveVec3( j[ "scl" ], Scale );
+}
+
+void Pine::Transform::LoadFromJson( nlohmann::json& j )
+{
+	Position = Serialization::LoadVec3( j, "pos" );
+	Rotation = Serialization::LoadVec3( j, "rot" );
+	Scale	 = Serialization::LoadVec3( j, "scl" );
+}
 
 const glm::mat4& Pine::Transform::GetTransformationMatrix() const
 {

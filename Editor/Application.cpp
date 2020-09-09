@@ -9,6 +9,8 @@
 #include <Pine/Components/Light/Light.hpp>
 
 
+
+#include "Pine/Assets/Blueprint/Blueprint.hpp"
 #include "Utils/AssetPreviewGenerator/AssetPreviewGenerator.hpp"
 #include "Utils/DirectoryCache/DirectoryCache.hpp"
 #include "Utils/PreviewManager/PreviewManager.hpp"
@@ -37,12 +39,14 @@ void SetupSampleScene( ) {
 	mesh->GetMaterial( )->DiffuseColor( ) = glm::vec3( 0.5f, 0.5f, 0.5f );
 	mesh->GetMaterial( )->SetShininiess( 16.f );
 
-	entity = Pine::EntityList::CreateEntity( "Test Entity" );
+	//entity = Pine::EntityList::CreateEntity( "Test Entity" );
 
-	entity->AddComponent( new Pine::ModelRenderer( ) );
-	entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
-	entity->GetTransform( )->Position.y = -2.f;
+	//entity->AddComponent( new Pine::ModelRenderer( ) );
+	//entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
+	//entity->GetTransform( )->Position.y = -2.f;
 
+	Pine::Assets::GetAsset<Pine::Blueprint>( "Assets\\blueprint.bpt" )->SpawnEntity( );
+	
 	auto camera = Pine::EntityList::CreateEntity( "Camera" );
 
 	camera->AddComponent( new Pine::Camera( ) );
@@ -56,10 +60,17 @@ void SetupSampleScene( ) {
 	light->GetTransform( )->Position = glm::vec3( 0.f, 0.f, -20.f );
 }
 
+void CreateAndSaveBlueprint( )
+{
+	auto blueprint = new Pine::Blueprint( );
+
+	blueprint->SetFilePath( "Assets\\blueprint.bpt" );
+	blueprint->CreateFromEntity( entity );
+	blueprint->SaveToFile( );
+}
+
 int main( )
 {
-	std::cout << "Icons made by https://www.flaticon.com/authors/freepik from https://www.flaticon.com/" << std::endl;
-
 	if ( !Pine::Setup( ) ) {
 		return 1;
 	}
@@ -84,6 +95,8 @@ int main( )
 
 	// Setup frame buffer.
 	Pine::SetFrameBuffer( Editor::Gui::GetViewportFrameBuffer( ) );
+
+	//CreateAndSaveBlueprint( );
 
 	Pine::Run( );
 
