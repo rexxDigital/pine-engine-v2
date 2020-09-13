@@ -45,6 +45,19 @@ const std::vector <Pine::Entity*> & Pine::EntityList::GetEntities() {
 	return m_Entities;
 }
 
+void Pine::EntityList::ClearEntities( bool temp )
+{
+	for ( int i = 0; i < m_Entities.size(  );i++)
+	{
+		if ( m_Entities[ i ]->IsTemporary(  ) )
+			continue;
+
+		m_Entities.erase( m_Entities.begin( ) + i );
+
+		i--;
+ 	}
+}
+
 void Pine::EntityList::RunOnSetup() {
 	for (auto entity : m_Entities) {
 		for (auto comp : entity->GetComponents()) {

@@ -8,6 +8,16 @@ Pine::Entity::Entity( uint64_t id )
 	m_Components.push_back( new Transform( ) );
 }
 
+Pine::Entity::Entity( uint64_t id, bool empty )
+{
+	m_Id = id;
+
+	if ( !empty )
+	{
+		m_Components.push_back( new Transform( ) );
+	}
+}
+
 Pine::Entity::~Entity( )
 {
 	for ( auto component : m_Components ) {
@@ -35,6 +45,16 @@ void Pine::Entity::SetActive( bool value ) {
 	m_Active = value;
 }
 
+bool Pine::Entity::IsTemporary( ) const
+{
+	return m_IsTemporary;
+}
+
+void Pine::Entity::SetTemporary( bool value )
+{
+	m_IsTemporary = value;
+}
+
 const std::string& Pine::Entity::GetName( ) const {
 	return m_Name;
 }
@@ -49,10 +69,6 @@ uint64_t Pine::Entity::GetId( ) const {
 
 uint64_t Pine::Entity::GetEntityIndex( ) const {
 	return m_EntityIndex;
-}
-
-uint64_t& Pine::Entity::GetEntityFlags( ) {
-	return m_EntityFlags;
 }
 
 void Pine::Entity::SetEntityIndex( uint64_t indx ) {
@@ -153,4 +169,9 @@ bool Pine::Entity::RemoveComponent( const int index )
 	m_Components.erase( m_Components.begin( ) + index );
 
 	return true;
+}
+
+void Pine::Entity::ClearComponents( )
+{
+	m_Components.clear( );
 }

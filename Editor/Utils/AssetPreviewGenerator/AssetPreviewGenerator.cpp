@@ -134,6 +134,16 @@ namespace
 			preview->invertUVs = true;
 		}
 
+		if ( asset->GetType(  ) == Pine::EAssetType::Blueprint )
+		{
+			preview->texture = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\033-3d file.png" )->GetId(  );
+		}
+
+		if ( asset->GetType( ) == Pine::EAssetType::Level )
+		{
+			preview->texture = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Engine\\Icons\\008-draft.png" )->GetId( );
+		}
+		
 		return preview;
 	}
 

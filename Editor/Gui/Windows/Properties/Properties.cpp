@@ -12,15 +12,24 @@ namespace {
 	void DisplayEntity( Pine::Entity* e ) {
 
 		bool active = e->GetActive( );
-		if ( ImGui::Checkbox( "Active", &active ) ) {
+		if ( ImGui::Checkbox( "##Active", &active ) ) {
 			e->SetActive( active );
 		}
 
+		ImGui::SameLine( );
+		
 		char buff[ 64 ];
 		strcpy_s( buff, e->GetName( ).c_str( ) );
 		if ( ImGui::InputText( "##EntityName", buff, 64 ) ) {
 			e->SetName( buff );
 		}
+		
+		ImGui::Text( "Entity index: %d", e->GetEntityIndex(  ) );
+		ImGui::Text( "%d component(s)", e->GetComponents( ).size( ) );
+		ImGui::Text( "Is temporary marked: %d", e->IsTemporary(  ) );
+
+		if ( ImGui::IsItemHovered( ) )
+			ImGui::SetTooltip( "Used for entities that won't get saved. Such as editor entities." );
 
 		ImGui::Spacing( );
 		ImGui::Separator( );
@@ -51,8 +60,13 @@ namespace {
 				Gui::ComponentRenderer::Render( component );
 
 			}
+ 		}
 
-			ImGui::Spacing( );
+		ImGui::Separator( );
+		
+		if ( ImGui::Button( "Add new component...", ImVec2( -1.f, 30.f ) ) )
+		{
+
 		}
 	}
 

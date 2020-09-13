@@ -11,6 +11,9 @@ namespace Pine::EntityList {
 
 	const std::vector<Entity*>& GetEntities();
 
+	// temp == Clear temporary entities as well.
+	void ClearEntities( bool temp = false );
+	
 	void RunOnSetup();
 
 }

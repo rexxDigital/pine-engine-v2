@@ -82,12 +82,14 @@ namespace
 			}
 
 			component->LoadFromJson( componentJson );
+
+			e->AddComponent( component );
 		}
 
 		// Load children
 		if ( j.contains( "children" ) )
 		{
-			for ( auto childJson : j.at( "children" ) )
+			for ( const auto& childJson : j.at( "children" ) )
 			{
 				const auto child = e->CreateChild( false );
 
@@ -127,7 +129,7 @@ void Pine::Blueprint::CreateFromEntity( Pine::Entity* entity )
 {
 	delete m_Entity;
 
-	m_Entity = new Entity( 0 );
+	m_Entity = new Entity( 0, true );
 
 	CopyEntity( m_Entity, entity );
 }
@@ -141,6 +143,8 @@ void Pine::Blueprint::SpawnEntity( ) const
 
 	Entity* newEntity = Pine::EntityList::CreateEntity( );
 
+	newEntity->ClearComponents( );
+	
 	CopyEntity( newEntity, m_Entity );
 }
 
@@ -158,6 +162,17 @@ nlohmann::json Pine::Blueprint::ToJson( ) const
 	return j;
 }
 
+bool Pine::Blueprint::FromJson( nlohmann::json& j )
+{
+	delete m_Entity;
+
+	m_Entity = new Entity( 0, true );
+
+	LoadEntityJson( m_Entity, j );
+
+	return true;
+}
+
 bool Pine::Blueprint::LoadFromFile( )
 {
 	const auto j = Pine::Serialization::LoadJSONFromFile( m_FilePath.string( ) );
@@ -166,7 +181,7 @@ bool Pine::Blueprint::LoadFromFile( )
 
 		delete m_Entity;
 
-		m_Entity = new Entity( 0 );
+		m_Entity = new Entity( 0, true );
 		
 		LoadEntityJson( m_Entity, j );
 

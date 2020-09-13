@@ -168,6 +168,8 @@
     <ClInclude Include="src\Pine\Assets\Assets.hpp" />
     <ClInclude Include="src\Pine\Assets\Blueprint\Blueprint.hpp" />
     <ClInclude Include="src\Pine\Assets\IAsset\IAsset.hpp" />
+    <ClInclude Include="src\Pine\Assets\Invalid\InvalidAsset.hpp" />
+    <ClInclude Include="src\Pine\Assets\Level\Level.hpp" />
     <ClInclude Include="src\Pine\Assets\Material\Material.hpp" />
     <ClInclude Include="src\Pine\Assets\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Pine\Assets\Model\Model.hpp" />
@@ -209,6 +211,8 @@
     <ClCompile Include="src\Pine\Assets\Assets.cpp" />
     <ClCompile Include="src\Pine\Assets\Blueprint\Blueprint.cpp" />
     <ClCompile Include="src\Pine\Assets\IAsset\IAsset.cpp" />
+    <ClCompile Include="src\Pine\Assets\Invalid\InvalidAsset.cpp" />
+    <ClCompile Include="src\Pine\Assets\Level\Level.cpp" />
     <ClCompile Include="src\Pine\Assets\Material\Material.cpp" />
     <ClCompile Include="src\Pine\Assets\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Pine\Assets\Model\Model.cpp" />

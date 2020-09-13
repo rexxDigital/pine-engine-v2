@@ -60,10 +60,56 @@ void Editor::Gui::Run( ) {
 
 	SetupDockSpace( );
 
-	//ImGui::ShowDemoWindow(nullptr);
+	///ImGui::ShowDemoWindow(nullptr);
 
 	if ( ImGui::BeginMenuBar( ) ) {
-		if ( ImGui::BeginMenu( "Options" ) ) {
+		if ( ImGui::BeginMenu( "File" ) ) {
+			if ( ImGui::BeginMenu( "New..." ) )
+			{
+				if ( ImGui::MenuItem( "Level" ) )
+				{
+					
+				}
+
+				if ( ImGui::MenuItem( "Material" ) )
+				{
+
+				}
+
+				if ( ImGui::MenuItem( "Blueprint" ) )
+				{
+
+				}
+				
+				ImGui::EndMenu( );
+			}
+
+			if ( ImGui::MenuItem( "Save", "CTRL+S" ) )
+			{
+				
+			}
+
+			ImGui::Separator( );
+
+			if ( ImGui::MenuItem( "Exit", "ALT+F4" ) )
+			{
+
+			}
+			
+			ImGui::EndMenu( );
+		}
+
+		if ( ImGui::BeginMenu( "Configuration" ) ) {
+			if ( ImGui::MenuItem( "Open level configuration" ) )
+			{
+				
+			}
+
+			if ( ImGui::MenuItem( "Open editor configuration" ) )
+			{
+
+			}
+			
 			ImGui::EndMenu( );
 		}
 

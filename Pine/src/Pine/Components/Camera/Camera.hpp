@@ -26,7 +26,7 @@ namespace Pine {
 
 		void SetNearPlane(float value);
 		void SetFarPlane(float value);
-		void SetFieldOfViewPlane(float value);
+		void SetFieldOfView(float value);
 
 		const glm::mat4& GetProjectionMatrix() const;
 		const glm::mat4& GetViewMatrix() const;

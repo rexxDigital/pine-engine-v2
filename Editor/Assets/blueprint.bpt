@@ -1,1 +1,1 @@
-{"active":true,"components":[{"pos":{"x":0.0,"y":0.0,"z":0.0},"rot":{"x":0.0,"y":0.0,"z":0.0},"scl":{"x":1.0,"y":1.0,"z":1.0},"type":1},{"pos":{"x":0.0,"y":-2.0,"z":0.0},"rot":{"x":0.0,"y":0.0,"z":0.0},"scl":{"x":1.0,"y":1.0,"z":1.0},"type":1},{"model":"Assets\\Engine\\Sphere.obj","type":2}],"name":"Test Entity"}
+{"active":true,"components":[{"pos":{"x":0.0,"y":-2.0,"z":0.0},"rot":{"x":0.0,"y":0.0,"z":0.0},"scl":{"x":1.0,"y":1.0,"z":1.0},"type":1},{"model":"Assets\\Engine\\Sphere.obj","type":2}],"name":"Test Entity"}

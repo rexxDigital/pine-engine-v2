@@ -1,9 +1,9 @@
 #include "AssetRenderer.hpp"
 
-
-
 #include "../Widgets/Widgets.hpp"
 #include "ImGui/imgui.h"
+
+#include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
 #include "Pine/Assets/Texture2D/Texture2D.hpp"
 
@@ -69,6 +69,22 @@ namespace
 		}
 	}
 
+	void RenderLevel( Pine::Level* level )
+	{
+		ImGui::Text( "Amount of blueprints (entities): %d", level->GetBlueprintCount( ) );
+
+		if ( ImGui::Button( "Load", ImVec2( -1.f, 30.f ) ) )
+		{
+			level->Load( );
+		}
+
+
+		if ( ImGui::Button( "Create from current level", ImVec2( -1.f, 30.f ) ) )
+		{
+			level->CreateFromCurrentLevel( );
+		}
+	}
+
 }
 
 void Gui::AssetRenderer::Render( Pine::IAsset* asset )
@@ -87,6 +103,11 @@ void Gui::AssetRenderer::Render( Pine::IAsset* asset )
 	if ( asset->GetType( ) == Pine::EAssetType::Material )
 	{
 		RenderMaterial( dynamic_cast< Pine::Material* >( asset ) );
+	}
+
+	if ( asset->GetType(  ) == Pine::EAssetType::Level )
+	{
+		RenderLevel( dynamic_cast< Pine::Level* >( asset ) );
 	}
 
 }

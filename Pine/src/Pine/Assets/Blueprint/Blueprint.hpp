@@ -23,7 +23,9 @@ namespace Pine
 
 		void SpawnEntity( ) const;
 		bool HasValidEntity( ) const;
+
 		nlohmann::json ToJson( ) const;
+		bool FromJson( nlohmann::json& j );
 		
 		bool LoadFromFile( ) override;
 		bool SaveToFile( ) override;

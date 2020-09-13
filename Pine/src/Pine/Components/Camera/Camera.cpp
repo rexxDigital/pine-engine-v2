@@ -61,7 +61,7 @@ void Pine::Camera::SetFarPlane(float value) {
 	m_FarPlane = value;
 }
 
-void Pine::Camera::SetFieldOfViewPlane(float value) {
+void Pine::Camera::SetFieldOfView(float value) {
 	m_FieldOfView = value;
 	BuildProjectionMatrix();
 }
@@ -89,15 +89,25 @@ void Pine::Camera::OnUpdate(float deltaTime) {
 
 void Pine::Camera::SaveToJson( nlohmann::json& j )
 {
-	
+	j[ "near_plane" ] = m_NearPlane;
+	j[ "far_plane" ] = m_FarPlane;
+	j[ "fov" ] = m_FieldOfView;
 }
 
 void Pine::Camera::LoadFromJson( nlohmann::json& j )
 {
-	
+	m_NearPlane = j[ "near_plane" ];
+	m_FarPlane = j[ "far_plane" ];
+	m_FieldOfView = j[ "fov" ];
 }
 
 Pine::IComponent* Pine::Camera::Clone( )
 {
-	return new Pine::Camera( );
+	auto ret = new Pine::Camera( );
+
+	ret->SetFieldOfView( m_FieldOfView );
+	ret->SetNearPlane( m_NearPlane );
+	ret->SetFarPlane( m_FarPlane );
+	
+	return ret;
 }
