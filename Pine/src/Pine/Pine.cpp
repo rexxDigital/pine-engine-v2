@@ -59,10 +59,12 @@ bool Pine::Setup( )
 
 	Renderer3D::Setup( );
 	Gui::Setup( );
+	
 	Skybox::Setup( );
-
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
 
+	Components::Internal::RegisterPineComponents( );
+	
 	Log::Message( "Pine was successfully initialized!" );
 
 	return true;

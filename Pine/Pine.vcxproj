@@ -176,6 +176,7 @@
     <ClInclude Include="src\Pine\Assets\Shader\Shader.hpp" />
     <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\Pine\Components\Camera\Camera.hpp" />
+    <ClInclude Include="src\Pine\Components\Components.hpp" />
     <ClInclude Include="src\Pine\Components\IComponent\IComponent.hpp" />
     <ClInclude Include="src\Pine\Components\Light\Light.hpp" />
     <ClInclude Include="src\Pine\Components\ModelRenderer\ModelRenderer.hpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp" />
     <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp" />
     <ClCompile Include="src\Pine\Components\Camera\Camera.cpp" />
+    <ClCompile Include="src\Pine\Components\Components.cpp" />
     <ClCompile Include="src\Pine\Components\IComponent\IComponent.cpp" />
     <ClCompile Include="src\Pine\Components\Light\Light.cpp" />
     <ClCompile Include="src\Pine\Components\ModelRenderer\ModelRenderer.cpp" />

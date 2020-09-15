@@ -16,6 +16,9 @@
 #include "OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Rendering/Renderer3D/Renderer3D.hpp"
 
+// All the components, in a single header, sorry.
+#include "Components/Components.hpp"
+
 typedef void (*RenderCallback)();
 
 namespace Pine 

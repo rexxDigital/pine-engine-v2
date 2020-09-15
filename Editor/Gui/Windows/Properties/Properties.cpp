@@ -66,7 +66,7 @@ namespace {
 		
 		if ( ImGui::Button( "Add new component...", ImVec2( -1.f, 30.f ) ) )
 		{
-
+			ImGui::OpenPopup( "##NewComponentPopup" );
 		}
 	}
 
@@ -125,6 +125,13 @@ void Editor::Gui::Properties::Run( ) {
 		else {
 
 			ImGui::Text( "Please select an entity or an asset to preview\nit's properties here." );
+		}
+
+		if ( ImGui::BeginPopup( "##NewComponentPopup" ) )
+		{
+			
+
+			ImGui::EndPopup( );
 		}
 
 	}

@@ -144,6 +144,9 @@
     <ClInclude Include="src\Pine\Assets\Invalid\InvalidAsset.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pine\Components\Components.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pine\Pine.cpp">
@@ -267,6 +270,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Assets\Invalid\InvalidAsset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Components\Components.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
