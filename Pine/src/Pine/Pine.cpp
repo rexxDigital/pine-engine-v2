@@ -9,13 +9,6 @@
 #include "Rendering/Skybox/Skybox.hpp"
 #include "Assets/Texture3D/Texture3D.hpp"
 
-namespace
-{
-	RenderCallback callback;
-
-	Pine::FrameBuffer* g_TargetFrameBuffer = nullptr;
-}
-
 bool Pine::Setup( )
 {
 	Log::Message( "Setting up Pine..." );
@@ -58,10 +51,12 @@ bool Pine::Setup( )
 	}
 
 	Renderer3D::Setup( );
-	Gui::Setup( );
-	Skybox::Setup( );
+	RenderManager::SetRenderingContext( CreateDefaultRenderingContext( ) );
 
+	Skybox::Setup( );
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
+
+	Gui::Setup( );
 
 	Log::Message( "Pine was successfully initialized!" );
 
@@ -81,26 +76,7 @@ void Pine::Run( )
 
 	while ( !glfwWindowShouldClose( window ) )
 	{
-		// Setup frame buffer
-		if ( g_TargetFrameBuffer != nullptr ) {
-			g_TargetFrameBuffer->Bind( );
-		}
-		else {
-			glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-		}
-
-		glClearColor( 0.f, 0.f, 0.f, 1.f );
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		glViewport( 0, 0, g_TargetFrameBuffer->GetWidth( ), g_TargetFrameBuffer->GetHeight( ) );
-		glEnable( GL_DEPTH_TEST );
-
-		if ( callback ) {
-			callback( );
-		}
-
 		RenderManager::Run( );
-
-		Skybox::Render( );
 
 		// Reset the frame buffer for rendering.
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
@@ -124,17 +100,3 @@ void Pine::Terminate( )
 	Window::Internal::Destroy( );
 }
 
-void Pine::SetRenderingCallback( RenderCallback fn )
-{
-	callback = fn;
-}
-
-void Pine::SetFrameBuffer( FrameBuffer* framebuffer )
-{
-	g_TargetFrameBuffer = framebuffer;
-}
-
-Pine::FrameBuffer* Pine::GetFrameBuffer( )
-{
-	return g_TargetFrameBuffer;
-}

@@ -197,6 +197,7 @@
     <ClInclude Include="src\Pine\OpenGL\VertexArray\VertexArray.hpp" />
     <ClInclude Include="src\Pine\Pine.hpp" />
     <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp" />
+    <ClInclude Include="src\Pine\Rendering\RenderingContext\RenderingContext.hpp" />
     <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp" />
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Pine\UniformBuffers\UniformBuffers.hpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="src\Pine\OpenGL\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\Pine\Pine.cpp" />
     <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp" />
+    <ClCompile Include="src\Pine\Rendering\RenderingContext\RenderingContext.cpp" />
     <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp" />
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Pine\UniformBuffers\UniformBuffers.cpp" />

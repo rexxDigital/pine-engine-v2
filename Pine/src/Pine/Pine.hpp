@@ -16,23 +16,14 @@
 #include "OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Rendering/Renderer3D/Renderer3D.hpp"
 
-typedef void (*RenderCallback)();
 
-namespace Pine 
-{
+namespace Pine {
 	// Main engine setup
-	bool Setup();
+	bool Setup( );
 
 	// Will enter the rendering loop
-	void Run();
+	void Run( );
 
 	// Clean up resources
-	void Terminate();
-
-	// Setup a rendering function, that the engine will call each frame for rendering
-	void SetRenderingCallback(RenderCallback fn);
-
-	// Set/get the target frame buffer.
-	void SetFrameBuffer(FrameBuffer* framebuffer);
-	FrameBuffer* GetFrameBuffer();
+	void Terminate( );
 }

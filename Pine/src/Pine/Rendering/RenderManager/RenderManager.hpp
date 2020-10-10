@@ -1,22 +1,19 @@
 #pragma once
+#include "..\RenderingContext\RenderingContext.hpp"
 
 namespace Pine {
 	class Camera;
-}
 
-namespace Pine::RenderingConfiguration
-{
-
-	inline int Width = 0;
-	inline int Height = 0;
-	
+	typedef void ( *RenderCallback )( );
 }
 
 namespace Pine::RenderManager {
 
-	void SetCamera(Camera* camera);
-	Camera* GetCamera();
-	
-	void Run();
+	void SetRenderingContext( RenderingContext* renderingContext );
+	RenderingContext* GetRenderingContext( );
+
+	void SetRenderingCallback( RenderCallback fn );
+
+	void Run( );
 
 }
