@@ -3,7 +3,7 @@
 
 namespace Pine {
 	class Entity;
-	class Asset;
+	class IAsset;
 }
 
 namespace Editor::Gui {
@@ -28,7 +28,7 @@ namespace Editor::Gui {
 		inline SelectedItemType SelectedItem = SelectedItemType::None;
 
 		inline std::vector<Pine::Entity*> SelectedEntityPtrs;
-		inline std::vector<Pine::Asset*> SelectedAssetPtrs;
+		inline std::vector<Pine::IAsset*> SelectedAssetPtrs;
 
 		inline GizmoMovementType SelectedGizmoMovementType = GizmoMovementType::Move;
 

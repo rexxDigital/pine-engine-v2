@@ -165,6 +165,7 @@
     <ClInclude Include="src\Editor\Editor.hpp" />
     <ClInclude Include="src\Editor\Gui\Gui.hpp" />
     <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
+    <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

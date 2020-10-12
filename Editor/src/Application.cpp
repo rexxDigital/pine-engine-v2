@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Pine/Pine.hpp>
 #include "Editor/Editor.hpp"
+#include <Pine/Entitylist/EntityList.hpp>
 
 int main( ) {
 	if ( !Pine::Setup( ) ) {
@@ -8,6 +9,10 @@ int main( ) {
 	}
 
 	Editor::Setup( );
+
+	auto e = Pine::EntityList::CreateEntity( );
+
+	e->CreateChild( );
 
 	Pine::Run( );
 
