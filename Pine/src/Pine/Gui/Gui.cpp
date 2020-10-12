@@ -4,6 +4,8 @@
 #include "../../ImGui/imgui_impl_opengl3.h"
 #include "../Core/Window/Window.hpp"
 #include "Console/Console.hpp"
+
+#include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
 namespace {
@@ -121,6 +123,9 @@ void Pine::Gui::Dispose( ) {
 }
 
 void Pine::Gui::Render( ) {
+	// Reset the frame buffer for rendering.
+	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame( );
 	ImGui_ImplGlfw_NewFrame( );
@@ -129,8 +134,6 @@ void Pine::Gui::Render( ) {
 	if ( g_GuiRenderCallback ) {
 		g_GuiRenderCallback( );
 	}
-
-	ImGui::ShowDemoWindow( );
 
 	int display_w, display_h;
 	glfwGetFramebufferSize( Window::Internal::GetWindowPointer( ), &display_w, &display_h );

@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Rendering/RenderManager/RenderManager.hpp"
-#include "UniformBuffers/UniformBuffers.hpp"
+#include "Rendering/UniformBuffers/UniformBuffers.hpp"
 #include "Entitylist/EntityList.hpp"
 #include "Gui/Gui.hpp"
 #include "Rendering/Skybox/Skybox.hpp"
@@ -78,11 +78,7 @@ void Pine::Run( )
 	{
 		RenderManager::Run( );
 
-		// Reset the frame buffer for rendering.
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-
 		Gui::Render( );
-
 
 		glfwSwapBuffers( window );
 		glfwPollEvents( );

@@ -3,7 +3,7 @@
 #include <fstream>
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../Core/Log/Log.hpp"
-#include "../../UniformBuffers/UniformBuffers.hpp"
+#include "../../Rendering/UniformBuffers/UniformBuffers.hpp"
 
 namespace {
 

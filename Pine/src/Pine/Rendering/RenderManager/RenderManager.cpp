@@ -5,7 +5,7 @@
 #include "../../Entitylist/EntityList.hpp"
 #include "../Renderer3D/Renderer3D.hpp"
 #include "../../Components/Camera/Camera.hpp"
-#include "../../UniformBuffers/UniformBuffers.hpp"
+#include "../UniformBuffers/UniformBuffers.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Core/Log/Log.hpp"
 #include "../../Core/Window/Window.hpp"
@@ -19,8 +19,6 @@ namespace {
 
 	bool VerifyRenderingContext( Pine::RenderingContext* context ) {
 		if ( !context )
-			return false;
-		if ( context->m_Camera == nullptr )
 			return false;
 
 		return true;
@@ -57,6 +55,9 @@ void Pine::RenderManager::Run( ) {
 	// Enable depth test just in case.
 	glEnable( GL_DEPTH_TEST );
 
+	if ( g_RenderingContext->m_Camera == nullptr )
+		return;
+
 	if ( g_RenderingCallback ) {
 		g_RenderingCallback( );
 	}
@@ -66,7 +67,6 @@ void Pine::RenderManager::Run( ) {
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
 
-	// This code is probably not efficient at all, please fix.
 	for ( auto& entity : EntityList::GetEntities( ) ) {
 		if ( !entity->GetActive( ) ) {
 			continue;

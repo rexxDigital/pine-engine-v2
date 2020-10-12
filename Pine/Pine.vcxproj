@@ -191,6 +191,7 @@
     <ClInclude Include="src\Pine\Entity\Entity.hpp" />
     <ClInclude Include="src\Pine\Gui\Console\Console.hpp" />
     <ClInclude Include="src\Pine\Gui\Gui.hpp" />
+    <ClInclude Include="src\Pine\Input\Input.hpp" />
     <ClInclude Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.hpp" />
     <ClInclude Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.hpp" />
     <ClInclude Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.hpp" />
@@ -201,7 +202,7 @@
     <ClInclude Include="src\Pine\Rendering\RenderingContext\RenderingContext.hpp" />
     <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp" />
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp" />
-    <ClInclude Include="src\Pine\UniformBuffers\UniformBuffers.hpp" />
+    <ClInclude Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ImGui\imgui.cpp" />
@@ -236,6 +237,7 @@
     <ClCompile Include="src\Pine\Entity\Entity.cpp" />
     <ClCompile Include="src\Pine\Gui\Console\Console.cpp" />
     <ClCompile Include="src\Pine\Gui\Gui.cpp" />
+    <ClCompile Include="src\Pine\Input\Input.cpp" />
     <ClCompile Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="src\Pine\OpenGL\ShaderProgram\ShaderProgram.cpp" />
     <ClCompile Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.cpp" />
@@ -246,7 +248,7 @@
     <ClCompile Include="src\Pine\Rendering\RenderingContext\RenderingContext.cpp" />
     <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp" />
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp" />
-    <ClCompile Include="src\Pine\UniformBuffers\UniformBuffers.cpp" />
+    <ClCompile Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Pine\Assets\Texture3D\Texture3D.hpp" />
