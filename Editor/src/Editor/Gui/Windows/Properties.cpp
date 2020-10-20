@@ -4,6 +4,7 @@
 
 #include <Pine\Entity\Entity.hpp>
 #include <Pine\Assets\IAsset\IAsset.hpp>
+#include "../Utility/ComponentPropertiesRenderer/ComponentPropertiesRenderer.hpp"
 
 namespace {
 
@@ -29,6 +30,31 @@ namespace {
 		ImGui::Separator( );
 		ImGui::Spacing( );
 
+		int index = 0;
+		for ( auto component : e->GetComponents( ) ) {
+			if ( ImGui::CollapsingHeader( std::string( std::string( Pine::SComponentNames[ static_cast< int >( component->GetType( ) ) ] ) + "##" + std::to_string( index ) ).c_str( ), ImGuiTreeNodeFlags_DefaultOpen ) ) {
+				bool active = component->GetActive( );
+
+				ImGui::Spacing( );
+
+				if ( ImGui::Checkbox( std::string( "Active##" + std::to_string( index ) ).c_str( ), &active ) ) {
+					component->SetActive( active );
+				}
+
+				ImGui::SameLine( );
+
+				if ( ImGui::Button( std::string( "Remove##" + std::to_string( index ) ).c_str( ) ) ) {
+
+				}
+
+				ImGui::Spacing( );
+				ImGui::Separator( );
+
+				Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( component );
+			}
+
+			index++;
+		}
 
 	}
 
@@ -53,7 +79,7 @@ void Editor::Gui::Windows::RenderProperties( ) {
 	if ( Gui::Globals::SelectedItem == SelectedItemType::Asset && !Gui::Globals::SelectedAssetPtrs.empty( ) ) {
 		DisplayAssetProperties( Gui::Globals::SelectedAssetPtrs[ 0 ] );
 	}
-	
+
 	ImGui::End( );
 
 }

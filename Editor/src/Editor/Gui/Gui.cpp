@@ -46,7 +46,6 @@ namespace {
 		Editor::Gui::Windows::RenderViewports( );
 		Editor::Gui::Windows::RenderAssetBrowser( );
 		Editor::Gui::Windows::RenderProperties( );
-
 	}
 
 }

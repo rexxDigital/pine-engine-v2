@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -151,6 +151,7 @@
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\Gui\Gui.cpp" />
     <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
+    <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="src\Editor\Gui\Gui.hpp" />
     <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
+    <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp" />
     <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
