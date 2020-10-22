@@ -14,6 +14,14 @@ void Pine::ModelRenderer::SetTargetModel( Pine::Model* mdl ) {
 	m_TargetModel = mdl;
 }
 
+Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const {
+	return m_MaterialOverride;
+}
+
+void Pine::ModelRenderer::SetMaterialOverride( Pine::Material* mat ) {
+	m_MaterialOverride = mat;
+}
+
 void Pine::ModelRenderer::OnSetup( ) {
 }
 

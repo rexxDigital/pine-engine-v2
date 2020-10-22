@@ -20,8 +20,8 @@ namespace Pine::Components
 		// Register all the "out of the box" components, such as transform, model renderer etc.
 		void RegisterPineComponents( );
 
-		// If you would like to register your own component, that's possible.
-		void RegisterComponent( IComponent* component );	
+		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.
+		void RegisterComponent( IComponent* component, const std::string& str );	
 	}
 
 }

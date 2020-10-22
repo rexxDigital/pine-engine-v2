@@ -7,19 +7,23 @@ namespace Pine {
 	class ModelRenderer : public IComponent {
 	private:
 		Pine::Model* m_TargetModel = nullptr;
+		Pine::Material* m_MaterialOverride = nullptr;
 	public:
-		ModelRenderer();
+		ModelRenderer( );
 
-		Pine::Model* GetTargetModel() const;
-		void SetTargetModel(Pine::Model* mdl);
+		Pine::Model* GetTargetModel( ) const;
+		void SetTargetModel( Pine::Model* mdl );
 
-		void OnSetup() override;
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
+		Pine::Material* GetMaterialOverride( ) const;
+		void SetMaterialOverride( Pine::Material* mat );
 
-		void SaveToJson(nlohmann::json& j) override;
-		void LoadFromJson(nlohmann::json& j) override;
-		IComponent* Clone() override;
+		void OnSetup( ) override;
+		void OnUpdate( float deltaTime ) override;
+		void OnRender( ) override;
+
+		void SaveToJson( nlohmann::json& j ) override;
+		void LoadFromJson( nlohmann::json& j ) override;
+		IComponent* Clone( ) override;
 	};
 
 }

@@ -152,6 +152,7 @@
     <ClCompile Include="src\Editor\Gui\Gui.cpp" />
     <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
+    <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
