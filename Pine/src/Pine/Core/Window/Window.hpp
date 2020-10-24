@@ -17,6 +17,8 @@ namespace Pine::Window
 	void Show( );
 	void Hide( );
 
+	void Close( );
+
 	void SetPosition( int x, int y );
 	void SetSize( int w, int h );
 	void SetTitle( const std::string& str );

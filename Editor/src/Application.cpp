@@ -9,11 +9,9 @@ int main( ) {
 		return 1;
 	}
 
+	Pine::Window::SetSize( 700, 400 );
+
 	Editor::Setup( );
-
-	auto e = Pine::EntityList::CreateEntity( );
-
-	e->AddComponent( new Pine::ModelRenderer( ) );
 
 	Pine::Run( );
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+struct ImFont;
+
 namespace Pine {
 	class Entity;
 	class IAsset;
@@ -31,6 +33,13 @@ namespace Editor::Gui {
 		inline std::vector<Pine::IAsset*> SelectedAssetPtrs;
 
 		inline GizmoMovementType SelectedGizmoMovementType = GizmoMovementType::Move;
+
+	}
+
+	namespace Fonts {
+
+		inline ImFont* TitleFont = nullptr;
+		inline ImFont* BoldFont = nullptr;
 
 	}
 

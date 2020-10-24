@@ -85,3 +85,7 @@ glm::ivec2 Pine::Window::GetSize() {
 
 	return vec;
 }
+
+void Pine::Window::Close( ) {
+	glfwSetWindowShouldClose( m_Window, GLFW_TRUE );
+}

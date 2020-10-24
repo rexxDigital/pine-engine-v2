@@ -10,6 +10,9 @@ namespace Editor::Gui::Windows {
 	inline bool ShowAssetBrowser = true;
 	inline bool ShowProperties = true;
 
+	// Debug
+	inline bool ShowRenderingContext = true;
+
 	void RenderEntitylist( );
 
 	void RenderViewports( );
@@ -17,6 +20,10 @@ namespace Editor::Gui::Windows {
 	void RenderAssetBrowser( );
 
 	void RenderProperties( );
+
+	void RenderDebugWindows( );
+
+	void RenderProjectWizard( );
 
 }
 

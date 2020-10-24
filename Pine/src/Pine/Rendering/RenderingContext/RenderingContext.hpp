@@ -1,6 +1,7 @@
 #pragma once
 #include "..\..\Components\Camera\Camera.hpp"
 #include "..\..\OpenGL\FrameBuffer\FrameBuffer.hpp"
+#include <glm/vec4.hpp>
 
 namespace Pine {
 
@@ -15,6 +16,7 @@ namespace Pine {
 		// If nullptr, the scene will just be fucking rendered to anything bound or the screen.
 		Pine::FrameBuffer* m_FrameBuffer = nullptr;
 
+		glm::vec4 m_ClearColor = glm::vec4( 0.f, 0.f, 0.f, 1.f );
 	};
 
 	RenderingContext* CreateDefaultRenderingContext( );
