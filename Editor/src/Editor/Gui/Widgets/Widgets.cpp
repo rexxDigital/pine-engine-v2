@@ -1,6 +1,7 @@
 #include "Widgets.hpp"
 #include <imgui/imgui.h>
 #include <ImGui/imgui_internal.h>
+#include "Pine/Assets/Texture2D/Texture2D.hpp"
 
 void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 
@@ -97,6 +98,24 @@ bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value ) {
 	bool ret = ImGui::Checkbox( std::string( "##" + str ).c_str( ), &value );
 
 	ImGui::Columns( 1 );
+
+	return ret;
+}
+
+bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size ) {	
+	bool ret = false;
+
+	ImGui::PushID( text.c_str( ) );
+	ImGui::BeginGroup( );
+
+	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) ) {
+		ret = true;
+	}
+
+	ImGui::Text( text.c_str( ) );
+
+	ImGui::EndGroup( );
+	ImGui::PopID( );
 
 	return ret;
 }

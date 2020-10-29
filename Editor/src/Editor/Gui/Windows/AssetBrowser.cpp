@@ -6,6 +6,7 @@
 #include "Pine\Assets\Assets.hpp"
 #include "..\..\ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Texture2D\Texture2D.hpp>
+#include "..\Widgets\Widgets.hpp"
 
 namespace {
 
@@ -77,17 +78,7 @@ namespace {
 			if ( !directory->m_IsDirectory )
 				continue;
 		
-			ImGui::PushID( directory->m_Path.string( ).c_str( ) );
-			ImGui::BeginGroup( );
-
-			if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( directoryIcon->GetId( ) ), ImVec2( IconSize, IconSize ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) ) {
-				
-			}
-
-			ImGui::Text( directory->m_DisplayText.c_str( ) );
-
-			ImGui::EndGroup( );
-			ImGui::PopID( );
+			Editor::Gui::Widgets::Icon( directory->m_DisplayText, false, directoryIcon, 48 );
 
 			ImGui::NextColumn( );
 		}
