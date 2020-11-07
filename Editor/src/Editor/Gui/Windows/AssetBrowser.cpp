@@ -72,6 +72,7 @@ namespace {
 
 	void DisplayItems( PathItem_t* dir ) {
 		static auto directoryIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
+		static auto fileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\text-file.png" );
 
 		// Process directories:
 		for ( auto& directory : dir->m_Items ) {
@@ -84,7 +85,14 @@ namespace {
 		}
 
 		// Process files:
+		for ( auto& file : dir->m_Items ) {
+			if ( file->m_IsDirectory )
+				continue;
 
+			Editor::Gui::Widgets::Icon( file->m_DisplayText, false, fileIcon, 48 );
+
+			ImGui::NextColumn( );
+		}
 	}
 
 }
@@ -124,7 +132,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 	ImGui::BeginChild( "##Assets", ImVec2( -1.f, -1.f ), true, 0 );
 
-	const float spaceAvailable = ImGui::GetContentRegionAvail( ).y;
+	const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - IconSize * 12;
 	const int nrColumns = static_cast< int >( spaceAvailable ) / IconSize;
 
 	ImGui::Columns( nrColumns, 0, false );
