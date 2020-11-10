@@ -12,8 +12,8 @@ void Editor::Setup( ) {
 
 	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
 
-	UpdateAssetCache( );
-
 	Editor::Gui::Setup( );
+
+	UpdateAssetCache( );
 
 }

@@ -105,10 +105,12 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
 		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 	}
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu ) {
 		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 

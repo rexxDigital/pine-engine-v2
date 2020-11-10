@@ -78,6 +78,8 @@ namespace {
 
 	void DisplayAssetProperties( Pine::IAsset* a ) {
 
+
+
 	}
 
 	void DisplayAddComponentPopup( ) {

@@ -7,13 +7,14 @@
 #include "..\..\ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Texture2D\Texture2D.hpp>
 #include "..\Widgets\Widgets.hpp"
+#include "..\Gui.hpp"
 
 namespace {
 
 	// Could be a file or a directory
 	struct PathItem_t {
 		bool m_IsDirectory = false;
-		
+
 		Pine::IAsset* m_Asset = nullptr;
 
 		std::filesystem::path m_Path;
@@ -25,6 +26,18 @@ namespace {
 	};
 
 	void ProcessDirectory( const std::string& dir, PathItem_t* item ) {
+		// Add a "..." go back directory.
+		if ( item->m_Parent != nullptr ) {
+			auto entry = std::make_unique<PathItem_t>( );
+
+			entry->m_IsDirectory = true;
+			entry->m_Path = item->m_Parent->m_Path;
+			entry->m_Parent = item->m_Parent;
+			entry->m_DisplayText = "...";
+
+			item->m_Items.push_back( std::move( entry ) );
+		}
+
 		for ( const auto& dirEntry : std::filesystem::directory_iterator( dir ) ) {
 			if ( dirEntry.is_directory( ) ) { // Process directory:
 				auto entry = std::make_unique<PathItem_t>( );
@@ -43,7 +56,7 @@ namespace {
 
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
-				entry->m_Asset = Pine::Assets::GetAsset( dir );
+				entry->m_Asset = Pine::Assets::GetAsset( entry->m_Path.string( ) );
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
 				item->m_Items.push_back( std::move( entry ) );
@@ -74,12 +87,25 @@ namespace {
 		static auto directoryIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
 		static auto fileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\text-file.png" );
 
+		Pine::IAsset* selectedAsset = nullptr;
+
+		if ( !Editor::Gui::Globals::SelectedAssetPtrs.empty( ) ) {
+			selectedAsset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
+		}
+
 		// Process directories:
 		for ( auto& directory : dir->m_Items ) {
 			if ( !directory->m_IsDirectory )
 				continue;
-		
-			Editor::Gui::Widgets::Icon( directory->m_DisplayText, false, directoryIcon, 48 );
+
+			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, false, directoryIcon, 48 ) ) {
+				if ( directory->m_DisplayText == "..." ) {
+					g_CurrentDirectory = directory->m_Parent;
+				}
+				else {
+					g_CurrentDirectory = directory.get( );
+				}
+			}
 
 			ImGui::NextColumn( );
 		}
@@ -89,7 +115,14 @@ namespace {
 			if ( file->m_IsDirectory )
 				continue;
 
-			Editor::Gui::Widgets::Icon( file->m_DisplayText, false, fileIcon, 48 );
+			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, fileIcon, 48 ) ) {
+				if ( file->m_Asset != nullptr ) {
+					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+
+					Editor::Gui::Globals::SelectedAssetPtrs.push_back( file->m_Asset );
+				}
+			}
 
 			ImGui::NextColumn( );
 		}
@@ -117,7 +150,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 	}
 
 	ImGui::Begin( "Asset Browser", &ShowAssetBrowser, 0 );
-	
+
 	if ( ImGui::Button( "Import" ) ) {
 
 	}
@@ -132,14 +165,23 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 	ImGui::BeginChild( "##Assets", ImVec2( -1.f, -1.f ), true, 0 );
 
-	const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - IconSize * 12;
-	const int nrColumns = static_cast< int >( spaceAvailable ) / IconSize;
+	constexpr int iconSizePadding = IconSize + 16;
 
-	ImGui::Columns( nrColumns, 0, false );
+	const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - ( iconSizePadding * 2 );
+	const int nrColumns = static_cast< int >( spaceAvailable ) / iconSizePadding;
 
-	DisplayItems( g_CurrentDirectory );
+	if ( nrColumns > 0 ) {
+		ImGui::Columns( nrColumns, 0, false );
 
-	ImGui::Columns( 1 );
+		DisplayItems( g_CurrentDirectory );
+
+		ImGui::Columns( 1 );
+
+		if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
+			Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		}
+	}
 
 	ImGui::EndChild( );
 
