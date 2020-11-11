@@ -45,6 +45,15 @@
     <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\ProjectManager\ProjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Gui\Gui.hpp">
@@ -63,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\ProjectManager\ProjectManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

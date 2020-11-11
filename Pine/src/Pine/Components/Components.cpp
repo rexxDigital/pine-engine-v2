@@ -1,26 +1,24 @@
 #include "Components.hpp"
 
-namespace
-{
+namespace {
 	std::vector<Pine::IComponent*> g_Components;
+	std::vector<std::string> g_ComponentNames;
 }
 
-int Pine::Components::GetComponentCount( )
-{
+int Pine::Components::GetComponentCount( ) {
 	return g_Components.size( );
 }
 
-const char* Pine::Components::GetComponentName( EComponentType type )
-{
-	return Pine::SComponentNames[ static_cast< int >( type ) ];
+const char* Pine::Components::GetComponentName( EComponentType type ) {
+	return g_ComponentNames[ static_cast< int >( type ) ].c_str( );
 }
 
-Pine::IComponent* Pine::Components::CreateComponent( EComponentType type )
-{
-	for ( auto component : g_Components )
-	{
-		if ( component->GetType(  ) == type )
-		{
+Pine::IComponent* Pine::Components::CreateComponent( EComponentType type ) {
+	for ( auto component : g_Components ) {
+		if ( !component )
+			continue;
+
+		if ( component->GetType( ) == type ) {
 			return component->Clone( );
 		}
 	}
@@ -28,15 +26,15 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type )
 	return nullptr;
 }
 
-void Pine::Components::Internal::RegisterPineComponents( )
-{
-	RegisterComponent( new Transform( ) );
-	RegisterComponent( new ModelRenderer( ) );
-	RegisterComponent( new Camera( ) );
-	RegisterComponent( new Light( ) );
+void Pine::Components::Internal::RegisterPineComponents( ) {
+	RegisterComponent( nullptr, "Invalid" ); 
+	RegisterComponent( new Transform( ), "Transform" );
+	RegisterComponent( new ModelRenderer( ), "ModelRenderer" );
+	RegisterComponent( new Camera( ), "Camera" );
+	RegisterComponent( new Light( ), "Light" );
 }
 
-void Pine::Components::Internal::RegisterComponent( IComponent* component )
-{
+void Pine::Components::Internal::RegisterComponent( IComponent* component, const std::string& str ) {
 	g_Components.push_back( component );
+	g_ComponentNames.push_back( str );
 }

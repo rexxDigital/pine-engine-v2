@@ -1,6 +1,0 @@
-bronze
-
-	mesh->GetMaterial()->SetShininiess(25.6f);
-	mesh->GetMaterial()->AmbientColor() = glm::vec3(.212f, 0.127f, 0.054f);
-	mesh->GetMaterial()->DiffuseColor() = glm::vec3(0.714f, 0.428f, 0.181f);
-	mesh->GetMaterial()->SpecularColor() = glm::vec3(0.393f, 0.271f, 0.166f);

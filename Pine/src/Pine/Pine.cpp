@@ -8,6 +8,7 @@
 #include "Gui/Gui.hpp"
 #include "Rendering/Skybox/Skybox.hpp"
 #include "Assets/Texture3D/Texture3D.hpp"
+#include "Components/Components.hpp"
 
 bool Pine::Setup( )
 {
@@ -55,6 +56,8 @@ bool Pine::Setup( )
 
 	Skybox::Setup( );
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
+
+	Pine::Components::Internal::RegisterPineComponents( );
 
 	Gui::Setup( );
 

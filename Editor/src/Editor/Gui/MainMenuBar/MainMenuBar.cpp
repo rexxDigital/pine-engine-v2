@@ -31,6 +31,12 @@ void Editor::Gui::MainMenuBar::Render( ) {
 			ImGui::MenuItem( "Game Viewport", nullptr, &Windows::ShowGameViewport );
 			ImGui::MenuItem( "Level Viewport", nullptr, &Windows::ShowLevelViewport );
 
+			if ( ImGui::BeginMenu( "Debug" ) ) {
+				ImGui::MenuItem( "Rendering Context", nullptr, &Windows::ShowRenderingContext );
+
+				ImGui::EndMenu( );
+			}
+
 			ImGui::EndMenu( );
 		}
 

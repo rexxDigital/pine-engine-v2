@@ -6,8 +6,8 @@
 
 namespace {
 
-	// HACK: To detect if I press anything outside the entities, need to replace this.
-	bool g_PressedEntity = false;
+	// HACK: To fix context menus, since IsWindowHovered is out of control
+	bool g_DidOpenContextMenu = false;
 
 	// Since we might support selecting multiple entities in the future.
 	bool IsSelectedEntity( Pine::Entity* e ) {
@@ -38,14 +38,26 @@ namespace {
 			if ( ImGui::Selectable( renderText.c_str( ), isSelectedEntity, 0 ) ) {
 				SelectEntity( e );
 			}
+
+			if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
+				SelectEntity( e );
+				ImGui::OpenPopup( "EntityContextMenu" );
+				g_DidOpenContextMenu = true;
+			}
 		}
 		else {
-			auto flags = ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen;
+			auto flags = ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanFullWidth;
 
 			if ( isSelectedEntity )
 				flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
 
 			if ( ImGui::TreeNodeEx( renderText.c_str( ), flags ) ) {
+				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
+					SelectEntity( e );
+					ImGui::OpenPopup( "EntityContextMenu" );
+					g_DidOpenContextMenu = true;
+				}
+
 				if ( ImGui::IsItemClicked( ) ) {
 					SelectEntity( e );
 				}
@@ -61,6 +73,12 @@ namespace {
 			else {
 				if ( ImGui::IsItemClicked( ) ) {
 					SelectEntity( e );
+				}
+
+				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
+					SelectEntity( e );
+					ImGui::OpenPopup( "EntityContextMenu" );
+					g_DidOpenContextMenu = true;
 				}
 			}
 		}
@@ -85,10 +103,47 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		RenderEntity( entity );
 	}
 
-	if ( ImGui::IsMouseDown( 0 ) && ImGui::IsWindowHovered( ) ) {
+	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
 		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 	}
-		
+
+	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu ) {
+		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+		ImGui::OpenPopup( "EntityContextMenu" );
+	}
+
+	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) ) {
+		const bool isTargetingEntity = Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1;
+	
+		g_DidOpenContextMenu = false;
+
+		Pine::Entity* e = nullptr;
+		if ( isTargetingEntity )
+			e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
+
+		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
+			Pine::EntityList::DeleteEntity( e );
+			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+			ImGui::CloseCurrentPopup( );
+		}
+
+		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) ) {
+			e->CreateChild( );
+			ImGui::CloseCurrentPopup( );
+		}
+
+		ImGui::Separator( );
+
+		if ( ImGui::MenuItem( "Create entity" ) ) {
+			Pine::EntityList::CreateEntity( );
+			ImGui::CloseCurrentPopup( );
+		}
+
+		ImGui::EndPopup( );
+	}
+
 	ImGui::End( );
 
 }
