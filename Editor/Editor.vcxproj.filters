@@ -42,6 +42,9 @@
     <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Gui\Gui.hpp">
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
