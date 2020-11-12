@@ -153,6 +153,8 @@
     <ClCompile Include="src\Editor\Editor.cpp" />
     <ClCompile Include="src\Editor\Gui\Gui.cpp" />
     <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
+    <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp" />
+    <ClCompile Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
@@ -172,6 +174,8 @@
     <ClInclude Include="src\Editor\Editor.hpp" />
     <ClInclude Include="src\Editor\Gui\Gui.hpp" />
     <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
+    <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp" />
+    <ClInclude Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp" />
     <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />

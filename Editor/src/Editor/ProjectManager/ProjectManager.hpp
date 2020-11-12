@@ -10,6 +10,8 @@ namespace Editor::ProjectManager {
 	void CreateProject( const std::string& directory );
 	void OpenProject( const std::string& directory );
 
+	void ReloadProjectAssets( );
+
 	bool HasProjectOpen( );
 	std::string GetCurrentProjectDirectory( );
 

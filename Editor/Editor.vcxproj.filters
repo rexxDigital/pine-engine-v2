@@ -54,6 +54,12 @@
     <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Gui\Gui.hpp">
@@ -75,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\ProjectManager\ProjectManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

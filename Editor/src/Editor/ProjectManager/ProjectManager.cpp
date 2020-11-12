@@ -76,3 +76,10 @@ void Editor::ProjectManager::CreateProject( const std::string& directory ) {
 const std::vector<std::string>& Editor::ProjectManager::GetAvaliableProjects( ) {
 	return g_AvaliableProjects;
 }
+
+void Editor::ProjectManager::ReloadProjectAssets( ) {
+	if ( !g_ProjectOpen )
+		return;
+
+	Pine::Assets::LoadFromDirectory( GetCurrentProjectDirectory( ) );
+}

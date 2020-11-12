@@ -8,6 +8,7 @@
 #include <Pine\Assets\Texture2D\Texture2D.hpp>
 #include "..\Widgets\Widgets.hpp"
 #include "..\Gui.hpp"
+#include "..\Utility\AssetIconGen\AssetIconGen.hpp"
 
 namespace {
 
@@ -20,6 +21,7 @@ namespace {
 		std::filesystem::path m_Path;
 
 		std::string m_DisplayText = "";
+		Pine::Texture2D* m_DisplayIcon = nullptr;
 
 		std::vector<std::unique_ptr<PathItem_t>> m_Items;
 		PathItem_t* m_Parent = nullptr;
@@ -57,6 +59,7 @@ namespace {
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
 				entry->m_Asset = Pine::Assets::GetAsset( entry->m_Path.string( ) );
+				entry->m_DisplayIcon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( entry->m_Path.string( ) );
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
 				item->m_Items.push_back( std::move( entry ) );
@@ -85,7 +88,7 @@ namespace {
 
 	void DisplayItems( PathItem_t* dir ) {
 		static auto directoryIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
-		static auto fileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\text-file.png" );
+		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
 
 		Pine::IAsset* selectedAsset = nullptr;
 
@@ -115,7 +118,9 @@ namespace {
 			if ( file->m_IsDirectory )
 				continue;
 
-			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, fileIcon, 48 ) ) {
+			auto icon = file->m_DisplayIcon != nullptr ? file->m_DisplayIcon : unknownFileIcon;
+
+			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, 48 ) ) {
 				if ( file->m_Asset != nullptr ) {
 					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
@@ -151,14 +156,8 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 	ImGui::Begin( "Asset Browser", &ShowAssetBrowser, 0 );
 
-	if ( ImGui::Button( "Import" ) ) {
-
-	}
-
-	ImGui::SameLine( );
-
-	if ( ImGui::Button( "Refresh" ) ) {
-
+	if ( ImGui::Button( "Refresh project assets" ) ) {
+		ProjectManager::ReloadProjectAssets( );
 	}
 
 	ImGui::Separator( );

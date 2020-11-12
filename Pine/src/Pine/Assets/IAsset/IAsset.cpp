@@ -1,5 +1,4 @@
 #include "IAsset.hpp"
-#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
 void Pine::IAsset::SetFilePath(const std::string& str)
 {
@@ -20,4 +19,13 @@ const std::string& Pine::IAsset::GetFileName() const
 Pine::EAssetType Pine::IAsset::GetType() const
 {
 	return m_Type;
+}
+
+void Pine::IAsset::UpdateLastWriteTime( ) {
+	m_LastWriteTime = std::filesystem::last_write_time( m_FilePath ).time_since_epoch( );
+}
+
+bool Pine::IAsset::HasBeenUpdated( ) const {
+	const auto currentWriteTime = std::filesystem::last_write_time( m_FilePath );
+	return currentWriteTime.time_since_epoch( ) != m_LastWriteTime;
 }

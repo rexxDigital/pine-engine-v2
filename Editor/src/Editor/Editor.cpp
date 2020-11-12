@@ -2,6 +2,7 @@
 #include "Gui\Gui.hpp"
 #include "ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Assets.hpp>
+#include "Gui\Utility\AssetIconGen\AssetIconGen.hpp"
 
 void UpdateAssetCache( );
 
@@ -12,8 +13,10 @@ void Editor::Setup( ) {
 
 	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
 
-	Editor::Gui::Setup( );
+	Gui::Setup( );
+	Gui::Utility::AssetIconGen::Update( );
 
 	UpdateAssetCache( );
+
 
 }

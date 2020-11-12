@@ -59,6 +59,27 @@ namespace {
 
 Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath ) {
 	if ( m_Assets.count( filePath ) > 0 ) {
+		auto asset = m_Assets[ filePath ];
+
+		// Reload the file if it has been updated.
+		if ( asset->HasBeenUpdated( ) ) {
+			Log::Message( "Reloading file " + asset->GetFileName( ) + " since it has been updated." );
+
+			// We will have to dispose the old stuff.
+			// I am not too sure right now this reload system will work, since some variables will be the same.
+			// The solution might be just to remove the old object completely and treat it as a new object.
+			asset->Dispose( );
+
+			// Load the asset again
+			if ( !asset->LoadFromFile( ) ) {
+				Log::Warning( "Failed to reload file, " + asset->GetFileName( ) );
+				return nullptr;
+			}
+
+			// Mark it as reloaded
+			asset->UpdateLastWriteTime( );
+		}
+
 		return m_Assets[ filePath ];
 	}
 
@@ -76,10 +97,12 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath ) {
 	}
 
 	asset->SetFilePath( filePath );
-	
+
 	if ( !asset->LoadFromFile( ) ) {
 		return nullptr;
 	}
+
+	asset->UpdateLastWriteTime( );
 
 	m_Assets[ filePath ] = asset;
 
@@ -123,7 +146,6 @@ void Pine::Assets::Dispose( ) {
 	}
 }
 
-const std::unordered_map<std::string, Pine::IAsset*>& Pine::Assets::GetAssets( )
-{
+const std::unordered_map<std::string, Pine::IAsset*>& Pine::Assets::GetAssets( ) {
 	return m_Assets;
 }

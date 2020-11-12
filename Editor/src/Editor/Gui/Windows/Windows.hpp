@@ -11,7 +11,7 @@ namespace Editor::Gui::Windows {
 	inline bool ShowProperties = true;
 
 	// Debug
-	inline bool ShowRenderingContext = true;
+	inline bool ShowRenderingContext = false;
 
 	void RenderEntitylist( );
 
