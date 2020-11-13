@@ -31,7 +31,9 @@ namespace Pine {
 	class IAsset {
 	protected:
 		std::filesystem::path m_FilePath;
+
 		std::string m_FileName = "";
+		std::string m_AbsoulteFilePath = "";
 		
 		EAssetType m_Type = EAssetType::Invalid;
 		
@@ -43,6 +45,7 @@ namespace Pine {
 		const std::filesystem::path& GetPath( ) const;
 
 		const std::string& GetFileName( ) const;
+		const std::string& GetAbsoluteFilePath( ) const;
 
 		EAssetType GetType( ) const;
 

@@ -10,6 +10,8 @@ namespace Pine::Window::Internal
 	void Destroy( );
 
 	GLFWwindow* GetWindowPointer( );
+
+	void* GetWindowHWND( );
 }
 
 namespace Pine::Window

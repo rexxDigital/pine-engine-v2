@@ -4,6 +4,7 @@ void Pine::IAsset::SetFilePath(const std::string& str)
 {
 	m_FilePath = std::filesystem::path(str);
 	m_FileName = m_FilePath.filename().string();
+	m_AbsoulteFilePath = std::filesystem::absolute( m_FilePath ).string( );
 }
 
 const std::filesystem::path& Pine::IAsset::GetPath() const
@@ -14,6 +15,10 @@ const std::filesystem::path& Pine::IAsset::GetPath() const
 const std::string& Pine::IAsset::GetFileName() const
 {
 	return m_FileName;
+}
+
+const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const {
+	return m_AbsoulteFilePath;
 }
 
 Pine::EAssetType Pine::IAsset::GetType() const

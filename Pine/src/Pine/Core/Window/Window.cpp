@@ -1,8 +1,12 @@
 #include "Window.hpp"
 #include "../Log/Log.hpp"
 
+
 #include <GLFW/glfw3.h>
 #include <cassert>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 namespace
 {
@@ -37,6 +41,10 @@ void Pine::Window::Internal::Destroy()
 GLFWwindow* Pine::Window::Internal::GetWindowPointer()
 {
 	return m_Window;
+}
+
+void* Pine::Window::Internal::GetWindowHWND( ) {
+	return glfwGetWin32Window( m_Window );
 }
 
 void Pine::Window::Show()
