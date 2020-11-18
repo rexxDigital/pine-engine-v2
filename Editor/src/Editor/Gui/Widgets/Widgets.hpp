@@ -3,6 +3,7 @@
 #include <string>
 #include <Pine\Assets\IAsset\IAsset.hpp>
 
+
 namespace Pine { class Texture2D; }
 
 namespace Editor::Gui::Widgets {
@@ -15,7 +16,7 @@ namespace Editor::Gui::Widgets {
 
 	Pine::IAsset* AssetPicker( const std::string& str, Pine::IAsset* currentAsset = nullptr, bool shouldRestrictType = false, Pine::EAssetType type = Pine::EAssetType::Invalid );
 
-	bool Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size = 48 );
+	bool Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size = 48, Pine::IAsset* asset = nullptr );
 
 	void PushDisabled( );
 	void PopDisabled( );

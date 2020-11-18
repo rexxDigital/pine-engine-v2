@@ -41,12 +41,10 @@ namespace {
 
 		ImGui::Columns( 1 );
 
-
 		ImGui::EndChild( );
 	}
 
 	void RenderMaterial( Pine::Material* mat ) {
-
 		if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::EAssetType::Texture2D ) ) {
 			mat->SetDiffuse( dynamic_cast< Pine::Texture2D* >( newAsset ) );
 		}

@@ -113,6 +113,18 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly );
 
+	if ( ImGui::BeginDragDropTarget( ) ) {
+		if ( auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
+			auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );
+
+			if ( !shouldRestrictType || ( shouldRestrictType && asset->GetType( ) == type ) ) {
+				returnValue = asset;
+			}
+		}
+
+		ImGui::EndDragDropTarget( );
+	}
+
 	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::EAssetType::Texture2D ) {
 		auto texture = dynamic_cast< Pine::Texture2D* >( currentAsset );
 
@@ -184,7 +196,7 @@ bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value ) {
 	return ret;
 }
 
-bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size ) {
+bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset ) {
 	bool ret = false;
 
 	ImGui::PushID( text.c_str( ) );
@@ -196,6 +208,20 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 
 	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) ) {
 		ret = true;
+	}
+
+	if ( asset != nullptr ) {
+		if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
+			ImGui::SetDragDropPayload( "Asset", &asset, sizeof( Pine::IAsset* ), 0 );
+
+			ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 32.f, 32.f ) );
+
+			ImGui::SameLine( );
+
+			ImGui::Text( text.c_str( ) );
+
+			ImGui::EndDragDropSource( );
+		}
 	}
 
 	if ( !showBackground )

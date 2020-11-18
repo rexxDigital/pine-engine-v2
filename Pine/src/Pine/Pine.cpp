@@ -39,14 +39,14 @@ bool Pine::Setup( )
 	// We will have to setup the uniform buffers first.
 	UniformBuffers::Setup( );
 
-	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders" ) == 0 ) {
+	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
 		Log::Fatal( "Failed to load engine shaders." );
 		return false;
 	}
 
 	Log::Message( "Loading engine assets..." );
 
-	if ( Assets::LoadFromDirectory( "Assets\\Engine" ) == 0 ) {
+	if ( Assets::LoadFromDirectory( "Assets\\Engine", true ) == 0 ) {
 		Log::Fatal( "Failed to load engine assets." );
 		return false;
 	}

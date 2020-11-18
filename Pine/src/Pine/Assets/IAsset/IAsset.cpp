@@ -34,3 +34,11 @@ bool Pine::IAsset::HasBeenUpdated( ) const {
 	const auto currentWriteTime = std::filesystem::last_write_time( m_FilePath );
 	return currentWriteTime.time_since_epoch( ) != m_LastWriteTime;
 }
+
+bool Pine::IAsset::GetReadOnly( ) const {
+	return m_ReadOnly;
+}
+
+void Pine::IAsset::SetReadOnly( bool value ) {
+	m_ReadOnly = value;
+}

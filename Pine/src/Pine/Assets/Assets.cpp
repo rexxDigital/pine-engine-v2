@@ -57,7 +57,7 @@ namespace {
 	}
 }
 
-Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath ) {
+Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool readOnly ) {
 	if ( m_Assets.count( filePath ) > 0 ) {
 		auto asset = m_Assets[ filePath ];
 
@@ -102,6 +102,7 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath ) {
 		return nullptr;
 	}
 
+	asset->SetReadOnly( readOnly );
 	asset->UpdateLastWriteTime( );
 
 	m_Assets[ filePath ] = asset;
@@ -109,7 +110,7 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath ) {
 	return asset;
 }
 
-int Pine::Assets::LoadFromDirectory( const std::string& directoryPath ) {
+int Pine::Assets::LoadFromDirectory( const std::string& directoryPath, bool readOnly ) {
 	uint32_t loadedAssets = 0;
 
 	for ( const auto& dirEntry : std::filesystem::recursive_directory_iterator( directoryPath ) ) {
@@ -143,9 +144,41 @@ void Pine::Assets::Dispose( ) {
 		auto asset = element.second;
 
 		asset->Dispose( );
+	
+		delete asset;
 	}
 }
 
 const std::unordered_map<std::string, Pine::IAsset*>& Pine::Assets::GetAssets( ) {
 	return m_Assets;
+}
+
+bool Pine::Assets::DisposeAsset( const std::string& assetPath ) {
+	if ( m_Assets.count( assetPath ) == 0 )
+		return false;
+
+	auto asset = m_Assets[ assetPath ];
+
+	asset->Dispose( );
+
+	delete asset;
+
+	m_Assets.erase( assetPath );
+
+	return true;
+}
+
+bool Pine::Assets::DisposeAsset( Pine::IAsset* asset ) {
+	if ( !asset )
+		return false;
+
+	const std::string path = asset->GetPath( ).string( );
+
+	asset->Dispose( );
+
+	delete asset;
+
+	m_Assets.erase( path );
+
+	return true;
 }
