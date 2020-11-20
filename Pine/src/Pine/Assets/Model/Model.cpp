@@ -1,11 +1,12 @@
 #include "Model.hpp"
 
 #include <filesystem>
-
+#include <fstream>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "../../Core/Log/Log.hpp"
+#include "../../Core/Serialization/Serialization.hpp"
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "../../Rendering/Renderer3D/Renderer3D.hpp"
 
@@ -131,7 +132,7 @@ Pine::Model::Model() {
 }
 
 Pine::Mesh* Pine::Model::CreateMesh() {
-	auto mesh = new Pine::Mesh();
+	auto mesh = new Pine::Mesh(this);
 
 	m_MeshList.push_back(mesh);
 
@@ -155,11 +156,83 @@ bool Pine::Model::LoadFromFile() {
 
 	ProcessNode(this, scene->mRootNode, scene);
 
+	// Load custom materials if we have any:
+	const auto assetFilePath = m_FilePath.parent_path().string() + "\\" + m_FilePath.filename().string() + ".asset";
+
+	if (std::filesystem::exists(assetFilePath))
+	{
+		try
+		{
+			auto jsonObject = Pine::Serialization::LoadJSONFromFile(assetFilePath);
+
+			for (int i = 0; i < m_MeshList.size();i++)
+			{
+				const auto meshStr = std::to_string(i);
+				
+				if (!jsonObject.contains(meshStr))
+				{
+					continue;
+				}
+
+				if (jsonObject[meshStr].contains("mat"))
+				{
+					const auto materialAsset = dynamic_cast<Pine::Material*>(Pine::Assets::LoadFromFile(jsonObject[meshStr]["mat"]));
+
+					if (materialAsset == nullptr) // weird but ok
+					{
+						Log::Warning("Failed to find material file from mesh");
+						continue;
+					}
+
+					m_MeshList[i]->SetMaterial(materialAsset);
+				}	
+			}
+		}
+		catch (std::exception& e)
+		{
+			Log::Error("Failed to parse json, " + std::string(e.what()));
+		}
+
+	}
+	
 	return true;
 }
 
 bool Pine::Model::SaveToFile() {
-	return false;
+	nlohmann::json j;
+	bool wroteData = false;
+
+	const auto assetFilePath = m_FilePath.parent_path().string() + "\\" + m_FilePath.filename().string() + ".asset";
+	
+	// Check if we have any custom materials in place.
+	for (int i = 0; i < m_MeshList.size();i++)
+	{
+		const auto mesh = m_MeshList[i];
+
+		if (mesh->GetMaterial()->GetReadOnly() || mesh->GetMaterial()->IsGenerated())
+		{
+			continue;
+		}
+
+		wroteData = true;
+		j[std::to_string(i)]["mat"] = mesh->GetMaterial()->GetPath().string();
+	}
+
+	if (std::filesystem::exists(assetFilePath))
+		std::filesystem::remove(assetFilePath);
+	
+	if (!wroteData)
+	{
+		return true;
+	}
+
+	std::ofstream stream(assetFilePath);
+	
+	stream << j;
+
+	stream.close();
+	
+	return true;
 }
 
 void Pine::Model::Dispose() {

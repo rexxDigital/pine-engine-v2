@@ -50,6 +50,16 @@ void Pine::Material::SetShader( Shader* shader ) {
 	m_Shader = shader;
 }
 
+bool Pine::Material::IsGenerated() const
+{
+	return m_IsGenerated;
+}
+
+void Pine::Material::SetGenerated(bool generated)
+{
+	m_IsGenerated = generated;
+}
+
 bool Pine::Material::LoadFromFile( ) {
 	const auto j = Pine::Serialization::LoadJSONFromFile( m_FilePath.string( ) );
 

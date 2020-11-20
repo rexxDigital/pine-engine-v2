@@ -1,8 +1,10 @@
 #include "Editor.hpp"
 #include "Gui\Gui.hpp"
-#include "ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Assets.hpp>
+
+#include "ProjectManager\ProjectManager.hpp"
 #include "Gui\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "RenderingHandler/RenderingHandler.hpp"
 
 void UpdateAssetCache( );
 
@@ -18,5 +20,6 @@ void Editor::Setup( ) {
 
 	UpdateAssetCache( );
 
+	RenderingHandler::Setup();
 
 }

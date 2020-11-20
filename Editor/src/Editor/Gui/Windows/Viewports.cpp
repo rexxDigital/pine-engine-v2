@@ -1,5 +1,8 @@
 #include "Windows.hpp"
 #include "../Gui.hpp"
+#include "../../RenderingHandler/RenderingHandler.hpp"
+
+#include <Pine/OpenGL/FrameBuffer/FrameBuffer.hpp>
 
 namespace {
 
@@ -28,9 +31,16 @@ void Editor::Gui::Windows::RenderViewports( ) {
 	// --- Game viewport ---
 
 	if ( ShowGameViewport ) {
-		ImGui::Begin( "Game", &ShowGameViewport, ImGuiWindowFlags_MenuBar );
+		if (ImGui::Begin( "Game", &ShowGameViewport, ImGuiWindowFlags_MenuBar ))
+		{
+			ShowViewportControls(false);
 
-		ShowViewportControls( false );
+			
+			const auto avSize = ImGui::GetContentRegionAvail();
+
+			RenderingHandler::SetViewportSize(static_cast<int>(avSize.x * (avSize.x / avSize.y)), static_cast<int>(avSize.y * (avSize.x / avSize.y)));
+			ImGui::Image(reinterpret_cast<ImTextureID>(RenderingHandler::GetFrameBuffer()->GetTextureId()), avSize, ImVec2(1.f, 1.f), ImVec2(0.f, 0.f));
+		}
 
 		ImGui::End( );
 	}
@@ -39,9 +49,16 @@ void Editor::Gui::Windows::RenderViewports( ) {
 	// --- Level viewport ---
 
 	if ( ShowLevelViewport ) {
-		ImGui::Begin( "Level", &ShowLevelViewport, ImGuiWindowFlags_MenuBar );
+		if (ImGui::Begin( "Level", &ShowLevelViewport, ImGuiWindowFlags_MenuBar ))
+		{
+			ShowViewportControls(true);
 
-		ShowViewportControls( true );
+			const auto avSize = ImGui::GetContentRegionAvail();
+
+			RenderingHandler::SetViewportSize(static_cast<int>(avSize.x * (avSize.x / avSize.y)), static_cast<int>(avSize.y * (avSize.x / avSize.y)));
+
+			ImGui::Image(reinterpret_cast<ImTextureID>(RenderingHandler::GetFrameBuffer()->GetTextureId()), avSize, ImVec2(1.f, 1.f), ImVec2(0.f, 0.f));
+		}
 
 		ImGui::End( );
 	}

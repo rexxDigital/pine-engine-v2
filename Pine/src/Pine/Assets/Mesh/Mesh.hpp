@@ -4,10 +4,12 @@
 #include "../../OpenGL/VertexArray/VertexArray.hpp"
 
 namespace Pine {
+	class Model;
 
 	class Mesh {
 	private:
 		Material* m_Material = nullptr;
+		Model* m_ParentModel = nullptr;
 
 		std::unique_ptr<VertexArray> m_VertexArray = nullptr;
 	
@@ -17,8 +19,10 @@ namespace Pine {
 		glm::vec3 m_Mins;
 		glm::vec3 m_Maxs;
 	public:
-		Mesh();
+		Mesh(Model* model);
 
+		Model* GetParentModel() const;
+		
 		VertexArray* GetVertexArray() const;
 
 		Material* GetMaterial() const;

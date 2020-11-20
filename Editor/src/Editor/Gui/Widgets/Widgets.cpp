@@ -76,6 +76,23 @@ void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 
 }
 
+bool Editor::Gui::Widgets::SliderFloat(const std::string& str, float& value, float min, float max, const std::string& format)
+{
+	ImGui::Columns(2, nullptr, false);
+
+	ImGui::Text("%s", str.c_str());
+
+	ImGui::NextColumn();
+
+	ImGui::SetNextItemWidth(-1.f);
+
+	const bool retValue = ImGui::SliderFloat(std::string("##" + str).c_str(), &value, min, max, format.c_str());
+	
+	ImGui::Columns(1);
+
+	return retValue;
+}
+
 void Editor::Gui::Widgets::PushDisabled( ) {
 
 	ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );

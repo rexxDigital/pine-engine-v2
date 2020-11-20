@@ -21,6 +21,8 @@ namespace Pine
 		Texture2D* m_Specular = nullptr;
 
 		Shader* m_Shader = nullptr;
+
+		bool m_IsGenerated = false;
 	public:
 		Material();
 
@@ -40,6 +42,9 @@ namespace Pine
 		Shader* GetShader();
 		void SetShader(Shader* shader);
 
+		bool IsGenerated() const;
+		void SetGenerated(bool generated);
+		
 		bool LoadFromFile() override;
 		bool SaveToFile() override;
 		void Dispose() override;

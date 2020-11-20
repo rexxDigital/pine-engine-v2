@@ -30,10 +30,6 @@ namespace {
 
 }
 
-Pine::Level* Editor::ProjectManager::GetCurrentLevel( ) {
-	return g_CurrentLevel;
-}
-
 void Editor::ProjectManager::Setup( ) {
 
 	for ( const auto& dirEntry : std::filesystem::directory_iterator( "Projects" ) ) {
@@ -55,6 +51,31 @@ bool Editor::ProjectManager::HasProjectOpen( ) {
 
 std::string Editor::ProjectManager::GetCurrentProjectDirectory( ) {
 	return g_CurrentProject;
+}
+
+Pine::Level* Editor::ProjectManager::GetCurrentLevel() {
+	return g_CurrentLevel;
+}
+
+void Editor::ProjectManager::OpenLevel(const std::string& path)
+{	
+	auto level = Pine::Assets::GetAsset<Pine::Level>(path);
+	if (!level)
+		return;
+
+	level->Load();
+
+	g_CurrentLevel = level;
+}
+
+void Editor::ProjectManager::SaveLevel(const std::string& path)
+{
+	g_CurrentLevel = new Pine::Level();
+
+	g_CurrentLevel->CreateFromCurrentLevel();
+	g_CurrentLevel->SetFilePath(path);
+	
+	g_CurrentLevel->SaveToFile();
 }
 
 void Editor::ProjectManager::OpenProject( const std::string& directory ) {
