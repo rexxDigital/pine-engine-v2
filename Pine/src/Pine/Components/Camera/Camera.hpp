@@ -28,8 +28,8 @@ namespace Pine {
 		void SetFarPlane(float value);
 		void SetFieldOfView(float value);
 
-		const glm::mat4& GetProjectionMatrix() const;
-		const glm::mat4& GetViewMatrix() const;
+		glm::mat4& GetProjectionMatrix();
+		glm::mat4& GetViewMatrix();
 
 		void OnSetup() override;
 		void OnRender() override;

@@ -11,7 +11,7 @@ void Editor::Gui::MainMenuBar::Render() {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Save"))
 			{
-				
+				ProjectManager::Save();
 			}
 
 			if (ImGui::MenuItem("Level Settings"))

@@ -7,6 +7,8 @@
 #include "MainMenuBar/MainMenuBar.hpp"
 #include "..\ProjectManager\ProjectManager.hpp"
 
+#include <ImGuizmo/ImGuizmo.h>
+
 namespace {
 
 	void SetupDockspace( ) {
@@ -37,6 +39,8 @@ namespace {
 	}
 
 	void OnRenderGui( ) {
+		ImGuizmo::BeginFrame();
+		
 		if ( !Editor::ProjectManager::HasProjectOpen( ) ) {
 			Editor::Gui::Windows::RenderProjectWizard( );
 

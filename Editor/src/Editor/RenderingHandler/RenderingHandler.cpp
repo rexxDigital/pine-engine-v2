@@ -3,6 +3,8 @@
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 #include <Pine/OpenGL/FrameBuffer/FrameBuffer.hpp>
 
+#include <ImGui/imgui.h>
+
 namespace
 {
 	Pine::FrameBuffer* g_RenderingFrameBuffer = nullptr;
@@ -19,7 +21,6 @@ void Editor::RenderingHandler::Setup()
 	Pine::RenderManager::GetRenderingContext()->m_Height = 1080;
 	
 	Pine::RenderManager::GetRenderingContext()->m_AutoUpdateSize = false;
-	
 }
 
 Pine::FrameBuffer* Editor::RenderingHandler::GetFrameBuffer()

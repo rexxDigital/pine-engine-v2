@@ -177,6 +177,8 @@ void UpdateAssetCache() {
 
 	MapDirectory("Engine", "Assets\\Engine", g_RootDirectory.get());
 
+	Editor::Gui::Utility::AssetIconGen::Update();
+	
 	ProcessDirectory(Editor::ProjectManager::GetCurrentProjectDirectory(), g_RootDirectory.get());
 
 	g_CurrentDirectory = g_RootDirectory.get();
@@ -386,8 +388,8 @@ void Editor::Gui::Windows::RenderAssetBrowser() {
 
 				std::filesystem::create_directory(std::string(baseDir + "\\" + buff));
 
-				UpdateAssetCache();
 				ProjectManager::ReloadProjectAssets();
+				UpdateAssetCache();
 			}
 
 			if (g_CreateType == 2) {
@@ -398,8 +400,8 @@ void Editor::Gui::Windows::RenderAssetBrowser() {
 				
 				ProjectManager::SaveLevel(baseDir + "\\" + buff + ".lvl");
 
-				UpdateAssetCache();
 				ProjectManager::ReloadProjectAssets();
+				UpdateAssetCache();
 			}
 
 			ImGui::CloseCurrentPopup();

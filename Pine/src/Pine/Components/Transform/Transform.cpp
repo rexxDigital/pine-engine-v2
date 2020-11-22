@@ -80,7 +80,7 @@ void Pine::Transform::LoadFromJson( nlohmann::json& j )
 	Scale	 = Serialization::LoadVec3( j, "scl" );
 }
 
-const glm::mat4& Pine::Transform::GetTransformationMatrix() const
+glm::mat4& Pine::Transform::GetTransformationMatrix()
 {
 	return m_TransformationMatrix;
 }

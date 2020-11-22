@@ -12,10 +12,16 @@
 #include "../Skybox/Skybox.hpp"
 #include <GL/glew.h>
 
+
+#include "../../../ImGui/imgui_impl_glfw.h"
+#include "../../../ImGui/imgui_impl_opengl3.h"
+
 namespace {
 
 	Pine::RenderingContext* g_RenderingContext = nullptr;
-	Pine::RenderCallback g_RenderingCallback = nullptr;
+	
+	Pine::RenderCallback g_PreRenderingCallback = nullptr;
+	Pine::RenderCallback g_PostRenderingCallback = nullptr;
 
 	bool VerifyRenderingContext(Pine::RenderingContext* context) {
 		if (!context)
@@ -24,6 +30,8 @@ namespace {
 		return true;
 	}
 
+	ImGuiContext* g_RenderingImGuiContext = nullptr;
+	
 }
 
 void Pine::RenderManager::Run() {
@@ -53,7 +61,7 @@ void Pine::RenderManager::Run() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Reset the viewport size.
-	glViewport(0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height);
+	glViewport(0, 0, 1600, 900);
 
 	// Enable depth test just in case.
 	glEnable(GL_DEPTH_TEST);
@@ -61,8 +69,8 @@ void Pine::RenderManager::Run() {
 	if (g_RenderingContext->m_Camera == nullptr)
 		return;
 
-	if (g_RenderingCallback) {
-		g_RenderingCallback();
+	if (g_PreRenderingCallback) {
+		g_PreRenderingCallback();
 	}
 
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
@@ -139,6 +147,10 @@ void Pine::RenderManager::Run() {
 	}
 
 	Skybox::Render();
+
+	if (g_PostRenderingCallback) {
+		g_PostRenderingCallback();
+	}
 }
 
 void Pine::RenderManager::SetRenderingContext(RenderingContext* renderingContext) {
@@ -149,6 +161,17 @@ Pine::RenderingContext* Pine::RenderManager::GetRenderingContext() {
 	return g_RenderingContext;
 }
 
-void Pine::RenderManager::SetRenderingCallback(RenderCallback fn) {
-	g_RenderingCallback = fn;
+void Pine::RenderManager::SetPreRenderingCallback(RenderCallback fn)
+{
+	g_PreRenderingCallback = fn;
+}
+
+void Pine::RenderManager::SetPostRenderingCallback(RenderCallback fn)
+{
+	g_PostRenderingCallback = fn;
+}
+
+void Pine::RenderManager::Setup()
+{
+	g_RenderingImGuiContext = ImGui::CreateContext();
 }

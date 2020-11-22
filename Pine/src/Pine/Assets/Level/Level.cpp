@@ -64,6 +64,8 @@ void Pine::Level::CreateFromCurrentLevel( )
 
 void Pine::Level::Load( )
 {
+	Log::Message("Loading level...");
+	
 	// Clear current non temporaries entities
 	Pine::EntityList::ClearEntities( );
 

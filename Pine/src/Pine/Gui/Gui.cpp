@@ -11,6 +11,8 @@
 namespace {
 	GuiRenderCallback g_GuiRenderCallback;
 
+	ImGuiContext* g_GuiContext = nullptr;
+	
 	void SetupGuiStyle( ) {
 		auto* style = &ImGui::GetStyle( );
 
@@ -101,7 +103,11 @@ void Pine::Gui::SetGuiRenderCallback( GuiRenderCallback callback ) {
 }
 
 void Pine::Gui::Setup( ) {
-	ImGui::CreateContext( );
+	g_GuiContext = ImGui::CreateContext();
+	
+	ImGui_ImplGlfw_InitForOpenGL(Window::Internal::GetWindowPointer(), true);
+	ImGui_ImplOpenGL3_Init("#version 420");
+	
 	ImGuiIO& io = ImGui::GetIO( );
 
 	ImGui::StyleColorsDark( );
@@ -110,9 +116,6 @@ void Pine::Gui::Setup( ) {
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 18.f );
-
-	ImGui_ImplGlfw_InitForOpenGL( Window::Internal::GetWindowPointer( ), true );
-	ImGui_ImplOpenGL3_Init( "#version 420" );
 }
 
 void Pine::Gui::Dispose( ) {
@@ -126,6 +129,8 @@ void Pine::Gui::Render( ) {
 	// Reset the frame buffer for rendering.
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
+	ImGui::SetCurrentContext(g_GuiContext);
+	
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame( );
 	ImGui_ImplGlfw_NewFrame( );

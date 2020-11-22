@@ -28,7 +28,7 @@ namespace Pine
 		void SaveToJson(nlohmann::json& j) override;
 		void LoadFromJson(nlohmann::json& j) override;
 
-		const glm::mat4& GetTransformationMatrix() const;
+		glm::mat4& GetTransformationMatrix();
 
 		glm::vec3 Position = glm::vec3(0.f, 0.f, 0.f);
 		glm::vec3 Rotation = glm::vec3(0.f, 0.f, 0.f);

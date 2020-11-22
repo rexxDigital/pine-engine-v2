@@ -52,6 +52,7 @@ bool Pine::Setup( )
 	}
 
 	Renderer3D::Setup( );
+
 	RenderManager::SetRenderingContext( CreateDefaultRenderingContext( ) );
 
 	Skybox::Setup( );
@@ -61,6 +62,8 @@ bool Pine::Setup( )
 
 	Gui::Setup( );
 
+	RenderManager::Setup();
+	
 	Log::Message( "Pine was successfully initialized!" );
 
 	return true;

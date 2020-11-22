@@ -3,7 +3,10 @@
 #include <Pine\Assets\Texture2D\Texture2D.hpp>
 #include <ImGui\imgui.h>
 #include <Pine\Assets\Material\Material.hpp>
+
+#include "../../../ProjectManager/ProjectManager.hpp"
 #include "..\..\Widgets\Widgets.hpp"
+#include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
 
 namespace {
@@ -78,10 +81,7 @@ namespace {
 		{
 			if (ImGui::CollapsingHeader(std::string("Mesh #" + std::to_string(i)).c_str()))
 			{
-				auto mesh = model->GetMeshList()[i];
-
-
-				
+				auto mesh = model->GetMeshList()[i];		
 				if (ImGui::TreeNode(std::string("Material##" + std::to_string(i)).c_str()))
 				{
 					auto mat = mesh->GetMaterial();
@@ -137,6 +137,26 @@ namespace {
 			}
 		}
 	}
+
+	void RenderLevel(Pine::Level* lvl)
+	{
+		if (!lvl)
+			return;
+		
+		ImGui::Text("Blueprints: %d", lvl->GetBlueprintCount());
+
+		if (ImGui::Button("Load", ImVec2(300.f, 30.f)))
+		{
+			lvl->Load();
+			Editor::ProjectManager::OpenLevel(lvl);
+		}
+
+		if (ImGui::Button("Save", ImVec2(300.f, 30.f)))
+		{
+			lvl->CreateFromCurrentLevel();
+			Editor::ProjectManager::OpenLevel(lvl);
+		}
+	}
 	
 }
 
@@ -153,6 +173,9 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		break;
 	case Pine::EAssetType::Model:
 		RenderModel(dynamic_cast<Pine::Model*>(asset));
+		break;
+	case Pine::EAssetType::Level:
+		RenderLevel(dynamic_cast<Pine::Level*>(asset));
 		break;
 	default:
 		break;
