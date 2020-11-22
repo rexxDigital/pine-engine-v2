@@ -4,6 +4,23 @@
 #include "../../../ImGui/imgui.h"
 #include "../../Core/Serialization/Serialization.hpp"
 
+void Pine::Transform::BuildDirections()
+{
+	m_Forward = glm::vec3(
+		cos(glm::radians(Rotation.x)) * sin(glm::radians(Rotation.y)),
+		sin(glm::radians(Rotation.x)),
+		cos(glm::radians(Rotation.x)) * cos(glm::radians(Rotation.y))
+	);
+
+	m_Right = glm::vec3(
+		sin(glm::radians(Rotation.y) - 3.14f / 2.0f),
+		0,
+		cos(glm::radians(Rotation.y) - 3.14f / 2.0f)
+	);
+
+	m_Up = glm::cross(m_Right, m_Forward);
+}
+
 void Pine::Transform::BuildTransformationMatrix() {
 	m_TransformationMatrix = glm::mat4(1.f);
 
@@ -53,6 +70,7 @@ void Pine::Transform::OnRender() {
 	m_LastScaleLen = sclLength;
 
 	BuildTransformationMatrix();
+	BuildDirections();
 }
 
 Pine::IComponent* Pine::Transform::Clone( )
@@ -83,4 +101,19 @@ void Pine::Transform::LoadFromJson( nlohmann::json& j )
 glm::mat4& Pine::Transform::GetTransformationMatrix()
 {
 	return m_TransformationMatrix;
+}
+
+const glm::vec3& Pine::Transform::GetForward() const
+{
+	return m_Forward;
+}
+
+const glm::vec3& Pine::Transform::GetRight() const
+{
+	return m_Right;
+}
+
+const glm::vec3& Pine::Transform::GetUp() const
+{
+	return m_Up;
 }

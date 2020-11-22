@@ -4,6 +4,8 @@
 #include <Pine/Pine.hpp>
 #include <Pine/Entitylist/EntityList.hpp>
 
+#include "Editor/EditorEntity/EditorEntity.hpp"
+
 namespace {
 
 	// HACK: To fix context menus, since IsWindowHovered is out of control
@@ -97,6 +99,11 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 		// Since we render children for each parent entity instead.
 		if ( entity->GetParent( ) != nullptr ) {
+			continue;
+		}
+
+		if (entity == EditorEntity::GetEntity())
+		{
 			continue;
 		}
 

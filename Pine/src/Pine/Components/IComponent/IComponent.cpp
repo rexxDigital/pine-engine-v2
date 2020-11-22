@@ -29,6 +29,11 @@ void Pine::IComponent::OnDestroy() {
 
 }
 
+void Pine::IComponent::OnCreated()
+{
+	
+}
+
 void Pine::IComponent::LoadFromJson( nlohmann::json& j )
 {
 	

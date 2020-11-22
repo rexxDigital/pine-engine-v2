@@ -118,7 +118,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -132,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\Editor\Editor.cpp" />
+    <ClCompile Include="src\Editor\EditorEntity\EditorEntity.cpp" />
     <ClCompile Include="src\Editor\Gui\Gui.cpp" />
     <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Editor.hpp" />
+    <ClInclude Include="src\Editor\EditorEntity\EditorEntity.hpp" />
     <ClInclude Include="src\Editor\Gui\Gui.hpp" />
     <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp" />

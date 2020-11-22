@@ -46,6 +46,13 @@ namespace Pine::Input {
 		const std::vector<std::unique_ptr<Pine::Input::Internal::AxisBinding_t>>& GetAxisBindings( );
 	};
 
+	class InputBindingContainer
+	{
+	private:
+
+	public:
+	};
+	
 	InputBinding* CreateBinding( const std::string& name );
 	void RemoveBinding( InputBinding* binding );
 

@@ -2,23 +2,27 @@
 #include "Gui\Gui.hpp"
 #include <Pine\Assets\Assets.hpp>
 
+
+#include "EditorEntity/EditorEntity.hpp"
 #include "ProjectManager\ProjectManager.hpp"
 #include "Gui\Utility\AssetIconGen\AssetIconGen.hpp"
 #include "RenderingHandler/RenderingHandler.hpp"
 
-void UpdateAssetCache( );
+void UpdateAssetCache();
 
-void Editor::Setup( ) {
+void Editor::Setup() {
 
-	Editor::ProjectManager::Setup( );
-	Editor::ProjectManager::OpenProject( "Projects\\Default" );
+	Editor::ProjectManager::Setup();
+	Editor::ProjectManager::OpenProject("Projects\\Default");
 
-	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
+	Pine::Assets::LoadFromDirectory("Assets\\Editor");
 
-	Gui::Setup( );
-	Gui::Utility::AssetIconGen::Update( );
+	Gui::Setup();
+	Gui::Utility::AssetIconGen::Update();
 
-	UpdateAssetCache( );
+	EditorEntity::Create();
+
+	UpdateAssetCache();
 
 	RenderingHandler::Setup();
 

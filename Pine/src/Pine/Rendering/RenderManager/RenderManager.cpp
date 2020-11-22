@@ -66,13 +66,13 @@ void Pine::RenderManager::Run() {
 	// Enable depth test just in case.
 	glEnable(GL_DEPTH_TEST);
 
-	if (g_RenderingContext->m_Camera == nullptr)
-		return;
-
 	if (g_PreRenderingCallback) {
 		g_PreRenderingCallback();
 	}
 
+	if (g_RenderingContext->m_Camera == nullptr)
+		return;
+	
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
 	// Also quicker!
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
