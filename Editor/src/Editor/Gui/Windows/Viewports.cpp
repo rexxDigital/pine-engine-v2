@@ -7,6 +7,8 @@
 #include <ImGuizmo/ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 
+
+#include "Editor/EditorEntity/EditorEntity.hpp"
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 
 #include "Pine/Entity/Entity.hpp"
@@ -78,7 +80,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			if (!Editor::Gui::Globals::SelectedEntityPtrs.empty())
 			{
 				auto e = Globals::SelectedEntityPtrs[0];
-				auto cam = Pine::RenderManager::GetRenderingContext()->m_Camera;
+				auto cam = EditorEntity::GetCamera();
 
 				if (cam != nullptr)
 				{

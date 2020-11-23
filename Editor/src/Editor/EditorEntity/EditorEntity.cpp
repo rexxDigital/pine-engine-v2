@@ -13,6 +13,7 @@
 namespace
 {
 	Pine::Entity* g_EditorEntity = nullptr;
+	Pine::Camera* g_Camera = nullptr;
 }
 
 using namespace Editor::Gui;
@@ -98,9 +99,16 @@ void Editor::EditorEntity::Create()
 	
 	g_EditorEntity->AddComponent(new Pine::Camera());
 	g_EditorEntity->AddComponent(new EditorEntityScript());
+
+	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>();
 }
 
 Pine::Entity* Editor::EditorEntity::GetEntity()
 {
 	return g_EditorEntity;
+}
+
+Pine::Camera* Editor::EditorEntity::GetCamera()
+{
+	return g_Camera;
 }
