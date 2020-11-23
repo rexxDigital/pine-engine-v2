@@ -25,6 +25,9 @@ namespace Editor::Gui {
 	// Global variables aint evil
 	namespace Globals {
 
+		inline bool IsInLevelView = false;
+		inline bool IsHoveringLevelView = false;
+		
 		// Manage selected entity/asset
 
 		inline SelectedItemType SelectedItem = SelectedItemType::None;

@@ -21,6 +21,10 @@ int Pine::Texture2D::GetHeight() const {
     return m_Height;
 }
 
+int Pine::Texture2D::GetChannels( ) const {
+    return m_Channels;
+}
+
 bool Pine::Texture2D::LoadFromFile() {
     int width, height, channels;
 
@@ -47,6 +51,7 @@ bool Pine::Texture2D::LoadFromFile() {
 
     m_Width = width;
     m_Height = height;
+    m_Channels = channels;
 
     stbi_image_free(data);
 

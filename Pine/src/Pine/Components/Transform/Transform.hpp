@@ -16,6 +16,11 @@ namespace Pine
 		float m_LastRotationLen = 0.0f;
 		float m_LastScaleLen = 0.0f;
 
+		glm::vec3 m_Forward;
+		glm::vec3 m_Right;
+		glm::vec3 m_Up;
+
+		void BuildDirections();
 		void BuildTransformationMatrix();
 	public:
 		Transform();
@@ -28,7 +33,11 @@ namespace Pine
 		void SaveToJson(nlohmann::json& j) override;
 		void LoadFromJson(nlohmann::json& j) override;
 
-		const glm::mat4& GetTransformationMatrix() const;
+		glm::mat4& GetTransformationMatrix();
+
+		const glm::vec3& GetForward() const;
+		const glm::vec3& GetRight() const;
+		const glm::vec3& GetUp() const;
 
 		glm::vec3 Position = glm::vec3(0.f, 0.f, 0.f);
 		glm::vec3 Rotation = glm::vec3(0.f, 0.f, 0.f);

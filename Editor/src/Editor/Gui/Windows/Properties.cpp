@@ -7,6 +7,8 @@
 #include "../Utility/ComponentPropertiesRenderer/ComponentPropertiesRenderer.hpp"
 #include "../Widgets/Widgets.hpp"
 #include <Pine/Components/Components.hpp>
+#include "../Utility/AssetIconGen/AssetIconGen.hpp"
+#include "../Utility/AssetPropertiesRenderer/AssetPropertiesRenderer.hpp"
 
 namespace {
 
@@ -78,7 +80,23 @@ namespace {
 
 	void DisplayAssetProperties( Pine::IAsset* a ) {
 
+		ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) )->GetId( ) ), ImVec2( 64.f, 64.f ) );
 
+		ImGui::SameLine( );
+
+		ImGui::BeginChild( "##AssetPropertiesChild", ImVec2( -1.f, 65.f ), false, 0 );
+
+		ImGui::Text( "%s", a->GetFileName( ).c_str( ) );
+		ImGui::Text( "%s", a->GetPath( ).string( ).c_str( ) );
+		ImGui::Text( "%s", Pine::SAssetType[ static_cast< int >( a->GetType( ) ) ] );
+
+		ImGui::EndChild( );
+
+		ImGui::Spacing( );
+		ImGui::Separator( );
+		ImGui::Spacing( );
+
+		Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( a );
 
 	}
 
@@ -181,11 +199,11 @@ void Editor::Gui::Windows::RenderProperties( ) {
 
 	ImGui::Begin( "Properties", &ShowProperties, 0 );
 
-	if ( Gui::Globals::SelectedItem == SelectedItemType::Entity && !Gui::Globals::SelectedEntityPtrs.empty( ) ) {
+	if ( !Gui::Globals::SelectedEntityPtrs.empty( ) ) {
 		DisplayEntityProperties( Gui::Globals::SelectedEntityPtrs[ 0 ] );
 	}
 
-	if ( Gui::Globals::SelectedItem == SelectedItemType::Asset && !Gui::Globals::SelectedAssetPtrs.empty( ) ) {
+	if ( !Gui::Globals::SelectedAssetPtrs.empty( ) ) {
 		DisplayAssetProperties( Gui::Globals::SelectedAssetPtrs[ 0 ] );
 	}
 

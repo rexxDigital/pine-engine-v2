@@ -1,0 +1,8 @@
+{
+	"Back": "Space\\back.png",
+	"Front": "Space\\front.png",
+	"Bottom": "Space\\bottom.png",
+	"Left": "Space\\left.png",
+	"Right": "Space\\right.png",
+	"Top": "Space\\top.png"
+}

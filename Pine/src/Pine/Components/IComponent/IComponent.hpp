@@ -48,6 +48,8 @@ namespace Pine
 		virtual void OnRender( );
 		virtual void OnDestroy( );
 
+		virtual void OnCreated( );
+
 		virtual IComponent* Clone( ) = 0;
 
 		virtual void LoadFromJson( nlohmann::json& j );

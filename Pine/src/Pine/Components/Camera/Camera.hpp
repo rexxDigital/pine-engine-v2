@@ -6,8 +6,8 @@ namespace Pine {
 
 	class Camera : public IComponent {
 	private:
-		float m_NearPlane = 0.1f;
-		float m_FarPlane = 100.f;
+		float m_NearPlane = 1.f;
+		float m_FarPlane = 300.f;
 		float m_FieldOfView = 70.f;
 
 		glm::mat4 m_ProjectionMatrix;
@@ -28,8 +28,8 @@ namespace Pine {
 		void SetFarPlane(float value);
 		void SetFieldOfView(float value);
 
-		const glm::mat4& GetProjectionMatrix() const;
-		const glm::mat4& GetViewMatrix() const;
+		glm::mat4& GetProjectionMatrix();
+		glm::mat4& GetViewMatrix();
 
 		void OnSetup() override;
 		void OnRender() override;

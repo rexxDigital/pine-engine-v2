@@ -1,19 +1,34 @@
 #include "Editor.hpp"
 #include "Gui\Gui.hpp"
-#include "ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Assets.hpp>
 
-void UpdateAssetCache( );
 
-void Editor::Setup( ) {
+#include "EditorEntity/EditorEntity.hpp"
+#include "ProjectManager\ProjectManager.hpp"
+#include "Gui\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "Pine/Rendering/Skybox/Skybox.hpp"
+#include "RenderingHandler/RenderingHandler.hpp"
 
-	Editor::ProjectManager::Setup( );
-	Editor::ProjectManager::OpenProject( "Projects\\Default" );
+#include "Pine/Assets/Texture3D/Texture3D.hpp"
 
-	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
+void UpdateAssetCache();
 
-	Editor::Gui::Setup( );
+void Editor::Setup() {
 
-	UpdateAssetCache( );
+	Editor::ProjectManager::Setup();
+	Editor::ProjectManager::OpenProject("Projects\\Default");
+
+	Pine::Assets::LoadFromDirectory("Assets\\Editor");
+
+	Pine::Skybox::SetSkyboxCubemap(Pine::Assets::GetAsset<Pine::Texture3D>("Assets\\Engine\\Skyboxes\\Space.cmap"));
+	
+	Gui::Setup();
+	Gui::Utility::AssetIconGen::Update();
+
+	EditorEntity::Create();
+
+	UpdateAssetCache();
+
+	RenderingHandler::Setup();
 
 }

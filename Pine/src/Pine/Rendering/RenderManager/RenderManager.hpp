@@ -12,8 +12,10 @@ namespace Pine::RenderManager {
 	void SetRenderingContext( RenderingContext* renderingContext );
 	RenderingContext* GetRenderingContext( );
 
-	void SetRenderingCallback( RenderCallback fn );
+	void SetPreRenderingCallback( RenderCallback fn );
+	void SetPostRenderingCallback( RenderCallback fn );
 
+	void Setup();
 	void Run( );
 
 }
