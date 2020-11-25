@@ -42,3 +42,13 @@ bool Pine::IAsset::GetReadOnly( ) const {
 void Pine::IAsset::SetReadOnly( bool value ) {
 	m_ReadOnly = value;
 }
+
+bool Pine::IAsset::GetUpdated( ) const
+{
+	return m_Updated;
+}
+
+void Pine::IAsset::SetUpdated( bool value )
+{
+	m_Updated = value;
+}

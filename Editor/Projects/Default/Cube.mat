@@ -1,5 +1,1 @@
-{
-	"DiffuseColor": {"x": 1, "y": 1, "z": 1},
-	"Shader": "Assets\\Engine\\Shaders\\Default.shr"
-}
- 
+{"AmbientColor":{"x":0.5,"y":0.5,"z":0.5},"DiffuseColor":{"x":1.0,"y":1.0,"z":1.0},"SpecularColor":{"x":0.0,"y":0.0,"z":0.0},"diffuse":"null","shader":"Assets\\Engine\\Shaders\\Default.shr","shininess":16.0,"specularMap":"null"}

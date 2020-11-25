@@ -1,6 +1,8 @@
 #include "Material.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
 
+#include <fstream>
+
 Pine::Material::Material( ) {
 	m_Type = EAssetType::Material;
 	m_Shader = Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
@@ -28,10 +30,12 @@ Pine::Texture2D* Pine::Material::GetSpecular( ) const {
 
 void Pine::Material::SetDiffuse( Texture2D* texture ) {
 	m_Diffuse = texture;
+	m_Updated = true;
 }
 
 void Pine::Material::SetSpecular( Texture2D* texture ) {
 	m_Specular = texture;
+	m_Updated = true;
 }
 
 float Pine::Material::GetShininiess( ) const {
@@ -40,6 +44,7 @@ float Pine::Material::GetShininiess( ) const {
 
 void Pine::Material::SetShininiess( float shininiess ) {
 	m_Shininiess = shininiess;
+	m_Updated = true;
 }
 
 Pine::Shader* Pine::Material::GetShader( ) {
@@ -50,12 +55,12 @@ void Pine::Material::SetShader( Shader* shader ) {
 	m_Shader = shader;
 }
 
-bool Pine::Material::IsGenerated() const
+bool Pine::Material::IsGenerated( ) const
 {
 	return m_IsGenerated;
 }
 
-void Pine::Material::SetGenerated(bool generated)
+void Pine::Material::SetGenerated( bool generated )
 {
 	m_IsGenerated = generated;
 }
@@ -83,7 +88,29 @@ bool Pine::Material::LoadFromFile( ) {
 }
 
 bool Pine::Material::SaveToFile( ) {
-	return false;
+	if ( IsGenerated( ) )
+		return false;
+
+	nlohmann::json j;
+
+	Serialization::SaveVec3( j[ "DiffuseColor" ], m_DiffuseColor );
+	Serialization::SaveVec3( j[ "SpecularColor" ], m_SpecularColor );
+	Serialization::SaveVec3( j[ "AmbientColor" ], m_AmbientColor );
+
+	j[ "shininess" ] = m_Shininiess;
+
+	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );
+	Serialization::SaveAsset( j[ "specularMap" ], m_Specular );
+
+	Serialization::SaveAsset( j[ "shader" ], m_Shader );
+
+	std::ofstream stream( m_FilePath );
+
+	stream << j;
+	
+	stream.close();
+
+	return true;
 }
 
 void Pine::Material::Dispose( ) {

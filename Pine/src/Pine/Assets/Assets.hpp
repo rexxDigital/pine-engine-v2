@@ -29,5 +29,8 @@ namespace Pine::Assets {
 	// Disposes all loaded assets
 	void Dispose( );
 
+	// Calls SaveToFile on all assets
+	void SaveAssets( );
+
 	const std::unordered_map<std::string, IAsset*>& GetAssets( );
 }

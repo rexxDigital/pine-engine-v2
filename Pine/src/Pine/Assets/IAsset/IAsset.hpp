@@ -40,6 +40,7 @@ namespace Pine {
 		std::chrono::system_clock::duration m_LastWriteTime;
 
 		bool m_ReadOnly = false;
+		bool m_Updated = false;
 	public:
 		virtual ~IAsset( ) = default;
 
@@ -57,6 +58,9 @@ namespace Pine {
 		bool GetReadOnly( ) const;
 		void SetReadOnly( bool value );
 
+		bool GetUpdated( ) const;
+		void SetUpdated( bool value );
+		
 		virtual bool LoadFromFile( ) = 0;
 		virtual bool SaveToFile( ) = 0;
 		virtual void Dispose( ) = 0;
