@@ -5,6 +5,11 @@
 namespace Pine
 {
 
+	struct LevelSettings
+	{
+		uint64_t m_CameraEntity = 0;
+	};
+	
 	class Level : public IAsset
 	{
 	private:
@@ -12,6 +17,8 @@ namespace Pine
 
 		void DisposeBlueprints( );
 		Blueprint* CreateBlueprintOfEntity( Pine::Entity* entity );
+
+		LevelSettings* m_LevelSettings = nullptr;
 	public:
 		Level( );
 
@@ -20,6 +27,8 @@ namespace Pine
 		void CreateFromCurrentLevel( );
 		void Load( );
 
+		LevelSettings* GetSettings( ) const;
+		
 		bool LoadFromFile( ) override;
 		bool SaveToFile( ) override;
 		void Dispose( ) override;

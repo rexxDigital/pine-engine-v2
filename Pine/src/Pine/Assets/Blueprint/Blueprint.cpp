@@ -134,11 +134,11 @@ void Pine::Blueprint::CreateFromEntity( Pine::Entity* entity )
 	CopyEntity( m_Entity, entity );
 }
 
-void Pine::Blueprint::SpawnEntity( ) const
+Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 {
 	if ( !HasValidEntity( ) )
 	{
-		return;
+		return nullptr;
 	}
 
 	Entity* newEntity = Pine::EntityList::CreateEntity( );
@@ -146,6 +146,8 @@ void Pine::Blueprint::SpawnEntity( ) const
 	newEntity->ClearComponents( );
 	
 	CopyEntity( newEntity, m_Entity );
+
+	return newEntity;
 }
 
 bool Pine::Blueprint::HasValidEntity( ) const

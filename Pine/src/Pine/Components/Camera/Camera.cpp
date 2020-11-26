@@ -68,11 +68,11 @@ void Pine::Camera::SetFieldOfView( float value ) {
 	BuildProjectionMatrix( );
 }
 
-glm::mat4& Pine::Camera::GetProjectionMatrix( )  {
+glm::mat4& Pine::Camera::GetProjectionMatrix( ) {
 	return m_ProjectionMatrix;
 }
 
-glm::mat4& Pine::Camera::GetViewMatrix( )  {
+glm::mat4& Pine::Camera::GetViewMatrix( ) {
 	return m_ViewMatrix;
 }
 
@@ -93,18 +93,12 @@ void Pine::Camera::SaveToJson( nlohmann::json& j ) {
 	j[ "near_plane" ] = m_NearPlane;
 	j[ "far_plane" ] = m_FarPlane;
 	j[ "fov" ] = m_FieldOfView;
-	j["activeCamera"] = RenderManager::GetRenderingContext()->m_Camera == this;
 }
 
 void Pine::Camera::LoadFromJson( nlohmann::json& j ) {
 	m_NearPlane = j[ "near_plane" ];
 	m_FarPlane = j[ "far_plane" ];
 	m_FieldOfView = j[ "fov" ];
-
-	if (j.contains("activeCamera") && j["activeCamera"] == true)
-	{
-		Pine::RenderManager::GetRenderingContext()->m_Camera = this;
-	} 
 }
 
 Pine::IComponent* Pine::Camera::Clone( ) {

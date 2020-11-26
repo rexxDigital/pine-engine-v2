@@ -23,6 +23,7 @@ layout(std140) uniform Material {
 }material;
 
 uniform MaterialSamplerData materialSamplers;
+uniform samplerCube skybox;
 
 out vec4 outputColor;
 
@@ -42,7 +43,7 @@ vec3 CalculateDirectionalLight(int lightNr) {
 
 	float specularFactor = max(dot(reflectedLightDirection, lightDir), 0.0f);
 	float dampedFactor = pow(specularFactor, material.shininiess);
-
+	
 	vec3 ambient = lights[lightNr].color * material.ambientColor;
 	vec3 diffuse = (lights[lightNr].color * material.diffuseColor) * brightness;
 	vec3 specular = (material.specularColor * dampedFactor) * vec3(texture(materialSamplers.specular, uv));

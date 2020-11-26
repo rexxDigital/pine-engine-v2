@@ -6,6 +6,7 @@
 
 #include "../../Core/Log/Log.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
+#include "../../Rendering/RenderManager/RenderManager.hpp"
 
 void Pine::Level::DisposeBlueprints( )
 {
@@ -35,6 +36,7 @@ Pine::Blueprint* Pine::Level::CreateBlueprintOfEntity( Pine::Entity* entity )
 Pine::Level::Level( )
 {
 	m_Type = EAssetType::Level;
+	m_LevelSettings = new Pine::LevelSettings;
 }
 
 int Pine::Level::GetBlueprintCount( ) const
@@ -44,7 +46,13 @@ int Pine::Level::GetBlueprintCount( ) const
 
 void Pine::Level::CreateFromCurrentLevel( )
 {
-	auto entities = Pine::EntityList::GetEntities( );
+	auto& entities = Pine::EntityList::GetEntities( );
+
+	uint64_t currentId = 1;
+	Entity* currentCameraEntity = nullptr;
+
+	if ( RenderManager::GetRenderingContext( )->m_Camera != nullptr )
+		currentCameraEntity = RenderManager::GetRenderingContext( )->m_Camera->GetParent( );
 
 	// Clear current list if we have one
 	DisposeBlueprints( );
@@ -58,22 +66,41 @@ void Pine::Level::CreateFromCurrentLevel( )
 			continue;
 		}
 
+		if ( currentCameraEntity == entity )
+		{
+			m_LevelSettings->m_CameraEntity = currentId;
+		}
+
 		m_Blueprints.push_back( CreateBlueprintOfEntity( entity ) );
+
+		currentId++;
 	}
 }
 
 void Pine::Level::Load( )
 {
-	Log::Message("Loading level...");
-	
+	uint64_t currentId = 1;
+
 	// Clear current non temporaries entities
 	Pine::EntityList::ClearEntities( );
 
 	// Add our blueprint entities
 	for ( auto bp : m_Blueprints )
 	{
-		bp->SpawnEntity( );
+		auto entity = bp->SpawnEntity( );
+
+		if ( m_LevelSettings->m_CameraEntity != 0 && m_LevelSettings->m_CameraEntity == currentId )
+		{
+			RenderManager::GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
+		}
+		
+		currentId++;
 	}
+}
+
+Pine::LevelSettings* Pine::Level::GetSettings( ) const
+{
+	return m_LevelSettings;
 }
 
 bool Pine::Level::LoadFromFile( )
@@ -107,6 +134,10 @@ bool Pine::Level::LoadFromFile( )
 			m_Blueprints.push_back( blueprint );
 		}
 
+		if ( j.contains( "activeCamera" ) )
+		{
+			m_LevelSettings->m_CameraEntity = j[ "activeCamera" ].get<std::uint64_t>( );
+		}
 	}
 	catch ( std::exception& e ) {
 		Pine::Log::Error( "JSON parsing error: " + std::string( e.what( ) ) );
@@ -133,6 +164,8 @@ bool Pine::Level::SaveToFile( )
 		j[ "entities" ].push_back( bp->ToJson( ) );
 	}
 
+	j[ "activeCamera" ] = m_LevelSettings->m_CameraEntity;
+
 	std::ofstream stream( m_FilePath );
 
 	stream << j;
@@ -144,5 +177,7 @@ bool Pine::Level::SaveToFile( )
 
 void Pine::Level::Dispose( )
 {
+	delete m_LevelSettings;
+
 	DisposeBlueprints( );
 }

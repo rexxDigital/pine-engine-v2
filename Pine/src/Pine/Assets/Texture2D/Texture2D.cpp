@@ -5,63 +5,63 @@
 #include <stb_image.h>
 #include "../../Core/Log/Log.hpp"
 
-Pine::Texture2D::Texture2D() {
-    m_Type = EAssetType::Texture2D;
+Pine::Texture2D::Texture2D( ) {
+	m_Type = EAssetType::Texture2D;
 }
 
-unsigned int Pine::Texture2D::GetId() const {
-    return m_Id;
+unsigned int Pine::Texture2D::GetId( ) const {
+	return m_Id;
 }
 
-int Pine::Texture2D::GetWidth() const {
-    return m_Width;
+int Pine::Texture2D::GetWidth( ) const {
+	return m_Width;
 }
 
-int Pine::Texture2D::GetHeight() const {
-    return m_Height;
+int Pine::Texture2D::GetHeight( ) const {
+	return m_Height;
 }
 
 int Pine::Texture2D::GetChannels( ) const {
-    return m_Channels;
+	return m_Channels;
 }
 
-bool Pine::Texture2D::LoadFromFile() {
-    int width, height, channels;
+bool Pine::Texture2D::LoadFromFile( ) {
+	int width, height, channels;
 
-    const auto data = stbi_load(m_FilePath.string().c_str(), &width, &height, &channels, 0);
-    
-    if (!data) {
-		stbi_image_free(data);
+	const auto data = stbi_load( m_FilePath.string( ).c_str( ), &width, &height, &channels, 0 );
 
-        Log::Error("Failed to load texture, " + m_FilePath.string());
+	if ( !data ) {
+		stbi_image_free( data );
 
-        return false;
-    }
+		Log::Error( "Failed to load texture, " + m_FilePath.string( ) );
 
-    glGenTextures(1, &m_Id);
-    glBindTexture(GL_TEXTURE_2D, m_Id);
-    
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		return false;
+	}
 
-    const int format = channels == 4 ? GL_RGBA : GL_RGB;
+	glGenTextures( 1, &m_Id );
+	glBindTexture( GL_TEXTURE_2D, m_Id );
 
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-    m_Width = width;
-    m_Height = height;
-    m_Channels = channels;
+	const int format = channels == 4 ? GL_RGBA : GL_RGB;
 
-    stbi_image_free(data);
+	glTexImage2D( GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data );
+	glGenerateMipmap( GL_TEXTURE_2D );
 
-    return true;
+	m_Width = width;
+	m_Height = height;
+	m_Channels = channels;
+
+	stbi_image_free( data );
+
+	return true;
 }
 
-bool Pine::Texture2D::SaveToFile() {
-    return false;
+bool Pine::Texture2D::SaveToFile( ) {
+	return false;
 }
 
-void Pine::Texture2D::Dispose() {
-    glDeleteTextures(1, &m_Id);
+void Pine::Texture2D::Dispose( ) {
+	glDeleteTextures( 1, &m_Id );
 }

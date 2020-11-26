@@ -164,6 +164,7 @@
     <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Viewports.cpp" />
+    <ClCompile Include="src\Editor\PlayManager\PlayManager.cpp" />
     <ClCompile Include="src\Editor\ProjectManager\ProjectManager.cpp" />
     <ClCompile Include="src\Editor\RenderingHandler\RenderingHandler.cpp" />
     <ClCompile Include="src\ImGuizmo\ImCurveEdit.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp" />
     <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />
+    <ClInclude Include="src\Editor\PlayManager\PlayManager.hpp" />
     <ClInclude Include="src\Editor\ProjectManager\ProjectManager.hpp" />
     <ClInclude Include="src\Editor\RenderingHandler\RenderingHandler.hpp" />
     <ClInclude Include="src\ImGuizmo\ImCurveEdit.h" />

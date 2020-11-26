@@ -27,6 +27,8 @@ Pine::Texture2D* Editor::Gui::Utility::AssetIconGen::GetAssetIcon( const std::st
 }
 
 void Editor::Gui::Utility::AssetIconGen::Update( ) {
+	std::vector<std::string> removeList;
+	
 	// Remove unloaded icons
 	for ( auto& iconElement : m_Icons ) {
 		auto& icon = iconElement.second;
@@ -41,8 +43,11 @@ void Editor::Gui::Utility::AssetIconGen::Update( ) {
 			delete icon->m_FrameBuffer;
 		}
 
-		m_Icons.erase( iconElement.first );
+		removeList.push_back( iconElement.first );
 	}
+
+	for ( auto& rem : removeList )
+		m_Icons.erase( rem );
 
 	// Loop through all assets, and add an icon for each of them.
 	for ( auto& assetElement : Pine::Assets::GetAssets( ) ) {

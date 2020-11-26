@@ -79,8 +79,9 @@ namespace {
 	}
 
 	void DisplayAssetProperties( Pine::IAsset* a ) {
-
-		ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) )->GetId( ) ), ImVec2( 64.f, 64.f ) );
+		auto icon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) );
+		if ( icon )	
+			ImGui::Image( reinterpret_cast< ImTextureID >( icon->GetId( ) ), ImVec2( 64.f, 64.f ) );
 
 		ImGui::SameLine( );
 

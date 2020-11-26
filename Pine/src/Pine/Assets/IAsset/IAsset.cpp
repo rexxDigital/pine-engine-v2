@@ -1,5 +1,7 @@
 #include "IAsset.hpp"
 
+#include "../../Core/Log/Log.hpp"
+
 void Pine::IAsset::SetFilePath(const std::string& str)
 {
 	m_FilePath = std::filesystem::path(str);
@@ -27,7 +29,16 @@ Pine::EAssetType Pine::IAsset::GetType() const
 }
 
 void Pine::IAsset::UpdateLastWriteTime( ) {
-	m_LastWriteTime = std::filesystem::last_write_time( m_FilePath ).time_since_epoch( );
+	try
+	{
+		// Apparently only this could break.
+		m_LastWriteTime = std::filesystem::last_write_time( m_AbsoulteFilePath ).time_since_epoch( );
+	}
+	catch ( std::exception& e )
+	{
+		Log::Warning( "Failed to set last write time on asset, " + m_FilePath.string( ) );
+		Log::Warning( e.what( ) );
+	}
 }
 
 bool Pine::IAsset::HasBeenUpdated( ) const {

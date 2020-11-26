@@ -40,6 +40,9 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 		SetShader( material->GetShader( ) );
 	}
 
+	if ( !g_CurrentShader )
+		return;
+	
 	// Diffuse texture
 	Texture2D* diffuseTexture = g_DefaultTexture;
 	if ( material->GetDiffuse( ) != nullptr ) {

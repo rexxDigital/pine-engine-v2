@@ -78,6 +78,9 @@
     <ClCompile Include="src\Editor\EditorEntity\EditorEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\PlayManager\PlayManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Gui\Gui.hpp">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Editor\EditorEntity\EditorEntity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Editor\PlayManager\PlayManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,31 +13,31 @@ namespace Pine {
 		glm::mat4 m_ProjectionMatrix;
 		glm::mat4 m_ViewMatrix;
 
-		void BuildProjectionMatrix();
-		void BuildViewMatrix();
+		void BuildProjectionMatrix( );
+		void BuildViewMatrix( );
 
 		float m_AspectRatio = 0.0f;
 	public:
-		Camera();
+		Camera( );
 
-		float GetNearPlane() const;
-		float GetFarPlane() const;
-		float GetFieldOfView() const;
+		float GetNearPlane( ) const;
+		float GetFarPlane( ) const;
+		float GetFieldOfView( ) const;
 
-		void SetNearPlane(float value);
-		void SetFarPlane(float value);
-		void SetFieldOfView(float value);
+		void SetNearPlane( float value );
+		void SetFarPlane( float value );
+		void SetFieldOfView( float value );
 
-		glm::mat4& GetProjectionMatrix();
-		glm::mat4& GetViewMatrix();
+		glm::mat4& GetProjectionMatrix( );
+		glm::mat4& GetViewMatrix( );
 
-		void OnSetup() override;
-		void OnRender() override;
-		void OnUpdate(float deltaTime) override;
+		void OnSetup( ) override;
+		void OnRender( ) override;
+		void OnUpdate( float deltaTime ) override;
 
-		void SaveToJson(nlohmann::json& j) override;
-		void LoadFromJson(nlohmann::json& j) override;
-		IComponent* Clone() override;
+		void SaveToJson( nlohmann::json& j ) override;
+		void LoadFromJson( nlohmann::json& j ) override;
+		IComponent* Clone( ) override;
 	};
 
 }

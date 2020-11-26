@@ -86,7 +86,7 @@ namespace {
 	{
 		for ( int i = 0; i < model->GetMeshList( ).size( ); i++ )
 		{
-			if ( ImGui::CollapsingHeader( std::string( "Mesh #" + std::to_string( i ) ).c_str( ) ) )
+			if ( ImGui::CollapsingHeader( std::string( "Mesh #" + std::to_string( i ) ).c_str( ), ImGuiTreeNodeFlags_DefaultOpen ) )
 			{
 				auto mesh = model->GetMeshList( )[ i ];
 
@@ -107,8 +107,17 @@ namespace {
 					mesh->SetMaterial( dynamic_cast< Pine::Material* >( newAsset ) );
 				}
 
+				auto material = mesh->GetMaterial( );
 
-				if ( ImGui::Button( "Create Custom Material" ) )
+				bool showButton = false;
+
+				if ( material && material->GetReadOnly( ) )
+					showButton = true;
+				if ( material && material->IsGenerated( ) )
+					showButton = true;
+
+				
+				if ( showButton && ImGui::Button( std::string( "Create Custom Material##" + std::to_string( i ) ).c_str(  ) ) )
 				{
 					// Clean readable code :tm:
 					std::string materialFile = model->GetPath( ).parent_path( ).string( ) + "\\" + model->GetPath( ).stem( ).string( ) + ".mat";
@@ -118,12 +127,7 @@ namespace {
 						return;
 					}
 
-					Pine::Material* mat = new Pine::Material;
-
-					mat->SetFilePath( materialFile );
-					mat->SaveToFile( );
-
-					delete mat;
+					std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", materialFile );
 
 					mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets::LoadFromFile( materialFile ) ) );
 
@@ -139,14 +143,14 @@ namespace {
 			return;
 
 		ImGui::Text( "Blueprints: %d", lvl->GetBlueprintCount( ) );
-
-		if ( ImGui::Button( "Load", ImVec2( 300.f, 30.f ) ) )
+		
+		if ( ImGui::Button( "Load", ImVec2( 300.f, 40.f ) ) )
 		{
 			lvl->Load( );
 			Editor::ProjectManager::OpenLevel( lvl );
 		}
 
-		if ( ImGui::Button( "Save", ImVec2( 300.f, 30.f ) ) )
+		if ( ImGui::Button( "Save", ImVec2( 300.f, 40.f ) ) )
 		{
 			lvl->CreateFromCurrentLevel( );
 			Editor::ProjectManager::OpenLevel( lvl );

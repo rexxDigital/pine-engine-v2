@@ -11,24 +11,22 @@
 
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 
-void UpdateAssetCache();
+void UpdateAssetCache( );
 
-void Editor::Setup() {
+void Editor::Setup( ) {
 
-	Editor::ProjectManager::Setup();
-	Editor::ProjectManager::OpenProject("Projects\\Default");
+	Editor::ProjectManager::Setup( );
+	Editor::ProjectManager::OpenProject( "Projects\\Default" );
 
-	Pine::Assets::LoadFromDirectory("Assets\\Editor");
+	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
 
-	Pine::Skybox::SetSkyboxCubemap(Pine::Assets::GetAsset<Pine::Texture3D>("Assets\\Engine\\Skyboxes\\Space.cmap"));
-	
-	Gui::Setup();
-	Gui::Utility::AssetIconGen::Update();
+	Gui::Setup( );
+	Gui::Utility::AssetIconGen::Update( );
 
-	EditorEntity::Create();
+	EditorEntity::Create( );
 
-	UpdateAssetCache();
+	UpdateAssetCache( );
 
-	RenderingHandler::Setup();
+	RenderingHandler::Setup( );
 
 }

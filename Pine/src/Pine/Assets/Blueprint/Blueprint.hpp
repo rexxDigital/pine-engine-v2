@@ -21,7 +21,7 @@ namespace Pine
 		
 		void CreateFromEntity( Pine::Entity* entity );
 
-		void SpawnEntity( ) const;
+		Pine::Entity* SpawnEntity( ) const;
 		bool HasValidEntity( ) const;
 
 		nlohmann::json ToJson( ) const;
