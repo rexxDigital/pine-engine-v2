@@ -13,12 +13,16 @@ namespace Pine::UniformBuffers {
 	struct LightData_t {
 		glm::vec3 position;
 		float padding0;
-		glm::vec3 color;
+		glm::vec3 rotation;
 		float padding1;
+		glm::vec3 color;
+		float padding2;
+		glm::vec3 attenuation;
+		float padding3;
 	};
 
 	struct LightBufferData_t {
-		LightData_t lights[10];
+		LightData_t lights[ 4 ];
 	};
 
 	struct MaterialBufferData_t {
@@ -28,17 +32,18 @@ namespace Pine::UniformBuffers {
 		float padding1;
 		glm::vec3 ambientColor;
 		float shininiess;
+		float textureScale;
 	};
 
-	void Setup();
-	void Dispose();
+	void Setup( );
+	void Dispose( );
 
-	MatrixBufferData_t* GetMatrixBufferData();
-	LightBufferData_t* GetLightsBufferData();
-	MaterialBufferData_t* GetMaterialBufferData();
+	MatrixBufferData_t* GetMatrixBufferData( );
+	LightBufferData_t* GetLightsBufferData( );
+	MaterialBufferData_t* GetMaterialBufferData( );
 
-	UniformBuffer* GetMatrixUniformBuffer();
-	UniformBuffer* GetLightsUniformBuffer();
-	UniformBuffer* GetMaterialUniformBuffer();
-	
+	UniformBuffer* GetMatrixUniformBuffer( );
+	UniformBuffer* GetLightsUniformBuffer( );
+	UniformBuffer* GetMaterialUniformBuffer( );
+
 }

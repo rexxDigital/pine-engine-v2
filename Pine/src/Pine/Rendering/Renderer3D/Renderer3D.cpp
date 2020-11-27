@@ -1,6 +1,9 @@
 #include "Renderer3D.hpp"
 #include <GL/glew.h>
+
+#include "../Skybox/Skybox.hpp"
 #include "../UniformBuffers/UniformBuffers.hpp"
+#include "../../Assets/Texture3D/Texture3D.hpp"
 
 namespace {
 	// The mesh we're supposed to render.
@@ -15,6 +18,11 @@ namespace {
 
 	// Some optimizations for OpenGL's current texture.
 	int g_CurrentBoundTexture[ 32 ] = { };
+
+	int GetBestEnvironmentMap( )
+	{
+		return Pine::Skybox::GetSkyboxCubemap( )->GetId(  );
+	}
 }
 
 void Pine::Renderer3D::RenderVertexArray( const VertexArray* vao, int renderCount, bool indices )
@@ -39,7 +47,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	if ( material->GetShader( ) != g_CurrentShader ) {
 		SetShader( material->GetShader( ) );
 	}
-
+	
 	if ( !g_CurrentShader )
 		return;
 	
@@ -63,14 +71,23 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 		specularMapTexture = material->GetSpecular( );
 	}
 
-	g_CurrentShader->GetUniformVariable( "materialSamplers.specular" )->LoadInteger( 1 );
-
 	// Only bind the texture if required.
 	if ( g_CurrentBoundTexture[ 1 ] != specularMapTexture->GetId( ) ) {
 		glActiveTexture( GL_TEXTURE1 );
 		glBindTexture( GL_TEXTURE_2D, specularMapTexture->GetId( ) );
 
 		g_CurrentBoundTexture[ 1 ] = specularMapTexture->GetId( );
+	}
+
+	const int bestEnvironmentMap = GetBestEnvironmentMap( );
+	
+	// Bind environment map
+	if (g_CurrentBoundTexture[ 2 ] != bestEnvironmentMap )
+	{
+		glActiveTexture( GL_TEXTURE2 );
+		glBindTexture( GL_TEXTURE_3D, bestEnvironmentMap );
+
+		g_CurrentBoundTexture[ 2 ] = bestEnvironmentMap;
 	}
 
 	// Apply material data
@@ -80,6 +97,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	materialDataBuffer->specularColor = material->SpecularColor( );
 	materialDataBuffer->ambientColor = material->AmbientColor( );
 	materialDataBuffer->shininiess = material->GetShininiess( );
+	materialDataBuffer->textureScale = material->GetTextureScale( );
 
 	// Due to the amazing design of this game engine, the material uniform buffer SHOULD already be bound by now,
 	// if not, I've fucked something up.
@@ -90,6 +108,9 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 }
 
 void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
+	if ( g_CurrentRenderMesh == nullptr )
+		return;
+	
 	if ( g_ShaderTransformationVariable != nullptr ) {
 		g_ShaderTransformationVariable->LoadMatrix4( transformationMatrix );
 	}
@@ -107,6 +128,9 @@ Pine::Shader* Pine::Renderer3D::GetShader( ) {
 }
 
 void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
+	if ( !shader )
+		return;
+	
 	g_CurrentShader = shader;
 
 	// Set cached uniform variables

@@ -23,6 +23,8 @@ namespace Pine
 		Shader* m_Shader = nullptr;
 
 		bool m_IsGenerated = false;
+
+		float m_TextureScale = 1.f;
 	public:
 		Material();
 
@@ -35,6 +37,9 @@ namespace Pine
 
 		void SetDiffuse(Texture2D* texture);
 		void SetSpecular(Texture2D* texture);
+
+		float GetTextureScale( ) const;
+		void SetTextureScale( float scale );
 
 		float GetShininiess() const;
 		void SetShininiess(float shininiess);

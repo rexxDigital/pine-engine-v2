@@ -4,11 +4,12 @@ namespace Pine { class Texture3D; }
 
 namespace Pine::Skybox {
 
-	void Setup();
-	void Dispose();
-	
-	void SetSkyboxCubemap(Texture3D* texture);
+	void Setup( );
+	void Dispose( );
 
-	void Render();
+	void SetSkyboxCubemap( Texture3D* texture );
+	Texture3D* GetSkyboxCubemap( );
+
+	void Render( );
 
 }

@@ -1,6 +1,1 @@
-{
-	"DiffuseColor": {"x": 1, "y": 1, "z": 1},
-	"AmbientColor": {"x": 0.072, "y": 0.076, "z": 0.096 },
-	"Shader": "Assets\\Engine\\Shaders\\Default.shr"
-}
- 
+{"AmbientColor":{"x":0.22063833475112915,"y":0.2206386923789978,"z":0.22064054012298584},"DiffuseColor":{"x":0.0,"y":0.6023240089416504,"z":1.0},"SpecularColor":{"x":1.0,"y":0.9999899864196777,"z":0.9999899864196777},"diffuse":"null","shader":"Assets\\Engine\\Shaders\\Default.shr","shininess":3.0999999046325684,"specularMap":"null","textureScale":1.0}

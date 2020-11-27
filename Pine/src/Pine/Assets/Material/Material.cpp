@@ -38,6 +38,16 @@ void Pine::Material::SetSpecular( Texture2D* texture ) {
 	m_Updated = true;
 }
 
+float Pine::Material::GetTextureScale( ) const
+{
+	return m_TextureScale;
+}
+
+void Pine::Material::SetTextureScale( float scale )
+{
+	m_TextureScale = scale;
+}
+
 float Pine::Material::GetShininiess( ) const {
 	return m_Shininiess;
 }
@@ -70,15 +80,27 @@ bool Pine::Material::LoadFromFile( ) {
 
 	try {
 
-		m_Shader = dynamic_cast< Shader* >( Serialization::LoadAsset( j, "Shader" ) );
+		m_Shader = dynamic_cast< Shader* >( Serialization::LoadAsset( j, "shader" ) );
 
 		m_DiffuseColor = Serialization::LoadVec3( j, "DiffuseColor" );
 		m_SpecularColor = Serialization::LoadVec3( j, "SpecularColor" );
 		m_AmbientColor = Serialization::LoadVec3( j, "AmbientColor" );
 
-		m_Diffuse = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "Diffuse" ) );
-		m_Specular = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "Specular" ) );
+		if ( j.contains( "shininess" ) )
+			m_Shininiess = j[ "shininess" ].get<float>( );
 
+		if ( j.contains( "textureScale" ) )
+			m_TextureScale = j[ "textureScale" ].get<float>( );
+		
+		m_Diffuse = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "diffuse" ) );
+		m_Specular = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "specularMap" ) );
+
+		// Fall back to default shader if shit goes wrong
+		if ( m_Shader == nullptr )
+		{
+			m_Shader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
+		}
+		
 	}
 	catch ( ... ) {
 
@@ -98,6 +120,7 @@ bool Pine::Material::SaveToFile( ) {
 	Serialization::SaveVec3( j[ "AmbientColor" ], m_AmbientColor );
 
 	j[ "shininess" ] = m_Shininiess;
+	j[ "textureScale" ] = m_TextureScale;
 
 	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );
 	Serialization::SaveAsset( j[ "specularMap" ], m_Specular );

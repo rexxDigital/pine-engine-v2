@@ -13,7 +13,7 @@ namespace {
 
 }
 
-void Pine::Skybox::Setup() {
+void Pine::Skybox::Setup( ) {
 	std::vector<float> skyboxVertices = {
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,
@@ -58,37 +58,43 @@ void Pine::Skybox::Setup() {
 		 1.0f, -1.0f,  1.0f
 	};
 
-	g_SkyboxVertexArray = new Pine::VertexArray();
+	g_SkyboxVertexArray = new Pine::VertexArray( );
 
-	g_SkyboxVertexArray->Create();
-	g_SkyboxVertexArray->Bind();
-	g_SkyboxVertexArray->StoreFloatBuffer(skyboxVertices, 3, 0);
+	g_SkyboxVertexArray->Create( );
+	g_SkyboxVertexArray->Bind( );
+	g_SkyboxVertexArray->StoreFloatBuffer( skyboxVertices, 3, 0 );
 
-	g_SkyboxShader = Pine::Assets::GetAsset<Pine::Shader>("Assets\\Engine\\Shaders\\Skybox.shr");
+	g_SkyboxShader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Skybox.shr" );
 }
 
-void Pine::Skybox::Dispose() {
-	g_SkyboxVertexArray->Dispose();
+void Pine::Skybox::Dispose( ) {
+	g_SkyboxVertexArray->Dispose( );
 	delete g_SkyboxVertexArray;
 }
 
-void Pine::Skybox::SetSkyboxCubemap(Texture3D* texture) {
+void Pine::Skybox::SetSkyboxCubemap( Texture3D* texture ) {
 	g_SkyboxCubemap = texture;
 }
 
-void Pine::Skybox::Render() {
-	if (!g_SkyboxCubemap) {
+Pine::Texture3D* Pine::Skybox::GetSkyboxCubemap( )
+{
+	return g_SkyboxCubemap;
+}
+
+void Pine::Skybox::Render( ) {
+	if ( !g_SkyboxCubemap ) {
 		return;
 	}
+
+	glDepthFunc( GL_LEQUAL );
+	glActiveTexture( GL_TEXTURE0 );
+
+	g_SkyboxShader->Use( );
 	
-	glDepthFunc(GL_LEQUAL); 
+	g_SkyboxVertexArray->Bind( );
+	g_SkyboxCubemap->Bind( );
 
-	g_SkyboxShader->Use();
+	glDrawArrays( GL_TRIANGLES, 0, 36 );
 
-	g_SkyboxVertexArray->Bind();
-	g_SkyboxCubemap->Bind();
-	
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glDepthFunc(GL_LESS); 
+	glDepthFunc( GL_LESS );
 }

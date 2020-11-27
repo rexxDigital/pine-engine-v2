@@ -1,6 +1,0 @@
-{
-	"DiffuseColor": {"x": 1, "y": 1, "z": 1},
-	"AmbientColor": {"x": 0.072, "y": 0.076, "z": 0.096 },
-	"Shader": "Assets\\Engine\\Shaders\\Default.shr"
-}
- 

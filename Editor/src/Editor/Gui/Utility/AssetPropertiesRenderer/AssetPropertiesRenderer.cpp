@@ -8,6 +8,8 @@
 #include "..\..\Widgets\Widgets.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
+#include "Pine/Assets/Texture3D/Texture3D.hpp"
+#include "Pine/Rendering/Skybox/Skybox.hpp"
 
 void UpdateAssetCache( );
 
@@ -71,12 +73,21 @@ namespace {
 		ImGui::Columns( 2, nullptr, false );
 		ImGui::Text( "Shininess" );
 		ImGui::NextColumn( );
+
 		ImGui::SetNextItemWidth( -1.f );
+		
 		float sh = mat->GetShininiess( );
 		if ( ImGui::SliderFloat( "##Shininiess", &sh, 1.f, 128.f, "%.1f", 1.f ) )
 			mat->SetShininiess( sh );
+
 		ImGui::Columns( 1 );
 
+		float txScale = mat->GetTextureScale( );
+		if ( Editor::Gui::Widgets::SliderFloat( "Texture Scale", txScale, 1.f, 16.f, "%.0f" ) )
+		{
+			mat->SetTextureScale( txScale );
+		}
+		
 		if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Shader", mat->GetShader( ), true, Pine::EAssetType::Shader ) ) {
 			mat->SetShader( dynamic_cast< Pine::Shader* >( newAsset ) );
 		}
@@ -102,12 +113,12 @@ namespace {
 
 				ImGui::Columns( 1 );
 
-				if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::EAssetType::Material ) )
+				if ( const auto newAsset = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::EAssetType::Material ) )
 				{
 					mesh->SetMaterial( dynamic_cast< Pine::Material* >( newAsset ) );
 				}
 
-				auto material = mesh->GetMaterial( );
+				const auto material = mesh->GetMaterial( );
 
 				bool showButton = false;
 
@@ -157,6 +168,17 @@ namespace {
 		}
 	}
 
+	void RenderCubemap( Pine::Texture3D* cubeMap )
+	{
+		if ( !cubeMap )
+			return;
+
+		if ( ImGui::Button( "Use" ) )
+		{
+			Pine::Skybox::SetSkyboxCubemap( cubeMap );
+		}
+	}
+
 }
 
 void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine::IAsset* asset ) {
@@ -175,6 +197,9 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		break;
 	case Pine::EAssetType::Level:
 		RenderLevel( dynamic_cast< Pine::Level* >( asset ) );
+		break;
+	case Pine::EAssetType::Texture3D:
+		RenderCubemap( dynamic_cast< Pine::Texture3D* >( asset ) );
 		break;
 	default:
 		break;

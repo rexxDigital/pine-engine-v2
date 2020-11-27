@@ -93,6 +93,23 @@ bool Editor::Gui::Widgets::SliderFloat(const std::string& str, float& value, flo
 	return retValue;
 }
 
+bool Editor::Gui::Widgets::Combobox( const std::string& str, int& value, const char* items )
+{
+	ImGui::Columns( 2, nullptr, false );
+
+	ImGui::Text( "%s", str.c_str( ) );
+
+	ImGui::NextColumn( );
+
+	ImGui::SetNextItemWidth( -1.f );
+
+	const bool retValue = ImGui::Combo( std::string( "##" + str ).c_str( ), &value, items );
+
+	ImGui::Columns( 1 );
+
+	return retValue;
+}
+
 void Editor::Gui::Widgets::PushDisabled( ) {
 
 	ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );

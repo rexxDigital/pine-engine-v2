@@ -4,9 +4,13 @@
 
 #include <fstream>
 
+
+#include "../Assets.hpp"
 #include "../../Core/Log/Log.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../Rendering/RenderManager/RenderManager.hpp"
+#include "../../Rendering/Skybox/Skybox.hpp"
+#include "../Texture3D/Texture3D.hpp"
 
 void Pine::Level::DisposeBlueprints( )
 {
@@ -75,6 +79,8 @@ void Pine::Level::CreateFromCurrentLevel( )
 
 		currentId++;
 	}
+
+	m_LevelSettings->m_Skybox = Pine::Skybox::GetSkyboxCubemap( );
 }
 
 void Pine::Level::Load( )
@@ -96,6 +102,9 @@ void Pine::Level::Load( )
 		
 		currentId++;
 	}
+
+	if ( m_LevelSettings->m_Skybox != nullptr )
+		Pine::Skybox::SetSkyboxCubemap( m_LevelSettings->m_Skybox );
 }
 
 Pine::LevelSettings* Pine::Level::GetSettings( ) const
@@ -138,6 +147,11 @@ bool Pine::Level::LoadFromFile( )
 		{
 			m_LevelSettings->m_CameraEntity = j[ "activeCamera" ].get<std::uint64_t>( );
 		}
+
+		if ( j.contains( "skybox" ) )
+		{
+			m_LevelSettings->m_Skybox = Pine::Assets::GetAsset<Texture3D>( j[ "skybox" ] );
+		}
 	}
 	catch ( std::exception& e ) {
 		Pine::Log::Error( "JSON parsing error: " + std::string( e.what( ) ) );
@@ -165,6 +179,9 @@ bool Pine::Level::SaveToFile( )
 	}
 
 	j[ "activeCamera" ] = m_LevelSettings->m_CameraEntity;
+
+	if ( m_LevelSettings->m_Skybox )
+		j[ "skybox" ] = m_LevelSettings->m_Skybox->GetPath( ).string( );
 
 	std::ofstream stream( m_FilePath );
 

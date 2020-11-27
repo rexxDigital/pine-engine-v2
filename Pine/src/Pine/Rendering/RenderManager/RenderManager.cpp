@@ -108,21 +108,33 @@ void Pine::RenderManager::Run( ) {
 	UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = g_RenderingContext->m_Camera->GetProjectionMatrix( );
 	UniformBuffers::GetMatrixBufferData( )->ViewMatrix = g_RenderingContext->m_Camera->GetViewMatrix( );
 
-	for ( int i = 0; i < 5; i++ ) {
+	for ( int i = 0; i < 4; i++ ) {
 		UniformBuffers::GetLightsBufferData( )->lights[ i ].color = glm::vec3( 0.f, 0.f, 0.f );
 		UniformBuffers::GetLightsBufferData( )->lights[ i ].position = glm::vec3( 0.f, 0.f, 0.f );
+		UniformBuffers::GetLightsBufferData( )->lights[ i ].attenuation = glm::vec3( 0.f, 0.f, 0.f );
 	}
 
-	int processedLights = 0;
-
+	int processedLights = 1;
 	for ( auto light : lights ) {
-		if ( processedLights >= 5 ) {
+		if ( processedLights >= 4 ) {
 			Log::Warning( "Too many dynamic lights in level." );
 			break;
 		}
 
-		UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].position = light->GetParent( )->GetTransform( )->Position;
-		UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].color = light->GetLightColor( );
+		if ( light->GetLightType(  ) == Pine::ELightType::Directional )
+		{
+			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
+			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
+			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].color = light->GetLightColor( );
+			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].attenuation = light->GetAttenuation( );
+		}
+		else
+		{
+			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].position = light->GetParent( )->GetTransform( )->Position;
+			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
+			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].color = light->GetLightColor( );
+			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].attenuation = light->GetAttenuation( );
+		}
 
 		processedLights++;
 	}

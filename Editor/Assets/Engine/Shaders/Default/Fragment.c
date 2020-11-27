@@ -8,11 +8,13 @@ struct MaterialSamplerData
 
 struct Light_t {
 	vec3 position;
+	vec3 rotation;
 	vec3 color;
+	vec3 attenuation;
 };
 
 layout(std140) uniform Lights {
-	Light_t lights[10];
+	Light_t lights[4];
 };
 
 layout(std140) uniform Material {
@@ -20,10 +22,12 @@ layout(std140) uniform Material {
 	vec3 specularColor;
 	vec3 ambientColor;
 	float shininiess;
+	float textureScale;
 }material;
 
 uniform MaterialSamplerData materialSamplers;
-uniform samplerCube skybox;
+
+uniform samplerCube envMap;
 
 out vec4 outputColor;
 
@@ -32,27 +36,93 @@ in vec3 normalDirection;
 in vec3 worldPos;
 in vec3 cameraDirection;
 
-vec3 CalculateDirectionalLight(int lightNr) {
-	vec3 lightDirection = normalize(lights[lightNr].position);
+vec3 CalculateBaseLightning( vec3 lightDirection, int lightNr ) {
+	vec3 normal = normalize( normalDirection );
 
-	float dirDot = dot(normalDirection, lightDirection);
+	float dirDot = dot( normal, lightDirection );
+	float brightness = max( dirDot, 0.0f );
+
+	vec3 lightDir = -lightDirection;
+
+	/*
+	vec3 reflectedLightDirection = reflect( lightDirection, normal );
+	float specularFactor = max( dot( reflectedLightDirection, lightDir ), 0.0f );
+	float dampedFactor = pow( specularFactor, material.shininiess );
+	*/
+
+	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
+	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
+
+	vec3 ambient = lights[lightNr].color * material.ambientColor;
+	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
+	vec3 specular = ( material.specularColor * dampedFactor );// * vec3( texture( materialSamplers.specular, uv ) );
+	
+	return ambient + diffuse + specular;
+}
+
+vec3 CalculateDirectionalLight(int lightNr) {
+	vec3 lightDirection = -lights[lightNr].rotation;
+	vec3 normal = normalize( normalDirection );
+
+	float dirDot = dot( normal, lightDirection);
 	float brightness = max(dirDot, 0.0f);
 
 	vec3 lightDir = -lightDirection;
-	vec3 reflectedLightDirection = reflect(lightDirection, normalDirection);
+	vec3 reflectedLightDirection = reflect(lightDirection, normal );
 
 	float specularFactor = max(dot(reflectedLightDirection, lightDir), 0.0f);
 	float dampedFactor = pow(specularFactor, material.shininiess);
 	
 	vec3 ambient = lights[lightNr].color * material.ambientColor;
-	vec3 diffuse = (lights[lightNr].color * material.diffuseColor) * brightness;
+	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
 	vec3 specular = (material.specularColor * dampedFactor) * vec3(texture(materialSamplers.specular, uv));
 
 	return ambient + diffuse + specular;
 }
 
+vec3 CalculatePointLight( int lightNr ) {
+	vec3 lightDirection = normalize( lights[ lightNr ].position - worldPos.xyz );
+	vec3 normal = normalize( normalDirection );
+
+	float dirDot = dot( normal, lightDirection );
+	float brightness = max( dirDot, 0.0f );
+
+	vec3 lightDir = -lightDirection;
+
+	/*
+	vec3 reflectedLightDirection = reflect( lightDirection, normal );
+	float specularFactor = max( dot( reflectedLightDirection, lightDir ), 0.0f );
+	float dampedFactor = pow( specularFactor, material.shininiess );
+	*/
+
+	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
+	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
+
+	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
+	vec3 specular = ( material.specularColor * dampedFactor );// * vec3( texture( materialSamplers.specular, uv ) );
+
+	float distance = length( lights[ lightNr ].position - worldPos );
+	float attenuation = 1.0 / ( lights[ lightNr ].attenuation[0] + lights[ lightNr ].attenuation[ 1 ] * distance +
+		lights[ lightNr ].attenuation[ 2 ] * ( distance * distance ) );
+
+	attenuation = max( attenuation, 0.f );
+	attenuation = min( attenuation, 1.f );
+
+	diffuse *= attenuation;
+	specular *= attenuation;
+
+	specular *= lights[ lightNr ].color;
+
+	return diffuse + specular;
+}
+
 void main(void) {
 	
-  outputColor = vec4(CalculateDirectionalLight(0), 1.0f) * texture(materialSamplers.diffuse, uv);
+	vec4 directionalLight = vec4( CalculateDirectionalLight( 0 ), 1.0f );
+
+	vec4 pointLight1 = vec4( CalculatePointLight( 1 ), 1.0f );
+	vec4 pointLight2 = vec4( CalculatePointLight( 2 ), 1.0f );
+
+	outputColor = ( directionalLight + pointLight1 + pointLight2 );
 
 }

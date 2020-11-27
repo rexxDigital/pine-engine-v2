@@ -22,8 +22,10 @@ void main(void) {
 
 	gl_Position = projection * view * transform * worldPosition;
 	
-	normalDirection = normalize((transform * vec4(normal, 0.0)).xyz);
-	cameraDirection = normalize((inverse(view) * vec4(0.f, 0.f, 0.f, 1.f)).xyz - worldPosition.xyz);
-	worldPos = worldPosition.xyz;
+	normalDirection = normal;//normalize((transform * vec4(normal, 0.0)).xyz);
+	worldPos = (transform * worldPosition).xyz;
+
+	cameraDirection = normalize( ( inverse( view ) * vec4( 0.f, 0.f, 0.f, 1.f ) ).xyz - worldPos.xyz );
+
 	uv = in_uv;
 }

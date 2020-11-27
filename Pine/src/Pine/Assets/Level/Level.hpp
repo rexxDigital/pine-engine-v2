@@ -4,10 +4,12 @@
 
 namespace Pine
 {
+	class Texture3D;
 
 	struct LevelSettings
 	{
 		uint64_t m_CameraEntity = 0;
+		Pine::Texture3D* m_Skybox = nullptr;
 	};
 	
 	class Level : public IAsset

@@ -1,9 +1,10 @@
 {
 	"VertexShader": "Default\\Vertex.c",
 	"FragmentShader": "Default\\Fragment.c",
-	"Sampler2D": {
+	"Samplers": {
 		"Diffuse": "materialSamplers.diffuse",
-		"Specular": "materialSamplers.specular"
+		"Specular": "materialSamplers.specular",
+		"EnvMap": "envMap"
 	},
 	"UniformBuffers": {
 		"Matrices": "Matrices",
