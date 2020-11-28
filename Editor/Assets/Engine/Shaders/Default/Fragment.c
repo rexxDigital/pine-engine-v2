@@ -42,22 +42,14 @@ vec3 CalculateBaseLightning( vec3 lightDirection, int lightNr ) {
 	float dirDot = dot( normal, lightDirection );
 	float brightness = max( dirDot, 0.0f );
 
-	vec3 lightDir = -lightDirection;
-
-	/*
-	vec3 reflectedLightDirection = reflect( lightDirection, normal );
-	float specularFactor = max( dot( reflectedLightDirection, lightDir ), 0.0f );
-	float dampedFactor = pow( specularFactor, material.shininiess );
-	*/
-
 	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
 	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
 
 	vec3 ambient = lights[lightNr].color * material.ambientColor;
 	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
-	vec3 specular = ( material.specularColor * dampedFactor );// * vec3( texture( materialSamplers.specular, uv ) );
-	
-	return ambient + diffuse + specular;
+	vec3 specular = ( material.specularColor * dampedFactor ) * texture( materialSamplers.specular, uv * material.textureScale ).xyz;
+
+	return diffuse + specular + ambient;
 }
 
 vec3 CalculateDirectionalLight(int lightNr) {
@@ -82,24 +74,7 @@ vec3 CalculateDirectionalLight(int lightNr) {
 
 vec3 CalculatePointLight( int lightNr ) {
 	vec3 lightDirection = normalize( lights[ lightNr ].position - worldPos.xyz );
-	vec3 normal = normalize( normalDirection );
-
-	float dirDot = dot( normal, lightDirection );
-	float brightness = max( dirDot, 0.0f );
-
-	vec3 lightDir = -lightDirection;
-
-	/*
-	vec3 reflectedLightDirection = reflect( lightDirection, normal );
-	float specularFactor = max( dot( reflectedLightDirection, lightDir ), 0.0f );
-	float dampedFactor = pow( specularFactor, material.shininiess );
-	*/
-
-	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
-	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
-
-	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
-	vec3 specular = ( material.specularColor * dampedFactor );// * vec3( texture( materialSamplers.specular, uv ) );
+	vec3 color = CalculateBaseLightning(lightDirection, lightNr);
 
 	float distance = length( lights[ lightNr ].position - worldPos );
 	float attenuation = 1.0 / ( lights[ lightNr ].attenuation[0] + lights[ lightNr ].attenuation[ 1 ] * distance +
@@ -108,12 +83,10 @@ vec3 CalculatePointLight( int lightNr ) {
 	attenuation = max( attenuation, 0.f );
 	attenuation = min( attenuation, 1.f );
 
-	diffuse *= attenuation;
-	specular *= attenuation;
+	color *= attenuation;
+	color *= lights[ lightNr ].color;
 
-	specular *= lights[ lightNr ].color;
-
-	return diffuse + specular;
+	return color;
 }
 
 void main(void) {
