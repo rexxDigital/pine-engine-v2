@@ -135,4 +135,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Engine\Shaders\PostProcessing.shr" />
+  </ItemGroup>
 </Project>

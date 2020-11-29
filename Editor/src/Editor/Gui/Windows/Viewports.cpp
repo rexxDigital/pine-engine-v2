@@ -15,6 +15,7 @@
 #include "Pine/Components/Transform/Transform.hpp"
 
 #include "Editor/PlayManager/PlayManager.hpp"
+#include "Pine/Entitylist/EntityList.hpp"
 
 namespace {
 
@@ -44,11 +45,14 @@ namespace {
 				if ( isPlaying )
 				{
 					Editor::PlayManager::Stop( );
+					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 				}
 				else
 				{
 					Editor::PlayManager::Start( );
-					
+
+					Pine::EntityList::RunOnSetup( );
+
 					g_StartedPlaying = true;
 				}
 			}
@@ -80,7 +84,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			const auto avSize = ImGui::GetContentRegionAvail( );
 			const auto cursorScreen = ImGui::GetCursorScreenPos( );
 
-			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
+			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
 			if ( Pine::RenderManager::GetRenderingContext( )->m_Camera == nullptr )
 			{
@@ -108,7 +112,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			ImVec2 cursorPos = ImGui::GetCursorScreenPos( );
 			ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
-			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
+			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
 			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 

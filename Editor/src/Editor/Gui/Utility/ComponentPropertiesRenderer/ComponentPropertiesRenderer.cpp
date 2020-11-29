@@ -6,7 +6,10 @@
 #include <Pine/Components/Camera/Camera.hpp>
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 
+#include <Pine/Assets/Script/Script.hpp>
+
 #include "ImGui/imgui.h"
+#include "Pine/Components/Behavior/Behavior.hpp"
 #include "Pine/Components/Light/Light.hpp"
 
 using namespace Editor::Gui;
@@ -93,6 +96,15 @@ namespace {
 		}
  	}
 
+	void RenderBehavior( Pine::Behavior* behavior )
+	{
+		const auto currentAsset = behavior->GetAttachedScript( );
+		if ( const auto newAsset = Widgets::AssetPicker( "Script", currentAsset, true, Pine::EAssetType::Script ) )
+		{
+			behavior->SetAttachedScript( dynamic_cast< Pine::Script* >( newAsset ) );
+		}
+	}
+
 }
 
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
@@ -106,6 +118,8 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderCamera( dynamic_cast< Pine::Camera* >( component ) ); break;
 	case Pine::EComponentType::Light:
 		RenderLight( dynamic_cast< Pine::Light* >( component ) ); break;
+	case Pine::EComponentType::Behavior:
+		RenderBehavior( dynamic_cast< Pine::Behavior* >( component ) ); break;
 	default:
 		break;
 	}

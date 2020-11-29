@@ -1,0 +1,4 @@
+{
+	"VertexShader": "PostProcessing\\Vertex.txt",
+	"FragmentShader": "PostProcessing\\Fragment.txt"
+}

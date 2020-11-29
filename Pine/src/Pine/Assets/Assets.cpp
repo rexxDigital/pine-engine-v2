@@ -7,6 +7,7 @@
 #include "Level/Level.hpp"
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
+#include "Script/Script.hpp"
 #include "Texture2D/Texture2D.hpp"
 #include "Texture3D/Texture3D.hpp"
 
@@ -29,6 +30,8 @@ namespace {
 			return Pine::EAssetType::Blueprint;
 		if ( Pine::String::EndsWith( fileName, ".lvl" ) )
 			return Pine::EAssetType::Level;
+		if ( Pine::String::EndsWith( fileName, ".as" ) )
+			return Pine::EAssetType::Script;
 
 		return Pine::EAssetType::Invalid;
 	}
@@ -51,6 +54,8 @@ namespace {
 			return new Pine::Blueprint( );
 		case Pine::EAssetType::Level:
 			return new Pine::Level( );
+		case Pine::EAssetType::Script:
+			return new Pine::Script( );
 		default:
 			return new Pine::InvalidAsset( );
 		}

@@ -8,6 +8,8 @@
 #include <fstream>
 
 
+
+#include "../../Components/Behavior/Behavior.hpp"
 #include "../../Components/Camera/Camera.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/ModelRenderer/ModelRenderer.hpp"
@@ -26,6 +28,8 @@ namespace
 			return new Pine::Camera( );
 		case Pine::EComponentType::Light:
 			return new Pine::Light( );
+		case Pine::EComponentType::Behavior:
+			return new Pine::Behavior( );
 		default: break;
 		}
 
@@ -147,6 +151,14 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 	
 	CopyEntity( newEntity, m_Entity );
 
+	for ( auto component : newEntity->GetComponents(  ) )
+	{
+		if ( component->GetType(  ) == Pine::EComponentType::Behavior )
+		{
+			dynamic_cast< Pine::Behavior* >( component )->LoadScriptFile( );
+		}
+	}
+	
 	return newEntity;
 }
 

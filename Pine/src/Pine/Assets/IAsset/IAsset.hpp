@@ -13,7 +13,8 @@ namespace Pine {
 		Texture2D,
 		Texture3D,
 		Blueprint,
-		Level
+		Level,
+		Script
 	};
 
 	inline const char* SAssetType[ ] = {
@@ -25,7 +26,8 @@ namespace Pine {
 		"Texture2D",
 		"Texture3D (Cube map)",
 		"Blueprint",
-		"Level"
+		"Level",
+		"Script"
 	};
 
 	class IAsset {

@@ -15,6 +15,7 @@
 
 #include "../../../ImGui/imgui_impl_glfw.h"
 #include "../../../ImGui/imgui_impl_opengl3.h"
+#include "../PostProcessing/PostProcessing.hpp"
 
 namespace {
 
@@ -39,29 +40,17 @@ void Pine::RenderManager::Run( ) {
 		return;
 	}
 
-	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
+	g_RenderingContext->m_Width = 1600;
+	g_RenderingContext->m_Height = 900;
 
-	// Setup frame buffer
-	if ( hasFrameBuffer ) {
-		g_RenderingContext->m_FrameBuffer->Bind( );
-
-		// Override rendering context's size variables.
-		if ( g_RenderingContext->m_AutoUpdateSize )
-		{
-			g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
-			g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
-		}
-	}
-	else {
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-	}
+	PostProcessing::GetRenderBuffer( )->Bind( );
 
 	// Clear the buffers
 	glClearColor( 0.f, 0.f, 0.f, 1.f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	// Reset the viewport size.
-	glViewport( 0, 0, 1600, 900 );
+	glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
 
 	// Enable depth test just in case.
 	glEnable( GL_DEPTH_TEST );
@@ -121,7 +110,7 @@ void Pine::RenderManager::Run( ) {
 			break;
 		}
 
-		if ( light->GetLightType(  ) == Pine::ELightType::Directional )
+		if ( light->GetLightType( ) == Pine::ELightType::Directional )
 		{
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
@@ -147,7 +136,7 @@ void Pine::RenderManager::Run( ) {
 	UniformBuffers::GetLightsUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::LightBufferData_t ), UniformBuffers::GetLightsBufferData( ) );
 
 	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
-	
+
 	for ( auto& renderItem : renderBatch ) {
 		for ( auto& mesh : renderItem.first->GetMeshList( ) ) {
 			Renderer3D::PrepareMesh( mesh );
@@ -163,6 +152,25 @@ void Pine::RenderManager::Run( ) {
 	if ( g_PostRenderingCallback ) {
 		g_PostRenderingCallback( );
 	}
+
+	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
+
+	// Setup frame buffer
+	if ( hasFrameBuffer ) {
+		g_RenderingContext->m_FrameBuffer->Bind( );
+
+		// Override rendering context's size variables.
+		if ( g_RenderingContext->m_AutoUpdateSize )
+		{
+			g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
+			g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
+		}
+	}
+	else {
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	}
+
+	PostProcessing::Render( );
 }
 
 void Pine::RenderManager::SetRenderingContext( RenderingContext* renderingContext ) {

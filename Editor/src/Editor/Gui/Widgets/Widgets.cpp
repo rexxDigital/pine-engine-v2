@@ -125,7 +125,7 @@ void Editor::Gui::Widgets::PopDisabled( ) {
 }
 
 Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::EAssetType type /*= Pine::EAssetType::Invalid */ ) {
-	Pine::IAsset* returnValue = currentAsset;
+	Pine::IAsset* returnValue = nullptr;
 
 	ImGui::Columns( 2, nullptr, false );
 

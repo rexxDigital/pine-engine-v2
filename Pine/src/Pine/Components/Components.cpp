@@ -1,5 +1,7 @@
 #include "Components.hpp"
 
+#include "Behavior/Behavior.hpp"
+
 namespace {
 	std::vector<Pine::IComponent*> g_Components;
 	std::vector<std::string> g_ComponentNames;
@@ -32,6 +34,8 @@ void Pine::Components::Internal::RegisterPineComponents( ) {
 	RegisterComponent( new ModelRenderer( ), "ModelRenderer" );
 	RegisterComponent( new Camera( ), "Camera" );
 	RegisterComponent( new Light( ), "Light" );
+	RegisterComponent( nullptr, "Native Script" );
+	RegisterComponent( new Behavior( ), "Behavior" );
 }
 
 void Pine::Components::Internal::RegisterComponent( IComponent* component, const std::string& str ) {

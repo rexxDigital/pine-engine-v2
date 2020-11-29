@@ -71,6 +71,8 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 		specularMapTexture = material->GetSpecular( );
 	}
 
+	g_CurrentShader->GetUniformVariable( "materialSamplers.specular" )->LoadInteger( 1 );
+	
 	// Only bind the texture if required.
 	if ( g_CurrentBoundTexture[ 1 ] != specularMapTexture->GetId( ) ) {
 		glActiveTexture( GL_TEXTURE1 );

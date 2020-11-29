@@ -52,8 +52,12 @@ void Pine::EntityList::ClearEntities( bool temp )
 		if ( m_Entities[ i ]->IsTemporary( ) )
 			continue;
 
+		auto entityPtr = m_Entities[ i ];
+		
 		m_Entities.erase( m_Entities.begin( ) + i );
 
+		delete entityPtr;
+		
 		i--;
 	}
 }

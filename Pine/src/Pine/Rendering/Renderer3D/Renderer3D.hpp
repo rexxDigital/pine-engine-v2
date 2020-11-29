@@ -7,7 +7,7 @@ namespace Pine::Renderer3D
 	void Setup( );
 	void Dispose( );
 
-	// Set/GET the shader used for rendering
+	// Set/Get the shader used for rendering
 	void SetShader( Pine::Shader* shader );
 	Pine::Shader* GetShader( );
 

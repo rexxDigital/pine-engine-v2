@@ -95,6 +95,9 @@ void Editor::Gui::Utility::AssetIconGen::Update( ) {
 		case Pine::EAssetType::Shader:
 			icon->m_Texture2D = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\shader.png" );
 			break;
+		case Pine::EAssetType::Script:
+			icon->m_Texture2D = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\code-file.png" );
+			break;
 		default: 
 			icon->m_Texture2D = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
 			break;

@@ -10,6 +10,8 @@
 #include "Assets/Texture3D/Texture3D.hpp"
 #include "Components/Components.hpp"
 #include "Input/Input.hpp"
+#include "Rendering/PostProcessing/PostProcessing.hpp"
+#include "ScriptManager/ScriptManager.hpp"
 
 bool Pine::Setup( )
 {
@@ -52,19 +54,18 @@ bool Pine::Setup( )
 		return false;
 	}
 
-	Renderer3D::Setup( );
-
 	RenderManager::SetRenderingContext( CreateDefaultRenderingContext( ) );
 
+	Renderer3D::Setup( );
 	Skybox::Setup( );
-	Skybox::SetSkyboxCubemap( Assets::GetAsset<Pine::Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
-
-	Pine::Components::Internal::RegisterPineComponents( );
-
 	Gui::Setup( );
-
 	RenderManager::Setup( );
+	PostProcessing::Setup( );
+	ScriptingManager::Setup( );
 
+	Components::Internal::RegisterPineComponents( );
+	Skybox::SetSkyboxCubemap( Assets::GetAsset<Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
+	
 	Log::Message( "Pine was successfully initialized!" );
 
 	return true;
@@ -75,6 +76,8 @@ void Pine::Run( )
 	Window::Show( );
 	Window::UpdateCachedSize( );
 
+	ScriptingManager::CompileScripts( );
+	
 	EntityList::RunOnSetup( );
 
 	const auto window = Window::Internal::GetWindowPointer( );
@@ -102,7 +105,9 @@ void Pine::Terminate( )
 	Renderer3D::Dispose( );
 	Gui::Dispose( );
 	Skybox::Dispose( );
-
+	PostProcessing::Dispose( );
+	ScriptingManager::Dispose( );
+	
 	Window::Internal::Destroy( );
 }
 
