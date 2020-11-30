@@ -70,6 +70,11 @@ void Pine::Level::CreateFromCurrentLevel( )
 			continue;
 		}
 
+		if ( entity->GetParent(  ) != nullptr )
+		{
+			continue;
+		}
+
 		if ( currentCameraEntity == entity )
 		{
 			m_LevelSettings->m_CameraEntity = currentId;

@@ -185,6 +185,7 @@
     <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
+    <ClInclude Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.hpp" />
     <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp" />
     <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />
     <ClInclude Include="src\Editor\PlayManager\PlayManager.hpp" />

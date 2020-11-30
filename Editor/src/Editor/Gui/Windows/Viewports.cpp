@@ -1,3 +1,5 @@
+#include <GLFW/glfw3.h>
+
 #include "Windows.hpp"
 #include "../Gui.hpp"
 #include "../../RenderingHandler/RenderingHandler.hpp"
@@ -35,6 +37,24 @@ namespace {
 				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
 			}
 
+			if  ( inLevelViewport )
+			{
+				if ( ImGui::IsKeyPressed( GLFW_KEY_T ) )
+				{
+					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
+				}
+
+				if ( ImGui::IsKeyPressed( GLFW_KEY_R ) )
+				{
+					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
+				}
+
+				if ( ImGui::IsKeyPressed( GLFW_KEY_S ) )
+				{
+					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
+				}
+			}
+			
 			ImGui::Spacing( );
 			ImGui::Separator( );
 			ImGui::Spacing( );
@@ -140,8 +160,13 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 						ImGuizmo::DecomposeMatrixToComponents( glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), translation, rotation, scale );
 
-						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] );
-						e->GetTransform( )->Rotation = glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] );
+						glm::vec3 base_position = glm::vec3( 0.f );
+
+						if ( e->GetParent( ) != nullptr )
+							base_position = e->GetParent( )->GetTransform( )->Position;
+						
+						e->GetTransform( )->Position = base_position + glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] );
+						e->GetTransform( )->Rotation = ( glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] ) );
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}
 				}

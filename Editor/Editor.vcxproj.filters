@@ -134,6 +134,9 @@
     <ClInclude Include="src\Editor\PlayManager\PlayManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\PostProcessing.shr" />
