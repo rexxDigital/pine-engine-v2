@@ -157,6 +157,7 @@
     <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
+    <ClCompile Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.cpp" />
     <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp" />

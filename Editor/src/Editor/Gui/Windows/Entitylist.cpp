@@ -5,9 +5,14 @@
 #include <Pine/Entitylist/EntityList.hpp>
 
 #include "Editor/EditorEntity/EditorEntity.hpp"
+#include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
+#include "Pine/Assets/Blueprint/Blueprint.hpp"
+
+PE_REGISTER_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
+PE_REGISTER_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );
 
 namespace {
-
+	
 	// HACK: To fix context menus, since IsWindowHovered is out of control
 	bool g_DidOpenContextMenu = false;
 
@@ -121,6 +126,8 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 
+
+	
 	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) ) {
 		const bool isTargetingEntity = Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1;
 	
@@ -130,12 +137,25 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		if ( isTargetingEntity )
 			e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
+		
+		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) || HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) ) {
 			Pine::EntityList::DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 			ImGui::CloseCurrentPopup( );
 		}
 
+		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) || HotkeyManager::GetHotkeyPressed( DuplicateEntity ) )
+		{
+			Pine::Blueprint blueprint;
+
+			blueprint.CreateFromEntity( e );
+			blueprint.SpawnEntity( );
+
+			blueprint.Dispose( );
+			
+			ImGui::CloseCurrentPopup( );
+		}
+		
 		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) ) {
 			e->CreateChild( );
 			ImGui::CloseCurrentPopup( );
