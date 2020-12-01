@@ -43,7 +43,7 @@ namespace {
 
 void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 
-	const float size = 60.f;
+	const float size = 50.f;
 
 	ImGui::Columns( 2, nullptr, false );
 

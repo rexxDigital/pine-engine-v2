@@ -67,11 +67,8 @@ void Pine::RenderManager::Run( ) {
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
 
-	for ( auto& entity : EntityList::GetEntities( ) ) {
-		if ( !entity->GetActive( ) ) {
-			continue;
-		}
-
+	auto renderEntity = [ & ] ( Pine::Entity* entity )
+	{
 		for ( auto& component : entity->GetComponents( ) ) {
 			if ( !component->GetActive( ) ) {
 				continue;
@@ -91,6 +88,17 @@ void Pine::RenderManager::Run( ) {
 				lights.push_back( dynamic_cast< Pine::Light* >( component ) );
 			}
 		}
+	};
+	
+	for ( auto& entity : EntityList::GetEntities( ) ) {
+		if ( !entity->GetActive( ) ) {
+			continue;
+		}
+
+		for ( auto child : entity->GetChildren( ) )
+			renderEntity( child );
+
+		renderEntity( entity );
 	}
 
 	// Prepare data
