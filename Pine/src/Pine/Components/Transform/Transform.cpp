@@ -26,14 +26,16 @@ void Pine::Transform::BuildDirections( )
 void Pine::Transform::BuildTransformationMatrix( ) {
 	m_TransformationMatrix = glm::mat4( 1.f );
 
-	glm::vec3 position = glm::vec3(0.f);
+	glm::vec3 pos( 0.f );
 
-	if ( GetParent( )->GetParent( ) != nullptr )
-		position = GetParent( )->GetParent( )->GetTransform( )->Position;
+	if ( GetParent(  )->GetParent(  ) != nullptr )
+	{
+		pos = GetParent( )->GetParent( )->GetTransform( )->Position;
+	}
 
-	position += Position;
-
-	m_TransformationMatrix = glm::translate( m_TransformationMatrix, position );
+	pos += Position;
+	
+	m_TransformationMatrix = glm::translate( m_TransformationMatrix, pos );
 
 	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.x ), glm::vec3( 1.f, 0.f, 0.f ) );
 	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.y ), glm::vec3( 0.f, 1.f, 0.f ) );

@@ -70,7 +70,6 @@ void Pine::Level::CreateFromCurrentLevel( )
 			continue;
 		}
 
-		// We handle children separately.
 		if ( entity->GetParent(  ) != nullptr )
 		{
 			continue;
