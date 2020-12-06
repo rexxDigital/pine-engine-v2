@@ -26,6 +26,7 @@ namespace Pine
 		asIScriptObject* CreateObject( );
 
 		void CallOnSetup( asIScriptObject* thisPtr );
+		void CallOnUpdate( asIScriptObject* thisPtr, float deltaTime );
 		
 		void OnCompile( );
 

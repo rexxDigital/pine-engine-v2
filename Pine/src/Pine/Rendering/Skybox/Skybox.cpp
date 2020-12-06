@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include "../../Assets/Texture3D/Texture3D.hpp"
 
+#include "../Renderer3D/Renderer3D.hpp"
+
 namespace {
 
 	Pine::VertexArray* g_SkyboxVertexArray = nullptr;
@@ -93,6 +95,8 @@ void Pine::Skybox::Render( ) {
 	
 	g_SkyboxVertexArray->Bind( );
 	g_SkyboxCubemap->Bind( );
+
+	Renderer3D::UpdateTextureBound( 0, g_SkyboxCubemap->GetId( ) );
 
 	glDrawArrays( GL_TRIANGLES, 0, 36 );
 

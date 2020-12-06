@@ -11,6 +11,7 @@
 #include "ImGui/imgui.h"
 #include "Pine/Components/Behavior/Behavior.hpp"
 #include "Pine/Components/Light/Light.hpp"
+#include "Pine/Components/TerrainRenderer/TerrainRenderer.hpp"
 
 using namespace Editor::Gui;
 
@@ -105,6 +106,18 @@ namespace {
 		}
 	}
 
+	void RenderTerrainRenderer( Pine::TerrainRenderer* terrainRenderer )
+	{
+		if ( !terrainRenderer )
+			return;
+
+		const auto currentAsset = terrainRenderer->GetTerrain( );
+		if ( const auto newAsset = Widgets::AssetPicker( "Terrain", currentAsset, true, Pine::EAssetType::Terrain ) )
+		{
+			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( newAsset ) );
+		}
+	}
+
 }
 
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
@@ -120,6 +133,8 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderLight( dynamic_cast< Pine::Light* >( component ) ); break;
 	case Pine::EComponentType::Behavior:
 		RenderBehavior( dynamic_cast< Pine::Behavior* >( component ) ); break;
+	case Pine::EComponentType::TerrainRenderer:
+		RenderTerrainRenderer( dynamic_cast< Pine::TerrainRenderer* >( component ) ); break;
 	default:
 		break;
 	}

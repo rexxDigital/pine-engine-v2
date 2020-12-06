@@ -18,6 +18,9 @@
 
 
 namespace Pine {
+	void SetAllowUpdates( bool value );
+	bool IsAllowingUpdates( );
+	
 	// Main engine setup
 	bool Setup( );
 

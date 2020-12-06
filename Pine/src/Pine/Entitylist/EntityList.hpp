@@ -3,17 +3,16 @@
 #include "../Entity/Entity.hpp"
 
 namespace Pine::EntityList {
-	
-	Entity* CreateEntity();
-	Entity* CreateEntity(const std::string& name);
 
-	bool DeleteEntity(Entity* entity);
+	Entity* CreateEntity( );
+	Entity* CreateEntity( const std::string& name );
 
-	const std::vector<Entity*>& GetEntities();
-
-	// temp == Clear temporary entities as well.
 	void ClearEntities( bool temp = false );
-	
-	void RunOnSetup();
+	bool DeleteEntity( Entity* entity );
 
+	void RunOnSetup( );
+	void RunOnUpdate( float deltaTime );
+
+	const std::vector<Entity*>& GetEntities( );
+	
 }

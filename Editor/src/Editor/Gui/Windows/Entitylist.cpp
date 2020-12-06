@@ -126,7 +126,26 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 
+	if ( Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1 )
+	{
+		Pine::Entity* e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
+		if ( HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) )
+		{
+			Pine::EntityList::DeleteEntity( e );
+			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+		}
+
+		if ( HotkeyManager::GetHotkeyPressed( DuplicateEntity ) )
+		{
+			Pine::Blueprint blueprint;
+
+			blueprint.CreateFromEntity( e );
+			blueprint.SpawnEntity( );
+
+			blueprint.Dispose( );
+		}
+	}
 	
 	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) ) {
 		const bool isTargetingEntity = Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1;
@@ -138,13 +157,13 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
 		
-		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) || HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) ) {
+		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
 			Pine::EntityList::DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) || HotkeyManager::GetHotkeyPressed( DuplicateEntity ) )
+		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) )
 		{
 			Pine::Blueprint blueprint;
 

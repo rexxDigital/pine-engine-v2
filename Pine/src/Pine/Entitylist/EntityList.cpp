@@ -69,3 +69,12 @@ void Pine::EntityList::RunOnSetup( ) {
 		}
 	}
 }
+
+void Pine::EntityList::RunOnUpdate( float deltaTime )
+{
+	for ( auto entity : m_Entities ) {
+		for ( auto comp : entity->GetComponents( ) ) {
+			comp->OnUpdate( deltaTime );
+		}
+	}
+}

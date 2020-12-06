@@ -175,6 +175,7 @@
     <ClInclude Include="src\Pine\Assets\Model\Model.hpp" />
     <ClInclude Include="src\Pine\Assets\Script\Script.hpp" />
     <ClInclude Include="src\Pine\Assets\Shader\Shader.hpp" />
+    <ClInclude Include="src\Pine\Assets\Terrain\Terrain.hpp" />
     <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\Pine\Components\Camera\Camera.hpp" />
     <ClInclude Include="src\Pine\Components\Components.hpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="src\Pine\Components\ModelRenderer\ModelRenderer.hpp" />
     <ClInclude Include="src\Pine\Components\NativeScript\NativeScript.hpp" />
     <ClInclude Include="src\Pine\Components\Behavior\Behavior.hpp" />
+    <ClInclude Include="src\Pine\Components\TerrainRenderer\TerrainRenderer.hpp" />
     <ClInclude Include="src\Pine\Components\Transform\Transform.hpp" />
     <ClInclude Include="src\Pine\Core\Core.hpp" />
     <ClInclude Include="src\Pine\Core\Log\Log.hpp" />
@@ -225,6 +227,7 @@
     <ClCompile Include="src\Pine\Assets\Model\Model.cpp" />
     <ClCompile Include="src\Pine\Assets\Script\Script.cpp" />
     <ClCompile Include="src\Pine\Assets\Shader\Shader.cpp" />
+    <ClCompile Include="src\Pine\Assets\Terrain\Terrain.cpp" />
     <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp" />
     <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp" />
     <ClCompile Include="src\Pine\Components\Behavior\Behavior.cpp" />
@@ -234,6 +237,7 @@
     <ClCompile Include="src\Pine\Components\Light\Light.cpp" />
     <ClCompile Include="src\Pine\Components\ModelRenderer\ModelRenderer.cpp" />
     <ClCompile Include="src\Pine\Components\NativeScript\NativeScript.cpp" />
+    <ClCompile Include="src\Pine\Components\TerrainRenderer\TerrainRenderer.cpp" />
     <ClCompile Include="src\Pine\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Pine\Core\Log\Log.cpp" />
     <ClCompile Include="src\Pine\Core\Serialization\Serialization.cpp" />

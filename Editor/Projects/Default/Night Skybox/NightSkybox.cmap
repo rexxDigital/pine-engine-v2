@@ -1,8 +1,8 @@
 {
-	"Back": "back.png",
-	"Front": "front.png",
-	"Bottom": "bottom.png",
-	"Left": "left.png",
-	"Right": "right.png",
-	"Top": "top.png"
+	"Back": "negz.jpg",
+	"Front": "posz.jpg",
+	"Bottom": "negy.jpg",
+	"Left": "negx.jpg",
+	"Right": "posx.jpg",
+	"Top": "posy.jpg"
 }

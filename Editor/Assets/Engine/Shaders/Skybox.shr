@@ -1,6 +1,6 @@
 {
-	"VertexShader": "Skybox\\Vertex.txt",
-	"FragmentShader": "Skybox\\Fragment.txt",
+	"VertexShader": "Skybox\\Vertex.glsl",
+	"FragmentShader": "Skybox\\Fragment.glsl",
 	"UniformBuffers": {
 		"Matrices": "Matrices"
 	}

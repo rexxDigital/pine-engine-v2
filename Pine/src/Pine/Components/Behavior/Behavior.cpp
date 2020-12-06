@@ -54,7 +54,8 @@ void Pine::Behavior::OnSetup( )
 
 void Pine::Behavior::OnUpdate( float deltaTime )
 {
-
+	if ( m_AttachedScript )
+		m_AttachedScript->CallOnUpdate( m_ScriptObject, deltaTime );
 }
 
 void Pine::Behavior::OnRender( )

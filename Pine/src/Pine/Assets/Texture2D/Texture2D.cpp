@@ -25,6 +25,23 @@ int Pine::Texture2D::GetChannels( ) const {
 	return m_Channels;
 }
 
+void Pine::Texture2D::CreateFromData( int width, int height, int format, void* data )
+{
+	glGenTextures( 1, &m_Id );
+	glBindTexture( GL_TEXTURE_2D, m_Id );
+	
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, format, GL_FLOAT, data );
+
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+	m_Width = width;
+	m_Height = height;
+	m_Channels = format == GL_RGB ? 3 : 4;
+}
+
 bool Pine::Texture2D::LoadFromFile( ) {
 	int width, height, channels;
 

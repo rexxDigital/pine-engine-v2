@@ -20,4 +20,7 @@ namespace Pine::Renderer3D
 	// Renders the prepared mesh via the transformation matrix.
 	void RenderMesh( const glm::mat4& transformationMatrix );
 
+	// Updates the cached bound texture
+	void UpdateTextureBound( int num, bool value );
+	
 }

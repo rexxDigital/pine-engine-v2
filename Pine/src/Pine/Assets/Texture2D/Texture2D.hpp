@@ -15,10 +15,12 @@ namespace Pine {
 		Texture2D( );
 
 		unsigned int GetId( ) const;
+		
 		int GetWidth( ) const;
 		int GetHeight( ) const;
-
 		int GetChannels( ) const;
+
+		void CreateFromData( int width, int height, int format, void* data );
 
 		bool LoadFromFile( ) override;
 		bool SaveToFile( ) override;

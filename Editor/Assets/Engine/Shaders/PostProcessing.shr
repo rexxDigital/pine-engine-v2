@@ -1,4 +1,7 @@
 {
-	"VertexShader": "PostProcessing\\Vertex.txt",
-	"FragmentShader": "PostProcessing\\Fragment.txt"
+	"VertexShader": "PostProcessing\\Vertex.glsl",
+	"FragmentShader": "PostProcessing\\Fragment.glsl",
+	"UniformBuffers": {
+		"Matrices": "Matrices"
+	}
 }

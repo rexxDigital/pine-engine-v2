@@ -1,7 +1,7 @@
 #include "Editor.hpp"
 #include "Gui\Gui.hpp"
 #include <Pine\Assets\Assets.hpp>
-
+#include <Pine/Pine.hpp>
 
 #include "EditorEntity/EditorEntity.hpp"
 #include "ProjectManager\ProjectManager.hpp"
@@ -29,4 +29,6 @@ void Editor::Setup( ) {
 
 	RenderingHandler::Setup( );
 
+	Pine::SetAllowUpdates( false );
+	
 }

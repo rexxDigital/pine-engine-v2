@@ -4,6 +4,8 @@
 #include <Pine\Assets\Assets.hpp>
 #include <Pine\Core\Window\Window.hpp>
 
+#include "Pine/ScriptManager/ScriptManager.hpp"
+
 // TODO: Store project meta data, and verify stuff.
 // This will probably never get done, lol.
 
@@ -114,4 +116,6 @@ void Editor::ProjectManager::ReloadProjectAssets( ) {
 		return;
 
 	Pine::Assets::LoadFromDirectory( GetCurrentProjectDirectory( ) );
+
+	Pine::ScriptingManager::CompileScripts( );
 }

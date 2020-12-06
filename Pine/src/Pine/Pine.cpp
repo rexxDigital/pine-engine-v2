@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <thread>
 #include "Rendering/RenderManager/RenderManager.hpp"
 #include "Rendering/UniformBuffers/UniformBuffers.hpp"
 #include "Entitylist/EntityList.hpp"
@@ -12,6 +13,48 @@
 #include "Input/Input.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
 #include "ScriptManager/ScriptManager.hpp"
+
+namespace
+{
+	constexpr int TickRate = 144;
+
+	bool g_StopUpdateThread = false;
+	bool g_AllowUpdates = false;
+
+	double GetTimeAsDouble( ) {
+		using namespace std::chrono;
+		using SecondsFP = std::chrono::duration<double>;
+		return duration_cast< SecondsFP >( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
+	}
+	
+	void UpdateThread( )
+	{
+		double lastTime = GetTimeAsDouble( );
+		
+		while ( !g_StopUpdateThread )
+		{
+			const double currentTime = GetTimeAsDouble( );
+			const float deltaTime = static_cast< float >( currentTime - lastTime );
+
+			if ( g_AllowUpdates )
+				Pine::EntityList::RunOnUpdate( deltaTime );
+
+			lastTime = currentTime;
+			std::this_thread::sleep_for( std::chrono::milliseconds( static_cast< int >( 1000.f / TickRate ) ) );
+		}
+	}
+
+}
+
+void Pine::SetAllowUpdates( bool value )
+{
+	g_AllowUpdates = value;
+}
+
+bool Pine::IsAllowingUpdates( )
+{
+	return g_AllowUpdates;
+}
 
 bool Pine::Setup( )
 {
@@ -77,8 +120,11 @@ void Pine::Run( )
 	Window::UpdateCachedSize( );
 
 	ScriptingManager::CompileScripts( );
-	
-	EntityList::RunOnSetup( );
+
+	if ( g_AllowUpdates )
+		EntityList::RunOnSetup( );
+
+	std::thread t( UpdateThread );
 
 	const auto window = Window::Internal::GetWindowPointer( );
 
@@ -96,6 +142,10 @@ void Pine::Run( )
 		glfwSwapBuffers( window );
 		glfwPollEvents( );
 	}
+
+	g_StopUpdateThread = true;
+
+	t.join( );
 }
 
 void Pine::Terminate( )
@@ -107,7 +157,7 @@ void Pine::Terminate( )
 	Skybox::Dispose( );
 	PostProcessing::Dispose( );
 	ScriptingManager::Dispose( );
-	
+
 	Window::Internal::Destroy( );
 }
 

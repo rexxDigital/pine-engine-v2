@@ -1,5 +1,8 @@
 #include "PlayManager.hpp"
 
+#include "Pine/Pine.hpp"
+#include "Pine/Entitylist/EntityList.hpp"
+
 namespace
 {
 	bool g_IsPlaying = false;
@@ -32,17 +35,23 @@ void Editor::PlayManager::Start( )
 
 	g_BackupLevel->CreateFromCurrentLevel( );
 	g_IsPlaying = true;
+
+	Pine::SetAllowUpdates( true );
+
+	Pine::EntityList::RunOnSetup( );
 }
 
 void Editor::PlayManager::Pause( )
 {
-	
+	Pine::SetAllowUpdates( !Pine::IsAllowingUpdates(  ) );
 }
 
 void Editor::PlayManager::Stop( )
 {
 	assert( g_IsPlaying );
 
+	Pine::SetAllowUpdates( false );
+	
 	if ( g_ShouldRestoreLevel )
 	{
 		g_BackupLevel->Load( );

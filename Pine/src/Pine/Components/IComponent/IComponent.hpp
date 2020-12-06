@@ -12,7 +12,8 @@ namespace Pine
 		Camera,
 		Light,
 		NativeScript,
-		Behavior
+		Behavior,
+		TerrainRenderer
 	};
 
 	inline const char* SComponentNames[ ] = {
@@ -22,7 +23,8 @@ namespace Pine
 		"Camera",
 		"Light",
 		"Native Script",
-		"Behavior"
+		"Behavior",
+		"Terrain Renderer"
 	};
 
 	class Entity;

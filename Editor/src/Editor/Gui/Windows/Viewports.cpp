@@ -19,6 +19,12 @@
 #include "Editor/PlayManager/PlayManager.hpp"
 #include "Pine/Entitylist/EntityList.hpp"
 
+#include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
+
+PE_REGISTER_HOTKEY( TransformGizmo, GLFW_KEY_T, false, false );
+PE_REGISTER_HOTKEY( RotateGizmo, GLFW_KEY_R, false, false );
+PE_REGISTER_HOTKEY( ScaleGizmo, GLFW_KEY_S, false, false );
+
 namespace {
 
 	bool g_StartedPlaying = false;
@@ -39,17 +45,17 @@ namespace {
 
 			if  ( inLevelViewport )
 			{
-				if ( ImGui::IsKeyPressed( GLFW_KEY_T ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( TransformGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
 				}
 
-				if ( ImGui::IsKeyPressed( GLFW_KEY_R ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( RotateGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
 				}
 
-				if ( ImGui::IsKeyPressed( GLFW_KEY_S ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( ScaleGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
 				}
@@ -70,8 +76,6 @@ namespace {
 				else
 				{
 					Editor::PlayManager::Start( );
-
-					Pine::EntityList::RunOnSetup( );
 
 					g_StartedPlaying = true;
 				}
@@ -104,11 +108,13 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			const auto avSize = ImGui::GetContentRegionAvail( );
 			const auto cursorScreen = ImGui::GetCursorScreenPos( );
 
-			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
-
-			if ( Pine::RenderManager::GetRenderingContext( )->m_Camera == nullptr )
+			if ( Pine::RenderManager::GetRenderingContext( )->m_Camera != nullptr )
 			{
-				ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorScreen.x + 10.f, cursorScreen.y + 10.f ), ImColor( 255, 255, 255, 255 ), "No active camera, please make at least one active." );
+				ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+			}
+			else
+			{
+				ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorScreen.x + 10.f, cursorScreen.y + 10.f ), ImColor( 255, 255, 255, 255 ), "No active camera, please make at least one is active." );
 			}
 		}
 
@@ -165,7 +171,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 						if ( e->GetParent( ) != nullptr )
 							base_position = e->GetParent( )->GetTransform( )->Position;
 						
-						e->GetTransform( )->Position = base_position + glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] );
+						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position ;
 						e->GetTransform( )->Rotation = ( glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] ) );
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}

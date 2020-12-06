@@ -3,7 +3,7 @@
 
 #include "ImGui/imgui.h"
 
-namespace 
+namespace
 {
 
 	struct HotkeyData
@@ -15,7 +15,7 @@ namespace
 	};
 
 	std::vector<HotkeyData> hotkeys;
-	
+
 }
 
 uint32_t Editor::Gui::HotkeyManager::RegisterHotkey( const std::string& name, int defaultKey, bool ctrl, bool alt )
@@ -36,16 +36,21 @@ bool Editor::Gui::HotkeyManager::GetHotkeyPressed( uint32_t hotkey )
 {
 	auto& data = hotkeys[ hotkey ];
 	auto& io = ImGui::GetIO( );
+
+	if ( ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
+	{
+		return false;
+	}
 	
-	if ( !data.m_Ctrl && io.KeyCtrl )
+	if ( ( data.m_Ctrl && !io.KeyCtrl ) || ( !data.m_Ctrl && io.KeyCtrl ) )
 	{
 		return false;
 	}
 
-	if ( !data.m_Alt && io.KeyAlt )
+	if ( ( data.m_Alt && !io.KeyAlt ) || ( !data.m_Alt && io.KeyAlt ) )
 	{
 		return false;
 	}
 
-	return ImGui::IsKeyDown( data.m_Key );
+	return ImGui::IsKeyPressed( data.m_Key );
 }

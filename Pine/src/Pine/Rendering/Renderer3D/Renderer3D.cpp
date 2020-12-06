@@ -125,6 +125,11 @@ void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
 	}
 }
 
+void Pine::Renderer3D::UpdateTextureBound( int num, bool value )
+{
+	g_CurrentBoundTexture[ num ] = value;
+}
+
 Pine::Shader* Pine::Renderer3D::GetShader( ) {
 	return g_CurrentShader;
 }

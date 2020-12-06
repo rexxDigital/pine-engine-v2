@@ -47,6 +47,20 @@ void Pine::Script::CallOnSetup( asIScriptObject* thisPtr )
 	ctx->Execute( );
 }
 
+void Pine::Script::CallOnUpdate( asIScriptObject* thisPtr, float deltaTime )
+{
+	if ( !m_fnOnUpdate )
+	{
+		return;
+	}
+
+	ctx->Prepare( m_fnOnUpdate );
+	ctx->SetObject( thisPtr );
+	ctx->SetArgFloat( 0, deltaTime );
+	ctx->Execute( );
+}
+
+
 void Pine::Script::OnCompile( )
 {
 	const std::string className = m_FilePath.stem( ).string( );
@@ -66,7 +80,7 @@ void Pine::Script::OnCompile( )
 
 	// Find methods of script class
 	m_fnOnSetup = type->GetMethodByDecl( "void OnSetup()" );
-	m_fnOnUpdate = type->GetMethodByDecl( "void OnUpdate()" );
+	m_fnOnUpdate = type->GetMethodByDecl( "void OnUpdate(float)" );
 
 	m_IsValid = true;
 }

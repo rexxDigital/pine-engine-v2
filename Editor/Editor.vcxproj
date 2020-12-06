@@ -199,7 +199,13 @@
     <ClInclude Include="src\ImGuizmo\ImZoomSlider.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Engine\Shaders\Default\Fragment.glsl" />
+    <None Include="Assets\Engine\Shaders\Default\Vertex.glsl" />
     <None Include="Assets\Engine\Shaders\PostProcessing.shr" />
+    <None Include="Assets\Engine\Shaders\PostProcessing\Fragment.glsl" />
+    <None Include="Assets\Engine\Shaders\PostProcessing\Vertex.glsl" />
+    <None Include="Assets\Engine\Shaders\Skybox\Fragment.glsl" />
+    <None Include="Assets\Engine\Shaders\Skybox\Vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
