@@ -8,6 +8,7 @@
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
 #include "Script/Script.hpp"
+#include "Terrain/Terrain.hpp"
 #include "Texture2D/Texture2D.hpp"
 #include "Texture3D/Texture3D.hpp"
 
@@ -32,7 +33,9 @@ namespace {
 			return Pine::EAssetType::Level;
 		if ( Pine::String::EndsWith( fileName, ".as" ) )
 			return Pine::EAssetType::Script;
-
+		if ( Pine::String::EndsWith( fileName, ".ter" ) )
+			return Pine::EAssetType::Terrain;
+		
 		return Pine::EAssetType::Invalid;
 	}
 
@@ -56,6 +59,8 @@ namespace {
 			return new Pine::Level( );
 		case Pine::EAssetType::Script:
 			return new Pine::Script( );
+		case Pine::EAssetType::Terrain:
+			return new Pine::Terrain( );
 		default:
 			return new Pine::InvalidAsset( );
 		}

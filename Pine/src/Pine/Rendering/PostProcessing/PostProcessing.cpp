@@ -67,12 +67,12 @@ namespace
 		g_NoiseTexture = new Pine::Texture2D;
 		g_NoiseTexture->CreateFromData( 4, 4, GL_RGB, &ssaoNoise[ 0 ] );
 
-		g_PostProcessingShader->GetUniformVariable( "aspectRatio" )->LoadFloat( static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Width ) / static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Height ) );
+		//g_PostProcessingShader->GetUniformVariable( "aspectRatio" )->LoadFloat( static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Width ) / static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Height ) );
 
-		for ( int i = 0; i < 64; i++ )
-		{
-			g_PostProcessingShader->GetUniformVariable( "samples[" + std::to_string( i ) + "]" )->LoadVector3( g_AOSampleKernels[ i ] );
-		}
+		//for ( int i = 0; i < 64; i++ )
+		//{
+		//	g_PostProcessingShader->GetUniformVariable( "samples[" + std::to_string( i ) + "]" )->LoadVector3( g_AOSampleKernels[ i ] );
+		//}
 	}
 
 }

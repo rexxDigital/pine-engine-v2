@@ -51,12 +51,13 @@ namespace {
 
 		ImGui::ShowDemoWindow( );
 		Editor::Gui::MainMenuBar::Render( );
+		
 		Editor::Gui::Windows::RenderEntitylist( );
 		Editor::Gui::Windows::RenderViewports( );
 		Editor::Gui::Windows::RenderAssetBrowser( );
 		Editor::Gui::Windows::RenderProperties( );
 		Editor::Gui::Windows::RenderDebugWindows( );
-
+		Editor::Gui::Windows::RenderLevelSettings( );
 	}
 
 }

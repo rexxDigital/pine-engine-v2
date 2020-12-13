@@ -114,8 +114,17 @@ const std::vector<std::string>& Editor::ProjectManager::GetAvaliableProjects( ) 
 void Editor::ProjectManager::ReloadProjectAssets( ) {
 	if ( !g_ProjectOpen )
 		return;
+	
+	Pine::Level* level = new Pine::Level;
 
+	level->CreateFromCurrentLevel( );
+	
 	Pine::Assets::LoadFromDirectory( GetCurrentProjectDirectory( ) );
 
 	Pine::ScriptingManager::CompileScripts( );
+
+	level->Load( );
+	level->Dispose( );
+
+	delete level;
 }

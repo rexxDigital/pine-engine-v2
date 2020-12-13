@@ -15,6 +15,8 @@
 
 #include "../../../ImGui/imgui_impl_glfw.h"
 #include "../../../ImGui/imgui_impl_opengl3.h"
+#include "../../Assets/Terrain/Terrain.hpp"
+#include "../../Components/TerrainRenderer/TerrainRenderer.hpp"
 #include "../PostProcessing/PostProcessing.hpp"
 
 namespace {
@@ -66,6 +68,7 @@ void Pine::RenderManager::Run( ) {
 	// Also quicker!
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
+	std::vector<Pine::TerrainRenderer*> terrainRenderer;
 
 	auto renderEntity = [ & ] ( Pine::Entity* entity )
 	{
@@ -86,6 +89,10 @@ void Pine::RenderManager::Run( ) {
 			}
 			else if ( component->GetType( ) == EComponentType::Light ) {
 				lights.push_back( dynamic_cast< Pine::Light* >( component ) );
+			}
+			else if ( component->GetType(  ) == EComponentType::TerrainRenderer )
+			{
+				terrainRenderer.push_back( dynamic_cast< Pine::TerrainRenderer* >( component ) );
 			}
 		}
 	};
@@ -145,6 +152,8 @@ void Pine::RenderManager::Run( ) {
 
 	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
 
+	/* Render Normal Entities */
+
 	for ( auto& renderItem : renderBatch ) {
 		for ( auto& mesh : renderItem.first->GetMeshList( ) ) {
 			Renderer3D::PrepareMesh( mesh );
@@ -154,7 +163,7 @@ void Pine::RenderManager::Run( ) {
 			}
 		}
 	}
-
+	
 	Skybox::Render( );
 
 	if ( g_PostRenderingCallback ) {
@@ -178,6 +187,7 @@ void Pine::RenderManager::Run( ) {
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
+	
 	PostProcessing::Render( );
 }
 

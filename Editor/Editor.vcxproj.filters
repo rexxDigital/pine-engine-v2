@@ -84,6 +84,9 @@
     <ClCompile Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Editor\Gui\Windows\LevelSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Editor\Gui\Gui.hpp">

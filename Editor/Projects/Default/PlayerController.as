@@ -1,10 +1,10 @@
 
 class PlayerController {
 	void OnSetup() {
-		print("Why racist?");
+		print("Test #2");
 	}
 	
 	void OnUpdate(float deltaTime) {
-		print("Update, " + deltaTime);
+		
 	}
 }

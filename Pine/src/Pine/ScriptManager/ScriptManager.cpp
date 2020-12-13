@@ -76,8 +76,6 @@ void Pine::ScriptingManager::CompileScripts( )
 		if ( asset->GetType(  ) != EAssetType::Script )
 			continue;
 
-		
-		
 		const auto script = dynamic_cast< Pine::Script* >( asset );
 		if ( !script )
 			continue;

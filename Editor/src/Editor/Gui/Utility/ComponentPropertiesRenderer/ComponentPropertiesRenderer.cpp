@@ -111,10 +111,24 @@ namespace {
 		if ( !terrainRenderer )
 			return;
 
-		const auto currentAsset = terrainRenderer->GetTerrain( );
-		if ( const auto newAsset = Widgets::AssetPicker( "Terrain", currentAsset, true, Pine::EAssetType::Terrain ) )
+		const auto terrain = terrainRenderer->GetTerrain( );
+		if ( const auto newAsset = Widgets::AssetPicker( "Terrain", terrain, true, Pine::EAssetType::Terrain ) )
 		{
 			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( newAsset ) );
+		}
+
+		if ( terrain == nullptr )
+		{
+			return;			
+		}
+
+		auto& chunks = terrain->GetChunks( );
+
+		ImGui::Text( "Chunks: %d", chunks.size( ) );
+
+		if ( ImGui::Button( "Create Chunk" ) )
+		{
+			terrain->CreateChunk( glm::ivec2( 0, 0 ) );
 		}
 	}
 

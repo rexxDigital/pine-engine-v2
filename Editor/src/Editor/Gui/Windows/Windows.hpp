@@ -9,7 +9,8 @@ namespace Editor::Gui::Windows {
 	inline bool ShowGameViewport = true;
 	inline bool ShowAssetBrowser = true;
 	inline bool ShowProperties = true;
-
+	inline bool ShowLevelSettings = false;
+	
 	// Debug
 	inline bool ShowRenderingContext = false;
 
@@ -25,5 +26,7 @@ namespace Editor::Gui::Windows {
 
 	void RenderProjectWizard( );
 
+	void RenderLevelSettings( );
+	
 }
 

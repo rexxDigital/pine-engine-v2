@@ -1,4 +1,8 @@
 #include "Terrain.hpp"
+
+#include <json.hpp>
+#include <fstream>
+
 #include "../../OpenGL/VertexArray/VertexArray.hpp"
 
 Pine::TerrainChunk::TerrainChunk( glm::ivec2 pos )
@@ -128,12 +132,25 @@ const std::vector<Pine::TerrainChunk>& Pine::Terrain::GetChunks( ) const
 
 bool Pine::Terrain::LoadFromFile( )
 {
-	return false;
+	return true;
 }
 
 bool Pine::Terrain::SaveToFile( )
 {
-	return false;
+	nlohmann::json j;
+
+	for ( auto& chunk : m_Chunks )
+	{
+		
+	}
+
+	std::ofstream stream( m_FilePath );
+
+	stream << j;
+
+	stream.close( );
+	
+	return true;
 }
 
 void Pine::Terrain::Dispose( )

@@ -162,6 +162,7 @@
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
+    <ClCompile Include="src\Editor\Gui\Windows\LevelSettings.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Viewports.cpp" />

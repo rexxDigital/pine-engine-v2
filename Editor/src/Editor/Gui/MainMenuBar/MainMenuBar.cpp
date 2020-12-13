@@ -5,57 +5,58 @@
 
 #include <imgui/imgui.h>
 
-void Editor::Gui::MainMenuBar::Render() {
-		if (ImGui::BeginMainMenuBar()) {
+void Editor::Gui::MainMenuBar::Render( ) {
+	if ( ImGui::BeginMainMenuBar( ) ) {
 
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Save"))
+		if ( ImGui::BeginMenu( "File" ) ) {
+			if ( ImGui::MenuItem( "Save" ) )
 			{
-				ProjectManager::Save();
+				ProjectManager::Save( );
 			}
 
-			if (ImGui::MenuItem("Level Settings"))
+			if ( ImGui::MenuItem( "Level Settings" ) )
+			{
+				Windows::ShowLevelSettings = !Windows::ShowLevelSettings;
+			}
+
+			ImGui::Separator( );
+
+			if ( ImGui::MenuItem( "Exit" ) )
 			{
 
 			}
 
-			ImGui::Separator();
+			ImGui::EndMenu( );
+		}
 
-			if (ImGui::MenuItem("Exit"))
-			{
+		if ( ImGui::BeginMenu( "Edit" ) ) {
 
+			ImGui::EndMenu( );
+		}
+
+		if ( ImGui::BeginMenu( "Assets" ) ) {
+
+			ImGui::EndMenu( );
+		}
+
+		if ( ImGui::BeginMenu( "Windows" ) ) {
+
+			ImGui::MenuItem( "Asset Browser", nullptr, &Windows::ShowAssetBrowser );
+			ImGui::MenuItem( "Entity List", nullptr, &Windows::ShowEntitylist );
+			ImGui::MenuItem( "Properties", nullptr, &Windows::ShowProperties );
+			ImGui::MenuItem( "Game Viewport", nullptr, &Windows::ShowGameViewport );
+			ImGui::MenuItem( "Level Viewport", nullptr, &Windows::ShowLevelViewport );
+			ImGui::MenuItem( "Level Settings", nullptr, &Windows::ShowLevelSettings );
+
+			if ( ImGui::BeginMenu( "Debug" ) ) {
+				ImGui::MenuItem( "Rendering Context", nullptr, &Windows::ShowRenderingContext );
+
+				ImGui::EndMenu( );
 			}
 
-			ImGui::EndMenu();
+			ImGui::EndMenu( );
 		}
-
-		if (ImGui::BeginMenu("Edit")) {
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Assets")) {
-
-			ImGui::EndMenu();
-		}
-
-		if (ImGui::BeginMenu("Windows")) {
-
-			ImGui::MenuItem("Asset Browser", nullptr, &Windows::ShowAssetBrowser);
-			ImGui::MenuItem("Entity List", nullptr, &Windows::ShowEntitylist);
-			ImGui::MenuItem("Properties", nullptr, &Windows::ShowProperties);
-			ImGui::MenuItem("Game Viewport", nullptr, &Windows::ShowGameViewport);
-			ImGui::MenuItem("Level Viewport", nullptr, &Windows::ShowLevelViewport);
-
-			if (ImGui::BeginMenu("Debug")) {
-				ImGui::MenuItem("Rendering Context", nullptr, &Windows::ShowRenderingContext);
-
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
+		ImGui::EndMainMenuBar( );
 	}
-	
+
 }

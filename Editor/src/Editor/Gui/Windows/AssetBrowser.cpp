@@ -9,6 +9,7 @@
 #include "..\Widgets\Widgets.hpp"
 #include "..\Gui.hpp"
 #include "..\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "Pine/Assets/Terrain/Terrain.hpp"
 #include "Pine/Core/String/String.hpp"
 #include "Pine/ScriptManager/ScriptManager.hpp"
 
@@ -255,6 +256,11 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				openCreatePopup = true;
 			}
 
+			if ( ImGui::MenuItem( "Terrain", nullptr ) ) {
+				g_CreateType = 3;
+				openCreatePopup = true;
+			}
+
 			ImGui::EndMenu( );
 		}
 
@@ -382,30 +388,48 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 		ImGui::InputText( "##NewName", buff, 128 );
 
 		if ( ImGui::Button( "OK" ) ) {
+			std::string baseDir = g_CurrentDirectory->m_Path.string( );
+
+			if ( g_CurrentDirectory == g_RootDirectory.get( ) )
+				baseDir = ProjectManager::GetCurrentProjectDirectory( );
+
+			// Directory
 			if ( g_CreateType == 0 ) {
-				std::string baseDir = g_CurrentDirectory->m_Path.string( );
-
-				if ( g_CurrentDirectory == g_RootDirectory.get( ) )
-					baseDir = ProjectManager::GetCurrentProjectDirectory( );
-
 				std::filesystem::create_directory( std::string( baseDir + "\\" + buff ) );
 
 				ProjectManager::ReloadProjectAssets( );
 				UpdateAssetCache( );
 			}
 
-			if ( g_CreateType == 2 ) {
-				std::string baseDir = g_CurrentDirectory->m_Path.string( );
-
-				if ( g_CurrentDirectory == g_RootDirectory.get( ) )
-					baseDir = ProjectManager::GetCurrentProjectDirectory( );
-
-				ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
+			// Material
+			if ( g_CreateType == 1 ) {
+				std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", baseDir + "\\" + buff + ".mat" );
 
 				ProjectManager::ReloadProjectAssets( );
 				UpdateAssetCache( );
 			}
 
+			// Level
+			if ( g_CreateType == 2 ) {
+				ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
+				ProjectManager::ReloadProjectAssets( );
+				UpdateAssetCache( );
+			}
+
+			// Terrain
+			if ( g_CreateType == 3 ) {
+				Pine::Terrain* terrain = new Pine::Terrain( );
+
+				terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
+				terrain->SaveToFile( );
+				terrain->Dispose( );
+				
+				delete terrain;
+
+				ProjectManager::ReloadProjectAssets( );
+				UpdateAssetCache( );
+			}
+			
 			ImGui::CloseCurrentPopup( );
 		}
 
