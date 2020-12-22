@@ -1,6 +1,7 @@
 #pragma once
 #include "../../OpenGL/VertexArray/VertexArray.hpp"
 #include "../../Assets/Mesh/Mesh.hpp"
+#include "../../Assets/Terrain/Terrain.hpp"
 
 namespace Pine::Renderer3D
 {
@@ -20,6 +21,10 @@ namespace Pine::Renderer3D
 	// Renders the prepared mesh via the transformation matrix.
 	void RenderMesh( const glm::mat4& transformationMatrix );
 
+	// Terrain stuff
+	void PrepareTerrain( Pine::Terrain* terrain );
+	void RenderTerrainChunk( const Pine::TerrainChunk& chunk );
+	
 	// Updates the cached bound texture
 	void UpdateTextureBound( int num, bool value );
 	

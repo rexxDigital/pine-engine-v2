@@ -5,14 +5,13 @@
 #include "../../Entity/Entity.hpp"
 #include "../../Entitylist/EntityList.hpp"
 
-#include <fstream>
-
-
-
 #include "../../Components/Behavior/Behavior.hpp"
 #include "../../Components/Camera/Camera.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/ModelRenderer/ModelRenderer.hpp"
+#include "../../Components/TerrainRenderer/TerrainRenderer.hpp"
+
+#include <fstream>
 
 namespace
 {
@@ -30,6 +29,8 @@ namespace
 			return new Pine::Light( );
 		case Pine::EComponentType::Behavior:
 			return new Pine::Behavior( );
+		case Pine::EComponentType::TerrainRenderer:
+			return new Pine::TerrainRenderer( );
 		default: break;
 		}
 

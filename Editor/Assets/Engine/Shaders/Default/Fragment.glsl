@@ -1,7 +1,6 @@
 #version 420 core
 
 layout( location = 0 ) out vec4 out_color;
-layout( location = 1 ) out vec4 out_normal;
 
 struct MaterialSamplerData
 {
@@ -83,5 +82,4 @@ void main( void ) {
 	vec4 pointLight2 = vec4( CalculatePointLight( 2 ), 1.0f );
 
 	out_color = ( directionalLight + pointLight1 + pointLight2 );
-	out_normal = vec4(normalDirection, 1.f);
 }

@@ -27,6 +27,8 @@ namespace Pine {
 		void GenerateTerrain( );
 		void GenerateTerrain( const std::string& heightMap );
 
+		int GetRenderCount( ) const;
+
 		void Dispose( );
 	};
 

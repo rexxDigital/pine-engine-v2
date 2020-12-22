@@ -81,7 +81,7 @@ void Pine::PostProcessing::Setup( )
 {
 	// Setup rendering frame buffer
 	g_PostProcessingBuffer = new Pine::FrameBuffer;
-	g_PostProcessingBuffer->Create( 1600, 900, true );
+	g_PostProcessingBuffer->Create( 1600, 900, false );
 
 	// Setup the quad vertex array
 
@@ -115,6 +115,7 @@ void Pine::PostProcessing::Setup( )
 	// Prepare post processing shader
 	g_PostProcessingShader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\PostProcessing.shr" );
 
+	/*
 	g_PostProcessingShader->Use( );
 	g_PostProcessingShader->GetUniformVariable( "fragColor" )->LoadInteger( 0 );
 	g_PostProcessingShader->GetUniformVariable( "fragNormal" )->LoadInteger( 2 );
@@ -123,6 +124,7 @@ void Pine::PostProcessing::Setup( )
 
 	// Prepare ambient occlusion
 	SetupAmbientOcclusion( );
+	*/
 }
 
 void Pine::PostProcessing::Dispose( )
@@ -164,21 +166,6 @@ void Pine::PostProcessing::Render( )
 	glBindTexture( GL_TEXTURE_2D, g_PostProcessingBuffer->GetTextureId( ) );
 
 	Renderer3D::UpdateTextureBound( 0, g_PostProcessingBuffer->GetTextureId( ) );
-
-	// Bind normal buffer
-	glActiveTexture( GL_TEXTURE2 );
-	glBindTexture( GL_TEXTURE_2D, g_PostProcessingBuffer->GetNormalBufferId( ) );
-
-	Renderer3D::UpdateTextureBound( 2, g_PostProcessingBuffer->GetNormalBufferId( ) );
-
-	// Bind frame buffer
-	glActiveTexture( GL_TEXTURE3 );
-	glBindTexture( GL_TEXTURE_2D, g_PostProcessingBuffer->GetDepthId( ) );
-
-	Renderer3D::UpdateTextureBound( 3, g_PostProcessingBuffer->GetDepthId( ) );
-
-	glActiveTexture( GL_TEXTURE4 );
-	glBindTexture( GL_TEXTURE_2D, g_NoiseTexture->GetId( ) );
 
 	// Just do a simple render call
 	glDrawElements( GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr );

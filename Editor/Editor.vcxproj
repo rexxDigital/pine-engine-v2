@@ -207,6 +207,8 @@
     <None Include="Assets\Engine\Shaders\PostProcessing\Vertex.glsl" />
     <None Include="Assets\Engine\Shaders\Skybox\Fragment.glsl" />
     <None Include="Assets\Engine\Shaders\Skybox\Vertex.glsl" />
+    <None Include="Assets\Engine\Shaders\Terrain\Fragment.glsl" />
+    <None Include="Assets\Engine\Shaders\Terrain\Vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

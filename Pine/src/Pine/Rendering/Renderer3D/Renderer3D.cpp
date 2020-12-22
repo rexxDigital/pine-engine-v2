@@ -11,6 +11,7 @@ namespace {
 
 	// Shader stuff.
 	Pine::Shader* g_CurrentShader = nullptr;
+	Pine::Shader* g_TerrainShader = nullptr;
 	Pine::UniformVariable* g_ShaderTransformationVariable = nullptr;
 
 	// The texture we use if there is no texture applied, 1x1 white.
@@ -125,6 +126,16 @@ void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
 	}
 }
 
+void Pine::Renderer3D::PrepareTerrain( Pine::Terrain* terrain )
+{
+	g_TerrainShader->Use( );
+}
+
+void Pine::Renderer3D::RenderTerrainChunk( const Pine::TerrainChunk& chunk )
+{
+	RenderVertexArray( chunk.GetVertexArray( ), chunk.GetRenderCount( ), true );
+}
+
 void Pine::Renderer3D::UpdateTextureBound( int num, bool value )
 {
 	g_CurrentBoundTexture[ num ] = value;
@@ -146,6 +157,7 @@ void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 
 void Pine::Renderer3D::Setup( ) {
 	g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
+	g_TerrainShader = Assets::GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
 }
 
 void Pine::Renderer3D::Dispose( ) {

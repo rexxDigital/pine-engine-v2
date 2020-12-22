@@ -68,10 +68,9 @@ void Pine::RenderManager::Run( ) {
 	// Also quicker!
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
-	std::vector<Pine::TerrainRenderer*> terrainRenderer;
+	std::vector<Pine::TerrainRenderer*> terrainRenderers;
 
-	auto renderEntity = [ & ] ( Pine::Entity* entity )
-	{
+	auto renderEntity = [ & ]( Pine::Entity* entity ) {
 		for ( auto& component : entity->GetComponents( ) ) {
 			if ( !component->GetActive( ) ) {
 				continue;
@@ -90,13 +89,12 @@ void Pine::RenderManager::Run( ) {
 			else if ( component->GetType( ) == EComponentType::Light ) {
 				lights.push_back( dynamic_cast< Pine::Light* >( component ) );
 			}
-			else if ( component->GetType(  ) == EComponentType::TerrainRenderer )
-			{
-				terrainRenderer.push_back( dynamic_cast< Pine::TerrainRenderer* >( component ) );
+			else if ( component->GetType( ) == EComponentType::TerrainRenderer ) {
+				terrainRenderers.push_back( dynamic_cast< Pine::TerrainRenderer* >( component ) );
 			}
 		}
 	};
-	
+
 	for ( auto& entity : EntityList::GetEntities( ) ) {
 		if ( !entity->GetActive( ) ) {
 			continue;
@@ -125,15 +123,13 @@ void Pine::RenderManager::Run( ) {
 			break;
 		}
 
-		if ( light->GetLightType( ) == Pine::ELightType::Directional )
-		{
+		if ( light->GetLightType( ) == Pine::ELightType::Directional ) {
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].color = light->GetLightColor( );
 			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].attenuation = light->GetAttenuation( );
 		}
-		else
-		{
+		else {
 			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].position = light->GetParent( )->GetTransform( )->Position;
 			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
 			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].color = light->GetLightColor( );
@@ -152,6 +148,20 @@ void Pine::RenderManager::Run( ) {
 
 	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
 
+	for ( auto terrainRenderer : terrainRenderers ) {
+		const auto terrain = terrainRenderer->GetTerrain( );
+
+		if ( !terrain )
+			continue;
+
+		Renderer3D::PrepareTerrain( terrain );
+		
+		for ( auto& chunk : terrain->GetChunks(  ) )
+		{
+			Renderer3D::RenderTerrainChunk( chunk );
+		}
+	}
+
 	/* Render Normal Entities */
 
 	for ( auto& renderItem : renderBatch ) {
@@ -163,7 +173,7 @@ void Pine::RenderManager::Run( ) {
 			}
 		}
 	}
-	
+
 	Skybox::Render( );
 
 	if ( g_PostRenderingCallback ) {
@@ -177,8 +187,7 @@ void Pine::RenderManager::Run( ) {
 		g_RenderingContext->m_FrameBuffer->Bind( );
 
 		// Override rendering context's size variables.
-		if ( g_RenderingContext->m_AutoUpdateSize )
-		{
+		if ( g_RenderingContext->m_AutoUpdateSize ) {
 			g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
 			g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
 		}
@@ -187,7 +196,7 @@ void Pine::RenderManager::Run( ) {
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
-	
+
 	PostProcessing::Render( );
 }
 
@@ -199,17 +208,14 @@ Pine::RenderingContext* Pine::RenderManager::GetRenderingContext( ) {
 	return g_RenderingContext;
 }
 
-void Pine::RenderManager::SetPreRenderingCallback( RenderCallback fn )
-{
+void Pine::RenderManager::SetPreRenderingCallback( RenderCallback fn ) {
 	g_PreRenderingCallback = fn;
 }
 
-void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn )
-{
+void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn ) {
 	g_PostRenderingCallback = fn;
 }
 
-void Pine::RenderManager::Setup( )
-{
+void Pine::RenderManager::Setup( ) {
 	g_RenderingImGuiContext = ImGui::CreateContext( );
 }

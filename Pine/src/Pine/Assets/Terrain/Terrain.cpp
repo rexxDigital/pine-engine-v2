@@ -90,6 +90,11 @@ void Pine::TerrainChunk::GenerateTerrain( const std::string& heightMap )
 	
 }
 
+int Pine::TerrainChunk::GetRenderCount( ) const
+{
+	return 6 * ( TerrainVertexCount - 1 ) * ( TerrainVertexCount - 1 );
+}
+
 void Pine::TerrainChunk::Dispose( )
 {
 	if ( m_VertexArray )
