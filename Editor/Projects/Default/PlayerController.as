@@ -1,7 +1,7 @@
 
 class PlayerController {
 	void OnSetup() {
-		print("Test #2");
+		print("Test #1");
 	}
 	
 	void OnUpdate(float deltaTime) {

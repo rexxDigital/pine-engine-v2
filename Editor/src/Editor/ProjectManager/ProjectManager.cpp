@@ -115,7 +115,7 @@ void Editor::ProjectManager::ReloadProjectAssets( ) {
 	if ( !g_ProjectOpen )
 		return;
 	
-	Pine::Level* level = new Pine::Level;
+	auto level = new Pine::Level;
 
 	level->CreateFromCurrentLevel( );
 	

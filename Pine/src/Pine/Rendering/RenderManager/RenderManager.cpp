@@ -196,7 +196,6 @@ void Pine::RenderManager::Run( ) {
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
-
 	PostProcessing::Render( );
 }
 

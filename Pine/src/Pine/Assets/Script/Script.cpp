@@ -3,6 +3,7 @@
 #include "../../ScriptManager/ScriptManager.hpp"
 
 #include <angelscript.h>
+#include <fstream>
 
 // don't ask
 #define ctx ScriptingManager::ScriptContext
@@ -33,6 +34,21 @@ asIScriptObject* Pine::Script::CreateObject( )
 	obj->AddRef( );
 
 	return obj;
+}
+
+const std::string& Pine::Script::GetScriptFileText( ) const
+{
+	return m_ScriptFileText;
+}
+
+bool Pine::Script::HasOnSetup( ) const
+{
+	return m_fnOnSetup != nullptr;
+}
+
+bool Pine::Script::HasOnUpdate( ) const
+{
+	return m_fnOnUpdate != nullptr;
 }
 
 void Pine::Script::CallOnSetup( asIScriptObject* thisPtr )
@@ -82,6 +98,19 @@ void Pine::Script::OnCompile( )
 	m_fnOnSetup = type->GetMethodByDecl( "void OnSetup()" );
 	m_fnOnUpdate = type->GetMethodByDecl( "void OnUpdate(float)" );
 
+	// Read source code to string
+	std::ifstream stream( m_FilePath );
+
+	if ( stream.is_open(  ) )
+	{
+		std::string str( ( std::istreambuf_iterator<char>( stream ) ),
+			std::istreambuf_iterator<char>( ) );
+
+		m_ScriptFileText = str;
+		
+		stream.close( );
+	}
+	
 	m_IsValid = true;
 }
 

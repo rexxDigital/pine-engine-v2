@@ -68,7 +68,7 @@ bool Pine::Setup( )
 
 	if ( !Window::Internal::Create( ) )
 	{
-		// We already print out an error message in the function, no need to do it again.
+		// Since we already printed out an error message in the function, no need to do it again.
 		return false;
 	}
 

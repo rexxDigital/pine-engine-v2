@@ -28,8 +28,15 @@ namespace {
 		std::string m_DisplayText = "";
 		Pine::Texture2D* m_DisplayIcon = nullptr;
 
-		std::vector<std::unique_ptr<PathItem_t>> m_Items;
+		std::vector<PathItem_t*> m_Items;
 		PathItem_t* m_Parent = nullptr;
+
+		void Dispose( ) 		{
+			for ( auto item : m_Items ) 			{
+				item->Dispose( );
+				delete item;
+			}
+		}
 	};
 
 	bool g_DidOpenContextMenu = false;
@@ -38,35 +45,35 @@ namespace {
 	void ProcessDirectory( const std::string& dir, PathItem_t* item ) {
 		// Add a "..." go back directory.
 		if ( item->m_Parent != nullptr ) {
-			auto entry = std::make_unique<PathItem_t>( );
+			auto entry = new PathItem_t;
 
 			entry->m_IsDirectory = true;
 			entry->m_Path = item->m_Parent->m_Path;
 			entry->m_Parent = item->m_Parent;
 			entry->m_DisplayText = "...";
 
-			item->m_Items.push_back( std::move( entry ) );
+			item->m_Items.push_back( entry );
 		}
 
 		for ( const auto& dirEntry : std::filesystem::directory_iterator( dir ) ) {
 			if ( dirEntry.is_directory( ) ) { // Process directory:
-				auto entry = std::make_unique<PathItem_t>( );
+				auto entry = new PathItem_t;
 
 				entry->m_IsDirectory = true;
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
-				ProcessDirectory( entry->m_Path.string( ), entry.get( ) );
+				ProcessDirectory( entry->m_Path.string( ), entry );
 
-				item->m_Items.push_back( std::move( entry ) );
+				item->m_Items.push_back( entry );
 			}
 			else { // Process file:
 				// Ignore ".asset" files
 				if ( Pine::String::EndsWith( dirEntry.path( ).string( ), ".asset" ) )
 					continue;
 
-				auto entry = std::make_unique<PathItem_t>( );
+				auto entry = new PathItem_t;
 
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
@@ -74,25 +81,25 @@ namespace {
 				entry->m_DisplayIcon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( entry->m_Path.string( ) );
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
-				item->m_Items.push_back( std::move( entry ) );
+				item->m_Items.push_back( entry );
 			}
 		}
 	}
 
 	void MapDirectory( const std::string& displayDirectory, const std::string& dir, PathItem_t* item ) {
-		auto entry = std::make_unique<PathItem_t>( );
+		auto entry = new PathItem_t;
 
 		entry->m_IsDirectory = true;
 		entry->m_Path = displayDirectory;
 		entry->m_Parent = item;
 		entry->m_DisplayText = displayDirectory;
 
-		ProcessDirectory( dir, entry.get( ) );
+		ProcessDirectory( dir, entry );
 
-		item->m_Items.push_back( std::move( entry ) );
+		item->m_Items.push_back( entry );
 	}
 
-	std::unique_ptr<PathItem_t> g_RootDirectory = nullptr;
+	PathItem_t* g_RootDirectory = nullptr;
 
 	constexpr int IconSize = 48;
 
@@ -113,12 +120,12 @@ namespace {
 			if ( !directory->m_IsDirectory )
 				continue;
 
-			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory.get( ), directoryIcon, 48, nullptr ) ) {
+			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory, directoryIcon, 48, nullptr ) ) {
 				if ( directory->m_DisplayText == "..." ) {
 					g_CurrentDirectory = directory->m_Parent;
 				}
 				else {
-					g_CurrentDirectory = directory.get( );
+					g_CurrentDirectory = directory;
 				}
 			}
 
@@ -129,7 +136,7 @@ namespace {
 				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 
 				g_DidOpenContextMenu = true;
-				g_SelectedContextMenuItem = directory.get( );
+				g_SelectedContextMenuItem = directory;
 			}
 
 			ImGui::NextColumn( );
@@ -159,7 +166,7 @@ namespace {
 				Editor::Gui::Globals::SelectedAssetPtrs.push_back( file->m_Asset );
 
 				g_DidOpenContextMenu = true;
-				g_SelectedContextMenuItem = file.get( );
+				g_SelectedContextMenuItem = file;
 			}
 
 			ImGui::NextColumn( );
@@ -170,21 +177,23 @@ namespace {
 
 void UpdateAssetCache( ) {
 	if ( g_RootDirectory )
-		g_RootDirectory.release( );
-
-	g_RootDirectory = std::make_unique<PathItem_t>( );
+	{
+		g_RootDirectory->Dispose( );
+		delete g_RootDirectory;
+	}
+	
+	g_RootDirectory = new PathItem_t;
 
 	g_RootDirectory->m_IsDirectory = true;
 	g_RootDirectory->m_Path = "";
 
-	MapDirectory( "Engine", "Assets\\Engine", g_RootDirectory.get( ) );
+	MapDirectory( "Engine", "Assets\\Engine", g_RootDirectory );
 
 	Editor::Gui::Utility::AssetIconGen::Update( );
 
-	ProcessDirectory( Editor::ProjectManager::GetCurrentProjectDirectory( ), g_RootDirectory.get( ) );
+	ProcessDirectory( Editor::ProjectManager::GetCurrentProjectDirectory( ), g_RootDirectory );
 
-	g_CurrentDirectory = g_RootDirectory.get( );
-
+	g_CurrentDirectory = g_RootDirectory;
 }
 
 void Editor::Gui::Windows::RenderAssetBrowser( ) {
@@ -390,7 +399,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 		if ( ImGui::Button( "OK" ) ) {
 			std::string baseDir = g_CurrentDirectory->m_Path.string( );
 
-			if ( g_CurrentDirectory == g_RootDirectory.get( ) )
+			if ( g_CurrentDirectory == g_RootDirectory )
 				baseDir = ProjectManager::GetCurrentProjectDirectory( );
 
 			// Directory
@@ -423,13 +432,13 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
 				terrain->SaveToFile( );
 				terrain->Dispose( );
-				
+
 				delete terrain;
 
 				ProjectManager::ReloadProjectAssets( );
 				UpdateAssetCache( );
 			}
-			
+
 			ImGui::CloseCurrentPopup( );
 		}
 

@@ -20,11 +20,18 @@ namespace Pine
 		bool m_IsValid = false;
 
 		std::vector<Behavior*> m_References;
+
+		std::string m_ScriptFileText = "";
 	public:
 		Script( );
 
 		asIScriptObject* CreateObject( );
 
+		const std::string& GetScriptFileText( ) const;
+
+		bool HasOnSetup( ) const;
+		bool HasOnUpdate( ) const;
+		
 		void CallOnSetup( asIScriptObject* thisPtr );
 		void CallOnUpdate( asIScriptObject* thisPtr, float deltaTime );
 		

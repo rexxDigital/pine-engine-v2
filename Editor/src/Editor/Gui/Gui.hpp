@@ -43,6 +43,7 @@ namespace Editor::Gui {
 
 		inline ImFont* TitleFont = nullptr;
 		inline ImFont* BoldFont = nullptr;
+		inline ImFont* CodeFont = nullptr;
 
 	}
 

@@ -66,19 +66,14 @@ void Pine::Level::CreateFromCurrentLevel( )
 	{
 		// Ignore temporary entities such as editor entities.
 		if ( entity->IsTemporary( ) )
-		{
 			continue;
-		}
 
-		if ( entity->GetParent(  ) != nullptr )
-		{
+		// Ignore children as we write them separately later.
+		if ( entity->GetParent( ) != nullptr )
 			continue;
-		}
 
 		if ( currentCameraEntity == entity )
-		{
 			m_LevelSettings->m_CameraEntity = currentId;
-		}
 
 		m_Blueprints.push_back( CreateBlueprintOfEntity( entity ) );
 
@@ -100,6 +95,7 @@ void Pine::Level::Load( )
 	{
 		auto entity = bp->SpawnEntity( );
 
+		// This fucking sucks and I hate it
 		if ( m_LevelSettings->m_CameraEntity != 0 && m_LevelSettings->m_CameraEntity == currentId )
 		{
 			RenderManager::GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
@@ -124,12 +120,11 @@ bool Pine::Level::LoadFromFile( )
 		return false;
 	}
 
-	// Since it's on the heap, don't forgot to clean up after ourselves!
 	auto j = nlohmann::json( );
 
 	std::ifstream stream( m_FilePath );
 
-	// Hopefully this works with large files.
+	// Hopefully this is fast enough with large files...
 	stream >> j;
 
 	stream.close( );

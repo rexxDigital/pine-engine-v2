@@ -14,66 +14,9 @@
 
 namespace
 {
-	float lerp( float a, float b, float f )
-	{
-		return a + f * ( b - a );
-	}
-}
-
-namespace
-{
 	Pine::FrameBuffer* g_PostProcessingBuffer = nullptr;
 	Pine::VertexArray* g_ScreenQuad = nullptr;
 	Pine::Shader* g_PostProcessingShader = nullptr;
-	Pine::Texture2D* g_NoiseTexture = nullptr;
-
-	std::vector<glm::vec3> g_AOSampleKernels;
-
-	void SetupAmbientOcclusion( )
-	{
-		// Generate sample kernels
-		std::uniform_real_distribution<float> randomFloat( 0.0, 1.0 ); // random floats between [0.0, 1.0]
-		std::default_random_engine generator;
-
-		for ( unsigned int i = 0; i < 64; ++i )
-		{
-			glm::vec3 sample(
-				randomFloat( generator ) * 2.0 - 1.0,
-				randomFloat( generator ) * 2.0 - 1.0,
-				randomFloat( generator )
-			);
-
-			sample = glm::normalize( sample );
-			sample *= randomFloat( generator );
-
-			float scale = ( float ) i / 64.0;
-			scale = lerp( 0.1f, 1.0f, scale * scale );
-
-			sample *= scale;
-
-			g_AOSampleKernels.push_back( sample );
-		}
-
-		std::vector<glm::vec3> ssaoNoise;
-		for ( unsigned int i = 0; i < 16; i++ )
-		{
-			glm::vec3 noise(
-				randomFloat( generator ) * 2.0 - 1.0,
-				randomFloat( generator ) * 2.0 - 1.0,
-				0.0f );
-			ssaoNoise.push_back( noise );
-		}
-
-		g_NoiseTexture = new Pine::Texture2D;
-		g_NoiseTexture->CreateFromData( 4, 4, GL_RGB, &ssaoNoise[ 0 ] );
-
-		//g_PostProcessingShader->GetUniformVariable( "aspectRatio" )->LoadFloat( static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Width ) / static_cast< float >( Pine::RenderManager::GetRenderingContext( )->m_Height ) );
-
-		//for ( int i = 0; i < 64; i++ )
-		//{
-		//	g_PostProcessingShader->GetUniformVariable( "samples[" + std::to_string( i ) + "]" )->LoadVector3( g_AOSampleKernels[ i ] );
-		//}
-	}
 
 }
 
@@ -84,16 +27,15 @@ void Pine::PostProcessing::Setup( )
 	g_PostProcessingBuffer->Create( 1600, 900, false );
 
 	// Setup the quad vertex array
-
 	g_ScreenQuad = new Pine::VertexArray;
 	g_ScreenQuad->Create( );
 	g_ScreenQuad->Bind( );
 
 	const std::vector<float> quads = {
-		-1.f, 1.f, 0.f,//v0
-		-1.f, -1.f, 0.f,//v1
-		1.f, -1.f, 0.f,//v2
-		1.f, 1.f, 0.f,//v3
+		-1.f, 1.f, 0.f,
+		-1.f, -1.f, 0.f,
+		1.f, -1.f, 0.f,
+		1.f, 1.f, 0.f,
 	};
 
 	const std::vector<int> indices = {
@@ -114,17 +56,6 @@ void Pine::PostProcessing::Setup( )
 
 	// Prepare post processing shader
 	g_PostProcessingShader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\PostProcessing.shr" );
-
-	/*
-	g_PostProcessingShader->Use( );
-	g_PostProcessingShader->GetUniformVariable( "fragColor" )->LoadInteger( 0 );
-	g_PostProcessingShader->GetUniformVariable( "fragNormal" )->LoadInteger( 2 );
-	g_PostProcessingShader->GetUniformVariable( "fragDepth" )->LoadInteger( 3 );
-	g_PostProcessingShader->GetUniformVariable( "noiseTexture" )->LoadInteger( 4 );
-
-	// Prepare ambient occlusion
-	SetupAmbientOcclusion( );
-	*/
 }
 
 void Pine::PostProcessing::Dispose( )
@@ -158,8 +89,6 @@ void Pine::PostProcessing::Render( )
 
 	if ( !cam )
 		return;
-
-	g_PostProcessingShader->GetUniformVariable( "tanHalfFOV" )->LoadFloat( tanf( glm::radians( cam->GetFieldOfView( ) / 2.0f ) ) );
 
 	// Bind frame buffer
 	glActiveTexture( GL_TEXTURE0 );
