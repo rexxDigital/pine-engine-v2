@@ -206,7 +206,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 	if ( ImGui::Button( "Refresh project assets" ) ) {
 		ProjectManager::ReloadProjectAssets( );
-		UpdateAssetCache( );
 	}
 
 	ImGui::Separator( );
@@ -290,7 +289,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 					Pine::Assets::DisposeAsset( asset );
 
-					UpdateAssetCache( );
 					ProjectManager::ReloadProjectAssets( );
 
 					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
@@ -302,7 +300,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 			if ( isTargetingDirectory ) {
 				std::filesystem::remove( g_SelectedContextMenuItem->m_Path );
 
-				UpdateAssetCache( );
 				ProjectManager::ReloadProjectAssets( );
 
 				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
@@ -356,7 +353,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 				Pine::Assets::DisposeAsset( asset );
 
-				UpdateAssetCache( );
 				ProjectManager::ReloadProjectAssets( );
 
 				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
@@ -396,7 +392,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 		ImGui::Text( "Name:" );
 		ImGui::InputText( "##NewName", buff, 128 );
 
-		if ( ImGui::Button( "OK" ) ) {
+		if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( 257 /* Enter */ ) ) {
 			std::string baseDir = g_CurrentDirectory->m_Path.string( );
 
 			if ( g_CurrentDirectory == g_RootDirectory )
@@ -407,7 +403,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				std::filesystem::create_directory( std::string( baseDir + "\\" + buff ) );
 
 				ProjectManager::ReloadProjectAssets( );
-				UpdateAssetCache( );
 			}
 
 			// Material
@@ -415,14 +410,12 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", baseDir + "\\" + buff + ".mat" );
 
 				ProjectManager::ReloadProjectAssets( );
-				UpdateAssetCache( );
 			}
 
 			// Level
 			if ( g_CreateType == 2 ) {
 				ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
 				ProjectManager::ReloadProjectAssets( );
-				UpdateAssetCache( );
 			}
 
 			// Terrain
@@ -436,7 +429,6 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				delete terrain;
 
 				ProjectManager::ReloadProjectAssets( );
-				UpdateAssetCache( );
 			}
 
 			ImGui::CloseCurrentPopup( );

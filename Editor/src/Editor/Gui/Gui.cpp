@@ -39,7 +39,7 @@ namespace {
 	}
 
 	void OnRenderGui( ) {
-		ImGuizmo::BeginFrame();
+		ImGuizmo::BeginFrame( );
 		
 		if ( !Editor::ProjectManager::HasProjectOpen( ) ) {
 			Editor::Gui::Windows::RenderProjectWizard( );

@@ -1,6 +1,7 @@
 #include "RenderManager.hpp"
 #include <unordered_map>
 #include <vector>
+#include <chrono>
 #include "../../Components/ModelRenderer/ModelRenderer.hpp"
 #include "../../Entitylist/EntityList.hpp"
 #include "../Renderer3D/Renderer3D.hpp"
@@ -17,6 +18,7 @@
 #include "../../../ImGui/imgui_impl_opengl3.h"
 #include "../../Assets/Terrain/Terrain.hpp"
 #include "../../Components/TerrainRenderer/TerrainRenderer.hpp"
+#include "../../Core/Timer/Timer.hpp"
 #include "../PostProcessing/PostProcessing.hpp"
 
 namespace {
@@ -44,6 +46,12 @@ void Pine::RenderManager::Run( ) {
 
 	g_RenderingContext->m_Width = 1600;
 	g_RenderingContext->m_Height = 900;
+
+	// Reset stats
+	g_RenderingContext->m_DrawCalls = 0;
+	g_RenderingContext->m_EntitySortTime = 0.f;
+	g_RenderingContext->m_EntityRenderTime = 0.f;
+	g_RenderingContext->m_PostProcessingTime = 0.f;
 
 	PostProcessing::GetRenderBuffer( )->Bind( );
 
@@ -95,6 +103,8 @@ void Pine::RenderManager::Run( ) {
 		}
 	};
 
+	Timer entitySortTimer;
+
 	for ( auto& entity : EntityList::GetEntities( ) ) {
 		if ( !entity->GetActive( ) ) {
 			continue;
@@ -105,6 +115,8 @@ void Pine::RenderManager::Run( ) {
 
 		renderEntity( entity );
 	}
+
+	entitySortTimer.Stop( );
 
 	// Prepare data
 	UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = g_RenderingContext->m_Camera->GetProjectionMatrix( );
@@ -148,6 +160,10 @@ void Pine::RenderManager::Run( ) {
 
 	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
 
+	Timer entityRenderTime;
+	
+	/* Render Terrain Chunks */
+	
 	for ( auto terrainRenderer : terrainRenderers ) {
 		const auto terrain = terrainRenderer->GetTerrain( );
 
@@ -159,6 +175,7 @@ void Pine::RenderManager::Run( ) {
 		for ( auto& chunk : terrain->GetChunks(  ) )
 		{
 			Renderer3D::RenderTerrainChunk( chunk );
+			g_RenderingContext->m_DrawCalls++;
 		}
 	}
 
@@ -180,6 +197,8 @@ void Pine::RenderManager::Run( ) {
 		g_PostRenderingCallback( );
 	}
 
+	entityRenderTime.Stop( );
+	
 	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
 	// Setup frame buffer
@@ -196,7 +215,18 @@ void Pine::RenderManager::Run( ) {
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
 
+	Timer postProcessingTime;
+	
 	PostProcessing::Render( );
+
+	g_RenderingContext->m_DrawCalls++;
+
+	postProcessingTime.Stop( );
+
+	g_RenderingContext->m_EntitySortTime = entitySortTimer.GetElapsedTimeInMs( );
+	g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
+	g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
+	
 }
 
 void Pine::RenderManager::SetRenderingContext( RenderingContext* renderingContext ) {

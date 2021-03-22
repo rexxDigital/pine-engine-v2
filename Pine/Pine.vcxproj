@@ -191,6 +191,7 @@
     <ClInclude Include="src\Pine\Core\Memory\Memory.hpp" />
     <ClInclude Include="src\Pine\Core\Serialization\Serialization.hpp" />
     <ClInclude Include="src\Pine\Core\String\String.hpp" />
+    <ClInclude Include="src\Pine\Core\Timer\Timer.hpp" />
     <ClInclude Include="src\Pine\Core\Window\Window.hpp" />
     <ClInclude Include="src\Pine\Entitylist\EntityList.hpp" />
     <ClInclude Include="src\Pine\Entity\Entity.hpp" />
@@ -244,6 +245,7 @@
     <ClCompile Include="src\Pine\Core\Memory\Memory.cpp" />
     <ClCompile Include="src\Pine\Core\Serialization\Serialization.cpp" />
     <ClCompile Include="src\Pine\Core\String\String.cpp" />
+    <ClCompile Include="src\Pine\Core\Timer\Timer.cpp" />
     <ClCompile Include="src\Pine\Core\Window\Window.cpp" />
     <ClCompile Include="src\Pine\Entitylist\EntityList.cpp" />
     <ClCompile Include="src\Pine\Entity\Entity.cpp" />

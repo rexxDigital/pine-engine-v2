@@ -11,7 +11,7 @@ namespace {
 			auto context = Pine::RenderManager::GetRenderingContext( );
 
 			if ( !context ) {
-				ImGui::Text( "The rendering context is nullptr." );
+				ImGui::Text( "The rendering context is a nullptr." );
 			}
 			else {
 				ImGui::Text( "Camera Entity: %s", context->m_Camera ? context->m_Camera->GetParent( )->GetName( ).c_str( ) : "None [!]" );
@@ -23,6 +23,16 @@ namespace {
 				ImGui::Text( "Width: %d", context->m_Width );
 				ImGui::Text( "Height: %d", context->m_Height );
 				ImGui::Text( "Is 3D: %s", context->m_Is3D ? "Yes" : "No" );
+
+				ImGui::Text( "Statistics:" );
+				ImGui::Text( "Draw calls: %d", context->m_DrawCalls );
+				ImGui::Text( "Entity sort time: %f", context->m_EntitySortTime );
+
+				if ( ImGui::IsItemHovered( ) )
+					ImGui::SetTooltip( "The time it takes for the engine to process each entity to prepare for rendering." );
+
+				ImGui::Text( "Entity render time: %f", context->m_EntityRenderTime );
+				ImGui::Text( "Post processing render time: %f", context->m_PostProcessingTime );
 			}
 		}
 		ImGui::End( );

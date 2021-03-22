@@ -175,7 +175,7 @@ namespace {
 		if ( !cubeMap )
 			return;
 
-		if ( ImGui::Button( "Use" ) )
+		if ( ImGui::Button( "Use as sky box" ) )
 		{
 			Pine::Skybox::SetSkyboxCubemap( cubeMap );
 		}

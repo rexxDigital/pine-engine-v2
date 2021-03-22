@@ -4,10 +4,15 @@
 #include <Pine\Assets\Assets.hpp>
 #include <Pine\Core\Window\Window.hpp>
 
+
+#include "Pine/Core/Log/Log.hpp"
 #include "Pine/ScriptManager/ScriptManager.hpp"
 
 // TODO: Store project meta data, and verify stuff.
 // This will probably never get done, lol.
+
+// Don't kill me over this.
+void UpdateAssetCache( );
 
 namespace {
 
@@ -44,6 +49,8 @@ void Editor::ProjectManager::Setup( ) {
 }
 
 void Editor::ProjectManager::Save( ) {
+	Pine::Log::Message( "Saving all assets..." );
+	
 	if ( g_CurrentLevel )
 	{
 		g_CurrentLevel->CreateFromCurrentLevel( );
@@ -127,4 +134,6 @@ void Editor::ProjectManager::ReloadProjectAssets( ) {
 	level->Dispose( );
 
 	delete level;
+
+	UpdateAssetCache( );
 }

@@ -4,6 +4,7 @@
 #include "../Skybox/Skybox.hpp"
 #include "../UniformBuffers/UniformBuffers.hpp"
 #include "../../Assets/Texture3D/Texture3D.hpp"
+#include "../RenderManager/RenderManager.hpp"
 
 namespace {
 	// The mesh we're supposed to render.
@@ -124,6 +125,8 @@ void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
 	else {
 		glDrawArrays( GL_TRIANGLES, 0, g_CurrentRenderMesh->GetRenderCount( ) );
 	}
+	
+	RenderManager::GetRenderingContext( )->m_DrawCalls++;
 }
 
 void Pine::Renderer3D::PrepareTerrain( Pine::Terrain* terrain )

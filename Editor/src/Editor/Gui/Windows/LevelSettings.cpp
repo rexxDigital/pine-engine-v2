@@ -9,7 +9,7 @@ void Editor::Gui::Windows::RenderLevelSettings( )
 	
 	ImGui::Begin( "Level Settings", &ShowLevelSettings, 0 );
 
-
+	
 	
 	ImGui::End( );
 }

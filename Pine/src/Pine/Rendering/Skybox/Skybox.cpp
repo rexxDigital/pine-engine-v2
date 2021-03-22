@@ -6,6 +6,7 @@
 #include "../../Assets/Texture3D/Texture3D.hpp"
 
 #include "../Renderer3D/Renderer3D.hpp"
+#include "../RenderManager/RenderManager.hpp"
 
 namespace {
 
@@ -101,4 +102,7 @@ void Pine::Skybox::Render( ) {
 	glDrawArrays( GL_TRIANGLES, 0, 36 );
 
 	glDepthFunc( GL_LESS );
+
+	RenderManager::GetRenderingContext( )->m_DrawCalls++;
+
 }

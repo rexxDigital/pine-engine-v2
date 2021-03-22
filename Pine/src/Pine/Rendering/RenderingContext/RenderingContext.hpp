@@ -12,7 +12,13 @@ namespace Pine {
 		int m_Width = 0;
 		int m_Height = 0;
 
-		Pine::Camera* m_Camera = nullptr;
+		// Statistics from previous frame
+		int m_DrawCalls = 0;
+		float m_EntitySortTime = 0.f;
+		float m_EntityRenderTime = 0.f;
+		float m_PostProcessingTime = 0.f;
+		
+		Camera* m_Camera = nullptr;
 
 		// If nullptr, the scene will just be rendered to any frame buffer bound or just the screen.
 		Pine::FrameBuffer* m_FrameBuffer = nullptr;

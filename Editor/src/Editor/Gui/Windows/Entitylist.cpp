@@ -12,7 +12,7 @@ PE_REGISTER_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
 PE_REGISTER_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );
 
 namespace {
-	
+
 	// HACK: To fix context menus, since IsWindowHovered is out of control
 	bool g_DidOpenContextMenu = false;
 
@@ -107,8 +107,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			continue;
 		}
 
-		if (entity == EditorEntity::GetEntity())
-		{
+		if ( entity == EditorEntity::GetEntity( ) ) 		{
 			continue;
 		}
 
@@ -126,18 +125,15 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 
-	if ( Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1 )
-	{
+	if ( Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1 ) 	{
 		Pine::Entity* e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) )
-		{
+		if ( HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) ) {
 			Pine::EntityList::DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		}
 
-		if ( HotkeyManager::GetHotkeyPressed( DuplicateEntity ) )
-		{
+		if ( HotkeyManager::GetHotkeyPressed( DuplicateEntity ) ) {
 			Pine::Blueprint blueprint;
 
 			blueprint.CreateFromEntity( e );
@@ -146,35 +142,34 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			blueprint.Dispose( );
 		}
 	}
-	
+
 	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) ) {
 		const bool isTargetingEntity = Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1;
-	
+
 		g_DidOpenContextMenu = false;
 
 		Pine::Entity* e = nullptr;
 		if ( isTargetingEntity )
 			e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
-		
+
 		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
 			Pine::EntityList::DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) )
-		{
+		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) ) 		{
 			Pine::Blueprint blueprint;
 
 			blueprint.CreateFromEntity( e );
 			blueprint.SpawnEntity( );
 
 			blueprint.Dispose( );
-			
+
 			ImGui::CloseCurrentPopup( );
 		}
-		
+
 		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) ) {
 			e->CreateChild( );
 			ImGui::CloseCurrentPopup( );
