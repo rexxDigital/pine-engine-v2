@@ -14,9 +14,9 @@ namespace Pine {
 
 		// Statistics from previous frame
 		int m_DrawCalls = 0;
-		float m_EntitySortTime = 0.f;
-		float m_EntityRenderTime = 0.f;
-		float m_PostProcessingTime = 0.f;
+		double m_EntitySortTime = 0.f;
+		double m_EntityRenderTime = 0.f;
+		double m_PostProcessingTime = 0.f;
 		
 		Camera* m_Camera = nullptr;
 

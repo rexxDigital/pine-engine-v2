@@ -14,7 +14,7 @@ namespace Pine
 
 		void Stop( );
 		
-		float GetElapsedTimeInMs( ) const;
+		double GetElapsedTimeInMs( ) const;
 	};
 	
 }

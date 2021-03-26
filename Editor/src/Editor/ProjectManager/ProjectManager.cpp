@@ -16,6 +16,7 @@ void UpdateAssetCache( );
 
 namespace {
 
+	bool g_LevelOpen = false;
 	Pine::Level* g_CurrentLevel = nullptr;
 
 	bool g_ProjectOpen = false;
@@ -38,6 +39,8 @@ namespace {
 }
 
 void Editor::ProjectManager::Setup( ) {
+
+	//	g_CurrentLevel = new Pine::Level;
 
 	for ( const auto& dirEntry : std::filesystem::directory_iterator( "Projects" ) ) {
 		if ( !dirEntry.is_directory( ) )

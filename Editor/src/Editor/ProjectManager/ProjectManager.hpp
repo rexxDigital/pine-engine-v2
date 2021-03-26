@@ -17,9 +17,9 @@ namespace Editor::ProjectManager {
 
 	void OpenLevel( const std::string& path );
 	void OpenLevel( Pine::Level* level );
+	
 	void SaveLevel( const std::string& path );
 	Pine::Level* GetCurrentLevel( );
-
 
 	const std::vector<std::string>& GetAvaliableProjects( );
 

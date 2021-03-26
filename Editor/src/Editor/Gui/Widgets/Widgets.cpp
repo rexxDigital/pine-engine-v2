@@ -9,6 +9,7 @@
 #include <Pine/Assets/IAsset/IAsset.hpp>
 #include <filesystem>
 #include "../Gui.hpp"
+#include "Pine/Entity/Entity.hpp"
 
 
 namespace {
@@ -158,7 +159,7 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 	}
 
 	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::EAssetType::Texture2D ) {
-		auto texture = dynamic_cast< Pine::Texture2D* >( currentAsset );
+		const auto texture = dynamic_cast< Pine::Texture2D* >( currentAsset );
 
 		ImGui::BeginTooltip( );
 
@@ -198,7 +199,7 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 		PushDisabled( );
 
 	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
-
+	//	returnValue = nullptr;
 	}
 
 	if ( ImGui::IsItemHovered( ) )
@@ -209,6 +210,53 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 
 	ImGui::PopStyleVar( );
 
+	ImGui::Columns( 1 );
+
+	return returnValue;
+}
+
+Pine::Entity* Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::Entity* currentEntity )
+{
+	Pine::Entity* returnValue = nullptr;
+
+	ImGui::Columns( 2, nullptr, false );
+
+	ImGui::Text( "%s", str.c_str( ) );
+
+	ImGui::NextColumn( );
+	
+	char buff[ 64 ];
+
+	if ( currentEntity != nullptr ) {
+		strcpy_s( buff, currentEntity->GetName(  ).c_str(  ) );
+	}
+	else {
+		strcpy_s( buff, "\0" );
+	}
+
+	ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
+
+	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 31 );
+	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_ReadOnly );
+
+	if ( ImGui::BeginDragDropTarget( ) ) {
+		if ( auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+			auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+
+			returnValue = entity;
+		}
+
+		ImGui::EndDragDropTarget( );
+	}
+
+	ImGui::SameLine( );
+	
+	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
+
+	}
+
+	ImGui::PopStyleVar( );
+	
 	ImGui::Columns( 1 );
 
 	return returnValue;

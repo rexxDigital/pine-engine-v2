@@ -10,9 +10,9 @@ void Pine::Timer::Stop( )
 	m_EndTime = std::chrono::high_resolution_clock::now( );
 }
 
-float Pine::Timer::GetElapsedTimeInMs( ) const
+double Pine::Timer::GetElapsedTimeInMs( ) const
 {
-	const std::chrono::duration<float, std::milli> msFloat = m_EndTime - m_BeginTime;
+	const std::chrono::duration<double, std::milli> msFloat = m_EndTime - m_BeginTime;
 
 	return msFloat.count(  );
 }

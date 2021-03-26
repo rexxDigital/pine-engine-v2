@@ -51,6 +51,14 @@ namespace {
 				ImGui::OpenPopup( "EntityContextMenu" );
 				g_DidOpenContextMenu = true;
 			}
+
+			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
+				ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
+				
+				ImGui::Text( e->GetName(  ).c_str(  ) );
+
+				ImGui::EndDragDropSource( );
+			}
 		}
 		else {
 			auto flags = ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanFullWidth;
@@ -88,6 +96,14 @@ namespace {
 					g_DidOpenContextMenu = true;
 				}
 			}
+
+			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
+				ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
+
+				ImGui::Text( e->GetName( ).c_str( ) );
+
+				ImGui::EndDragDropSource( );
+			}
 		}
 	}
 }
@@ -107,7 +123,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			continue;
 		}
 
-		if ( entity == EditorEntity::GetEntity( ) ) 		{
+		if ( entity == EditorEntity::GetEntity( ) ) {
 			continue;
 		}
 
