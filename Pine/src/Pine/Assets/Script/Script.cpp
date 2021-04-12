@@ -17,9 +17,9 @@ asIScriptObject* Pine::Script::CreateObject( )
 {
 	if ( !m_ScriptClassInfo )
 		return nullptr;
-	
+
 	const std::string className = m_FilePath.stem( ).string( );
-	
+
 	// Create instance of script class
 	asIScriptFunction* factory = m_ScriptClassInfo->GetFactoryByDecl( std::string( className + " @" + className + "()" ).c_str( ) );
 
@@ -101,16 +101,16 @@ void Pine::Script::OnCompile( )
 	// Read source code to string
 	std::ifstream stream( m_FilePath );
 
-	if ( stream.is_open(  ) )
+	if ( stream.is_open( ) )
 	{
 		std::string str( ( std::istreambuf_iterator<char>( stream ) ),
 			std::istreambuf_iterator<char>( ) );
 
 		m_ScriptFileText = str;
-		
+
 		stream.close( );
 	}
-	
+
 	m_IsValid = true;
 }
 

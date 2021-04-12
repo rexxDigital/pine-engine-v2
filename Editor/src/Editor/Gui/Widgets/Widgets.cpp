@@ -123,8 +123,8 @@ void Editor::Gui::Widgets::PopDisabled( ) {
 
 }
 
-Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::EAssetType type /*= Pine::EAssetType::Invalid */ ) {
-	Pine::IAsset* returnValue = nullptr;
+PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::EAssetType type /*= Pine::EAssetType::Invalid */ ) {
+	PickerReturn returnValue;
 
 	ImGui::Columns( 2, nullptr, false );
 
@@ -147,11 +147,12 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly );
 
 	if ( ImGui::BeginDragDropTarget( ) ) {
-		if ( auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
-			auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );
+		if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
+			const auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );
 
 			if ( !shouldRestrictType || ( shouldRestrictType && asset->GetType( ) == type ) ) {
-				returnValue = asset;
+				returnValue.asset = asset;
+				returnValue.valid = true;
 			}
 		}
 
@@ -181,7 +182,8 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 		if ( file ) {
 			if ( auto a = FindAssetFromAbsoulePath( *file ) ) {
 				if ( shouldRestrictType && a->GetType( ) == type ) {
-					returnValue = a;
+					returnValue.asset = a;
+					returnValue.valid = true;
 				}
 			}
 			else {
@@ -199,7 +201,9 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 		PushDisabled( );
 
 	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
-	//	returnValue = nullptr;
+		// This will cause it to update the asset as a nullptr for us later.
+
+		returnValue.valid = true;
 	}
 
 	if ( ImGui::IsItemHovered( ) )
@@ -215,20 +219,20 @@ Pine::IAsset* Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::I
 	return returnValue;
 }
 
-Pine::Entity* Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::Entity* currentEntity )
+PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::Entity* currentEntity )
 {
-	Pine::Entity* returnValue = nullptr;
+	PickerReturn returnValue;
 
 	ImGui::Columns( 2, nullptr, false );
 
 	ImGui::Text( "%s", str.c_str( ) );
 
 	ImGui::NextColumn( );
-	
+
 	char buff[ 64 ];
 
 	if ( currentEntity != nullptr ) {
-		strcpy_s( buff, currentEntity->GetName(  ).c_str(  ) );
+		strcpy_s( buff, currentEntity->GetName( ).c_str( ) );
 	}
 	else {
 		strcpy_s( buff, "\0" );
@@ -240,23 +244,24 @@ Pine::Entity* Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_ReadOnly );
 
 	if ( ImGui::BeginDragDropTarget( ) ) {
-		if ( auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
-			auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+		if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+			const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
 
-			returnValue = entity;
+			returnValue.valid = true;
+			returnValue.entity = entity;
 		}
 
 		ImGui::EndDragDropTarget( );
 	}
 
 	ImGui::SameLine( );
-	
-	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
 
+	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
+		returnValue.valid = true;
 	}
 
 	ImGui::PopStyleVar( );
-	
+
 	ImGui::Columns( 1 );
 
 	return returnValue;

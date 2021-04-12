@@ -22,7 +22,7 @@ void Pine::Behavior::SetAttachedScript( Script* sc )
 		m_ScriptFile = "";
 		return;
 	}
-	
+
 	m_AttachedScript = sc;
 	m_ScriptObject = sc->CreateObject( );
 

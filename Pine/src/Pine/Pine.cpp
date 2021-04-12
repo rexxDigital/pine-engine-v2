@@ -10,6 +10,7 @@
 #include "Rendering/Skybox/Skybox.hpp"
 #include "Assets/Texture3D/Texture3D.hpp"
 #include "Components/Components.hpp"
+#include "Core/Log/Log.hpp"
 #include "Input/Input.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
 #include "ScriptManager/ScriptManager.hpp"

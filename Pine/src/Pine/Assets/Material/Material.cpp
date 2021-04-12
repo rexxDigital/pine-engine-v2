@@ -91,7 +91,7 @@ bool Pine::Material::LoadFromFile( ) {
 
 		if ( j.contains( "textureScale" ) )
 			m_TextureScale = j[ "textureScale" ].get<float>( );
-		
+
 		m_Diffuse = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "diffuse" ) );
 		m_Specular = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "specularMap" ) );
 
@@ -100,7 +100,7 @@ bool Pine::Material::LoadFromFile( ) {
 		{
 			m_Shader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
 		}
-		
+
 	}
 	catch ( ... ) {
 
@@ -130,8 +130,8 @@ bool Pine::Material::SaveToFile( ) {
 	std::ofstream stream( m_FilePath );
 
 	stream << j;
-	
-	stream.close();
+
+	stream.close( );
 
 	return true;
 }

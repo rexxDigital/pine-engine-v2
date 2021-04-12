@@ -193,10 +193,6 @@ void Pine::RenderManager::Run( ) {
 
 	Skybox::Render( );
 
-	if ( g_PostRenderingCallback ) {
-		g_PostRenderingCallback( );
-	}
-
 	entityRenderTime.Stop( );
 	
 	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
@@ -226,7 +222,10 @@ void Pine::RenderManager::Run( ) {
 	g_RenderingContext->m_EntitySortTime = entitySortTimer.GetElapsedTimeInMs( );
 	g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
 	g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
-	
+
+	if ( g_PostRenderingCallback ) {
+		g_PostRenderingCallback( );
+	}
 }
 
 void Pine::RenderManager::SetRenderingContext( RenderingContext* renderingContext ) {

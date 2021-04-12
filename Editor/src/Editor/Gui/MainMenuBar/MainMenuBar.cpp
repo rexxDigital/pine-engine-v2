@@ -6,6 +6,9 @@
 
 #include <imgui/imgui.h>
 
+#include "Pine/Assets/Assets.hpp"
+#include "Pine/Core/Log/Log.hpp"
+
 PE_REGISTER_HOTKEY( SaveHotkey, GLFW_KEY_S, true, false );
 PE_REGISTER_HOTKEY( RefreshAssetsHotkey, GLFW_KEY_F5, false, false );
 
@@ -59,6 +62,20 @@ void Editor::Gui::MainMenuBar::Render( ) {
 			}
 
 			if ( ImGui::MenuItem( "Import..." ) ) {
+
+			}
+
+			if ( ImGui::MenuItem( "Reload Engine Shaders" ) )
+			{
+				Pine::Log::Message( "Loading engine shaders..." );
+
+				if ( Pine::Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
+					Pine::Log::Fatal( "Failed to load engine shaders." );
+				}
+			}
+
+			if ( ImGui::MenuItem( "Reload All Engine Assets" ) )
+			{
 
 			}
 			

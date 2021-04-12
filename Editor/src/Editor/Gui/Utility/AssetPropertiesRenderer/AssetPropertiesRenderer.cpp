@@ -55,12 +55,15 @@ namespace {
 	}
 
 	void RenderMaterial( Pine::Material* mat ) {
-		if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::EAssetType::Texture2D ) ) {
-			mat->SetDiffuse( dynamic_cast< Pine::Texture2D* >( newAsset ) );
+
+		const auto diffuseAssetRet = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::EAssetType::Texture2D );
+		if ( diffuseAssetRet.valid ) {
+			mat->SetDiffuse( dynamic_cast< Pine::Texture2D* >( diffuseAssetRet.asset ) );
 		}
 
-		if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Specular Map", mat->GetSpecular( ), true, Pine::EAssetType::Texture2D ) ) {
-			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( newAsset ) );
+		auto specularAssetRet = Editor::Gui::Widgets::AssetPicker( "Specular Map", mat->GetSpecular( ), true, Pine::EAssetType::Texture2D );
+		if ( specularAssetRet.valid ) {
+			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( specularAssetRet.asset ) );
 		}
 
 		if ( Editor::Gui::Widgets::ColorPicker( "Diffuse Color", mat->DiffuseColor( ) ) )
@@ -77,7 +80,7 @@ namespace {
 		ImGui::NextColumn( );
 
 		ImGui::SetNextItemWidth( -1.f );
-		
+
 		float sh = mat->GetShininiess( );
 		if ( ImGui::SliderFloat( "##Shininiess", &sh, 1.f, 128.f, "%.1f", 1.f ) )
 			mat->SetShininiess( sh );
@@ -89,9 +92,10 @@ namespace {
 		{
 			mat->SetTextureScale( txScale );
 		}
-		
-		if ( auto newAsset = Editor::Gui::Widgets::AssetPicker( "Shader", mat->GetShader( ), true, Pine::EAssetType::Shader ) ) {
-			mat->SetShader( dynamic_cast< Pine::Shader* >( newAsset ) );
+
+		const auto shaderRet = Editor::Gui::Widgets::AssetPicker( "Shader", mat->GetShader( ), true, Pine::EAssetType::Shader );
+		if ( shaderRet.valid ) {
+			mat->SetShader( dynamic_cast< Pine::Shader* >( shaderRet.asset ) );
 		}
 	}
 
@@ -115,9 +119,10 @@ namespace {
 
 				ImGui::Columns( 1 );
 
-				if ( const auto newAsset = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::EAssetType::Material ) )
+				const auto materialRet = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::EAssetType::Material );
+				if ( materialRet.valid )
 				{
-					mesh->SetMaterial( dynamic_cast< Pine::Material* >( newAsset ) );
+					mesh->SetMaterial( dynamic_cast< Pine::Material* >( materialRet.asset ) );
 				}
 
 				const auto material = mesh->GetMaterial( );
@@ -129,8 +134,8 @@ namespace {
 				if ( material && material->IsGenerated( ) )
 					showButton = true;
 
-				
-				if ( showButton && ImGui::Button( std::string( "Create Custom Material##" + std::to_string( i ) ).c_str(  ) ) )
+
+				if ( showButton && ImGui::Button( std::string( "Create Custom Material##" + std::to_string( i ) ).c_str( ) ) )
 				{
 					// Clean readable code :tm:
 					std::string materialFile = model->GetPath( ).parent_path( ).string( ) + "\\" + model->GetPath( ).stem( ).string( ) + ".mat";
@@ -156,7 +161,7 @@ namespace {
 			return;
 
 		ImGui::Text( "Blueprints: %d", lvl->GetBlueprintCount( ) );
-		
+
 		if ( ImGui::Button( "Load", ImVec2( 300.f, 40.f ) ) )
 		{
 			lvl->Load( );
@@ -185,7 +190,7 @@ namespace {
 	{
 		if ( !script )
 			return;
-		
+
 		ImGui::Text( "Has 'OnSetup()': %d", script->HasOnSetup( ) );
 		ImGui::Text( "Has 'OnUpdate()': %d", script->HasOnUpdate( ) );
 
@@ -196,12 +201,12 @@ namespace {
 		char* text = const_cast< char* >( script->GetScriptFileText( ).c_str( ) );
 
 		ImGui::PushFont( Editor::Gui::Fonts::CodeFont );
-		
+
 		ImGui::InputTextMultiline( "##ScriptText", text, script->GetScriptFileText( ).size( ), ImVec2( -1, -1 ), ImGuiInputTextFlags_ReadOnly );
 
 		ImGui::PopFont( );
 	}
-	
+
 }
 
 void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine::IAsset* asset ) {

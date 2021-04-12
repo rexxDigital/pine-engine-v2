@@ -14,7 +14,7 @@ using namespace Pine::ScriptingManager;
 
 namespace
 {
-	
+
 	CScriptBuilder* g_ScriptBuilder = nullptr;
 
 	void Dispose( )
@@ -38,7 +38,7 @@ namespace
 		{
 			Pine::Log::Error( "Failed to create script module." );
 		}
-	
+
 		ScriptModule = g_ScriptBuilder->GetModule( );
 		ScriptContext = ScriptEngine->CreateContext( );
 	}
@@ -69,11 +69,11 @@ void Pine::ScriptingManager::CompileScripts( )
 
 	// Keep a list of all scripts
 	std::vector<Pine::Script*> compiledScripts;
-	
+
 	// off topic: thanks re sharper, this is cool.
 	for ( const auto& [filePath, asset] : Pine::Assets::GetAssets( ) )
 	{
-		if ( asset->GetType(  ) != EAssetType::Script )
+		if ( asset->GetType( ) != EAssetType::Script )
 			continue;
 
 		const auto script = dynamic_cast< Pine::Script* >( asset );
@@ -98,8 +98,8 @@ void Pine::ScriptingManager::CompileScripts( )
 	{
 		script->OnCompile( );
 	}
-	
-	Log::Message( "Compiled " + std::to_string( compiledScripts.size(  ) ) + " scripts." );
+
+	Log::Message( "Compiled " + std::to_string( compiledScripts.size( ) ) + " scripts." );
 }
 
 void Pine::ScriptingManager::Setup( )
@@ -107,7 +107,7 @@ void Pine::ScriptingManager::Setup( )
 	ScriptEngine = asCreateScriptEngine( );
 
 	RegisterStdString( ScriptEngine );
-	
+
 	ScriptEngine->RegisterGlobalFunction( "void print(const string &in)", asFUNCTION( print ), asCALL_CDECL );
 }
 

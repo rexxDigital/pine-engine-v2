@@ -30,12 +30,14 @@ namespace {
 		if ( !renderer )
 			return;
 
-		if ( auto newAsset = Widgets::AssetPicker( "Model", renderer->GetTargetModel( ), true, Pine::EAssetType::Model ) ) {
-			renderer->SetTargetModel( reinterpret_cast< Pine::Model* >( newAsset ) );
+		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetTargetModel( ), true, Pine::EAssetType::Model );
+		if ( modelRet.valid ) {
+			renderer->SetTargetModel( reinterpret_cast< Pine::Model* >( modelRet.asset ) );
 		}
 
-		if ( auto newAsset = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::EAssetType::Material ) ) {
-			renderer->SetMaterialOverride( reinterpret_cast< Pine::Material* >( newAsset ) );
+		auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::EAssetType::Material );
+		if ( materialRet.valid ) {
+			renderer->SetMaterialOverride( reinterpret_cast< Pine::Material* >( materialRet.asset ) );
 		}
 	}
 
@@ -95,14 +97,15 @@ namespace {
 		{
 			light->SetAttenuation( attenuation );
 		}
- 	}
+	}
 
 	void RenderBehavior( Pine::Behavior* behavior )
 	{
 		const auto currentAsset = behavior->GetAttachedScript( );
-		if ( const auto newAsset = Widgets::AssetPicker( "Script", currentAsset, true, Pine::EAssetType::Script ) )
+		const auto scriptRet = Widgets::AssetPicker( "Script", currentAsset, true, Pine::EAssetType::Script );
+		if ( scriptRet.valid )
 		{
-			behavior->SetAttachedScript( dynamic_cast< Pine::Script* >( newAsset ) );
+			behavior->SetAttachedScript( dynamic_cast< Pine::Script* >( scriptRet.asset ) );
 		}
 	}
 
@@ -112,17 +115,18 @@ namespace {
 			return;
 
 		const auto terrain = terrainRenderer->GetTerrain( );
-		if ( const auto newAsset = Widgets::AssetPicker( "Terrain", terrain, true, Pine::EAssetType::Terrain ) )
+		const auto terrainRet = Widgets::AssetPicker( "Terrain", terrain, true, Pine::EAssetType::Terrain );
+		if ( terrainRet.valid )
 		{
-			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( newAsset ) );
+			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( terrainRet.asset ) );
 		}
 
 		if ( terrain == nullptr )
 		{
-			return;			
+			return;
 		}
 
-		auto& chunks = terrain->GetChunks( );
+		const auto& chunks = terrain->GetChunks( );
 
 		ImGui::Text( "Chunks: %d", chunks.size( ) );
 
