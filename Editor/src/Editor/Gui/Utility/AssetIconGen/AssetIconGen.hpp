@@ -8,7 +8,7 @@ namespace Editor::Gui::Utility::AssetIconGen {
 	Pine::Texture2D* GetAssetIcon( const std::string& str );
 
 	// Meant to be a big ass 256x256 image as a thumbnail.
-	// Within materials, it will render a sphere with the asset in question.
+	// Within materials for example, it will render a sphere with the asset.
 	Pine::Texture2D* GenerateAssetThumbnail( const std::string& str );
 
 	void Update( );

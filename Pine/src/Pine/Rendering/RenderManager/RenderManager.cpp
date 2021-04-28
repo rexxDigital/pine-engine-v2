@@ -44,6 +44,7 @@ void Pine::RenderManager::Run( ) {
 		return;
 	}
 
+	// This is fucking retarded, please write a proper solution.
 	g_RenderingContext->m_Width = 1600;
 	g_RenderingContext->m_Height = 900;
 
@@ -73,7 +74,7 @@ void Pine::RenderManager::Run( ) {
 		return;
 
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
-	// Also quicker!
+	// Also quicker! UPDATE: Why am I writing this useless nonsense?
 	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
 	std::vector<Pine::TerrainRenderer*> terrainRenderers;
