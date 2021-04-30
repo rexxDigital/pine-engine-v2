@@ -81,10 +81,16 @@ bool Pine::Setup( )
 		return false;
 	}
 
-	Log::Message( "Loading engine shaders..." );
+	auto gpuRenderer = glGetString( GL_RENDERER );
 
-	// We will have to setup the uniform buffers first.
+	Log::Message( "Using GPU: " + std::string( reinterpret_cast< const char* >( gpuRenderer ) ) );
+	
+	// Setup some core stuff first.
+	Assets::Setup( );
 	UniformBuffers::Setup( );
+
+	// We want to load engine shaders first because some other engine assets needs the shaders to be ready first.
+ 	Log::Message( "Loading engine shaders..." );
 
 	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
 		Log::Fatal( "Failed to load engine shaders." );
@@ -108,6 +114,7 @@ bool Pine::Setup( )
 	ScriptingManager::Setup( );
 
 	Components::Internal::RegisterPineComponents( );
+	
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
 	
 	Log::Message( "Pine was successfully initialized!" );

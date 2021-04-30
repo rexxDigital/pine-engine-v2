@@ -63,3 +63,13 @@ void Pine::IAsset::SetUpdated( bool value )
 {
 	m_Updated = value;
 }
+
+bool Pine::IAsset::IsMapped( ) const
+{
+	return m_IsMapped;
+}
+
+void Pine::IAsset::SetMapped( bool value )
+{
+	m_IsMapped = value;
+}

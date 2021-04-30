@@ -15,55 +15,64 @@
 namespace {
 	std::unordered_map<std::string, Pine::IAsset*> m_Assets;
 
-	// Gets a EAssetType from common file extension types, for instance .obj -> Model
-	Pine::EAssetType TranslateAssetType( const std::string& fileName ) {
-		if ( Pine::String::EndsWith( fileName, ".mat" ) )
-			return Pine::EAssetType::Material;
-		if ( Pine::String::EndsWith( fileName, ".shr" ) )
-			return Pine::EAssetType::Shader;
-		if ( Pine::String::EndsWith( fileName, ".obj" ) || Pine::String::EndsWith( fileName, ".fbx" ) )
-			return Pine::EAssetType::Model;
-		if ( Pine::String::EndsWith( fileName, ".png" ) || Pine::String::EndsWith( fileName, ".jpg" ) )
-			return Pine::EAssetType::Texture2D;
-		if ( Pine::String::EndsWith( fileName, ".cmap" ) )
-			return Pine::EAssetType::Texture3D;
-		if ( Pine::String::EndsWith( fileName, ".bpt" ) )
-			return Pine::EAssetType::Blueprint;
-		if ( Pine::String::EndsWith( fileName, ".lvl" ) )
-			return Pine::EAssetType::Level;
-		if ( Pine::String::EndsWith( fileName, ".as" ) )
-			return Pine::EAssetType::Script;
-		if ( Pine::String::EndsWith( fileName, ".ter" ) )
-			return Pine::EAssetType::Terrain;
+	// This is written to translate file extensions to loaded asset objects in memory.
+	
+	struct AssetFactory_t
+	{
+		AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset* ( )> factory )
+		{
+			m_FileExtensions = fileExtensions;
+			m_Type = type;
+			m_Factory = factory;
+		}
+
+		// The file extensions for this asset type.
+		std::vector<std::string> m_FileExtensions;
+
+		Pine::EAssetType m_Type;
+
+		// This function should create the asset object itself.
+		std::function<Pine::IAsset* ( )> m_Factory;
+	};
+
+	std::vector<AssetFactory_t> m_AssetFactories;
+
+	void CreateAssetFactories( )
+	{
+		// Some asset types (like models, textures) could possible have more file extensions supported here, as the library that handles the parsing
+		// supports more. I've listed the popular ones so far.
 		
-		return Pine::EAssetType::Invalid;
+		m_AssetFactories.push_back( AssetFactory_t( { ".mat" }, Pine::EAssetType::Material, [ ] ( ) { return new Pine::Material( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".shr" }, Pine::EAssetType::Shader, [ ] ( ) { return new Pine::Shader( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".obj", ".fbx", ".3d", ".3ds", ".stl", ".dae", ".stp", ".wrl", ".ply" }, Pine::EAssetType::Model, [ ] ( ) { return new Pine::Model( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".psd", ".gif" }, Pine::EAssetType::Texture2D, [ ] ( ) { return new Pine::Texture2D( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".cmap" }, Pine::EAssetType::Texture3D, [ ] ( ) { return new Pine::Texture3D( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".bpt" }, Pine::EAssetType::Blueprint, [ ] ( ) { return new Pine::Blueprint( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".lvl" }, Pine::EAssetType::Level, [ ] ( ) { return new Pine::Level( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".as" }, Pine::EAssetType::Script, [ ] ( ) { return new Pine::Script( ); } ) );
+		m_AssetFactories.push_back( AssetFactory_t( { ".ter" }, Pine::EAssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } ) );
+
+		Pine::Log::Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );
 	}
 
-	Pine::IAsset* CreateAssetType( Pine::EAssetType type ) {
-		switch ( type ) {
-		case Pine::EAssetType::Invalid:
-			return new Pine::InvalidAsset( );
-		case Pine::EAssetType::Material:
-			return new Pine::Material( );
-		case Pine::EAssetType::Shader:
-			return new Pine::Shader( );
-		case Pine::EAssetType::Model:
-			return new Pine::Model( );
-		case Pine::EAssetType::Texture2D:
-			return new Pine::Texture2D( );
-		case Pine::EAssetType::Texture3D:
-			return new Pine::Texture3D( );
-		case Pine::EAssetType::Blueprint:
-			return new Pine::Blueprint( );
-		case Pine::EAssetType::Level:
-			return new Pine::Level( );
-		case Pine::EAssetType::Script:
-			return new Pine::Script( );
-		case Pine::EAssetType::Terrain:
-			return new Pine::Terrain( );
-		default:
-			return new Pine::InvalidAsset( );
+	AssetFactory_t* GetAssetFactoryFromFileName( const std::string& fileName )
+	{
+		// Find the correct factory
+		
+		for ( auto& factory : m_AssetFactories )
+		{
+			for ( auto& extension : factory.m_FileExtensions )
+			{
+				if ( Pine::String::EndsWith( fileName, extension ) )
+				{
+					return &factory;
+				}
+			}
 		}
+
+		// We couldn't find any.
+		
+		return nullptr;
 	}
 }
 
@@ -73,11 +82,13 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool read
 	if ( Pine::String::EndsWith( filePath, ".asset" ) )
 		return nullptr;
 
+	Log::Debug( "Loading asset '" + filePath + "'..." );
+
 	if ( m_Assets.count( filePath ) > 0 ) {
 		auto asset = m_Assets[ filePath ];
 
 		// Reload the file if it has been updated.
-		if ( asset->HasBeenUpdated( ) ) {
+		if ( !asset->IsMapped( ) && asset->HasBeenUpdated( ) ) {
 			Log::Message( "Reloading file " + asset->GetFileName( ) + " since it has been updated." );
 
 			// We will have to dispose the old stuff.
@@ -98,17 +109,22 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool read
 		return m_Assets[ filePath ];
 	}
 
-	const auto type = TranslateAssetType( filePath );
+	const auto factory = GetAssetFactoryFromFileName( filePath );
+	
+	IAsset* asset;
+	
+	if ( factory != nullptr )
+	{
+		// Quick hack to prevent loading sky box images twice.
+		if ( factory->m_Type == EAssetType::Texture2D && std::filesystem::exists( std::filesystem::path( filePath ).parent_path( ).string( ) + "\\IGNORE_TEXTURES" ) ) {
+			return nullptr;
+		}
 
-	// Quick hack to prevent loading sky box images twice.
-	if ( type == EAssetType::Texture2D && std::filesystem::exists( std::filesystem::path( filePath ).parent_path( ).string( ) + "\\IGNORE_TEXTURES" ) ) {
-		return nullptr;
+		asset = factory->m_Factory( );
 	}
-
-	const auto asset = CreateAssetType( type );
-
-	if ( !asset ) {
-		return nullptr;
+	else
+	{
+		asset = new InvalidAsset( );
 	}
 
 	asset->SetFilePath( filePath );
@@ -137,11 +153,14 @@ int Pine::Assets::LoadFromDirectory( const std::string& directoryPath, bool read
 		}
 	}
 
-	if ( loadedAssets > 0 )
-		Log::Message( "Successfully loaded " + std::to_string( loadedAssets ) + " asset(s)." );
-	else
-		Log::Warning( "Loaded 0 assets from the directory " + directoryPath );
+//	if ( loadedAssets > 0 )
+//		Log::Message( "Successfully loaded " + std::to_string( loadedAssets ) + " asset(s)." );
+//	else
+//		Log::Warning( "Loaded 0 assets from the directory " + directoryPath );
 
+	if ( loadedAssets == 0 )
+		Log::Warning( "Loaded 0 assets from the directory " + directoryPath );
+	
 	return loadedAssets;
 }
 
@@ -150,6 +169,19 @@ Pine::IAsset* Pine::Assets::GetAsset( const std::string& assetPath ) {
 		return nullptr;
 
 	return m_Assets[ assetPath ];
+}
+
+void Pine::Assets::MapAsset( IAsset* asset, const std::string& fakePath )
+{
+	asset->SetFilePath( fakePath );
+	asset->SetReadOnly( true );
+
+	m_Assets[ fakePath ] = asset;
+}
+
+void Pine::Assets::Setup( )
+{
+	CreateAssetFactories( );
 }
 
 void Pine::Assets::Dispose( ) {
@@ -169,7 +201,9 @@ void Pine::Assets::SaveAssets( )
 	for ( auto& element : m_Assets ) {
 		auto asset = element.second;
 
-		if ( asset->GetUpdated( ) )
+		// I feel this should check for assets being read only,
+		// but I am scared I will break something.
+		if ( asset->GetUpdated( ) && !asset->IsMapped( ) )
 			asset->SaveToFile( );
 	}
 }

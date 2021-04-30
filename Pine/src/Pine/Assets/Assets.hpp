@@ -17,6 +17,9 @@ namespace Pine::Assets {
 	// Returns a loaded asset by file path, your job to cast to the right type.
 	IAsset* GetAsset( const std::string& assetPath );
 
+	// Fakes an asset being loaded at a specific path, will also make the asset manager handle disposing of assets.
+	void MapAsset( IAsset* asset, const std::string& fakePath );
+	
 	bool DisposeAsset( const std::string& assetPath );
 	bool DisposeAsset( Pine::IAsset* asset );
 
@@ -26,6 +29,8 @@ namespace Pine::Assets {
 		return dynamic_cast< T* >( asset );
 	}
 
+	void Setup( );
+	
 	// Disposes all loaded assets
 	void Dispose( );
 

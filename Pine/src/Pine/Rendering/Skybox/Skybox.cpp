@@ -4,6 +4,7 @@
 
 #include <GL/glew.h>
 #include "../../Assets/Texture3D/Texture3D.hpp"
+#include "../../Core/Log/Log.hpp"
 
 #include "../Renderer3D/Renderer3D.hpp"
 #include "../RenderManager/RenderManager.hpp"
@@ -17,6 +18,8 @@ namespace {
 }
 
 void Pine::Skybox::Setup( ) {
+	Log::Debug( "Pine::Skybox::Setup()" );
+
 	std::vector<float> skyboxVertices = {
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,

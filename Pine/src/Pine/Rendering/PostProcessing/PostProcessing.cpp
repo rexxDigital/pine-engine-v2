@@ -8,6 +8,7 @@
 #include <glm/trigonometric.hpp>
 
 #include "../../Assets/Shader/Shader.hpp"
+#include "../../Core/Log/Log.hpp"
 #include "../../OpenGL/VertexArray/VertexArray.hpp"
 #include "../Renderer3D/Renderer3D.hpp"
 #include "../RenderManager/RenderManager.hpp"
@@ -22,6 +23,8 @@ namespace
 
 void Pine::PostProcessing::Setup( )
 {
+	Log::Debug( "Pine::PostProcessing::Setup()" );
+	
 	// Setup rendering frame buffer
 	g_PostProcessingBuffer = new Pine::FrameBuffer;
 	g_PostProcessingBuffer->Create( 1600, 900, false );
@@ -69,6 +72,8 @@ void Pine::PostProcessing::Dispose( )
 
 void Pine::PostProcessing::Render( )
 {
+	const auto renderingContext = Pine::RenderManager::GetRenderingContext( );
+	
 	// At this point, the target frame buffer is already bound, so we don't need to worry about that.
 
 	// Clear the buffers
@@ -76,7 +81,7 @@ void Pine::PostProcessing::Render( )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	// Reset the viewport size.
-	glViewport( 0, 0, 1600, 900 );
+	glViewport( 0, 0, renderingContext->m_Width, renderingContext->m_Height );
 
 	// Disable depth test
 	glDisable( GL_DEPTH_TEST );

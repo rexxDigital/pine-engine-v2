@@ -99,11 +99,13 @@ void Pine::ScriptingManager::CompileScripts( )
 		script->OnCompile( );
 	}
 
-	Log::Message( "Compiled " + std::to_string( compiledScripts.size( ) ) + " scripts." );
+	Log::Message( "Compiled " + std::to_string( compiledScripts.size( ) ) + " script(s)." );
 }
 
 void Pine::ScriptingManager::Setup( )
 {
+	Log::Debug( "Pine::ScriptingManager::Setup()" );
+	
 	ScriptEngine = asCreateScriptEngine( );
 
 	RegisterStdString( ScriptEngine );

@@ -32,6 +32,8 @@ namespace {
 		if ( !context )
 			return false;
 
+		// I would check for a camera being available, but i want the PreRender callback to be called.
+		
 		return true;
 	}
 
@@ -45,14 +47,16 @@ void Pine::RenderManager::Run( ) {
 	}
 
 	// This is fucking retarded, please write a proper solution.
+	// Everything beyond this point, should also respect the render context's
+	// target size, but it won't so keep that in mind.
 	g_RenderingContext->m_Width = 1600;
 	g_RenderingContext->m_Height = 900;
 
 	// Reset stats
 	g_RenderingContext->m_DrawCalls = 0;
-	g_RenderingContext->m_EntitySortTime = 0.f;
-	g_RenderingContext->m_EntityRenderTime = 0.f;
-	g_RenderingContext->m_PostProcessingTime = 0.f;
+	g_RenderingContext->m_EntitySortTime = 0;
+	g_RenderingContext->m_EntityRenderTime = 0;
+	g_RenderingContext->m_PostProcessingTime = 0;
 
 	PostProcessing::GetRenderBuffer( )->Bind( );
 
@@ -246,5 +250,7 @@ void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn ) {
 }
 
 void Pine::RenderManager::Setup( ) {
+	Log::Debug( "Pine::RenderManager::Setup()" );
+	
 	g_RenderingImGuiContext = ImGui::CreateContext( );
 }

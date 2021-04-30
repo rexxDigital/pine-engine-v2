@@ -45,6 +45,7 @@ namespace Pine {
 
 		bool m_ReadOnly = false;
 		bool m_Updated = false;
+		bool m_IsMapped = false;
 	public:
 		virtual ~IAsset( ) = default;
 
@@ -64,6 +65,9 @@ namespace Pine {
 
 		bool GetUpdated( ) const;
 		void SetUpdated( bool value );
+
+		bool IsMapped( ) const;
+		void SetMapped( bool value );
 		
 		virtual bool LoadFromFile( ) = 0;
 		virtual bool SaveToFile( ) = 0;

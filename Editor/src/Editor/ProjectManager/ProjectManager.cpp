@@ -28,6 +28,8 @@ namespace {
 		g_CurrentProject = directory;
 		g_ProjectOpen = true;
 
+		Pine::Log::Message( "Loading project '" + g_CurrentProject + "' assets..." );
+
 		Pine::Assets::LoadFromDirectory( directory );
 
 		Pine::Window::SetSize( 1024, 768 );

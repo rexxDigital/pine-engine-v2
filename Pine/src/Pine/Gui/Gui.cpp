@@ -8,6 +8,8 @@
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>
 
+#include "../Core/Log/Log.hpp"
+
 namespace {
 	GuiRenderCallback g_GuiRenderCallback;
 
@@ -103,6 +105,8 @@ void Pine::Gui::SetGuiRenderCallback( GuiRenderCallback callback ) {
 }
 
 void Pine::Gui::Setup( ) {
+	Log::Debug( "Pine::Gui::Setup()" );
+	
 	g_GuiContext = ImGui::CreateContext();
 	
 	ImGui_ImplGlfw_InitForOpenGL(Window::Internal::GetWindowPointer(), true);

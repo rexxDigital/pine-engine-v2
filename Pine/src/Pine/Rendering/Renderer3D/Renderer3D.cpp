@@ -4,6 +4,7 @@
 #include "../Skybox/Skybox.hpp"
 #include "../UniformBuffers/UniformBuffers.hpp"
 #include "../../Assets/Texture3D/Texture3D.hpp"
+#include "../../Core/Log/Log.hpp"
 #include "../RenderManager/RenderManager.hpp"
 
 namespace {
@@ -21,6 +22,8 @@ namespace {
 	// Some optimizations for OpenGL's current texture.
 	int g_CurrentBoundTexture[ 32 ] = { };
 
+	// TODO: When this engine gets a little bit more advanced, we should get the nearest cube map
+	// or something for this function. Time will tell.
 	int GetBestEnvironmentMap( )
 	{
 		return Pine::Skybox::GetSkyboxCubemap( )->GetId(  );
@@ -159,11 +162,19 @@ void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 }
 
 void Pine::Renderer3D::Setup( ) {
-	g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
+	Log::Debug( "Pine::Renderer3D::Setup()" );
+	
+	// Create default texture
+	char whiteData[ 4 ] = { 255, 255, 255, 255 };
+	
+	g_DefaultTexture = new Texture2D( );
+	g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
+
+	// Fake a texture being loaded if it's required elsewhere.
+	Assets::MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture" );
+	
 	g_TerrainShader = Assets::GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
 }
 
 void Pine::Renderer3D::Dispose( ) {
-
 }
-
