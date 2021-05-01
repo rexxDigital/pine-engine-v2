@@ -25,18 +25,18 @@ namespace Pine
 		std::unordered_map<std::string, UniformVariable*> m_UniformVariables;
 	public:
 
-		uint32_t GetId() const;
-		bool GetReady() const;
+		uint32_t GetId( ) const;
+		bool GetReady( ) const;
 
-		bool CompileShader(const std::string& src, EShaderType type);
-		void LinkProgram();
+		bool CompileShader( const std::string& src, EShaderType type );
+		void LinkProgram( );
 
-		UniformVariable* GetUniformVariable(const std::string& variableName);
-		void SetupUniformBuffer(const UniformBuffer* buffer, const std::string& name);
+		UniformVariable* GetUniformVariable( const std::string& variableName );
+		void SetupUniformBuffer( const UniformBuffer* buffer, const std::string& name );
 
-		void DisposeShader();
+		void DisposeShader( );
 
-		void Use() const;
+		void Use( ) const;
 
 	};
 

@@ -33,7 +33,7 @@ namespace {
 			return false;
 
 		// I would check for a camera being available, but i want the PreRender callback to be called.
-		
+
 		return true;
 	}
 
@@ -83,7 +83,7 @@ void Pine::RenderManager::Run( ) {
 	std::vector<Pine::Light*> lights;
 	std::vector<Pine::TerrainRenderer*> terrainRenderers;
 
-	auto renderEntity = [ & ]( Pine::Entity* entity ) {
+	auto renderEntity = [ & ] ( Pine::Entity* entity ) {
 		for ( auto& component : entity->GetComponents( ) ) {
 			if ( !component->GetActive( ) ) {
 				continue;
@@ -166,9 +166,9 @@ void Pine::RenderManager::Run( ) {
 	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
 
 	Timer entityRenderTime;
-	
+
 	/* Render Terrain Chunks */
-	
+
 	for ( auto terrainRenderer : terrainRenderers ) {
 		const auto terrain = terrainRenderer->GetTerrain( );
 
@@ -176,8 +176,8 @@ void Pine::RenderManager::Run( ) {
 			continue;
 
 		Renderer3D::PrepareTerrain( terrain );
-		
-		for ( auto& chunk : terrain->GetChunks(  ) )
+
+		for ( auto& chunk : terrain->GetChunks( ) )
 		{
 			Renderer3D::RenderTerrainChunk( chunk );
 			g_RenderingContext->m_DrawCalls++;
@@ -199,7 +199,7 @@ void Pine::RenderManager::Run( ) {
 	Skybox::Render( );
 
 	entityRenderTime.Stop( );
-	
+
 	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
 	// Setup frame buffer
@@ -217,7 +217,7 @@ void Pine::RenderManager::Run( ) {
 	}
 
 	Timer postProcessingTime;
-	
+
 	PostProcessing::Render( );
 
 	g_RenderingContext->m_DrawCalls++;
@@ -251,6 +251,6 @@ void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn ) {
 
 void Pine::RenderManager::Setup( ) {
 	Log::Debug( "Pine::RenderManager::Setup()" );
-	
+
 	g_RenderingImGuiContext = ImGui::CreateContext( );
 }

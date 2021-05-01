@@ -7,7 +7,7 @@
 
 namespace {
 
-	bool LoadShader( const nlohmann::json& j, Pine::Shader* shader, const std::string& name, const Pine::EShaderType type ) {
+	bool LoadShader( const nlohmann::json& j, Pine::Shader* shader, const std::string& name, const Pine::EShaderType type, std::vector<Pine::IAsset*>& shaderFiles ) {
 		try {
 			if ( j.find( name ) == j.end( ) ) {
 				return false;
@@ -21,6 +21,8 @@ namespace {
 				return false;
 			}
 
+			shaderFiles.push_back( Pine::Assets::LoadFromFile( filePath ) );
+
 			std::ifstream stream( filePath );
 
 			std::string str( ( std::istreambuf_iterator<char>( stream ) ),
@@ -30,11 +32,9 @@ namespace {
 
 			return shader->CompileShader( str, type );
 		}
-		catch ( std::exception e ) {
+		catch ( std::exception& e ) {
 			return false;
 		}
-
-		return false;
 	}
 
 }
@@ -43,13 +43,18 @@ Pine::Shader::Shader( ) {
 	m_Type = EAssetType::Shader;
 }
 
+const std::vector<Pine::IAsset*> Pine::Shader::GetAttachedShaderFiles( ) const
+{
+	return m_AttachedShaderFiles;
+}
+
 bool Pine::Shader::LoadFromFile( ) {
 	auto j = Serialization::LoadJSONFromFile( m_FilePath.string( ) );
 
-	LoadShader( j, this, "VertexShader", EShaderType::Vertex );
-	LoadShader( j, this, "FragmentShader", EShaderType::Fragment );
-	LoadShader( j, this, "ComputeShader", EShaderType::Compute );
-
+	LoadShader( j, this, "VertexShader", EShaderType::Vertex, m_AttachedShaderFiles );
+	LoadShader( j, this, "FragmentShader", EShaderType::Fragment, m_AttachedShaderFiles );
+	LoadShader( j, this, "ComputeShader", EShaderType::Compute, m_AttachedShaderFiles );
+	
 	LinkProgram( );
 
 	// Setup samplers
@@ -95,4 +100,5 @@ bool Pine::Shader::SaveToFile( ) {
 
 void Pine::Shader::Dispose( ) {
 	DisposeShader( );
+	m_AttachedShaderFiles.clear( );
 }

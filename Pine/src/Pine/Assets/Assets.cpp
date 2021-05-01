@@ -32,7 +32,7 @@ namespace {
 		Pine::EAssetType m_Type;
 
 		// This function should create the asset object itself.
-		std::function<Pine::IAsset* ( )> m_Factory;
+		std::function<Pine::IAsset*( )> m_Factory;
 	};
 
 	std::vector<AssetFactory_t> m_AssetFactories;
