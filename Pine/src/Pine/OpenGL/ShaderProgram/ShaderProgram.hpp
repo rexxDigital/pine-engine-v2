@@ -32,7 +32,7 @@ namespace Pine
 		void LinkProgram( );
 
 		UniformVariable* GetUniformVariable( const std::string& variableName );
-		void SetupUniformBuffer( const UniformBuffer* buffer, const std::string& name );
+		void SetupUniformBuffer( const UniformBuffer* buffer, const std::string& name ) const;
 
 		void DisposeShader( );
 

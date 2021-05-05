@@ -80,7 +80,7 @@ void Pine::ShaderProgram::LinkProgram( )
 	// Do we have any shaders to link?
 	if ( m_Shaders.empty( ) )
 	{
-		// Not going to log anything here, since there will probably be a shader error.
+		// Not going to log anything here, since there will probably be a shader error anyway.
 		return;
 	}
 
@@ -102,8 +102,22 @@ void Pine::ShaderProgram::LinkProgram( )
 
 	if ( linkStatus == GL_FALSE )
 	{
-		// TODO: Maybe display more information?
-		Log::Error( "Failed to link program." );
+		// Get the error message length
+		int32_t errorStrLength = 0;
+		glGetProgramiv( m_Id, GL_INFO_LOG_LENGTH, &errorStrLength );
+
+		// Get the error message itself
+		std::vector<char> errorMessageArray( errorStrLength );
+		glGetProgramInfoLog( m_Id, errorStrLength, &errorStrLength, &errorMessageArray[ 0 ] );
+
+		// Get a char array pointer from the vector, since it has a
+		// NULL escape character, this will work fine.
+		const char* errorMessage = errorMessageArray.data( );
+	
+		Log::Error( "Failed to link program: " + std::string( errorMessage ) );
+
+		// Pine::ShaderProgram::DisposeShader( ) should dispose the remaining shaders
+		// if the application closes or the shader is reloaded.
 
 		return;
 	}
@@ -127,7 +141,8 @@ Pine::UniformVariable* Pine::ShaderProgram::GetUniformVariable( const std::strin
 	return m_UniformVariables[ variableName ];
 }
 
-void Pine::ShaderProgram::SetupUniformBuffer( const UniformBuffer* buffer, const std::string& name ) {
+void Pine::ShaderProgram::SetupUniformBuffer( const UniformBuffer* buffer, const std::string& name ) const
+{
 	const int bufferIndex = glGetUniformBlockIndex( m_Id, name.c_str( ) );
 
 	if ( 0 > bufferIndex ) {
@@ -148,6 +163,8 @@ void Pine::ShaderProgram::DisposeShader( )
 	for ( auto uniVariable : m_UniformVariables ) {
 		delete uniVariable.second;
 	}
+
+	m_UniformVariables.clear( );
 
 	glDeleteProgram( m_Id );
 }

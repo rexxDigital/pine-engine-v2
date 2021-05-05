@@ -47,16 +47,10 @@ void Pine::RenderManager::Run( ) {
 	}
 
 	// This is fucking retarded, please write a proper solution.
-	// Everything beyond this point, should also respect the render context's
+	// Everything beyond this point should also respect the render context's
 	// target size, but it won't so keep that in mind.
 	g_RenderingContext->m_Width = 1600;
 	g_RenderingContext->m_Height = 900;
-
-	// Reset stats
-	g_RenderingContext->m_DrawCalls = 0;
-	g_RenderingContext->m_EntitySortTime = 0;
-	g_RenderingContext->m_EntityRenderTime = 0;
-	g_RenderingContext->m_PostProcessingTime = 0;
 
 	PostProcessing::GetRenderBuffer( )->Bind( );
 
@@ -74,6 +68,12 @@ void Pine::RenderManager::Run( ) {
 		g_PreRenderingCallback( );
 	}
 
+	// Reset stats
+	g_RenderingContext->m_DrawCalls = 0;
+	g_RenderingContext->m_EntitySortTime = 0;
+	g_RenderingContext->m_EntityRenderTime = 0;
+	g_RenderingContext->m_PostProcessingTime = 0;
+	
 	if ( g_RenderingContext->m_Camera == nullptr )
 		return;
 
@@ -83,7 +83,7 @@ void Pine::RenderManager::Run( ) {
 	std::vector<Pine::Light*> lights;
 	std::vector<Pine::TerrainRenderer*> terrainRenderers;
 
-	auto renderEntity = [ & ] ( Pine::Entity* entity ) {
+	auto processEntity = [ & ] ( Pine::Entity* entity ) {
 		for ( auto& component : entity->GetComponents( ) ) {
 			if ( !component->GetActive( ) ) {
 				continue;
@@ -116,9 +116,9 @@ void Pine::RenderManager::Run( ) {
 		}
 
 		for ( auto child : entity->GetChildren( ) )
-			renderEntity( child );
+			processEntity( child );
 
-		renderEntity( entity );
+		processEntity( entity );
 	}
 
 	entitySortTimer.Stop( );

@@ -90,6 +90,8 @@ bool Pine::Shader::LoadFromFile( ) {
 		}
 	}
 
+	for ( auto shaderFileAsset : m_AttachedShaderFiles )
+		shaderFileAsset->SetMapped( true );
 
 	return true;
 }
