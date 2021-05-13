@@ -142,7 +142,7 @@ void Pine::Renderer3D::RenderTerrainChunk( const Pine::TerrainChunk& chunk )
 	RenderVertexArray( chunk.GetVertexArray( ), chunk.GetRenderCount( ), true );
 }
 
-void Pine::Renderer3D::UpdateTextureBound( int num, bool value )
+void Pine::Renderer3D::UpdateTextureBound( int num, int value )
 {
 	g_CurrentBoundTexture[ num ] = value;
 }
@@ -164,14 +164,18 @@ void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 void Pine::Renderer3D::Setup( ) {
 	Log::Debug( "Pine::Renderer3D::Setup()" );
 	
-	// Create default texture
-	char whiteData[ 4 ] = { 255, 255, 255, 255 };
-	
-	g_DefaultTexture = new Texture2D( );
-	g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
+	//// Create default texture
+	//char whiteData[ 4 ] = { 255, 255, 255, 255 };
+	//
+	//g_DefaultTexture = new Texture2D( );
+	//g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
 
-	// Fake a texture being loaded if it's required elsewhere.
-	Assets::MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture" );
+	//// Fake a texture being loaded if it's required elsewhere.
+	//Assets::MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture" );
+
+	//g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
+
+	g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
 	
 	g_TerrainShader = Assets::GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
 }

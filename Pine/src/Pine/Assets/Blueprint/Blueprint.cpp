@@ -105,7 +105,7 @@ namespace
 
 }
 
-void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* entity ) const
+void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* entity, bool createChild ) const
 {
 	target->SetName( entity->GetName( ) );
 	target->SetActive( entity->GetActive( ) );
@@ -119,9 +119,9 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 	// Copy children
 	for ( auto child : entity->GetChildren( ) )
 	{
-		const auto newChild = target->CreateChild( false );
+		const auto newChild = target->CreateChild( createChild );
 
-		CopyEntity( newChild, child );
+		CopyEntity( newChild, child, createChild );
 	}
 }
 
@@ -136,7 +136,7 @@ void Pine::Blueprint::CreateFromEntity( Pine::Entity* entity )
 
 	m_Entity = new Entity( 0, true );
 
-	CopyEntity( m_Entity, entity );
+	CopyEntity( m_Entity, entity, false );
 }
 
 Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
@@ -150,7 +150,7 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 
 	newEntity->ClearComponents( );
 	
-	CopyEntity( newEntity, m_Entity );
+	CopyEntity( newEntity, m_Entity, true );
 
 	for ( auto component : newEntity->GetComponents(  ) )
 	{

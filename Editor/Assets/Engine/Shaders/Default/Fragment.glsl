@@ -81,6 +81,5 @@ void main( void ) {
 	vec4 pointLight1 = vec4( CalculatePointLight( 1 ), 1.0f );
 	vec4 pointLight2 = vec4( CalculatePointLight( 2 ), 1.0f );
 
-	//out_color = ( directionalLight + pointLight1 + pointLight2 );
-	out_color = vec4(0.f, 0.6f, 1.f, 1.f);
+	out_color = ( directionalLight + pointLight1 + pointLight2 );
 }

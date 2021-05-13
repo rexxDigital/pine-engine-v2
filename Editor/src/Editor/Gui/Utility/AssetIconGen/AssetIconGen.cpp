@@ -28,9 +28,11 @@ namespace {
 	Pine::Entity* m_FakeCameraEntity;
 	Pine::Entity* m_FakeModelEntity;
 	Pine::Entity* m_FakeLightEntity;
-	
 	Pine::RenderingContext* m_AssetPreviewContext;
 
+	Pine::Texture2D* m_AssetPreviewFrameBufferTexture;
+	Pine::FrameBuffer* m_AssetPreviewFrameBuffer;
+	
 	std::unordered_map<std::string, std::unique_ptr<AssetIcon_t>> m_Icons;
 
 	void SetupAssetPreviewRenderingContext( )
@@ -51,7 +53,13 @@ namespace {
 		m_AssetPreviewContext->m_Width = 256;
 		m_AssetPreviewContext->m_Height = 256;
 		m_AssetPreviewContext->m_Is3D = true;
-		m_AssetPreviewContext->m_Camera = m_FakeCameraEntity->GetComponent<Pine::Camera>( ); 
+		m_AssetPreviewContext->m_Camera = m_FakeCameraEntity->GetComponent<Pine::Camera>( );
+
+		m_AssetPreviewFrameBuffer = new Pine::FrameBuffer;
+		m_AssetPreviewFrameBuffer->Create( 256, 256 );
+
+		m_AssetPreviewFrameBufferTexture = new Pine::Texture2D;
+		m_AssetPreviewFrameBufferTexture->CreateFromFrameBuffer( m_AssetPreviewFrameBuffer );
 	}
 
 }
@@ -84,28 +92,22 @@ Pine::Texture2D* Editor::Gui::Utility::AssetIconGen::GenerateAssetThumbnail( con
 
 	if ( assetItem->m_Asset->GetType( ) == Pine::EAssetType::Material )
 	{
-		// Prepare frame buffer if required
-		if ( assetItem->m_FrameBuffer == nullptr )
-		{
-			assetItem->m_FrameBuffer = new Pine::FrameBuffer;
-			assetItem->m_FrameBuffer->Create( 256, 256 );
-		}
-
-		assetItem->m_FrameBuffer->Bind( );
+		m_AssetPreviewFrameBuffer->Bind( );
 
 		// Prepare rendering context
 		const auto oldRenderingCtxPtr = Pine::RenderManager::GetRenderingContext( );
 
 		Pine::RenderManager::SetRenderingContext( m_AssetPreviewContext );
 		
-		// Prepare fake "scene"
+		// To render this fake scene, we'll have to do shit manually.
 
+		
 		
 		// Restore rendering context
 		Pine::RenderManager::SetRenderingContext( oldRenderingCtxPtr );
 	}
 
-	return nullptr;
+	return m_AssetPreviewFrameBufferTexture;
 }
 
 void Editor::Gui::Utility::AssetIconGen::Update( ) {

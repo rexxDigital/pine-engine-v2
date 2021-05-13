@@ -10,6 +10,8 @@ namespace Pine::EntityList {
 	void ClearEntities( bool temp = false );
 	bool DeleteEntity( Entity* entity );
 
+	void MoveEntity( Entity* entity, int newPosition );
+
 	void RunOnSetup( );
 	void RunOnUpdate( float deltaTime );
 

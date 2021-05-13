@@ -4,6 +4,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "../../Core/Log/Log.hpp"
+#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
 Pine::Texture2D::Texture2D( ) {
 	m_Type = EAssetType::Texture2D;
@@ -23,6 +24,14 @@ int Pine::Texture2D::GetHeight( ) const {
 
 int Pine::Texture2D::GetChannels( ) const {
 	return m_Channels;
+}
+
+void Pine::Texture2D::CreateFromFrameBuffer( Pine::FrameBuffer* frameBuffer )
+{
+	m_Width = frameBuffer->GetWidth( );
+	m_Height = frameBuffer->GetHeight( );
+	m_Id = frameBuffer->GetTextureId( );
+	m_Channels = 4;
 }
 
 void Pine::Texture2D::CreateFromData( int width, int height, int format, void* data )

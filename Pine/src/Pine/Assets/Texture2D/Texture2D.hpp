@@ -3,6 +3,8 @@
 
 namespace Pine {
 
+	class FrameBuffer;
+	
 	class Texture2D : public IAsset {
 	private:
 		unsigned int m_Id = 0;
@@ -20,6 +22,7 @@ namespace Pine {
 		int GetHeight( ) const;
 		int GetChannels( ) const;
 
+		void CreateFromFrameBuffer( Pine::FrameBuffer* frameBuffer ); // This should be fucking done the opposite way...
 		void CreateFromData( int width, int height, int format, void* data );
 
 		bool LoadFromFile( ) override;

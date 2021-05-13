@@ -114,6 +114,13 @@ Pine::Entity* Pine::Entity::CreateChild( bool createEntity )
 	return entity;
 }
 
+void Pine::Entity::AddChild( Entity* entity )
+{
+	entity->SetParent( this );
+	
+	m_Children.push_back( entity );
+}
+
 void Pine::Entity::RemoveChild( Entity* entity )
 {
 	for ( int i = 0; i < m_Children.size( ); i++ )
@@ -124,6 +131,8 @@ void Pine::Entity::RemoveChild( Entity* entity )
 			break;
 		}
 	}
+
+	entity->SetParent( nullptr );
 }
 
 void Pine::Entity::DeleteChildren( )

@@ -1,25 +1,26 @@
 #include "MainMenuBar.hpp"
 
+#include "../Utility/HotkeyManager/HotkeyManager.hpp"
+
+
 #include "../Windows/Windows.hpp"
 #include "../../ProjectManager/ProjectManager.hpp"
-#include "../Utility/HotkeyManager/HotkeyManager.hpp"
 
 #include <imgui/imgui.h>
 
 #include "Pine/Assets/Assets.hpp"
 #include "Pine/Core/Log/Log.hpp"
 
-PE_REGISTER_HOTKEY( SaveHotkey, GLFW_KEY_S, true, false );
-PE_REGISTER_HOTKEY( RefreshAssetsHotkey, GLFW_KEY_F5, false, false );
+
 
 void Editor::Gui::MainMenuBar::Render( ) {
 
-	if ( HotkeyManager::GetHotkeyPressed( SaveHotkey ) )
+	if ( HotkeyManager::GetHotkeyPressed( Hotkeys::SaveHotkey ) )
 	{
 		ProjectManager::Save( );
 	}
 	
-	if ( HotkeyManager::GetHotkeyPressed( RefreshAssetsHotkey ) )
+	if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RefreshAssetsHotkey ) )
 	{
 		ProjectManager::ReloadProjectAssets( );
 	}

@@ -26,6 +26,6 @@ namespace Pine::Renderer3D
 	void RenderTerrainChunk( const Pine::TerrainChunk& chunk );
 	
 	// Updates the cached bound texture
-	void UpdateTextureBound( int num, bool value );
+	void UpdateTextureBound( int num, int value );
 	
 }

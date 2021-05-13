@@ -151,7 +151,7 @@ bool Pine::Model::LoadFromFile( ) {
 
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
-	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenSmoothNormals | aiProcess_GenBoundingBoxes );
+	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenBoundingBoxes );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode ) {
 		Log::Error( "Assimp loading error " + m_FilePath.string( ) + ", " + importer.GetErrorString( ) );

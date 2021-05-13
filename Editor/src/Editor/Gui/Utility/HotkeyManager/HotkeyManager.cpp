@@ -1,5 +1,7 @@
 #include "HotkeyManager.hpp"
+
 #include <vector>
+#include <thread>
 
 #include "ImGui/imgui.h"
 
@@ -14,27 +16,27 @@ namespace
 		bool m_Alt = false;
 	};
 
-	std::vector<HotkeyData> hotkeys;
+	std::vector<HotkeyData> g_Hotkeys;
 
 }
 
 uint32_t Editor::Gui::HotkeyManager::RegisterHotkey( const std::string& name, int defaultKey, bool ctrl, bool alt )
 {
 	HotkeyData data;
-
+	
 	data.m_Name = name;
 	data.m_Key = defaultKey;
 	data.m_Ctrl = ctrl;
 	data.m_Alt = alt;
 
-	hotkeys.push_back( data );
-
-	return hotkeys.size( ) - 1;
+	g_Hotkeys.push_back( data );
+	
+	return g_Hotkeys.size(  ) - 1;
 }
 
 bool Editor::Gui::HotkeyManager::GetHotkeyPressed( uint32_t hotkey )
 {
-	auto& data = hotkeys[ hotkey ];
+	auto& data = g_Hotkeys[ hotkey ];
 	auto& io = ImGui::GetIO( );
 
 	if ( ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
@@ -53,4 +55,18 @@ bool Editor::Gui::HotkeyManager::GetHotkeyPressed( uint32_t hotkey )
 	}
 
 	return ImGui::IsKeyPressed( data.m_Key );
+}
+
+namespace Editor::Hotkeys {
+
+	PE_DEFINE_HOTKEY( TransformGizmo, GLFW_KEY_T, false, false );
+	PE_DEFINE_HOTKEY( RotateGizmo, GLFW_KEY_R, false, false );
+	PE_DEFINE_HOTKEY( ScaleGizmo, GLFW_KEY_S, false, false );
+
+	PE_DEFINE_HOTKEY( SaveHotkey, GLFW_KEY_S, true, false );
+	PE_DEFINE_HOTKEY( RefreshAssetsHotkey, GLFW_KEY_F5, false, false );
+
+	PE_DEFINE_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
+	PE_DEFINE_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );
+
 }

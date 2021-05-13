@@ -140,5 +140,20 @@ namespace Editor::Gui::HotkeyManager
 	
 }
 
+#define PE_DEFINE_HOTKEY(name, key, ctrl, alt) uint32_t name = Editor::Gui::HotkeyManager::RegisterHotkey( #name, key,  ctrl, alt  );
+#define PE_DECLARE_HOTKEY(name, key, ctrl, alt) extern uint32_t name;
 
-#define PE_REGISTER_HOTKEY(name, key, ctrl, alt) uint32_t name = Editor::Gui::HotkeyManager::RegisterHotkey( #name, key,  ctrl, alt  );
+namespace Editor::Hotkeys
+{
+	
+	PE_DECLARE_HOTKEY( TransformGizmo, GLFW_KEY_T, false, false );
+	PE_DECLARE_HOTKEY( RotateGizmo, GLFW_KEY_R, false, false );
+	PE_DECLARE_HOTKEY( ScaleGizmo, GLFW_KEY_S, false, false );
+
+	PE_DECLARE_HOTKEY( SaveHotkey, GLFW_KEY_S, true, false );
+	PE_DECLARE_HOTKEY( RefreshAssetsHotkey, GLFW_KEY_F5, false, false );
+
+	PE_DECLARE_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
+	PE_DECLARE_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );
+	
+}

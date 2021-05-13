@@ -164,7 +164,17 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 		ImGui::BeginTooltip( );
 
+		ImGui::Text( currentAsset->GetPath( ).string( ).c_str( ) );
+
 		ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 64.f, 64.f ) );
+
+		ImGui::EndTooltip( );
+	}
+	else if ( ImGui::IsItemHovered( ) && currentAsset != nullptr )
+	{
+		ImGui::BeginTooltip( );
+
+		ImGui::Text( currentAsset->GetPath(  ).string(  ).c_str(  ) );
 
 		ImGui::EndTooltip( );
 	}

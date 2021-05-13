@@ -19,7 +19,8 @@ namespace {
 
 	struct AssetFactory_t
 	{
-		AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset* ( )> factory ) 		{
+		AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset* ( )> factory )
+		{
 			m_FileExtensions = fileExtensions;
 			m_Type = type;
 			m_Factory = factory;
@@ -79,8 +80,6 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool read
 	// since some asset files have standards, such as model files.
 	if ( Pine::String::EndsWith( filePath, ".asset" ) )
 		return nullptr;
-
-	Log::Debug( "Loading asset '" + filePath + "'..." );
 
 	if ( m_Assets.count( filePath ) > 0 ) 
 	{
@@ -157,6 +156,8 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool read
 
 	asset->SetFilePath( filePath );
 
+	Log::Debug( "Loading asset '" + filePath + "'..." );
+
 	if ( !asset->LoadFromFile( ) ) 
 	{
 		return nullptr;
@@ -202,6 +203,18 @@ Pine::IAsset* Pine::Assets::GetAsset( const std::string& assetPath )
 
 void Pine::Assets::MapAsset( IAsset* asset, const std::string& fakePath )
 {
+	if ( Pine::String::EndsWith( fakePath, ".asset" ) )
+	{
+		// If you want to do this anyway, go ahead. Remove this code, I do not care.
+		// While writing this code, I would want to avoid ever having to map a ".asset" file
+		// as I want every asset loaded by the engine to have it's privacy when it comes to their
+		// ".asset" file.
+		
+		Log::Error( "Failed to map '" + fakePath + "', cannot map a '.asset' file." );
+		
+		return;
+	}
+	
 	asset->SetFilePath( fakePath );
 	asset->SetReadOnly( true );
 	asset->SetMapped( true );

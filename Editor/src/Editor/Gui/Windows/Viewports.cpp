@@ -21,52 +21,51 @@
 
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 
-PE_REGISTER_HOTKEY( TransformGizmo, GLFW_KEY_T, false, false );
-PE_REGISTER_HOTKEY( RotateGizmo, GLFW_KEY_R, false, false );
-PE_REGISTER_HOTKEY( ScaleGizmo, GLFW_KEY_S, false, false );
 
 namespace {
 
 	bool g_StartedPlaying = false;
 
 	void ShowViewportControls( bool inLevelViewport ) {
+		using namespace Editor::Gui;
+
 		if ( ImGui::BeginMenuBar( ) ) {
-			if ( ImGui::MenuItem( "Move", nullptr, Editor::Gui::Globals::SelectedGizmoMovementType == Editor::Gui::GizmoMovementType::Move, inLevelViewport ) ) {
+			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) ) {
 				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
 			}
 
-			if ( ImGui::MenuItem( "Rotate", nullptr, Editor::Gui::Globals::SelectedGizmoMovementType == Editor::Gui::GizmoMovementType::Rotate, inLevelViewport ) ) {
+			if ( ImGui::MenuItem( "Rotate", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, inLevelViewport ) ) {
 				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
 			}
 
-			if ( ImGui::MenuItem( "Scale", nullptr, Editor::Gui::Globals::SelectedGizmoMovementType == Editor::Gui::GizmoMovementType::Scale, inLevelViewport ) ) {
-				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
+			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) ) {
+				Editor::Gui::Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
 			}
 
-			if  ( inLevelViewport )
+			if ( inLevelViewport && Globals::IsHoveringLevelView )
 			{
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( TransformGizmo ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::TransformGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
 				}
 
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( RotateGizmo ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::RotateGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
 				}
 
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( ScaleGizmo ) )
+				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::ScaleGizmo ) )
 				{
 					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
 				}
 			}
-			
+
 			ImGui::Spacing( );
 			ImGui::Separator( );
 			ImGui::Spacing( );
 
 			const bool isPlaying = Editor::PlayManager::IsPlaying( );
-			if ( ImGui::MenuItem( isPlaying ? "STOP" : "START", nullptr ) ) 
+			if ( ImGui::MenuItem( isPlaying ? "STOP" : "START", nullptr ) )
 			{
 				if ( isPlaying )
 				{
@@ -98,7 +97,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			ImGui::SetNextWindowFocus( );
 			g_StartedPlaying = false;
 		}
-		
+
 		if ( ImGui::Begin( "Game", &ShowGameViewport, ImGuiWindowFlags_MenuBar ) )
 		{
 			Globals::IsInLevelView = false;
@@ -170,8 +169,8 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 						if ( e->GetParent( ) != nullptr )
 							base_position = e->GetParent( )->GetTransform( )->Position;
-						
-						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position ;
+
+						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position;
 						e->GetTransform( )->Rotation = ( glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] ) );
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}

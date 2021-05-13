@@ -73,10 +73,11 @@ namespace Pine
 		Entity* GetParent( ) const;
 
 		Entity* CreateChild( bool createEntity = true );
+		void AddChild( Entity* entity );
 		void RemoveChild( Entity* entity );
 
 		// This will unlink and remove all children linked to this entity.
-		// So removing them in the entity list as well!
+		// And it will remove them in the entity list as well!
 		void DeleteChildren( );
 
 	};

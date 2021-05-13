@@ -60,7 +60,7 @@ void Pine::Memory::Free( void* ptr ) {
 		}
 	}
 
-	Log::Warning( "Failed to find freed memory." );
+	Log::Warning( "Failed to free allocated memory." );
 }
 
 void* operator new( size_t size )

@@ -8,13 +8,11 @@
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Pine/Assets/Blueprint/Blueprint.hpp"
 
-PE_REGISTER_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
-PE_REGISTER_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );
-
 namespace {
 
 	// HACK: To fix context menus, since IsWindowHovered is out of control
 	bool g_DidOpenContextMenu = false;
+	bool g_OpenContextMenu = false;
 
 	// Since we might support selecting multiple entities in the future.
 	bool IsSelectedEntity( Pine::Entity* e ) {
@@ -48,14 +46,25 @@ namespace {
 
 			if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
 				SelectEntity( e );
-				ImGui::OpenPopup( "EntityContextMenu" );
+
+				g_OpenContextMenu = true;
 				g_DidOpenContextMenu = true;
+			}
+
+			if ( ImGui::BeginDragDropTarget( ) ) {
+				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+					const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+					
+					e->AddChild( entity );
+				}
+
+				ImGui::EndDragDropTarget( );
 			}
 
 			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
 				ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
-				
-				ImGui::Text( e->GetName(  ).c_str(  ) );
+
+				ImGui::Text( e->GetName( ).c_str( ) );
 
 				ImGui::EndDragDropSource( );
 			}
@@ -69,7 +78,8 @@ namespace {
 			if ( ImGui::TreeNodeEx( renderText.c_str( ), flags ) ) {
 				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
 					SelectEntity( e );
-					ImGui::OpenPopup( "EntityContextMenu" );
+
+					g_OpenContextMenu = true;
 					g_DidOpenContextMenu = true;
 				}
 
@@ -92,9 +102,20 @@ namespace {
 
 				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) ) {
 					SelectEntity( e );
-					ImGui::OpenPopup( "EntityContextMenu" );
+
+					g_OpenContextMenu = true;
 					g_DidOpenContextMenu = true;
 				}
+			}
+			
+			if ( ImGui::BeginDragDropTarget( ) ) {
+				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+					const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+
+					e->AddChild( entity );
+				}
+
+				ImGui::EndDragDropTarget( );
 			}
 
 			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
@@ -106,6 +127,24 @@ namespace {
 			}
 		}
 	}
+
+	void EntityMoveSeparator( int entityIndex ) {
+		ImGui::Separator( );
+		
+		if ( ImGui::BeginDragDropTarget( ) ) {
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+				const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+
+				if ( entityIndex >= Pine::EntityList::GetEntities( ).size( ) )
+					entityIndex = Pine::EntityList::GetEntities( ).size( ) - 1;
+				
+				Pine::EntityList::MoveEntity( entity, entityIndex );
+			}
+
+			ImGui::EndDragDropTarget( );
+		}		
+	}
+	
 }
 
 void Editor::Gui::Windows::RenderEntitylist( ) {
@@ -116,8 +155,24 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 	auto& entities = Pine::EntityList::GetEntities( );
 
-	for ( auto& entity : entities ) {
+	bool isDragDroppingEntity = false;
 
+	if ( auto payload = ImGui::GetDragDropPayload( ) )
+	{
+		if ( std::string( payload->DataType ).find( "Entity" ) != std::string::npos )
+		{
+			isDragDroppingEntity = true;
+		}
+	}
+
+	if ( isDragDroppingEntity )
+		EntityMoveSeparator( 0 );
+
+	int entityRenderIndex = 0;
+	
+	for ( auto& entity : entities ) {
+		entityRenderIndex++;
+		
 		// Since we render children for each parent entity instead.
 		if ( entity->GetParent( ) != nullptr ) {
 			continue;
@@ -128,11 +183,21 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		}
 
 		RenderEntity( entity );
+
+		if ( isDragDroppingEntity )
+			EntityMoveSeparator( entityRenderIndex );
 	}
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
 		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+	}
+
+	if ( g_OpenContextMenu )
+	{
+		ImGui::OpenPopup( "EntityContextMenu" );
+
+		g_OpenContextMenu = false;
 	}
 
 	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu ) {
@@ -141,15 +206,15 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 
-	if ( Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1 ) 	{
+	if ( Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1 ) {
 		Pine::Entity* e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( HotkeyManager::GetHotkeyPressed( RemoveEntityKey ) ) {
+		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RemoveEntityKey ) ) {
 			Pine::EntityList::DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		}
 
-		if ( HotkeyManager::GetHotkeyPressed( DuplicateEntity ) ) {
+		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::DuplicateEntity ) ) {
 			Pine::Blueprint blueprint;
 
 			blueprint.CreateFromEntity( e );
@@ -175,7 +240,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) ) 		{
+		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) ) {
 			Pine::Blueprint blueprint;
 
 			blueprint.CreateFromEntity( e );
@@ -188,6 +253,12 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) ) {
 			e->CreateChild( );
+			ImGui::CloseCurrentPopup( );
+		}
+
+		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e->GetParent(  ) != nullptr ) ) {
+			e->GetParent( )->RemoveChild( e );
+			
 			ImGui::CloseCurrentPopup( );
 		}
 
