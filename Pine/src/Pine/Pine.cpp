@@ -27,11 +27,11 @@ namespace
 		using SecondsFP = std::chrono::duration<double>;
 		return duration_cast< SecondsFP >( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
 	}
-	
+
 	void UpdateThread( )
 	{
 		double lastTime = GetTimeAsDouble( );
-		
+
 		while ( !g_StopUpdateThread )
 		{
 			const double currentTime = GetTimeAsDouble( );
@@ -84,13 +84,13 @@ bool Pine::Setup( )
 	auto gpuRenderer = glGetString( GL_RENDERER );
 
 	Log::Message( "Using GPU: " + std::string( reinterpret_cast< const char* >( gpuRenderer ) ) );
-	
+
 	// Setup some core stuff first.
 	Assets::Setup( );
 	UniformBuffers::Setup( );
 
 	// We want to load engine shaders first because some other engine assets needs the shaders to be ready first.
- 	Log::Message( "Loading engine shaders..." );
+	Log::Message( "Loading engine shaders..." );
 
 	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
 		Log::Fatal( "Failed to load engine shaders." );
@@ -114,9 +114,9 @@ bool Pine::Setup( )
 	ScriptingManager::Setup( );
 
 	Components::Internal::RegisterPineComponents( );
-	
+
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
-	
+
 	Log::Message( "Pine was successfully initialized!" );
 
 	return true;

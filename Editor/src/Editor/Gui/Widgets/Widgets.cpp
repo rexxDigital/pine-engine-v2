@@ -145,7 +145,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly );
-
+	
 	if ( ImGui::BeginDragDropTarget( ) ) {
 		if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
 			const auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );

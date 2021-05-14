@@ -2,7 +2,7 @@
 #include "..\..\Core\Window\Window.hpp"
 
 Pine::RenderingContext* Pine::CreateDefaultRenderingContext( ) {
-	auto context = new Pine::RenderingContext;
+	const auto context = new Pine::RenderingContext;
 
 	context->m_Is3D = true;
 

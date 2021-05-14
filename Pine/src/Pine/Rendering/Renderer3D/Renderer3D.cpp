@@ -7,6 +7,11 @@
 #include "../../Core/Log/Log.hpp"
 #include "../RenderManager/RenderManager.hpp"
 
+#include "../../Entity/Entity.hpp"
+#include "../../Components/Transform/Transform.hpp"
+#include "../../Components/Light/Light.hpp"
+#include "../../Components/Camera/Camera.hpp"
+
 namespace {
 	// The mesh we're supposed to render.
 	Pine::Mesh* g_CurrentRenderMesh = nullptr;
@@ -26,8 +31,10 @@ namespace {
 	// or something for this function. Time will tell.
 	int GetBestEnvironmentMap( )
 	{
-		return Pine::Skybox::GetSkyboxCubemap( )->GetId(  );
+		return Pine::Skybox::GetSkyboxCubemap( )->GetId( );
 	}
+
+	int g_CurrentDynamicLightCount = 0;
 }
 
 void Pine::Renderer3D::RenderVertexArray( const VertexArray* vao, int renderCount, bool indices )
@@ -52,10 +59,10 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	if ( material->GetShader( ) != g_CurrentShader ) {
 		SetShader( material->GetShader( ) );
 	}
-	
+
 	if ( !g_CurrentShader )
 		return;
-	
+
 	// Diffuse texture
 	Texture2D* diffuseTexture = g_DefaultTexture;
 	if ( material->GetDiffuse( ) != nullptr ) {
@@ -77,7 +84,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	}
 
 	g_CurrentShader->GetUniformVariable( "materialSamplers.specular" )->LoadInteger( 1 );
-	
+
 	// Only bind the texture if required.
 	if ( g_CurrentBoundTexture[ 1 ] != specularMapTexture->GetId( ) ) {
 		glActiveTexture( GL_TEXTURE1 );
@@ -87,9 +94,9 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	}
 
 	const int bestEnvironmentMap = GetBestEnvironmentMap( );
-	
+
 	// Bind environment map
-	if (g_CurrentBoundTexture[ 2 ] != bestEnvironmentMap )
+	if ( g_CurrentBoundTexture[ 2 ] != bestEnvironmentMap )
 	{
 		glActiveTexture( GL_TEXTURE2 );
 		glBindTexture( GL_TEXTURE_3D, bestEnvironmentMap );
@@ -117,7 +124,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
 	if ( g_CurrentRenderMesh == nullptr )
 		return;
-	
+
 	if ( g_ShaderTransformationVariable != nullptr ) {
 		g_ShaderTransformationVariable->LoadMatrix4( transformationMatrix );
 	}
@@ -128,7 +135,7 @@ void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
 	else {
 		glDrawArrays( GL_TRIANGLES, 0, g_CurrentRenderMesh->GetRenderCount( ) );
 	}
-	
+
 	RenderManager::GetRenderingContext( )->m_DrawCalls++;
 }
 
@@ -147,6 +154,72 @@ void Pine::Renderer3D::UpdateTextureBound( int num, int value )
 	g_CurrentBoundTexture[ num ] = value;
 }
 
+void Pine::Renderer3D::UploadCameraData( Pine::Camera* camera )
+{
+	UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = camera->GetProjectionMatrix( );
+	UniformBuffers::GetMatrixBufferData( )->ViewMatrix = camera->GetViewMatrix( );
+
+	UniformBuffers::GetMatrixUniformBuffer( )->Bind( );
+	UniformBuffers::GetMatrixUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MatrixBufferData_t ), UniformBuffers::GetMatrixBufferData( ) );
+}
+
+void Pine::Renderer3D::UploadLightData( )
+{
+	UniformBuffers::GetLightsUniformBuffer( )->Bind( );
+	UniformBuffers::GetLightsUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::LightBufferData_t ), UniformBuffers::GetLightsBufferData( ) );
+}
+
+void Pine::Renderer3D::PrepareMeshRendering( )
+{
+	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
+}
+
+void Pine::Renderer3D::PrepareLightData( Pine::Light* light )
+{
+
+	// If it's a directional light, always put it at index 0. There should only be one active directional light per scene anyway.
+	// The other types of lights we put at (1 + g_CurrentDynamicLightCount), up till the max dynamic light count
+
+	if ( g_CurrentDynamicLightCount == 3 )
+	{
+		// This will spam the living fuck out of the console.
+		Log::Warning( "Maximum level of dynamic lights reached." );
+		
+		return;
+	}
+	
+	if ( light->GetLightType(  ) == Pine::ELightType::Directional )
+	{
+		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
+		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
+		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].color = light->GetLightColor( );
+		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].attenuation = light->GetAttenuation( );
+	}
+	else
+	{
+
+		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].position = light->GetParent( )->GetTransform( )->Position;
+		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
+		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].color = light->GetLightColor( );
+		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].attenuation = light->GetAttenuation( );
+		
+	}
+
+	g_CurrentDynamicLightCount++;
+	
+}
+
+void Pine::Renderer3D::ResetLightData( )
+{
+	for ( int i = 0; i < 4; i++ ) {
+		UniformBuffers::GetLightsBufferData( )->lights[ i ].color = glm::vec3( 0.f, 0.f, 0.f );
+		UniformBuffers::GetLightsBufferData( )->lights[ i ].position = glm::vec3( 0.f, 0.f, 0.f );
+		UniformBuffers::GetLightsBufferData( )->lights[ i ].attenuation = glm::vec3( 0.f, 0.f, 0.f );
+	}
+
+	g_CurrentDynamicLightCount = 0;
+}
+
 Pine::Shader* Pine::Renderer3D::GetShader( ) {
 	return g_CurrentShader;
 }
@@ -154,7 +227,7 @@ Pine::Shader* Pine::Renderer3D::GetShader( ) {
 void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 	if ( !shader )
 		return;
-	
+
 	g_CurrentShader = shader;
 
 	// Set cached uniform variables
@@ -163,7 +236,7 @@ void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 
 void Pine::Renderer3D::Setup( ) {
 	Log::Debug( "Pine::Renderer3D::Setup()" );
-	
+
 	//// Create default texture
 	//char whiteData[ 4 ] = { 255, 255, 255, 255 };
 	//
@@ -176,7 +249,7 @@ void Pine::Renderer3D::Setup( ) {
 	//g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
 
 	g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
-	
+
 	g_TerrainShader = Assets::GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
 }
 

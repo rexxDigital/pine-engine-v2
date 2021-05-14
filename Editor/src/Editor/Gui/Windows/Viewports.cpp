@@ -20,7 +20,7 @@
 #include "Pine/Entitylist/EntityList.hpp"
 
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
-
+#include "Editor/ProjectManager/ProjectManager.hpp"
 
 namespace {
 
@@ -84,6 +84,31 @@ namespace {
 		}
 	}
 
+	void HandleAssetViewportDrop( )
+	{
+		if ( ImGui::BeginDragDropTarget( ) ) {
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
+				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
+
+				if ( asset->GetType(  ) == Pine::EAssetType::Level )
+				{
+					if ( const auto level = dynamic_cast< Pine::Level* >( asset ) )
+					{
+						level->Load( );
+
+						Editor::ProjectManager::OpenLevel( level );
+					}
+				}
+				else if ( asset->GetType(  ) == Pine::EAssetType::Model )
+				{
+					
+				}
+			}
+
+			ImGui::EndDragDropTarget( );
+		}	
+	}
+
 }
 
 void Editor::Gui::Windows::RenderViewports( ) {
@@ -141,6 +166,8 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 
+			HandleAssetViewportDrop( );
+			
 			if ( !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
 			{
 				auto e = Globals::SelectedEntityPtrs[ 0 ];

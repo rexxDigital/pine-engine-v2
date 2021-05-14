@@ -15,6 +15,9 @@ namespace Pine::RenderManager {
 	void SetPreRenderingCallback( RenderCallback fn );
 	void SetPostRenderingCallback( RenderCallback fn );
 
+	void PrepareSceneRendering(  );
+	void FinishSceneRendering(  );
+	
 	void Setup( );
 	void Run( );
 

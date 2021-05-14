@@ -3,6 +3,12 @@
 #include "../../Assets/Mesh/Mesh.hpp"
 #include "../../Assets/Terrain/Terrain.hpp"
 
+namespace Pine
+{
+	class Camera;
+	class Light;
+}
+
 namespace Pine::Renderer3D
 {
 	void Setup( );
@@ -27,5 +33,19 @@ namespace Pine::Renderer3D
 	
 	// Updates the cached bound texture
 	void UpdateTextureBound( int num, int value );
+
+	// Low level shader interaction
+	
+	void UploadCameraData( Pine::Camera* camera );
+
+	// This below could and will be confusing, if we're rendering a scene we want to first call ResetLightData, as it will reset the light data we have on the CPU,
+	// we then call PrepareLightData for all the lights in the scene, if we don't have any then don't call it at all. After all lights have been prepared then call
+	// UploadLightData( ) as it will upload the prepared data to the GPU.
+	
+	void ResetLightData( );
+	void PrepareLightData( Pine::Light* light );
+	void UploadLightData( );
+
+	void PrepareMeshRendering( );
 	
 }

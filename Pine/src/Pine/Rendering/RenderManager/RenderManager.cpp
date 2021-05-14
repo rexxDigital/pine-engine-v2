@@ -52,22 +52,12 @@ void Pine::RenderManager::Run( ) {
 	g_RenderingContext->m_Width = 1600;
 	g_RenderingContext->m_Height = 900;
 
-	PostProcessing::GetRenderBuffer( )->Bind( );
-
-	// Clear the buffers
-	glClearColor( 0.f, 0.f, 0.f, 1.f );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-	// Reset the viewport size.
-	glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
-
-	// Enable depth test just in case.
-	glEnable( GL_DEPTH_TEST );
-
 	if ( g_PreRenderingCallback ) {
 		g_PreRenderingCallback( );
 	}
 
+	PrepareSceneRendering( );
+	
 	// Reset stats
 	g_RenderingContext->m_DrawCalls = 0;
 	g_RenderingContext->m_EntitySortTime = 0;
@@ -123,51 +113,20 @@ void Pine::RenderManager::Run( ) {
 
 	entitySortTimer.Stop( );
 
-	// Prepare data
-	UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = g_RenderingContext->m_Camera->GetProjectionMatrix( );
-	UniformBuffers::GetMatrixBufferData( )->ViewMatrix = g_RenderingContext->m_Camera->GetViewMatrix( );
-
-	for ( int i = 0; i < 4; i++ ) {
-		UniformBuffers::GetLightsBufferData( )->lights[ i ].color = glm::vec3( 0.f, 0.f, 0.f );
-		UniformBuffers::GetLightsBufferData( )->lights[ i ].position = glm::vec3( 0.f, 0.f, 0.f );
-		UniformBuffers::GetLightsBufferData( )->lights[ i ].attenuation = glm::vec3( 0.f, 0.f, 0.f );
-	}
-
-	int processedLights = 1;
+	// Upload stuff to the GPU:
+	Renderer3D::ResetLightData( );
+	
 	for ( auto light : lights ) {
-		if ( processedLights >= 4 ) {
-			Log::Warning( "Too many dynamic lights in level." );
-			break;
-		}
-
-		if ( light->GetLightType( ) == Pine::ELightType::Directional ) {
-			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
-			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
-			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].color = light->GetLightColor( );
-			UniformBuffers::GetLightsBufferData( )->lights[ 0 ].attenuation = light->GetAttenuation( );
-		}
-		else {
-			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].position = light->GetParent( )->GetTransform( )->Position;
-			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
-			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].color = light->GetLightColor( );
-			UniformBuffers::GetLightsBufferData( )->lights[ processedLights ].attenuation = light->GetAttenuation( );
-		}
-
-		processedLights++;
+		Renderer3D::PrepareLightData( light );
 	}
 
-	// Upload to the uniform buffer
-	UniformBuffers::GetMatrixUniformBuffer( )->Bind( );
-	UniformBuffers::GetMatrixUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MatrixBufferData_t ), UniformBuffers::GetMatrixBufferData( ) );
+	Renderer3D::UploadLightData( );
 
-	UniformBuffers::GetLightsUniformBuffer( )->Bind( );
-	UniformBuffers::GetLightsUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::LightBufferData_t ), UniformBuffers::GetLightsBufferData( ) );
-
-	UniformBuffers::GetMaterialUniformBuffer( )->Bind( );
+	Renderer3D::PrepareMeshRendering( );
 
 	Timer entityRenderTime;
 
-	/* Render Terrain Chunks */
+	// Render Terrain Chunks
 
 	for ( auto terrainRenderer : terrainRenderers ) {
 		const auto terrain = terrainRenderer->GetTerrain( );
@@ -184,7 +143,7 @@ void Pine::RenderManager::Run( ) {
 		}
 	}
 
-	/* Render Normal Entities */
+	// Render Normal Entities
 
 	for ( auto& renderItem : renderBatch ) {
 		for ( auto& mesh : renderItem.first->GetMeshList( ) ) {
@@ -200,25 +159,9 @@ void Pine::RenderManager::Run( ) {
 
 	entityRenderTime.Stop( );
 
-	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
-
-	// Setup frame buffer
-	if ( hasFrameBuffer ) {
-		g_RenderingContext->m_FrameBuffer->Bind( );
-
-		// Override rendering context's size variables.
-		if ( g_RenderingContext->m_AutoUpdateSize ) {
-			g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
-			g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
-		}
-	}
-	else {
-		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-	}
-
 	Timer postProcessingTime;
 
-	PostProcessing::Render( );
+	FinishSceneRendering( );
 
 	g_RenderingContext->m_DrawCalls++;
 
@@ -247,6 +190,45 @@ void Pine::RenderManager::SetPreRenderingCallback( RenderCallback fn ) {
 
 void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn ) {
 	g_PostRenderingCallback = fn;
+}
+
+void Pine::RenderManager::PrepareSceneRendering( )
+{
+	PostProcessing::GetRenderBuffer( )->Bind( );
+
+	// Clear the buffers
+	glClearColor( 0.f, 0.f, 0.f, 1.f );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	// Reset the viewport size.
+	glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
+
+	// Enable depth test just in case.
+	glEnable( GL_DEPTH_TEST );
+
+	if ( g_RenderingContext->m_Camera != nullptr )
+		Renderer3D::UploadCameraData( g_RenderingContext->m_Camera );
+}
+
+void Pine::RenderManager::FinishSceneRendering(  )
+{
+	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
+
+	// Setup frame buffer
+	if ( hasFrameBuffer ) {
+		g_RenderingContext->m_FrameBuffer->Bind( );
+
+		// Override rendering context's size variables.
+		if ( g_RenderingContext->m_AutoUpdateSize ) {
+			g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
+			g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
+		}
+	}
+	else {
+		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+	}
+	
+	PostProcessing::Render( );
 }
 
 void Pine::RenderManager::Setup( ) {

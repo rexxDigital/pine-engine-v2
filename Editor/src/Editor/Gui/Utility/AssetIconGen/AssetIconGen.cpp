@@ -7,6 +7,7 @@
 #include "Pine/Components/Light/Light.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 #include "Pine/Entity/Entity.hpp"
+#include "Pine/Rendering/Renderer3D/Renderer3D.hpp"
 #include "Pine/Rendering/RenderingContext/RenderingContext.hpp"
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 #include "Pine\OpenGL\FrameBuffer\FrameBuffer.hpp"
@@ -90,18 +91,28 @@ Pine::Texture2D* Editor::Gui::Utility::AssetIconGen::GenerateAssetThumbnail( con
 	// a thumbnail for the asset. As a result, I couldn't care less and will just re-render it every time
 	// this function is called.
 
-	if ( assetItem->m_Asset->GetType( ) == Pine::EAssetType::Material )
+	m_AssetPreviewContext->m_FrameBuffer = m_AssetPreviewFrameBuffer;
+	
+	if ( assetItem->m_Asset->GetType( ) == Pine::EAssetType::Model )
 	{
-		m_AssetPreviewFrameBuffer->Bind( );
-
 		// Prepare rendering context
 		const auto oldRenderingCtxPtr = Pine::RenderManager::GetRenderingContext( );
 
+		// We still have to do some "low level" stuff to render stuff this way.
 		Pine::RenderManager::SetRenderingContext( m_AssetPreviewContext );
-		
-		// To render this fake scene, we'll have to do shit manually.
+		Pine::RenderManager::PrepareSceneRendering( );
 
+		Pine::Renderer3D::ResetLightData( );
+		Pine::Renderer3D::PrepareLightData( m_FakeLightEntity->GetComponent<Pine::Light>(  ) );
+		Pine::Renderer3D::UploadLightData( );
 		
+		Pine::Renderer3D::PrepareMeshRendering( );
+
+		// Render the mesh itself
+		
+
+		// Render the scene to our frame buffer
+		Pine::RenderManager::FinishSceneRendering( );
 		
 		// Restore rendering context
 		Pine::RenderManager::SetRenderingContext( oldRenderingCtxPtr );
