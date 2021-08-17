@@ -113,7 +113,7 @@ void Pine::RenderManager::Run( ) {
 
 	entitySortTimer.Stop( );
 
-	// Upload stuff to the GPU:
+	// Prepare the light data before uploading it to the GPU:
 	Renderer3D::ResetLightData( );
 	
 	for ( auto light : lights ) {

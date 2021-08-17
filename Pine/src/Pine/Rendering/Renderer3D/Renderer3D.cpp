@@ -244,7 +244,7 @@ void Pine::Renderer3D::Setup( ) {
 	//g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
 
 	//// Fake a texture being loaded if it's required elsewhere.
-	//Assets::MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture" );
+	//Assets::MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture.png" );
 
 	//g_DefaultTexture = Assets::GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
 

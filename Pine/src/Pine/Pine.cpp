@@ -81,7 +81,7 @@ bool Pine::Setup( )
 		return false;
 	}
 
-	auto gpuRenderer = glGetString( GL_RENDERER );
+	const auto gpuRenderer = glGetString( GL_RENDERER );
 
 	Log::Message( "Using GPU: " + std::string( reinterpret_cast< const char* >( gpuRenderer ) ) );
 

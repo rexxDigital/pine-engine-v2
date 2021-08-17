@@ -19,7 +19,7 @@ namespace {
 
 	struct AssetFactory_t
 	{
-		AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset* ( )> factory )
+		AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset*( )> factory )
 		{
 			m_FileExtensions = fileExtensions;
 			m_Type = type;
@@ -85,7 +85,7 @@ Pine::IAsset* Pine::Assets::LoadFromFile( const std::string& filePath, bool read
 	{
 		auto asset = m_Assets[ filePath ];
 
-		// Handle shaders a bit differently for files
+		// Reload the file if it has been updated, do it a bit differently for shaders though.
 		if ( asset->GetType( ) == EAssetType::Shader )
 		{
 			if ( auto shader = dynamic_cast< Pine::Shader* >( asset ) )

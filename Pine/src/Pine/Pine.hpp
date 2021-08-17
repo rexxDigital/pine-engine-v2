@@ -2,7 +2,6 @@
 
 /*
 	Pine - Game Engine
-	Main header file
 */
 
 // Core headers
