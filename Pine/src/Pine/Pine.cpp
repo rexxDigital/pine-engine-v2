@@ -60,7 +60,7 @@ bool Pine::IsAllowingUpdates( )
 bool Pine::Setup( )
 {
 	Log::Message( "Setting up Pine..." );
-
+	
 	if ( !glfwInit( ) )
 	{
 		Log::Fatal( "Failed to initialize GLFW." );

@@ -21,6 +21,7 @@
 
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
+#include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 
 namespace {
 
@@ -109,6 +110,56 @@ namespace {
 		}	
 	}
 
+	void RenderHighlightBoundingBox( Pine::ModelRenderer* modelRenderer, Pine::Camera* camera ) {
+
+		
+
+	}
+
+	void RenderEntityIcon( Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition, ImVec2 screenSize ) {
+		int renderIcon = 0;
+		Pine::IComponent* renderComponent = nullptr;
+
+		for ( const auto component : entity->GetComponents( ) ) {
+			switch ( component->GetType( ) ) {
+			case Pine::EComponentType::Camera:
+				renderIcon = 1;
+				renderComponent = component;
+				break;
+			case Pine::EComponentType::Light:
+				renderIcon = 2;
+				renderComponent = component;
+				break;
+			default:
+				break;
+			}
+		}
+
+		if ( renderIcon == 0 ) {
+			return;
+		}
+ 
+		auto transform = entity->GetTransform( );
+		auto res = glm::project( transform->Position, camera->GetViewMatrix(  ), camera->GetProjectionMatrix( ) , glm::vec4( 0.f, 0.f, screenSize.x, screenSize.y ) );
+
+		if ( renderIcon == 1 )
+			ImGui::GetForegroundDrawList( )->AddText( ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImColor( 255, 255, 255, 255 ), "Camera" );
+		else
+			ImGui::GetForegroundDrawList( )->AddText( ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImColor( 255, 255, 255, 255 ), "Light" );
+	}
+
+	void RenderHighlight( Pine::Entity* e, Pine::Camera* camera, ImVec2 size ) {
+		for ( const auto component : e->GetComponents(  ) ) {
+			switch ( component->GetType(  ) ) {
+			case Pine::EComponentType::ModelRenderer:
+				RenderHighlightBoundingBox( dynamic_cast< Pine::ModelRenderer* >( component ), camera );
+				return;
+			default:
+				break;
+			}
+		}
+	}
+
 }
 
 void Editor::Gui::Windows::RenderViewports( ) {
@@ -159,7 +210,8 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 			RenderingHandler::SetViewportSize( avSize.x, avSize.y );
 
-			ImVec2 cursorPos = ImGui::GetCursorScreenPos( );
+			const ImVec2 cursorPos = ImGui::GetCursorScreenPos( );
+
 			ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
 			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
@@ -167,11 +219,12 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 
 			HandleAssetViewportDrop( );
-			
+
+			auto cam = EditorEntity::GetCamera( );
+
 			if ( !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
 			{
 				auto e = Globals::SelectedEntityPtrs[ 0 ];
-				auto cam = EditorEntity::GetCamera( );
 
 				if ( cam != nullptr )
 				{
@@ -201,7 +254,16 @@ void Editor::Gui::Windows::RenderViewports( ) {
 						e->GetTransform( )->Rotation = ( glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] ) );
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}
+
+					RenderHighlight( e, cam, avSize );
 				}
+			}
+
+			for ( auto entity : Pine::EntityList::GetEntities(  ) ) {
+				if ( !entity->GetActive( ) )
+					continue;
+
+				RenderEntityIcon( entity, cam, cursorPos, avSize );
 			}
 		}
 
