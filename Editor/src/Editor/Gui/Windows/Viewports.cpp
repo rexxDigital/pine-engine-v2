@@ -112,7 +112,18 @@ namespace {
 
 	void RenderHighlightBoundingBox( Pine::ModelRenderer* modelRenderer, Pine::Camera* camera ) {
 
-		
+		auto model = modelRenderer->GetTargetModel( );
+
+		if ( !model )
+			return;
+
+		for ( auto mesh : model->GetMeshList(  ) )
+		{
+			auto mins = mesh->GetMins( );
+			auto maxs = mesh->GetMins( );
+
+			
+		}
 
 	}
 
@@ -141,7 +152,7 @@ namespace {
  
 		auto transform = entity->GetTransform( );
 		auto res = glm::project( transform->Position, camera->GetViewMatrix(  ), camera->GetProjectionMatrix( ) , glm::vec4( 0.f, 0.f, screenSize.x, screenSize.y ) );
-
+		
 		if ( renderIcon == 1 )
 			ImGui::GetForegroundDrawList( )->AddText( ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImColor( 255, 255, 255, 255 ), "Camera" );
 		else

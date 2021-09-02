@@ -175,6 +175,12 @@ int Pine::Assets::LoadFromDirectory( const std::string& directoryPath, bool read
 {
 	uint32_t loadedAssets = 0;
 
+	if ( !std::filesystem::exists( directoryPath ) )
+	{
+		Log::Error( "Failed to load assets from, " + directoryPath + ", directory does not exist." );
+		return 0;
+	}
+	
 	for ( const auto& dirEntry : std::filesystem::recursive_directory_iterator( directoryPath ) ) 
 	{
 		if ( dirEntry.is_directory( ) )

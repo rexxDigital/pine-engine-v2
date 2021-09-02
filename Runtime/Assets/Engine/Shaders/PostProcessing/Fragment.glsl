@@ -19,6 +19,4 @@ void main()
 {
 	//outputColor = vec4(1.f, 1.f, 1.f, 1.f);
     outputColor = texture(fragColor, uvCoords);
-	
-	outputColor *= 1.f;
 }

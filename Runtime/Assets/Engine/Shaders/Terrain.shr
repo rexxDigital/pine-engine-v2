@@ -1,0 +1,13 @@
+{
+	"VertexShader": "Terrain\\Vertex.glsl",
+	"FragmentShader": "Terrain\\Fragment.glsl",
+	"Samplers": {
+		"Diffuse": "materialSamplers.diffuse",
+		"Specular": "materialSamplers.specular",
+		"EnvMap": "envMap"
+	},
+	"UniformBuffers": {
+		"Matrices": "Matrices",
+		"Lights": "Lights"
+	}
+}

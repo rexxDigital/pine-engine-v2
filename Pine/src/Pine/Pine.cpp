@@ -93,14 +93,14 @@ bool Pine::Setup( )
 	Log::Message( "Loading engine shaders..." );
 
 	if ( Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
-		Log::Fatal( "Failed to load engine shaders." );
+		Log::Fatal( "Failed to load engine shaders, required engine files are missing from the executable directory." );
 		return false;
 	}
 
 	Log::Message( "Loading engine assets..." );
 
 	if ( Assets::LoadFromDirectory( "Assets\\Engine", true ) == 0 ) {
-		Log::Fatal( "Failed to load engine assets." );
+		Log::Fatal( "Failed to load engine assets, required engine files are missing from the executable directory." );
 		return false;
 	}
 

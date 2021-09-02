@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,21 +21,21 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{deb8facf-4e28-4a69-9222-0cb296ad5faf}</ProjectGuid>
-    <RootNamespace>Editor</RootNamespace>
+    <ProjectGuid>{ef49ef60-650d-4dd8-b059-b0b38445636d}</ProjectGuid>
+    <RootNamespace>Runtime</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -72,11 +72,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\matte\source\repos\pine-engine-v2\Libraries\include;C:\Users\matte\source\repos\pine-engine-v2\Pine\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\matte\source\repos\pine-engine-v2\Libraries\include;C:\Users\matte\source\repos\pine-engine-v2\Pine\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -88,11 +86,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -101,13 +98,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,12 +114,11 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,14 +127,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,66 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Application.cpp" />
-    <ClCompile Include="src\Editor\Editor.cpp" />
-    <ClCompile Include="src\Editor\EditorEntity\EditorEntity.cpp" />
-    <ClCompile Include="src\Editor\Gui\Gui.cpp" />
-    <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
-    <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp" />
-    <ClCompile Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.cpp" />
-    <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
-    <ClCompile Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.cpp" />
-    <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\LevelSettings.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
-    <ClCompile Include="src\Editor\Gui\Windows\Viewports.cpp" />
-    <ClCompile Include="src\Editor\PlayManager\PlayManager.cpp" />
-    <ClCompile Include="src\Editor\ProjectManager\ProjectManager.cpp" />
-    <ClCompile Include="src\Editor\RenderingHandler\RenderingHandler.cpp" />
-    <ClCompile Include="src\ImGuizmo\ImCurveEdit.cpp" />
-    <ClCompile Include="src\ImGuizmo\ImGradient.cpp" />
-    <ClCompile Include="src\ImGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="src\ImGuizmo\ImSequencer.cpp" />
+    <ClCompile Include="Runtime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pine\Pine.vcxproj">
       <Project>{e486519c-83fd-4dd0-8844-57cd7f63b01e}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Editor\Editor.hpp" />
-    <ClInclude Include="src\Editor\EditorEntity\EditorEntity.hpp" />
-    <ClInclude Include="src\Editor\Gui\Gui.hpp" />
-    <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
-    <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp" />
-    <ClInclude Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.hpp" />
-    <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
-    <ClInclude Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.hpp" />
-    <ClInclude Include="src\Editor\Gui\Widgets\Widgets.hpp" />
-    <ClInclude Include="src\Editor\Gui\Windows\Windows.hpp" />
-    <ClInclude Include="src\Editor\PlayManager\PlayManager.hpp" />
-    <ClInclude Include="src\Editor\ProjectManager\ProjectManager.hpp" />
-    <ClInclude Include="src\Editor\RenderingHandler\RenderingHandler.hpp" />
-    <ClInclude Include="src\ImGuizmo\ImCurveEdit.h" />
-    <ClInclude Include="src\ImGuizmo\ImGradient.h" />
-    <ClInclude Include="src\ImGuizmo\ImGuizmo.h" />
-    <ClInclude Include="src\ImGuizmo\ImSequencer.h" />
-    <ClInclude Include="src\ImGuizmo\ImZoomSlider.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Assets\Engine\Shaders\Default\Fragment.glsl" />
-    <None Include="Assets\Engine\Shaders\Default\Vertex.glsl" />
-    <None Include="Assets\Engine\Shaders\PostProcessing.shr" />
-    <None Include="Assets\Engine\Shaders\PostProcessing\Fragment.glsl" />
-    <None Include="Assets\Engine\Shaders\PostProcessing\Vertex.glsl" />
-    <None Include="Assets\Engine\Shaders\Skybox\Fragment.glsl" />
-    <None Include="Assets\Engine\Shaders\Skybox\Vertex.glsl" />
-    <None Include="Assets\Engine\Shaders\Terrain\Fragment.glsl" />
-    <None Include="Assets\Engine\Shaders\Terrain\Vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
