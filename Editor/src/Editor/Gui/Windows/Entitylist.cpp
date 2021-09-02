@@ -218,9 +218,15 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			Pine::Blueprint blueprint;
 
 			blueprint.CreateFromEntity( e );
-			blueprint.SpawnEntity( );
+
+			const auto newEntity = blueprint.SpawnEntity( );
 
 			blueprint.Dispose( );
+
+			// We'll have to manually assign the parent as the blueprint won't be able to do that, as it wouldn't make any sense.
+			if ( e->GetParent(  ) != nullptr ) {
+				e->GetParent( )->AddChild( newEntity );
+			}
 		}
 	}
 
