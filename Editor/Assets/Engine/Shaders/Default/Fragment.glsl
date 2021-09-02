@@ -45,7 +45,7 @@ vec3 CalculateBaseLightning( vec3 lightDirection, int lightNr ) {
 	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
 	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
 
-	vec3 ambient = ( ( lights[ lightNr ].color * material.ambientColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz );
+	vec3 ambient = ( ( lights[ lightNr ].color * ( material.diffuseColor * material.ambientColor ) ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz );
 	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
 	vec3 specular = ( material.specularColor * dampedFactor * lights[ lightNr ].color ) * texture( materialSamplers.specular, uv ).xyz;
 
