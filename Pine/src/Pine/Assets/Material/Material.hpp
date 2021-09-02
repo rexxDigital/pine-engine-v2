@@ -19,6 +19,7 @@ namespace Pine
 
 		Texture2D* m_Diffuse = nullptr;
 		Texture2D* m_Specular = nullptr;
+		Texture2D* m_Normal = nullptr;
 
 		Shader* m_Shader = nullptr;
 
@@ -34,9 +35,11 @@ namespace Pine
 		
 		Texture2D* GetDiffuse() const;
 		Texture2D* GetSpecular() const;
+		Texture2D* GetNormal() const;
 
 		void SetDiffuse(Texture2D* texture);
 		void SetSpecular(Texture2D* texture);
+		void SetNormal(Texture2D* texture);
 
 		float GetTextureScale( ) const;
 		void SetTextureScale( float scale );

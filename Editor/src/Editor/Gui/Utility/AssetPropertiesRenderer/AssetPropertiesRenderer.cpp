@@ -66,6 +66,11 @@ namespace {
 			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( specularAssetRet.asset ) );
 		}
 
+		auto normalMapAssetRet = Editor::Gui::Widgets::AssetPicker( "Normal Map", mat->GetNormal( ), true, Pine::EAssetType::Texture2D );
+		if ( specularAssetRet.valid ) {
+			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( specularAssetRet.asset ) );
+		}
+		
 		if ( Editor::Gui::Widgets::ColorPicker( "Diffuse Color", mat->DiffuseColor( ) ) )
 			mat->SetUpdated( true );
 

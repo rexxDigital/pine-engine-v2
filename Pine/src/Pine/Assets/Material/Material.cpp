@@ -28,6 +28,11 @@ Pine::Texture2D* Pine::Material::GetSpecular( ) const {
 	return m_Specular;
 }
 
+Pine::Texture2D* Pine::Material::GetNormal( ) const
+{
+	return m_Normal;
+}
+
 void Pine::Material::SetDiffuse( Texture2D* texture ) {
 	m_Diffuse = texture;
 	m_Updated = true;
@@ -36,6 +41,11 @@ void Pine::Material::SetDiffuse( Texture2D* texture ) {
 void Pine::Material::SetSpecular( Texture2D* texture ) {
 	m_Specular = texture;
 	m_Updated = true;
+}
+
+void Pine::Material::SetNormal( Texture2D* texture )
+{
+	m_Normal = texture;
 }
 
 float Pine::Material::GetTextureScale( ) const
@@ -94,6 +104,7 @@ bool Pine::Material::LoadFromFile( ) {
 
 		m_Diffuse = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "diffuse" ) );
 		m_Specular = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "specularMap" ) );
+		m_Normal = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "normalMap" ) );
 
 		// Fall back to default shader if shit goes wrong
 		if ( m_Shader == nullptr )
@@ -124,7 +135,8 @@ bool Pine::Material::SaveToFile( ) {
 
 	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );
 	Serialization::SaveAsset( j[ "specularMap" ], m_Specular );
-
+	Serialization::SaveAsset( j[ "normal" ], m_Specular );
+	
 	Serialization::SaveAsset( j[ "shader" ], m_Shader );
 
 	std::ofstream stream( m_FilePath );

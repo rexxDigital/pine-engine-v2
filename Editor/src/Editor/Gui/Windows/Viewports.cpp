@@ -266,7 +266,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}
 
-					RenderHighlight( e, cam, avSize );
+			//		RenderHighlight( e, cam, avSize );
 				}
 			}
 
@@ -274,7 +274,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 				if ( !entity->GetActive( ) )
 					continue;
 
-				RenderEntityIcon( entity, cam, cursorPos, avSize );
+			//	RenderEntityIcon( entity, cam, cursorPos, avSize );
 			}
 		}
 
