@@ -1,15 +1,15 @@
 #pragma once
 
-typedef void (*GuiRenderCallback)();
+typedef void ( *GuiRenderCallback )( );
 
 
 namespace Pine::Gui {
 
-	void SetGuiRenderCallback(GuiRenderCallback callback);
+	void SetGuiRenderCallback( GuiRenderCallback callback );
 
-	void Setup();
-	void Dispose();
-	void Render();
+	void Setup( );
+	void Dispose( );
+	void Render( );
 
 
 }

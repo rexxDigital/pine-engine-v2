@@ -1,7 +1,0 @@
-{
-	"VertexShader": "Skybox\\Vertex.txt",
-	"FragmentShader": "Skybox\\Fragment.txt",
-	"UniformBuffers": {
-		"Matrices": "Matrices"
-	}
-}

@@ -27,7 +27,7 @@ void Pine::PostProcessing::Setup( )
 	
 	// Setup rendering frame buffer
 	g_PostProcessingBuffer = new Pine::FrameBuffer;
-	g_PostProcessingBuffer->Create( 1600, 900, false );
+	g_PostProcessingBuffer->Create( 1280, 720, false );
 
 	// Setup the quad vertex array
 	g_ScreenQuad = new Pine::VertexArray;

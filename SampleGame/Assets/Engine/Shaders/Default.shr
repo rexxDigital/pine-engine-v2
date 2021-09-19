@@ -1,0 +1,14 @@
+{
+	"VertexShader": "Default\\Vertex.glsl",
+	"FragmentShader": "Default\\Fragment.glsl",
+	"Samplers": {
+		"Diffuse": "materialSamplers.diffuse",
+		"Specular": "materialSamplers.specular",
+		"EnvMap": "envMap"
+	},
+	"UniformBuffers": {
+		"Matrices": "Matrices",
+		"Lights": "Lights",
+		"Material":  "Material"
+	}
+}

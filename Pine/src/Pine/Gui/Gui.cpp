@@ -114,8 +114,8 @@ void Pine::Gui::Setup( ) {
 
 	ImGuiIO& io = ImGui::GetIO( );
 
-	ImGui::StyleColorsDark( );
 	SetupGuiStyle( );
+	ImGui::StyleColorsLight( );
 
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
