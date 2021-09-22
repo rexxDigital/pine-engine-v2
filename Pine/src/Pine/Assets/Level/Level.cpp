@@ -23,7 +23,7 @@ void Pine::Level::DisposeBlueprints( )
 	m_Blueprints.clear( );
 }
 
-Pine::Blueprint* Pine::Level::CreateBlueprintOfEntity( Pine::Entity* entity )
+Pine::Blueprint* Pine::Level::CreateBlueprintOfEntity( const Pine::Entity* entity )
 {
 	if ( !entity )
 	{
@@ -62,20 +62,20 @@ void Pine::Level::CreateFromCurrentLevel( )
 	DisposeBlueprints( );
 
 	// Create a blueprint for each entity
-	for ( auto entity : entities )
+	for ( auto& entity : entities )
 	{
 		// Ignore temporary entities such as editor entities.
-		if ( entity->IsTemporary( ) )
+		if ( entity.IsTemporary( ) )
 			continue;
 
 		// Ignore children as we write them separately later.
-		if ( entity->GetParent( ) != nullptr )
+		if ( entity.GetParent( ) != nullptr )
 			continue;
 
-		if ( currentCameraEntity == entity )
+		if ( currentCameraEntity == &entity )
 			m_LevelSettings->m_CameraEntity = currentId;
 
-		m_Blueprints.push_back( CreateBlueprintOfEntity( entity ) );
+		m_Blueprints.push_back( CreateBlueprintOfEntity( &entity ) );
 
 		currentId++;
 	}

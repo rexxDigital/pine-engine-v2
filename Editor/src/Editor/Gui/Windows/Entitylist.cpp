@@ -174,15 +174,15 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		entityRenderIndex++;
 		
 		// Since we render children for each parent entity instead.
-		if ( entity->GetParent( ) != nullptr ) {
+		if ( entity.GetParent( ) != nullptr ) {
 			continue;
 		}
 
-		if ( entity == EditorEntity::GetEntity( ) ) {
+		if ( &entity == EditorEntity::GetEntity( ) ) {
 			continue;
 		}
 
-		RenderEntity( entity );
+		RenderEntity( &entity );
 
 		if ( isDragDroppingEntity )
 			EntityMoveSeparator( entityRenderIndex );

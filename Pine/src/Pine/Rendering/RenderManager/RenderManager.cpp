@@ -72,11 +72,11 @@ void Pine::RenderManager::Run( ) {
 
 	// Better to keep this on the stack, since we want it empty the next frame anyway.
 	// Also quicker! UPDATE: Why am I writing this useless nonsense?
-	std::unordered_map<Pine::Model*, std::vector<Pine::Entity*>> renderBatch;
+	std::unordered_map<Pine::Model*, std::vector<const Pine::Entity*>> renderBatch;
 	std::vector<Pine::Light*> lights;
 	std::vector<Pine::TerrainRenderer*> terrainRenderers;
 
-	auto processEntity = [ & ] ( Pine::Entity* entity ) {
+	auto processEntity = [ & ] ( const Pine::Entity* entity ) {
 		for ( auto& component : entity->GetComponents( ) ) {
 			if ( !component->GetActive( ) ) {
 				continue;
@@ -104,14 +104,14 @@ void Pine::RenderManager::Run( ) {
 	Timer entitySortTimer;
 
 	for ( auto& entity : EntityList::GetEntities( ) ) {
-		if ( !entity->GetActive( ) ) {
+		if ( !entity.GetActive( ) ) {
 			continue;
 		}
 
-		for ( auto child : entity->GetChildren( ) )
+		for ( auto child : entity.GetChildren( ) )
 			processEntity( child );
 
-		processEntity( entity );
+		processEntity( &entity );
 	}
 
 	entitySortTimer.Stop( );

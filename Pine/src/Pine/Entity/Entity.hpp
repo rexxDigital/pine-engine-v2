@@ -13,8 +13,8 @@ namespace Pine
 	private:
 		bool m_Active = true;
 
-		// Temporary might be a bad name, used for ie editor entities.
-		// stuff that won't get saved by levels etc.
+		// Temporary might be a bad name, used for example editor entities.
+		// So stuff that won't get saved by levels etc.
 		bool m_IsTemporary = false;
 
 		uint64_t m_Id = 0;
@@ -51,7 +51,7 @@ namespace Pine
 		T* GetComponent( )
 		{
 			for ( auto component : m_Components ) {
-				if ( typeid( T ) == typeid( *component ) ) {
+				if ( typeid( T ) == typeid( *component ) ) { // god bless RTTI
 					return reinterpret_cast< T* >( component );
 				}
 			}

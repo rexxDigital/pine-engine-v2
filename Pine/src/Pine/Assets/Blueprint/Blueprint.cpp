@@ -130,7 +130,7 @@ Pine::Blueprint::Blueprint( )
 	m_Type = EAssetType::Blueprint;
 }
 
-void Pine::Blueprint::CreateFromEntity( Pine::Entity* entity )
+void Pine::Blueprint::CreateFromEntity( const Pine::Entity* entity )
 {
 	delete m_Entity;
 

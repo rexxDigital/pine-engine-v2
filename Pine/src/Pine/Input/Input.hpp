@@ -60,7 +60,7 @@ namespace Pine::Input {
 	int BindingCount( );
 	InputBinding* GetBindingById( int i );
 
-	// Please, don't call each frame, call once and store it. It won't get removed, if you don't do it yourself!
+	// Please don't call each frame, call once and store it. It won't get removed, if you don't do it yourself!
 	InputBinding* FindBinding( const std::string& name );
 
 	// Called internally by the engine

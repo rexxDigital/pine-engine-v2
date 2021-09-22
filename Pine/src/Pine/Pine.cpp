@@ -112,6 +112,7 @@ bool Pine::Setup( )
 	RenderManager::Setup( );
 	PostProcessing::Setup( );
 	ScriptingManager::Setup( );
+	EntityList::Setup( );
 
 	Components::Internal::RegisterPineComponents( );
 

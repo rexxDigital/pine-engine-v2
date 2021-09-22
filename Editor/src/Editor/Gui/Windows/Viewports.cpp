@@ -271,7 +271,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			}
 
 			for ( auto entity : Pine::EntityList::GetEntities(  ) ) {
-				if ( !entity->GetActive( ) )
+				if ( !entity.GetActive( ) )
 					continue;
 
 			//	RenderEntityIcon( entity, cam, cursorPos, avSize );

@@ -4,6 +4,16 @@
 #include "TerrainRenderer/TerrainRenderer.hpp"
 
 namespace {
+
+	struct Component_t
+	{
+		Pine::IComponent* m_Component;
+		std::string m_Name;
+		void* m_Data = nullptr;
+		int m_DataSize = 0;
+		int m_DataPointer = 0;
+	};
+
 	std::vector<Pine::IComponent*> g_Components;
 	std::vector<std::string> g_ComponentNames;
 }

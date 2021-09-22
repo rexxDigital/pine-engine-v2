@@ -18,7 +18,7 @@ namespace Pine
 		std::vector<Blueprint*> m_Blueprints;
 
 		void DisposeBlueprints( );
-		Blueprint* CreateBlueprintOfEntity( Pine::Entity* entity );
+		Blueprint* CreateBlueprintOfEntity( const Pine::Entity* entity );
 
 		LevelSettings* m_LevelSettings = nullptr;
 	public:

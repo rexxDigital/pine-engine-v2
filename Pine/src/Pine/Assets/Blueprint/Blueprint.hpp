@@ -19,7 +19,7 @@ namespace Pine
 	public:
 		Blueprint( );
 		
-		void CreateFromEntity( Pine::Entity* entity );
+		void CreateFromEntity( const Pine::Entity* entity );
 
 		Pine::Entity* SpawnEntity( ) const;
 		bool HasValidEntity( ) const;
