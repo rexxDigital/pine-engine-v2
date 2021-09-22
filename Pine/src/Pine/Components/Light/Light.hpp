@@ -32,7 +32,6 @@ namespace Pine {
 
 		void SaveToJson( nlohmann::json& j ) override;
 		void LoadFromJson( nlohmann::json& j ) override;
-		IComponent* Clone( ) override;
 	};
 
 }

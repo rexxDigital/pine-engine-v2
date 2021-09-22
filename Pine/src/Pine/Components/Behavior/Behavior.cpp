@@ -70,15 +70,6 @@ void Pine::Behavior::OnDestroy( )
 		m_ScriptObject->Release( );
 }
 
-Pine::IComponent* Pine::Behavior::Clone( )
-{
-	auto behavior = new Behavior;
-
-	behavior->SetScriptFile( m_ScriptFile );
-
-	return behavior;
-}
-
 void Pine::Behavior::SaveToJson( nlohmann::json& j )
 {
 	j[ "scriptFile" ] = m_ScriptFile;

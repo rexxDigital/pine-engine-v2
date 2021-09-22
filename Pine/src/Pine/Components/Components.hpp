@@ -10,18 +10,19 @@
 // To query stuff about components
 namespace Pine::Components
 {
-	int GetComponentCount( );
+	void Setup( );
+	void Dispose( );
 
 	const char* GetComponentName( EComponentType type );
+	int GetComponentCount( );
+
 	IComponent* CreateComponent( EComponentType type );
+	bool DeleteComponent( IComponent* component );
 
 	namespace Internal
 	{
-		// Register all the "out of the box" components, such as transform, model renderer etc.
-		void RegisterPineComponents( );
-
 		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.
-		void RegisterComponent( IComponent* component, const std::string& str );	
+		void RegisterComponent( IComponent* component, const size_t componentSize, const std::string& str );	
 	}
 
 }

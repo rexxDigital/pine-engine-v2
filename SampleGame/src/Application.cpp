@@ -21,13 +21,13 @@ bool InitializeGame( )
 	// Setup our player
 	const auto playerEntity = Pine::EntityList::CreateEntity( "Player" );
 
-	playerEntity->AddComponent( new Pine::Camera( ) );
+	playerEntity->AddComponent( Pine::EComponentType::Camera );
 	playerEntity->AddComponent( new PlayerController( ) );
 
 	// Setup our terrain
 	const auto groundEntity = Pine::EntityList::CreateEntity( "Ground" );
 
-	groundEntity->AddComponent( new Pine::ModelRenderer );
+	groundEntity->AddComponent( Pine::EComponentType::ModelRenderer );
 	groundEntity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( Pine::Assets::GetAsset<Pine::Model>( "Assets\\Game\\cube.fbx" ) );
 
 	Pine::RenderManager::GetRenderingContext( )->m_Camera = playerEntity->GetComponent<Pine::Camera>( );

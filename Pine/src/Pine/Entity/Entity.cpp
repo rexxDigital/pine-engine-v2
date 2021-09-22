@@ -1,11 +1,12 @@
 #include "Entity.hpp"
 
 #include "../Entitylist/EntityList.hpp"
+#include "../Components/Components.hpp"
 
 Pine::Entity::Entity( uint64_t id )
 {
 	m_Id = id;
-	AddComponent( new Transform( ) );
+	AddComponent( EComponentType::Transform );
 }
 
 Pine::Entity::Entity( uint64_t id, bool empty )
@@ -14,7 +15,7 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 	if ( !empty )
 	{
-		AddComponent( new Transform( ) );
+		AddComponent( EComponentType::Transform );
 	}
 }
 
@@ -76,7 +77,7 @@ void Pine::Entity::SetEntityIndex( uint64_t indx ) {
 }
 
 Pine::Transform* Pine::Entity::GetTransform( ) const {
-	return reinterpret_cast< Transform* >( m_Components[ 0 ] );
+	return reinterpret_cast<Transform*>( m_Components[ 0 ] );
 }
 
 const std::vector<Pine::IComponent*>& Pine::Entity::GetComponents( ) const {
@@ -117,7 +118,7 @@ Pine::Entity* Pine::Entity::CreateChild( bool createEntity )
 void Pine::Entity::AddChild( Entity* entity )
 {
 	entity->SetParent( this );
-	
+
 	m_Children.push_back( entity );
 }
 
@@ -145,7 +146,12 @@ void Pine::Entity::DeleteChildren( )
 	m_Children.clear( );
 }
 
-void Pine::Entity::AddComponent( IComponent* component ) {
+void Pine::Entity::AddComponent( EComponentType type )
+{
+	RegisterComponent( Components::CreateComponent( type ) );
+}
+
+void Pine::Entity::RegisterComponent( IComponent* component ) {
 	component->SetParent( this );
 	component->OnCreated( );
 

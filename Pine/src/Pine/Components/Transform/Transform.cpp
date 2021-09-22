@@ -28,13 +28,13 @@ void Pine::Transform::BuildTransformationMatrix( ) {
 
 	glm::vec3 pos( 0.f );
 
-	if ( GetParent(  )->GetParent(  ) != nullptr )
+	if ( GetParent( )->GetParent( ) != nullptr )
 	{
 		pos = GetParent( )->GetParent( )->GetTransform( )->Position;
 	}
 
 	pos += Position;
-	
+
 	m_TransformationMatrix = glm::translate( m_TransformationMatrix, pos );
 
 	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.x ), glm::vec3( 1.f, 0.f, 0.f ) );
@@ -56,9 +56,9 @@ void Pine::Transform::OnUpdate( float deltaTime ) {
 
 void Pine::Transform::OnRender( ) {
 	// FIXME: This is really ugly code...
-	float posLength = Position.x + Position.y + Position.z;
-	float rotLength = Rotation.x + Rotation.y + Rotation.z;
-	float sclLength = Scale.x + Scale.y + Scale.z;
+	const float posLength = Position.x + Position.y + Position.z;
+	const float rotLength = Rotation.x + Rotation.y + Rotation.z;
+	const float sclLength = Scale.x + Scale.y + Scale.z;
 
 	bool update = false;
 
@@ -85,17 +85,6 @@ void Pine::Transform::OnRender( ) {
 
 	BuildTransformationMatrix( );
 	BuildDirections( );
-}
-
-Pine::IComponent* Pine::Transform::Clone( )
-{
-	auto transform = new Pine::Transform( );
-
-	transform->Position = Position;
-	transform->Rotation = Rotation;
-	transform->Scale = Scale;
-
-	return transform;
 }
 
 void Pine::Transform::SaveToJson( nlohmann::json& j )

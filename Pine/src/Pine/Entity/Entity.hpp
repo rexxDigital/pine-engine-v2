@@ -59,7 +59,8 @@ namespace Pine
 			return nullptr;
 		}
 
-		void AddComponent( IComponent* component );
+		void AddComponent( EComponentType type );
+		void RegisterComponent( IComponent* component );
 
 		bool RemoveComponent( IComponent* component );
 		bool RemoveComponent( int index );

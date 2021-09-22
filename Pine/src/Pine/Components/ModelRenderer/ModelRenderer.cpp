@@ -40,13 +40,3 @@ void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )
 {
 	m_TargetModel = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
 }
-
-Pine::IComponent* Pine::ModelRenderer::Clone( )
-{
-	auto ret = new Pine::ModelRenderer( );
-
-	ret->SetTargetModel( m_TargetModel );
-	
-	return ret;
-}
-

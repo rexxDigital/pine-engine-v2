@@ -112,9 +112,8 @@ bool Pine::Setup( )
 	RenderManager::Setup( );
 	PostProcessing::Setup( );
 	ScriptingManager::Setup( );
+	Components::Setup( );
 	EntityList::Setup( );
-
-	Components::Internal::RegisterPineComponents( );
 
 	Skybox::SetSkyboxCubemap( Assets::GetAsset<Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
 
@@ -166,6 +165,7 @@ void Pine::Terminate( )
 	Skybox::Dispose( );
 	PostProcessing::Dispose( );
 	ScriptingManager::Dispose( );
+	Components::Dispose( );
 
 	Window::Internal::Destroy( );
 }

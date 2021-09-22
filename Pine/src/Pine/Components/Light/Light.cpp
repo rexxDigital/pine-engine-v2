@@ -51,13 +51,3 @@ void Pine::Light::LoadFromJson( nlohmann::json& j )
 	m_LightType = static_cast< Pine::ELightType >( j[ "light_type" ].get<int>( ) );
 }
 
-Pine::IComponent* Pine::Light::Clone( )
-{
-	auto ret = new Pine::Light( );
-
-	ret->SetLightColor( m_LightColor );
-	ret->SetLightType( m_LightType );
-
-	return ret;
-}
-

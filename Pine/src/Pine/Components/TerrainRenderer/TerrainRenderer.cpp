@@ -35,11 +35,3 @@ void Pine::TerrainRenderer::LoadFromJson( nlohmann::json& j )
 	m_Terrain = dynamic_cast<Pine::Terrain*>( Serialization::LoadAsset( j, "terrain" ) );
 }
 
-Pine::IComponent* Pine::TerrainRenderer::Clone( )
-{
-	auto terrainRenderer = new Pine::TerrainRenderer;
-
-	terrainRenderer->SetTerrain( m_Terrain );
-
-	return terrainRenderer;
-}

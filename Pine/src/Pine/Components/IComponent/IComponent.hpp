@@ -54,8 +54,6 @@ namespace Pine
 
 		virtual void OnCreated( );
 
-		virtual IComponent* Clone( ) = 0;
-
 		virtual void LoadFromJson( nlohmann::json& j );
 		virtual void SaveToJson( nlohmann::json& j );
 	};

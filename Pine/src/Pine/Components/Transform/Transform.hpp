@@ -28,7 +28,6 @@ namespace Pine
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
 		void OnRender( ) override;
-		IComponent* Clone( ) override;
 
 		void SaveToJson( nlohmann::json& j ) override;
 		void LoadFromJson( nlohmann::json& j ) override;

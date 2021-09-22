@@ -100,13 +100,3 @@ void Pine::Camera::LoadFromJson( nlohmann::json& j ) {
 	m_FarPlane = j[ "far_plane" ];
 	m_FieldOfView = j[ "fov" ];
 }
-
-Pine::IComponent* Pine::Camera::Clone( ) {
-	auto ret = new Pine::Camera( );
-
-	ret->SetFieldOfView( m_FieldOfView );
-	ret->SetNearPlane( m_NearPlane );
-	ret->SetFarPlane( m_FarPlane );
-
-	return ret;
-}

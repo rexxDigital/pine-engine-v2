@@ -88,7 +88,7 @@ namespace
 
 			component->LoadFromJson( componentJson );
 
-			e->AddComponent( component );
+			e->RegisterComponent( component );
 		}
 
 		// Load children
