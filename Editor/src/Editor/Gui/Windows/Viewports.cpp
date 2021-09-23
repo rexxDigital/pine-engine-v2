@@ -66,7 +66,7 @@ namespace {
 			ImGui::Spacing( );
 
 			const bool isPlaying = Editor::PlayManager::IsPlaying( );
-			if ( ImGui::MenuItem( isPlaying ? "STOP" : "START", nullptr ) )
+			if ( ImGui::MenuItem( isPlaying ? "Stop" : "Start", nullptr ) )
 			{
 				if ( isPlaying )
 				{

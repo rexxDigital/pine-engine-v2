@@ -25,7 +25,7 @@ namespace {
 	Pine::Texture2D* g_DefaultTexture = nullptr;
 
 	// Some optimizations for OpenGL's current texture.
-	int g_CurrentBoundTexture[ 32 ] = { };
+	uint32_t g_CurrentBoundTexture[ 32 ] = { };
 
 	// TODO: When this engine gets a little bit more advanced, we should get the nearest cube map
 	// or something for this function. Time will tell.
@@ -64,7 +64,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 		return;
 
 	// Diffuse texture
-	Texture2D* diffuseTexture = g_DefaultTexture;
+	const Texture2D* diffuseTexture = g_DefaultTexture;
 	if ( material->GetDiffuse( ) != nullptr ) {
 		diffuseTexture = material->GetDiffuse( );
 	}
@@ -105,7 +105,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	}
 
 	// Apply material data
-	auto materialDataBuffer = UniformBuffers::GetMaterialBufferData( );
+	const auto materialDataBuffer = UniformBuffers::GetMaterialBufferData( );
 
 	materialDataBuffer->diffuseColor = material->DiffuseColor( );
 	materialDataBuffer->specularColor = material->SpecularColor( );
