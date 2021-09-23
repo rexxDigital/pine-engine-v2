@@ -14,7 +14,7 @@ namespace Pine
 
 		Pine::Entity* m_Entity = nullptr;
 
-		void CopyEntity( Pine::Entity* target, const Pine::Entity* entity, bool createChild ) const;
+		void CopyEntity( Pine::Entity* target, const Pine::Entity* entity, bool createInstance ) const;
 
 	public:
 		Blueprint( );

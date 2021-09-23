@@ -21,6 +21,16 @@ void Pine::IComponent::SetActive( bool value ) {
 	m_Active = value;
 }
 
+const bool Pine::IComponent::GetStandalone( ) const
+{
+	return m_Standalone;
+}
+
+void Pine::IComponent::SetStandalone( bool value )
+{
+	m_Standalone = value;
+}
+
 void Pine::IComponent::OnRender( ) {
 
 }

@@ -10,6 +10,7 @@
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/ModelRenderer/ModelRenderer.hpp"
 #include "../../Components/TerrainRenderer/TerrainRenderer.hpp"
+#include "../../Components/Components.hpp"
 
 #include <fstream>
 
@@ -17,31 +18,14 @@ namespace
 {
 	Pine::IComponent* CreateComponentFromType( Pine::EComponentType type )
 	{
-		switch ( type )
-		{
-		case Pine::EComponentType::Transform:
-			return new Pine::Transform( );
-		case Pine::EComponentType::ModelRenderer:
-			return new Pine::ModelRenderer( );
-		case Pine::EComponentType::Camera:
-			return new Pine::Camera( );
-		case Pine::EComponentType::Light:
-			return new Pine::Light( );
-		case Pine::EComponentType::Behavior:
-			return new Pine::Behavior( );
-		case Pine::EComponentType::TerrainRenderer:
-			return new Pine::TerrainRenderer( );
-		default: break;
-		}
-
 		return nullptr;
 	}
-	
+
 	void SaveEntityJson( nlohmann::json& j, Pine::Entity* e )
 	{
 		j[ "name" ] = e->GetName( );
 		j[ "active" ] = e->GetActive( );
-		
+
 		// Save components
 		int componentId = 0;
 		for ( auto component : e->GetComponents( ) )
@@ -49,24 +33,24 @@ namespace
 			nlohmann::json componentJson;
 
 			componentJson[ "type" ] = static_cast< int >( component->GetType( ) );
-			
+
 			component->SaveToJson( componentJson );
 
 			j[ "components" ].push_back( componentJson );
-			
+
 			componentId++;
 		}
 
 		// Save children
 		int childrenId = 0;
-		for ( auto child : e->GetChildren(  ) )
+		for ( auto child : e->GetChildren( ) )
 		{
 			nlohmann::json childJson;
-			
+
 			SaveEntityJson( childJson, child );
 
 			j[ "children" ].push_back( childJson );
-			
+
 			childrenId++;
 		}
 	}
@@ -75,11 +59,11 @@ namespace
 	{
 		e->SetName( j[ "name" ] );
 		e->SetActive( j[ "active" ] );
-		
+
 		// Load components
 		for ( auto componentJson : j[ "components" ] )
 		{
-			auto component = CreateComponentFromType( static_cast< Pine::EComponentType >( componentJson[ "type" ] ) );
+			const auto component = Pine::Components::CreateComponent( static_cast< Pine::EComponentType >( componentJson[ "type" ] ), true );
 			if ( component == nullptr )
 			{
 				Pine::Log::Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
@@ -105,7 +89,7 @@ namespace
 
 }
 
-void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* entity, bool createChild ) const
+void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* entity, bool createInstance ) const
 {
 	target->SetName( entity->GetName( ) );
 	target->SetActive( entity->GetActive( ) );
@@ -113,15 +97,15 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 	// Copy components
 	for ( auto component : entity->GetComponents( ) )
 	{
-		target->AddComponent( component->Clone( ) );
+		target->RegisterComponent( Components::CopyComponent( component, !createInstance ) );
 	}
 
 	// Copy children
 	for ( auto child : entity->GetChildren( ) )
 	{
-		const auto newChild = target->CreateChild( createChild );
+		const auto newChild = target->CreateChild( createInstance );
 
-		CopyEntity( newChild, child, createChild );
+		CopyEntity( newChild, child, createInstance );
 	}
 }
 
@@ -149,17 +133,17 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 	Entity* newEntity = Pine::EntityList::CreateEntity( );
 
 	newEntity->ClearComponents( );
-	
+
 	CopyEntity( newEntity, m_Entity, true );
 
-	for ( auto component : newEntity->GetComponents(  ) )
+	for ( auto component : newEntity->GetComponents( ) )
 	{
-		if ( component->GetType(  ) == Pine::EComponentType::Behavior )
+		if ( component->GetType( ) == Pine::EComponentType::Behavior )
 		{
 			dynamic_cast< Pine::Behavior* >( component )->LoadScriptFile( );
 		}
 	}
-	
+
 	return newEntity;
 }
 
@@ -197,7 +181,7 @@ bool Pine::Blueprint::LoadFromFile( )
 		delete m_Entity;
 
 		m_Entity = new Entity( 0, true );
-		
+
 		LoadEntityJson( m_Entity, j );
 
 	}
@@ -225,7 +209,7 @@ bool Pine::Blueprint::SaveToFile( )
 	stream << j;
 
 	stream.close( );
-	
+
 	return true;
 }
 

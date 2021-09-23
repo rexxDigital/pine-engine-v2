@@ -33,6 +33,7 @@ namespace Pine
 	{
 	protected:
 		bool m_Active = true;
+		bool m_Standalone = true;
 
 		EComponentType m_ComponentType = EComponentType::Invalid;
 		Pine::Entity* m_Parent = nullptr;
@@ -46,6 +47,9 @@ namespace Pine
 
 		const bool GetActive( ) const;
 		void SetActive( bool value );
+
+		const bool GetStandalone( ) const;
+		void SetStandalone( bool value );
 
 		virtual void OnSetup( ) = 0;
 		virtual void OnUpdate( float deltaTime ) = 0;

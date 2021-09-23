@@ -21,9 +21,16 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 Pine::Entity::~Entity( )
 {
-	for ( auto component : m_Components ) {
-		component->OnDestroy( );
-		delete component;
+	for ( auto component : m_Components ) 
+	{
+		if ( component->GetStandalone(  ) )
+		{
+			free( component );
+		}
+		else
+		{
+			Components::DeleteComponent( component );
+		}
 	}
 
 	// TODO: How are we going to handle this? Remove children?
@@ -165,6 +172,9 @@ bool Pine::Entity::RemoveComponent( IComponent* component )
 	{
 		if ( comp == component )
 		{
+			if ( !component->GetStandalone( ) )
+				Components::DeleteComponent( component );
+
 			m_Components.erase( m_Components.begin( ) + i );
 			return true;
 		}

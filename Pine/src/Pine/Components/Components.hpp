@@ -16,8 +16,10 @@ namespace Pine::Components
 	const char* GetComponentName( EComponentType type );
 	int GetComponentCount( );
 
-	IComponent* CreateComponent( EComponentType type );
+	IComponent* CreateComponent( EComponentType type, bool standalone = false );
 	bool DeleteComponent( IComponent* component );
+
+	IComponent* CopyComponent( const IComponent* component, bool standalone );
 
 	namespace Internal
 	{

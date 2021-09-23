@@ -121,7 +121,7 @@ const char* Pine::Components::GetComponentName( EComponentType type ) {
 	return g_Components[ static_cast<int>( type ) ].m_Name.c_str( );
 }
 
-Pine::IComponent* Pine::Components::CreateComponent( EComponentType type ) {
+Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool standalone ) {
 
 	Component_t* comp = nullptr;
 
@@ -139,6 +139,15 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type ) {
 
 	if ( !comp )
 		return nullptr;
+
+	if ( standalone )
+	{
+		const auto component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
+
+		memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
+
+		return component;
+	}
 
 	const int slot = FindAvailableDataSlot( comp );
 
@@ -193,12 +202,58 @@ bool Pine::Components::DeleteComponent( IComponent* inputComponent )
 	return false;
 }
 
+Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* inputComponent, bool standalone )
+{
+	Component_t* comp = nullptr;
+
+	for ( auto& component : g_Components )
+	{
+		if ( !component.m_Component )
+			continue;
+
+		if ( component.m_Component->GetType( ) == inputComponent->GetType( ) )
+		{
+			comp = &component;
+			break;
+		}
+	}
+
+	if ( !comp )
+		return nullptr;
+
+	IComponent* component = nullptr;
+
+	if ( standalone )
+	{
+		component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
+	}
+	else
+	{
+		const int slot = FindAvailableDataSlot( comp );
+
+		if ( slot == -1 ) // TODO: Resize vector or something
+		{
+			Pine::Log::Warning( "Failed to find available slot for component!" );
+			return nullptr;
+		}
+
+		// How do you do this properly?
+		component = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+	}
+
+	memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
+
+	return component;
+}
+
 void Pine::Components::Internal::RegisterComponent( IComponent* component, const size_t componentSize, const std::string& str ) {
 	Component_t comp;
 
 	comp.m_Component = component;
 	comp.m_Name = str;
 	comp.m_ComponentSize = componentSize;
+
+	component->SetStandalone( false );
 
 	ResizeData( &comp, componentSize, 128 ); // By default make space for 128 components
 
