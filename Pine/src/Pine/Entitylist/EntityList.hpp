@@ -17,6 +17,7 @@ namespace Pine::EntityList {
 	void RunOnSetup( );
 	void RunOnUpdate( float deltaTime );
 
-	std::vector<Entity>& GetEntities( );
+	const std::vector<Entity>& GetEntities( );
+	Entity* GetEntity( const int index );
 	
 }

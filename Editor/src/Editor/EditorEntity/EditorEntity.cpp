@@ -96,7 +96,6 @@ void Editor::EditorEntity::Create( )
 	g_EditorEntity->SetTemporary( true );
 	g_EditorEntity->SetName( "Editor Entity" );
 
-
 	g_EditorEntity->AddComponent( Pine::EComponentType::Camera );
 	g_EditorEntity->RegisterComponent( new EditorEntityScript( ) ); // this sucks.
 

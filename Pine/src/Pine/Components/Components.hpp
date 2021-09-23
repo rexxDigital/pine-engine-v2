@@ -24,7 +24,9 @@ namespace Pine::Components
 	namespace Internal
 	{
 		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.
-		void RegisterComponent( IComponent* component, const size_t componentSize, const std::string& str );	
+		void RegisterComponent( IComponent* component, const size_t componentSize, const char* str );
+
+		void ShowDebugUI( );
 	}
 
 }

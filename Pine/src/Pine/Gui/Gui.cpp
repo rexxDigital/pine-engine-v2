@@ -9,6 +9,7 @@
 #include <GLFW\glfw3.h>
 
 #include "../Core/Log/Log.hpp"
+#include "../Components/Components.hpp"
 
 namespace {
 	GuiRenderCallback g_GuiRenderCallback;
@@ -144,6 +145,8 @@ void Pine::Gui::Render( ) {
 	if ( g_GuiRenderCallback ) {
 		g_GuiRenderCallback( );
 	}
+
+	Pine::Components::Internal::ShowDebugUI( );
 
 	glViewport( 0, 0, Window::GetCachedSize(  ).x, Window::GetCachedSize( ).y );
 

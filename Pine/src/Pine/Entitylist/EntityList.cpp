@@ -4,13 +4,13 @@
 namespace {
 
 	// https://stackoverflow.com/questions/45447361/how-to-move-certain-elements-of-stdvector-to-a-new-index-within-the-vector
-	template <typename t> void move( std::vector<t>& v, size_t oldIndex, size_t newIndex ) 	{
+	template <typename t> void move( std::vector<t>& v, size_t oldIndex, size_t newIndex ) {
 		if ( oldIndex > newIndex )
 			std::rotate( v.rend( ) - oldIndex - 1, v.rend( ) - oldIndex, v.rend( ) - newIndex );
 		else
 			std::rotate( v.begin( ) + oldIndex, v.begin( ) + oldIndex + 1, v.begin( ) + newIndex + 1 );
 	}
-	
+
 	std::vector<Pine::Entity> m_Entities;
 	uint64_t m_CurrentId = 0;
 
@@ -22,7 +22,7 @@ void Pine::EntityList::Setup( )
 }
 
 Pine::Entity* Pine::EntityList::CreateEntity( ) {
-	m_Entities.emplace_back( std::move( Pine::Entity( m_CurrentId++ ) ) );
+	m_Entities.emplace_back( m_CurrentId++ );
 
 	const auto ptr = &m_Entities[ m_Entities.size( ) - 1 ];
 
@@ -51,7 +51,7 @@ bool Pine::EntityList::DeleteEntity( Entity* entity ) {
 	for ( int i = 0; i < m_Entities.size( ); i++ ) {
 		if ( &m_Entities[ i ] == entity ) {
 			m_Entities.erase( m_Entities.begin( ) + i );
-			delete entity;
+
 			return true;
 		}
 	}
@@ -64,7 +64,7 @@ void Pine::EntityList::MoveEntity( Entity* entity, int newPosition )
 {
 	int entityVectorIndex = -1;
 
-	for ( int i = 0; i < m_Entities.size(  );i++ )
+	for ( int i = 0; i < m_Entities.size( ); i++ )
 	{
 		if ( &m_Entities[ i ] == entity )
 		{
@@ -81,8 +81,13 @@ void Pine::EntityList::MoveEntity( Entity* entity, int newPosition )
 	move( m_Entities, entityVectorIndex, newPosition );
 }
 
-std::vector <Pine::Entity>& Pine::EntityList::GetEntities( ) {
+const std::vector <Pine::Entity>& Pine::EntityList::GetEntities( ) {
 	return m_Entities;
+}
+
+Pine::Entity* Pine::EntityList::GetEntity( const int index )
+{
+	return &m_Entities[ index ];
 }
 
 void Pine::EntityList::ClearEntities( bool temp )
@@ -93,9 +98,9 @@ void Pine::EntityList::ClearEntities( bool temp )
 			continue;
 
 		auto entityPtr = m_Entities[ i ];
-		
+
 		m_Entities.erase( m_Entities.begin( ) + i );
-		
+
 		i--;
 	}
 }

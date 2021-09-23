@@ -3,14 +3,20 @@
 #include "../Entitylist/EntityList.hpp"
 #include "../Components/Components.hpp"
 
+#include "../Core/Log/Log.hpp"
+
 Pine::Entity::Entity( uint64_t id )
 {
+	Log::Debug( "Pine::Entity::Entity( )" );
+
 	m_Id = id;
 	AddComponent( EComponentType::Transform );
 }
 
 Pine::Entity::Entity( uint64_t id, bool empty )
 {
+	Log::Debug( "Pine::Entity::Entity( )" );
+
 	m_Id = id;
 
 	if ( !empty )
@@ -21,6 +27,8 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 Pine::Entity::~Entity( )
 {
+	Log::Debug( "Pine::Entity::~Entity( )" );
+
 	for ( const auto component : m_Components )
 	{
 		Components::DeleteComponent( component );

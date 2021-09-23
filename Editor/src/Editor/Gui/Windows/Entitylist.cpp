@@ -53,8 +53,8 @@ namespace {
 
 			if ( ImGui::BeginDragDropTarget( ) ) {
 				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
-					const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
-					
+					const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
+
 					e->AddChild( entity );
 				}
 
@@ -107,10 +107,10 @@ namespace {
 					g_DidOpenContextMenu = true;
 				}
 			}
-			
+
 			if ( ImGui::BeginDragDropTarget( ) ) {
 				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
-					const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+					const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
 
 					e->AddChild( entity );
 				}
@@ -130,21 +130,21 @@ namespace {
 
 	void EntityMoveSeparator( int entityIndex ) {
 		ImGui::Separator( );
-		
+
 		if ( ImGui::BeginDragDropTarget( ) ) {
 			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
-				const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
+				const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
 
 				if ( entityIndex >= Pine::EntityList::GetEntities( ).size( ) )
 					entityIndex = Pine::EntityList::GetEntities( ).size( ) - 1;
-				
+
 				Pine::EntityList::MoveEntity( entity, entityIndex );
 			}
 
 			ImGui::EndDragDropTarget( );
-		}		
+		}
 	}
-	
+
 }
 
 void Editor::Gui::Windows::RenderEntitylist( ) {
@@ -169,10 +169,10 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		EntityMoveSeparator( 0 );
 
 	int entityRenderIndex = 0;
-	
+
 	for ( auto& entity : entities ) {
 		entityRenderIndex++;
-		
+
 		// Since we render children for each parent entity instead.
 		if ( entity.GetParent( ) != nullptr ) {
 			continue;
@@ -182,7 +182,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			continue;
 		}
 
-		RenderEntity( &entity );
+		RenderEntity( Pine::EntityList::GetEntity( entityRenderIndex - 1 ) );
 
 		if ( isDragDroppingEntity )
 			EntityMoveSeparator( entityRenderIndex );
@@ -224,7 +224,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			blueprint.Dispose( );
 
 			// We'll have to manually assign the parent as the blueprint won't be able to do that, as it wouldn't make any sense.
-			if ( e->GetParent(  ) != nullptr ) {
+			if ( e->GetParent( ) != nullptr ) {
 				e->GetParent( )->AddChild( newEntity );
 			}
 		}
@@ -262,9 +262,9 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e->GetParent(  ) != nullptr ) ) {
+		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e->GetParent( ) != nullptr ) ) {
 			e->GetParent( )->RemoveChild( e );
-			
+
 			ImGui::CloseCurrentPopup( );
 		}
 

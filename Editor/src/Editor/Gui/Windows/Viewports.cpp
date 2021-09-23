@@ -270,7 +270,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 				}
 			}
 
-			for ( auto entity : Pine::EntityList::GetEntities(  ) ) {
+			for ( const auto& entity : Pine::EntityList::GetEntities(  ) ) {
 				if ( !entity.GetActive( ) )
 					continue;
 
