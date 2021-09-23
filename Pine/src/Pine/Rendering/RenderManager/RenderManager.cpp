@@ -49,8 +49,8 @@ void Pine::RenderManager::Run( ) {
 	// This is fucking retarded, please write a proper solution.
 	// Everything beyond this point should also respect the render context's
 	// target size, but it won't so keep that in mind.
-	//g_RenderingContext->m_Width = 1600;
-	//g_RenderingContext->m_Height = 900;
+	g_RenderingContext->m_Width = 1600;
+	g_RenderingContext->m_Height = 900;
 
 	// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
 	// to fix this temporary just update that and set the rendering context's size accordingly.
