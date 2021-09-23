@@ -13,7 +13,7 @@ Pine::Entity* Pine::IComponent::GetParent( ) {
 	return m_Parent;
 }
 
-const bool Pine::IComponent::GetActive( ) const {
+bool Pine::IComponent::GetActive( ) const {
 	return m_Active;
 }
 
@@ -21,7 +21,7 @@ void Pine::IComponent::SetActive( bool value ) {
 	m_Active = value;
 }
 
-const bool Pine::IComponent::GetStandalone( ) const
+bool Pine::IComponent::GetStandalone( ) const
 {
 	return m_Standalone;
 }

@@ -11,6 +11,7 @@
 #include "Pine/Rendering/RenderingContext/RenderingContext.hpp"
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 #include "Pine\OpenGL\FrameBuffer\FrameBuffer.hpp"
+#include "Pine/Components/Components.hpp"
 
 namespace {
 
@@ -40,13 +41,13 @@ namespace {
 	{
 		// Setup fake entities
 		m_FakeCameraEntity = new Pine::Entity( 0 );
-		m_FakeCameraEntity->AddComponent( new Pine::Camera( ) );
+		m_FakeCameraEntity->RegisterComponent( Pine::Components::CreateComponent( Pine::EComponentType::Camera, true ) );
 
 		m_FakeModelEntity = new Pine::Entity( 0 );
-		m_FakeModelEntity->AddComponent( new Pine::ModelRenderer( ) );
+		m_FakeModelEntity->RegisterComponent( Pine::Components::CreateComponent( Pine::EComponentType::ModelRenderer, true ) );
 
 		m_FakeLightEntity = new Pine::Entity( 0 );
-		m_FakeLightEntity->AddComponent( new Pine::Light( ) );
+		m_FakeLightEntity->RegisterComponent( Pine::Components::CreateComponent( Pine::EComponentType::Light, true ) );
 		
 		// Setup rendering context
 		m_AssetPreviewContext = new Pine::RenderingContext;

@@ -46,7 +46,7 @@ namespace {
 			return;
 
 		void* data = malloc( elementSize * newSize );
-		bool* dataValid = static_cast<bool*>( malloc( newSize ) );
+		bool* dataValid = static_cast< bool* >( malloc( newSize ) );
 
 		if ( !data || !dataValid )
 			return;
@@ -91,7 +91,7 @@ namespace {
 		RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "ModelRenderer" );
 		RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
 		RegisterComponent( new Light( ), sizeof( Light ), "Light" );
-		RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
+		//RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
 		RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 		RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
 	}
@@ -114,15 +114,14 @@ void Pine::Components::Dispose( )
 }
 
 int Pine::Components::GetComponentCount( ) {
-	return static_cast<int>( g_Components.size( ) );
+	return static_cast< int >( g_Components.size( ) );
 }
 
 const char* Pine::Components::GetComponentName( EComponentType type ) {
-	return g_Components[ static_cast<int>( type ) ].m_Name.c_str( );
+	return g_Components[ static_cast< int >( type ) ].m_Name.c_str( );
 }
 
 Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool standalone ) {
-
 	Component_t* comp = nullptr;
 
 	for ( auto& component : g_Components )
@@ -158,7 +157,7 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 	}
 
 	// How do you do this properly?
-	const auto componentPtr = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+	const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
 	memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
 
@@ -169,6 +168,13 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 
 bool Pine::Components::DeleteComponent( IComponent* inputComponent )
 {
+	if ( inputComponent->GetStandalone(  ) )
+	{
+		free( inputComponent );
+
+		return true;
+	}
+	
 	Component_t* comp = nullptr;
 
 	for ( auto& component : g_Components )
@@ -186,9 +192,9 @@ bool Pine::Components::DeleteComponent( IComponent* inputComponent )
 	if ( !comp )
 		return false;
 
-	for ( int i = 0; i < comp->m_DataValidSize;i++ )
+	for ( int i = 0; i < comp->m_DataValidSize; i++ )
 	{
-		const auto componentPtr = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
+		const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
 
 		if ( componentPtr == inputComponent )
 		{
@@ -253,9 +259,12 @@ void Pine::Components::Internal::RegisterComponent( IComponent* component, const
 	comp.m_Name = str;
 	comp.m_ComponentSize = componentSize;
 
-	component->SetStandalone( false );
+	if ( component )
+	{
+		component->SetStandalone( false );
 
-	ResizeData( &comp, componentSize, 128 ); // By default make space for 128 components
+		ResizeData( &comp, componentSize, 128 ); // By default make space for 128 components
+	}
 
 	g_Components.push_back( comp );
 }

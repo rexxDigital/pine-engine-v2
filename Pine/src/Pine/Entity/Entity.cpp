@@ -21,16 +21,9 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 Pine::Entity::~Entity( )
 {
-	for ( auto component : m_Components ) 
+	for ( const auto component : m_Components )
 	{
-		if ( component->GetStandalone(  ) )
-		{
-			free( component );
-		}
-		else
-		{
-			Components::DeleteComponent( component );
-		}
+		Components::DeleteComponent( component );
 	}
 
 	// TODO: How are we going to handle this? Remove children?
@@ -84,7 +77,7 @@ void Pine::Entity::SetEntityIndex( uint64_t indx ) {
 }
 
 Pine::Transform* Pine::Entity::GetTransform( ) const {
-	return reinterpret_cast<Transform*>( m_Components[ 0 ] );
+	return reinterpret_cast< Transform* >( m_Components[ 0 ] );
 }
 
 const std::vector<Pine::IComponent*>& Pine::Entity::GetComponents( ) const {
@@ -145,7 +138,7 @@ void Pine::Entity::RemoveChild( Entity* entity )
 
 void Pine::Entity::DeleteChildren( )
 {
-	for ( auto entity : m_Children )
+	for ( const auto entity : m_Children )
 	{
 		EntityList::DeleteEntity( entity );
 	}
@@ -168,14 +161,14 @@ void Pine::Entity::RegisterComponent( IComponent* component ) {
 bool Pine::Entity::RemoveComponent( IComponent* component )
 {
 	int i = 0;
-	for ( auto comp : m_Components )
+	for ( const auto comp : m_Components )
 	{
 		if ( comp == component )
 		{
-			if ( !component->GetStandalone( ) )
-				Components::DeleteComponent( component );
+			Components::DeleteComponent( component );
 
 			m_Components.erase( m_Components.begin( ) + i );
+
 			return true;
 		}
 
@@ -192,6 +185,10 @@ bool Pine::Entity::RemoveComponent( const int index )
 		return false;
 	}
 
+	const auto component = m_Components[ index ];
+
+	Pine::Components::DeleteComponent( component );
+
 	m_Components.erase( m_Components.begin( ) + index );
 
 	return true;
@@ -199,5 +196,10 @@ bool Pine::Entity::RemoveComponent( const int index )
 
 void Pine::Entity::ClearComponents( )
 {
+	for ( const auto component : m_Components )
+	{
+		Pine::Components::DeleteComponent( component );
+	}
+
 	m_Components.clear( );
 }

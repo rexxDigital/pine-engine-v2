@@ -171,7 +171,7 @@ namespace {
 				if ( Editor::Gui::Globals::SelectedItem == Editor::Gui::SelectedItemType::Entity && !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) ) {
 					auto comp = Pine::Components::CreateComponent( displayComponentsType[ selectedItem ] );
 					if ( comp != nullptr )
-						Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->AddComponent( comp );
+						Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->RegisterComponent( comp );
 				}
 
 				ImGui::CloseCurrentPopup( );

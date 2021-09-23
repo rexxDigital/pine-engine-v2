@@ -22,13 +22,14 @@ void Pine::EntityList::Setup( )
 }
 
 Pine::Entity* Pine::EntityList::CreateEntity( ) {
-	Pine::Entity entity = Pine::Entity( m_CurrentId++ );
+	m_Entities.emplace_back( std::move( Pine::Entity( m_CurrentId++ ) ) );
 
-	entity.SetEntityIndex( m_Entities.size( ) );
+	const auto ptr = &m_Entities[ m_Entities.size( ) - 1 ];
 
-	m_Entities.push_back( entity );
+	ptr->SetEntityIndex( m_Entities.size( ) - 1 );
+	ptr->GetTransform( )->SetParent( ptr );
 
-	return &m_Entities[ m_Entities.size( ) - 1 ];
+	return ptr;
 }
 
 Pine::Entity* Pine::EntityList::CreateEntity( const std::string& str ) {
@@ -39,7 +40,11 @@ Pine::Entity* Pine::EntityList::CreateEntity( const std::string& str ) {
 
 	m_Entities.push_back( entity );
 
-	return &m_Entities[ m_Entities.size( ) - 1 ];
+	const auto ptr = &m_Entities[ m_Entities.size( ) - 1 ];
+
+	ptr->GetTransform( )->SetParent( ptr );
+
+	return ptr;
 }
 
 bool Pine::EntityList::DeleteEntity( Entity* entity ) {

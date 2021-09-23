@@ -45,10 +45,10 @@ namespace Pine
 		void SetParent( Pine::Entity* parent );
 		Pine::Entity* GetParent( );
 
-		const bool GetActive( ) const;
+		bool GetActive( ) const;
 		void SetActive( bool value );
 
-		const bool GetStandalone( ) const;
+		bool GetStandalone( ) const;
 		void SetStandalone( bool value );
 
 		virtual void OnSetup( ) = 0;

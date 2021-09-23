@@ -30,85 +30,85 @@ private:
 	Pine::Input::InputBinding* m_Sideways = nullptr;
 public:
 
-	void OnSetup() override
+	void OnSetup( ) override
 	{
 	}
 
-	void OnCreated() override
+	void OnCreated( ) override
 	{
-		m_Pitch = Pine::Input::CreateBinding("Pitch");
-		m_Pitch->AddAxisBinding(Pine::Input::Axis::MouseY, 0.15f);
+		m_Pitch = Pine::Input::CreateBinding( "Pitch" );
+		m_Pitch->AddAxisBinding( Pine::Input::Axis::MouseY, 0.15f );
 
-		m_Yaw = Pine::Input::CreateBinding("Yaw");
-		m_Yaw->AddAxisBinding(Pine::Input::Axis::MouseX, 0.15f);
+		m_Yaw = Pine::Input::CreateBinding( "Yaw" );
+		m_Yaw->AddAxisBinding( Pine::Input::Axis::MouseX, 0.15f );
 
-		m_Forward = Pine::Input::CreateBinding("Forward");
-		m_Forward->AddKeyboardBinding(GLFW_KEY_W, 1.f);
-		m_Forward->AddKeyboardBinding(GLFW_KEY_S, -1.f);
+		m_Forward = Pine::Input::CreateBinding( "Forward" );
+		m_Forward->AddKeyboardBinding( GLFW_KEY_W, 1.f );
+		m_Forward->AddKeyboardBinding( GLFW_KEY_S, -1.f );
 
-		m_Sideways = Pine::Input::CreateBinding("Sideways");
-		m_Sideways->AddKeyboardBinding(GLFW_KEY_D, 1.f);
-		m_Sideways->AddKeyboardBinding(GLFW_KEY_A, -1.f);
+		m_Sideways = Pine::Input::CreateBinding( "Sideways" );
+		m_Sideways->AddKeyboardBinding( GLFW_KEY_D, 1.f );
+		m_Sideways->AddKeyboardBinding( GLFW_KEY_A, -1.f );
 	}
 
-	void OnRender() override
+	void OnRender( ) override
 	{
-		if (!Globals::IsInLevelView)
+		if ( !Globals::IsInLevelView )
 			return;
 
-		if (Globals::IsHoveringLevelView)
+		if ( Globals::IsHoveringLevelView )
 		{
-			if (ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Right))
+			if ( ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
 			{
 				m_IsMovingCamera = true;
 			}
 		}
 
-		if (m_IsMovingCamera)
+		if ( m_IsMovingCamera )
 		{
-			if (!ImGui::IsMouseDown(ImGuiMouseButton_::ImGuiMouseButton_Right))
+			if ( !ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
 				m_IsMovingCamera = false;
 
-			const auto pitch = m_Pitch->Value();
-			const auto yaw = m_Yaw->Value();
+			const auto pitch = m_Pitch->Value( );
+			const auto yaw = m_Yaw->Value( );
 
-			GetParent()->GetTransform()->Rotation += glm::vec3(pitch, yaw, 0.f);
+			GetParent( )->GetTransform( )->Rotation += glm::vec3( pitch, yaw, 0.f );
 
-			const auto forwardMove = m_Forward->Value();
-			const auto sideMove = m_Sideways->Value();
+			const auto forwardMove = m_Forward->Value( );
+			const auto sideMove = m_Sideways->Value( );
 
-			GetParent()->GetTransform()->Position += GetParent()->GetTransform()->GetForward() * .15f * forwardMove;
-			GetParent()->GetTransform()->Position += GetParent()->GetTransform()->GetRight() * .15f * sideMove;
+			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetForward( ) * .15f * forwardMove;
+			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetRight( ) * .15f * sideMove;
 		}
 	}
-	
-	void OnUpdate(float deltaTime) override
+
+	void OnUpdate( float deltaTime ) override
 	{
-		
+
 	}
-	
+
 };
 
-void Editor::EditorEntity::Create()
+void Editor::EditorEntity::Create( )
 {
-	g_EditorEntity = Pine::EntityList::CreateEntity();
-	
-	g_EditorEntity->SetTemporary(true);
-	g_EditorEntity->SetName("Editor Entity");
+	g_EditorEntity = Pine::EntityList::CreateEntity( );
 
-	
-	g_EditorEntity->AddComponent(new Pine::Camera());
-	g_EditorEntity->AddComponent(new EditorEntityScript());
+	g_EditorEntity->SetTemporary( true );
+	g_EditorEntity->SetName( "Editor Entity" );
 
-	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>();
+
+	g_EditorEntity->AddComponent( Pine::EComponentType::Camera );
+	g_EditorEntity->RegisterComponent( new EditorEntityScript( ) ); // this sucks.
+
+	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>( );
 }
 
-Pine::Entity* Editor::EditorEntity::GetEntity()
+Pine::Entity* Editor::EditorEntity::GetEntity( )
 {
 	return g_EditorEntity;
 }
 
-Pine::Camera* Editor::EditorEntity::GetCamera()
+Pine::Camera* Editor::EditorEntity::GetCamera( )
 {
 	return g_Camera;
 }
