@@ -43,7 +43,7 @@ namespace Pine
 		EComponentType GetType( ) const;
 
 		void SetParent( Pine::Entity* parent );
-		Pine::Entity* GetParent( );
+		Pine::Entity* GetParent( ) const;
 
 		bool GetActive( ) const;
 		void SetActive( bool value );

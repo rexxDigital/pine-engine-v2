@@ -24,8 +24,10 @@ namespace {
 	// The texture we use if there is no texture applied, 1x1 white.
 	Pine::Texture2D* g_DefaultTexture = nullptr;
 
-	// Some optimizations for OpenGL's current texture.
+	// Some optimizations for OpenGL, we store stuff in CPU memory instead of querying the GPU each frame
 	uint32_t g_CurrentBoundTexture[ 32 ] = { };
+	uint8_t g_CurrentStencilMode = 0x00;
+
 
 	// TODO: When this engine gets a little bit more advanced, we should get the nearest cube map
 	// or something for this function. Time will tell.
@@ -51,8 +53,33 @@ void Pine::Renderer3D::RenderVertexArray( const VertexArray* vao, int renderCoun
 	}
 }
 
-void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
+void Pine::Renderer3D::PrepareMesh( Mesh* mesh, Material* overrideMaterial, std::uint8_t overrideStencilBuffer ) {
 	auto material = mesh->GetMaterial( );
+
+	if ( overrideMaterial != nullptr )
+	{
+		material = overrideMaterial;
+	}
+
+	if ( overrideStencilBuffer != 0x00 )
+	{
+		if ( g_CurrentStencilMode == 0x00 )
+		{
+			glStencilFunc( GL_ALWAYS, 1, overrideStencilBuffer );
+			glStencilMask( overrideStencilBuffer );
+
+			g_CurrentStencilMode = overrideStencilBuffer;
+		}
+	}
+	else
+	{
+		if ( g_CurrentStencilMode != 0x00  )
+		{
+			glStencilFunc( GL_ALWAYS, 0, 0xFF );
+			glStencilMask( 0x00 );
+			g_CurrentStencilMode = 0x00;
+		}
+	}
 
 	mesh->GetVertexArray( )->Bind( );
 
@@ -78,7 +105,7 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	}
 
 	// Specular map texture
-	Texture2D* specularMapTexture = g_DefaultTexture;
+	const Texture2D* specularMapTexture = g_DefaultTexture;
 	if ( material->GetSpecular( ) != nullptr ) {
 		specularMapTexture = material->GetSpecular( );
 	}
@@ -117,8 +144,8 @@ void Pine::Renderer3D::PrepareMesh( Pine::Mesh* mesh ) {
 	// if not, I've fucked something up.
 	UniformBuffers::GetMaterialUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MaterialBufferData_t ), materialDataBuffer );
 
-	g_CurrentRenderMesh = mesh;
 	g_CurrentShader->Use( );
+	g_CurrentRenderMesh = mesh;
 }
 
 void Pine::Renderer3D::RenderMesh( const glm::mat4& transformationMatrix ) {
@@ -176,7 +203,6 @@ void Pine::Renderer3D::PrepareMeshRendering( )
 
 void Pine::Renderer3D::PrepareLightData( Pine::Light* light )
 {
-
 	// If it's a directional light, always put it at index 0. There should only be one active directional light per scene anyway.
 	// The other types of lights we put at (1 + g_CurrentDynamicLightCount), up till the max dynamic light count
 
@@ -184,11 +210,11 @@ void Pine::Renderer3D::PrepareLightData( Pine::Light* light )
 	{
 		// This will spam the living fuck out of the console.
 		Log::Warning( "Maximum level of dynamic lights reached." );
-		
+
 		return;
 	}
-	
-	if ( light->GetLightType(  ) == Pine::ELightType::Directional )
+
+	if ( light->GetLightType( ) == Pine::ELightType::Directional )
 	{
 		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
 		UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
@@ -202,11 +228,11 @@ void Pine::Renderer3D::PrepareLightData( Pine::Light* light )
 		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
 		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].color = light->GetLightColor( );
 		UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].attenuation = light->GetAttenuation( );
-		
+
 	}
 
 	g_CurrentDynamicLightCount++;
-	
+
 }
 
 void Pine::Renderer3D::ResetLightData( )
@@ -224,6 +250,24 @@ Pine::Shader* Pine::Renderer3D::GetShader( ) {
 	return g_CurrentShader;
 }
 
+void Pine::Renderer3D::SetStencilFunction( const int function, const std::uint8_t mask )
+{
+	glStencilFunc( function, 1, mask );
+}
+
+void Pine::Renderer3D::SetStencilMask( const std::uint8_t mask )
+{
+	glStencilMask( mask );
+}
+
+void Pine::Renderer3D::SetDepthTesting( const bool value )
+{
+	if ( value )
+		glEnable( GL_DEPTH_TEST );
+	else
+		glDisable( GL_DEPTH_TEST );
+}
+
 void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 	if ( !shader )
 		return;
@@ -235,7 +279,7 @@ void Pine::Renderer3D::SetShader( Pine::Shader* shader ) {
 }
 
 void Pine::Renderer3D::Setup( ) {
-	Log::Debug( "Pine::Renderer3D::Setup()" );
+	Log::Debug( "Pine::Renderer3D::Setup( )" );
 
 	//// Create default texture
 	//char whiteData[ 4 ] = { 255, 255, 255, 255 };

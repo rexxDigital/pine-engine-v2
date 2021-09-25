@@ -204,6 +204,12 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 	ImGui::Begin( "Asset Browser", &ShowAssetBrowser, 0 );
 
+	if ( ImGui::Button( "Import..." ) ) {
+
+	}
+
+	ImGui::SameLine( );
+
 	if ( ImGui::Button( "Refresh project assets" ) ) {
 		ProjectManager::ReloadProjectAssets( );
 	}

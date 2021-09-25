@@ -9,7 +9,7 @@ void Pine::IComponent::SetParent( Pine::Entity* parent ) {
 	m_Parent = parent;
 }
 
-Pine::Entity* Pine::IComponent::GetParent( ) {
+Pine::Entity* Pine::IComponent::GetParent( ) const {
 	return m_Parent;
 }
 

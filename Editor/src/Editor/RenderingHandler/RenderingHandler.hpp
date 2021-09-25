@@ -7,10 +7,10 @@ namespace Pine {
 namespace Editor::RenderingHandler
 {
 
-	void Setup();
+	void Setup( );
 
-	Pine::FrameBuffer* GetFrameBuffer();
+	Pine::FrameBuffer* GetFrameBuffer( );
 
-	void SetViewportSize(int w, int h);
-	
+	void SetViewportSize( int w, int h );
+
 }

@@ -1,9 +1,8 @@
 #include "FrameBuffer.hpp"
+#include "../../Core/Log/Log.hpp"
 #include <GL/glew.h>
 
-Pine::FrameBuffer::FrameBuffer( )
-{
-}
+Pine::FrameBuffer::FrameBuffer( ) = default;
 
 unsigned int Pine::FrameBuffer::GetId( ) const
 {
@@ -22,7 +21,7 @@ unsigned Pine::FrameBuffer::GetNormalBufferId( ) const
 
 unsigned int Pine::FrameBuffer::GetDepthId( ) const
 {
-	return m_DepthBuffer;
+	return m_DepthStencilBuffer;
 }
 
 int Pine::FrameBuffer::GetWidth( ) const {
@@ -43,12 +42,12 @@ void Pine::FrameBuffer::Unbind( ) const
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 }
 
-void Pine::FrameBuffer::Dispose( )
+void Pine::FrameBuffer::Dispose( ) const
 {
 	glDeleteFramebuffers( 1, &m_Id );
 
 	glDeleteTextures( 1, &m_TextureBuffer );
-	glDeleteTextures( 1, &m_DepthBuffer );
+	glDeleteTextures( 1, &m_DepthStencilBuffer );
 }
 
 void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
@@ -79,25 +78,30 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-		// attach that bitch
 		glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_NormalBuffer, 0 );
 
 		unsigned int attachments[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 
 		glDrawBuffers( 2, attachments );
 	}
-	
-	// Create a depth buffer
-	glGenTextures( 1, &m_DepthBuffer );
-	glBindTexture( GL_TEXTURE_2D, m_DepthBuffer );
 
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr );
+	// Create a depth & stencil buffer
+	glGenTextures( 1, &m_DepthStencilBuffer );
+	glBindTexture( GL_TEXTURE_2D, m_DepthStencilBuffer );
+
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr );
 
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-	
-	// Attach the depth buffer as well.
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthBuffer, 0 );
+
+	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthStencilBuffer, 0 );
+
+	const auto status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
+
+	if ( status != GL_FRAMEBUFFER_COMPLETE )
+	{
+		Log::Error( "Failure in creating frame buffer: " + std::to_string( status ) );
+	}
 
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 

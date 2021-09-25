@@ -4,7 +4,7 @@
 namespace Pine {
 	class Camera;
 
-	typedef void ( *RenderCallback )( );
+	typedef void ( *RenderCallback )( int pass );
 }
 
 namespace Pine::RenderManager {
@@ -12,8 +12,7 @@ namespace Pine::RenderManager {
 	void SetRenderingContext( RenderingContext* renderingContext );
 	RenderingContext* GetRenderingContext( );
 
-	void SetPreRenderingCallback( RenderCallback fn );
-	void SetPostRenderingCallback( RenderCallback fn );
+	void SetRenderingCallback( RenderCallback fn );
 
 	void PrepareSceneRendering(  );
 	void FinishSceneRendering(  );

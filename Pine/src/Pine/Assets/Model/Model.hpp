@@ -8,15 +8,15 @@ namespace Pine {
 	private:
 		std::vector<Pine::Mesh*> m_MeshList;
 	public:
-		Model();
+		Model( );
 
-		Pine::Mesh* CreateMesh();
+		Pine::Mesh* CreateMesh( );
 
-		const std::vector<Pine::Mesh*>& GetMeshList() const;
+		const std::vector<Pine::Mesh*>& GetMeshList( ) const;
 
-		bool LoadFromFile() override;
-		bool SaveToFile() override;
-		void Dispose() override;
+		bool LoadFromFile( ) override;
+		bool SaveToFile( ) override;
+		void Dispose( ) override;
 
 	};
 

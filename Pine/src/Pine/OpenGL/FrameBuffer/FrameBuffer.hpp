@@ -8,7 +8,7 @@ namespace Pine {
 
 		unsigned int m_TextureBuffer = 0;
 		unsigned int m_NormalBuffer = 0;
-		unsigned int m_DepthBuffer = 0;
+		unsigned int m_DepthStencilBuffer = 0;
 
 		int m_Width = 0;
 		int m_Height = 0;
@@ -27,7 +27,7 @@ namespace Pine {
 		void Bind( ) const;
 		void Unbind( ) const;
 
-		void Dispose( );
+		void Dispose( ) const;
 
 		void Create( int width, int height, bool normalColorBuffer = false );
 

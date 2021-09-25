@@ -2,37 +2,36 @@
 #include <unordered_map>
 #include <vector>
 #include <chrono>
-#include "../../Components/ModelRenderer/ModelRenderer.hpp"
-#include "../../Entitylist/EntityList.hpp"
-#include "../Renderer3D/Renderer3D.hpp"
-#include "../../Components/Camera/Camera.hpp"
-#include "../UniformBuffers/UniformBuffers.hpp"
-#include "../../Components/Light/Light.hpp"
-#include "../../Core/Log/Log.hpp"
-#include "../../Core/Window/Window.hpp"
-#include "../Skybox/Skybox.hpp"
 #include <GL/glew.h>
 
-
-#include "../../../ImGui/imgui_impl_glfw.h"
-#include "../../../ImGui/imgui_impl_opengl3.h"
-#include "../../Assets/Terrain/Terrain.hpp"
+#include "../../Components/ModelRenderer/ModelRenderer.hpp"
+#include "../../Components/Light/Light.hpp"
 #include "../../Components/TerrainRenderer/TerrainRenderer.hpp"
+
+#include "../../Core/Log/Log.hpp"
 #include "../../Core/Timer/Timer.hpp"
+
+#include "../../../ImGui/imgui_impl_opengl3.h"
+
+#include "../../Assets/Terrain/Terrain.hpp"
+#include "../../Entitylist/EntityList.hpp"
+
+#include "../Renderer3D/Renderer3D.hpp"
+#include "../Skybox/Skybox.hpp"
 #include "../PostProcessing/PostProcessing.hpp"
 
 namespace {
 
 	Pine::RenderingContext* g_RenderingContext = nullptr;
 
-	Pine::RenderCallback g_PreRenderingCallback = nullptr;
-	Pine::RenderCallback g_PostRenderingCallback = nullptr;
+	Pine::RenderCallback g_RenderingCallback = nullptr;
 
 	bool VerifyRenderingContext( Pine::RenderingContext* context ) {
 		if ( !context )
 			return false;
 
-		// I would check for a camera being available, but i want the PreRender callback to be called.
+		// I would check for a camera being available, but right now I want the PreRender callback to be called
+		// so this function looks very silly.
 
 		return true;
 	}
@@ -55,24 +54,22 @@ void Pine::RenderManager::Run( ) {
 	// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
 	// to fix this temporary just update that and set the rendering context's size accordingly.
 
-	if ( g_PreRenderingCallback ) {
-		g_PreRenderingCallback( );
+	if ( g_RenderingCallback ) {
+		g_RenderingCallback( 0 );
 	}
 
 	PrepareSceneRendering( );
-	
+
 	// Reset stats
 	g_RenderingContext->m_DrawCalls = 0;
 	g_RenderingContext->m_EntitySortTime = 0;
 	g_RenderingContext->m_EntityRenderTime = 0;
 	g_RenderingContext->m_PostProcessingTime = 0;
-	
+
 	if ( g_RenderingContext->m_Camera == nullptr )
 		return;
 
-	// Better to keep this on the stack, since we want it empty the next frame anyway.
-	// Also quicker! UPDATE: Why am I writing this useless nonsense?
-	std::unordered_map<Pine::Model*, std::vector<const Pine::Entity*>> renderBatch;
+	std::unordered_map<Pine::Model*, std::vector<Pine::ModelRenderer*>> renderBatch;
 	std::vector<Pine::Light*> lights;
 	std::vector<Pine::TerrainRenderer*> terrainRenderers;
 
@@ -85,18 +82,18 @@ void Pine::RenderManager::Run( ) {
 			component->OnRender( );
 
 			if ( component->GetType( ) == EComponentType::ModelRenderer ) {
-				auto modelRenderer = dynamic_cast< Pine::ModelRenderer* >( component );
+				const auto modelRenderer = dynamic_cast<Pine::ModelRenderer*>( component );
 				auto model = modelRenderer->GetTargetModel( );
 
 				if ( model != nullptr ) {
-					renderBatch[ model ].push_back( entity );
+					renderBatch[ model ].push_back( modelRenderer );
 				}
 			}
 			else if ( component->GetType( ) == EComponentType::Light ) {
-				lights.push_back( dynamic_cast< Pine::Light* >( component ) );
+				lights.push_back( dynamic_cast<Pine::Light*>( component ) );
 			}
 			else if ( component->GetType( ) == EComponentType::TerrainRenderer ) {
-				terrainRenderers.push_back( dynamic_cast< Pine::TerrainRenderer* >( component ) );
+				terrainRenderers.push_back( dynamic_cast<Pine::TerrainRenderer*>( component ) );
 			}
 		}
 	};
@@ -108,7 +105,7 @@ void Pine::RenderManager::Run( ) {
 			continue;
 		}
 
-		for ( auto child : entity.GetChildren( ) )
+		for ( const auto child : entity.GetChildren( ) )
 			processEntity( child );
 
 		processEntity( &entity );
@@ -118,8 +115,8 @@ void Pine::RenderManager::Run( ) {
 
 	// Prepare the light data before uploading it to the GPU:
 	Renderer3D::ResetLightData( );
-	
-	for ( auto light : lights ) {
+
+	for ( const auto light : lights ) {
 		Renderer3D::PrepareLightData( light );
 	}
 
@@ -131,7 +128,7 @@ void Pine::RenderManager::Run( ) {
 
 	// Render Terrain Chunks
 
-	for ( auto terrainRenderer : terrainRenderers ) {
+	for ( const auto terrainRenderer : terrainRenderers ) {
 		const auto terrain = terrainRenderer->GetTerrain( );
 
 		if ( !terrain )
@@ -152,13 +149,38 @@ void Pine::RenderManager::Run( ) {
 		for ( auto& mesh : renderItem.first->GetMeshList( ) ) {
 			Renderer3D::PrepareMesh( mesh );
 
-			for ( auto entity : renderItem.second ) {
+			for ( const auto modelRenderer : renderItem.second ) {
+				const auto entity = modelRenderer->GetParent( );
+
+				bool restoreMesh = false;
+
+				// Doing shit like this will slow down all rendering but whatever,
+				// it's the user's fault rendering stuff like this :-)
+				if ( modelRenderer->GetMaterialOverride( ) != nullptr || modelRenderer->GetOverridingStencilBuffer( ) )
+				{
+					Renderer3D::PrepareMesh( mesh, modelRenderer->GetMaterialOverride( ), modelRenderer->GetOverridedStencilBufferMask( ) );
+
+					modelRenderer->OverrideStencilBuffer( false, 0x00 );
+
+					restoreMesh = true;
+				}
+
 				Renderer3D::RenderMesh( entity->GetTransform( )->GetTransformationMatrix( ) );
+
+				if ( restoreMesh )
+				{
+					Renderer3D::PrepareMesh( mesh );
+				}
 			}
 		}
 	}
 
 	Skybox::Render( );
+
+	if ( g_RenderingCallback ) {
+		g_RenderingCallback( 1 );
+	}
+
 
 	entityRenderTime.Stop( );
 
@@ -174,8 +196,8 @@ void Pine::RenderManager::Run( ) {
 	g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
 	g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
 
-	if ( g_PostRenderingCallback ) {
-		g_PostRenderingCallback( );
+	if ( g_RenderingCallback ) {
+		g_RenderingCallback( 2 );
 	}
 }
 
@@ -187,12 +209,8 @@ Pine::RenderingContext* Pine::RenderManager::GetRenderingContext( ) {
 	return g_RenderingContext;
 }
 
-void Pine::RenderManager::SetPreRenderingCallback( RenderCallback fn ) {
-	g_PreRenderingCallback = fn;
-}
-
-void Pine::RenderManager::SetPostRenderingCallback( RenderCallback fn ) {
-	g_PostRenderingCallback = fn;
+void Pine::RenderManager::SetRenderingCallback( RenderCallback fn ) {
+	g_RenderingCallback = fn;
 }
 
 void Pine::RenderManager::PrepareSceneRendering( )
@@ -201,19 +219,22 @@ void Pine::RenderManager::PrepareSceneRendering( )
 
 	// Clear the buffers
 	glClearColor( 0.f, 0.f, 0.f, 1.f );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
 	// Reset the viewport size.
 	glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
 
 	// Enable depth test just in case.
 	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_STENCIL_TEST );
+
+	glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
 
 	if ( g_RenderingContext->m_Camera != nullptr )
 		Renderer3D::UploadCameraData( g_RenderingContext->m_Camera );
 }
 
-void Pine::RenderManager::FinishSceneRendering(  )
+void Pine::RenderManager::FinishSceneRendering( )
 {
 	const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
@@ -230,12 +251,12 @@ void Pine::RenderManager::FinishSceneRendering(  )
 	else {
 		glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 	}
-	
+
 	PostProcessing::Render( );
 }
 
 void Pine::RenderManager::Setup( ) {
-	Log::Debug( "Pine::RenderManager::Setup()" );
+	Log::Debug( "Pine::RenderManager::Setup( )" );
 
 	g_RenderingImGuiContext = ImGui::CreateContext( );
 }

@@ -98,7 +98,7 @@ namespace {
 				aiString file_path;
 				material->GetTexture( aiTextureType_DIFFUSE, 0, &file_path );
 
-				eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets::LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
+				eMaterial->SetDiffuse( reinterpret_cast<Pine::Texture2D*>( Pine::Assets::LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
 			}
 
 			//if ( material->GetTextureCount( aiTextureType_SPECULAR ) > 0 ) {
@@ -180,13 +180,13 @@ bool Pine::Model::LoadFromFile( ) {
 
 				if ( jsonObject[ meshStr ].contains( "mat" ) )
 				{
-					if ( !std::filesystem::exists( jsonObject[ meshStr ][ "mat" ].get<std::string>(  ) ) )
+					if ( !std::filesystem::exists( jsonObject[ meshStr ][ "mat" ].get<std::string>( ) ) )
 					{
-						Log::Warning( "Could not load mesh material file " + jsonObject[ meshStr ][ "mat" ].get<std::string>(  ) + ", file doesn't exist." );
+						Log::Warning( "Could not load mesh material file " + jsonObject[ meshStr ][ "mat" ].get<std::string>( ) + ", file doesn't exist." );
 						continue;
 					}
-					
-					const auto materialAsset = dynamic_cast< Pine::Material* >( Pine::Assets::LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
+
+					const auto materialAsset = dynamic_cast<Pine::Material*>( Pine::Assets::LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
 
 					if ( materialAsset == nullptr ) // weird but ok
 					{

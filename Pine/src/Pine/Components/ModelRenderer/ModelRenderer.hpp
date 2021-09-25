@@ -8,6 +8,9 @@ namespace Pine {
 	private:
 		Pine::Model* m_TargetModel = nullptr;
 		Pine::Material* m_MaterialOverride = nullptr;
+
+		bool m_OverrideStencilBuffer = false;
+		std::uint8_t m_StencilBufferMask = 0x00;
 	public:
 		ModelRenderer( );
 
@@ -16,6 +19,11 @@ namespace Pine {
 
 		Pine::Material* GetMaterialOverride( ) const;
 		void SetMaterialOverride( Pine::Material* mat );
+
+		void OverrideStencilBuffer( bool enabled, std::uint8_t mask );
+
+		bool GetOverridingStencilBuffer( ) const;
+		std::uint8_t GetOverridedStencilBufferMask( ) const;
 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
