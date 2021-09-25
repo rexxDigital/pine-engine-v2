@@ -136,7 +136,7 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 
 	CopyEntity( newEntity, m_Entity, true );
 
-	for ( auto component : newEntity->GetComponents( ) )
+	for ( const auto component : newEntity->GetComponents( ) )
 	{
 		if ( component->GetType( ) == Pine::EComponentType::Behavior )
 		{

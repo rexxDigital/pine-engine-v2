@@ -13,7 +13,8 @@ namespace Pine
 		Light,
 		NativeScript,
 		Behavior,
-		TerrainRenderer
+		TerrainRenderer,
+		Collider
 	};
 
 	inline const char* SComponentNames[ ] = {
@@ -24,7 +25,8 @@ namespace Pine
 		"Light",
 		"Native Script",
 		"Behavior",
-		"Terrain Renderer"
+		"Terrain Renderer",
+		"Collider"
 	};
 
 	class Entity;
@@ -54,9 +56,9 @@ namespace Pine
 		virtual void OnSetup( ) = 0;
 		virtual void OnUpdate( float deltaTime ) = 0;
 		virtual void OnRender( );
-		virtual void OnDestroy( );
 
 		virtual void OnCreated( );
+		virtual void OnDestroyed( );
 
 		virtual void LoadFromJson( nlohmann::json& j );
 		virtual void SaveToJson( nlohmann::json& j );

@@ -90,6 +90,7 @@ namespace {
 		RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
 		RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 		RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
+		RegisterComponent( new Collider( ), sizeof( Collider ), "Collider" );
 	}
 }
 
@@ -113,11 +114,55 @@ void Pine::Components::Dispose( )
 	}
 }
 
-int Pine::Components::GetComponentCount( ) {
+int Pine::Components::GetComponentTypeCount( ) {
 	return static_cast<int>( g_Components.size( ) );
 }
 
-const char* Pine::Components::GetComponentName( EComponentType type ) {
+int Pine::Components::GetComponentCount( EComponentType type )
+{
+	Component_t* comp = nullptr;
+
+	for ( auto& component : g_Components )
+	{
+		if ( !component.m_Component )
+			continue;
+
+		if ( component.m_Component->GetType( ) == type )
+		{
+			comp = &component;
+			break;
+		}
+	}
+
+	if ( !comp )
+		return 0;
+
+	return FindAvailableDataSlot( comp );
+}
+
+Pine::IComponent* Pine::Components::GetComponent( EComponentType type, int index )
+{
+	Component_t* comp = nullptr;
+
+	for ( auto& component : g_Components )
+	{
+		if ( !component.m_Component )
+			continue;
+
+		if ( component.m_Component->GetType( ) == type )
+		{
+			comp = &component;
+			break;
+		}
+	}
+
+	if ( !comp )
+		return nullptr;
+
+	return reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
+}
+
+const char* Pine::Components::GetComponentTypeName( EComponentType type ) {
 	return g_Components[ static_cast<int>( type ) ].m_Name;
 }
 
@@ -167,7 +212,6 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 
 	Log::Debug( "Pine::Components::CreateComponent( " + std::string( g_Components[ static_cast<int>( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
 
-
 	return componentPtr;
 }
 
@@ -180,6 +224,8 @@ bool Pine::Components::DeleteComponent( IComponent* inputComponent )
 	}
 
 	Log::Debug( "Pine::Components::DeleteComponent( ): standalone -> " + std::to_string( inputComponent->GetStandalone( ) ) );
+
+	inputComponent->OnDestroyed( );
 
 	if ( inputComponent->GetStandalone( ) )
 	{

@@ -18,7 +18,7 @@ namespace {
 
 void Pine::EntityList::Setup( )
 {
-	m_Entities.reserve( 256 );
+	m_Entities.reserve( 128 );
 }
 
 Pine::Entity* Pine::EntityList::CreateEntity( ) {

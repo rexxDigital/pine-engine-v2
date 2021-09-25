@@ -62,7 +62,7 @@ void Pine::Behavior::OnRender( )
 {
 }
 
-void Pine::Behavior::OnDestroy( )
+void Pine::Behavior::OnDestroyed( )
 {
 	if ( m_AttachedScript )
 		m_AttachedScript->RemoveReference( this );

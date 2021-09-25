@@ -119,11 +119,11 @@ namespace {
 				displayComponents.clear( );
 				displayComponentsType.clear( );
 
-				for ( int i = 0; i < Pine::Components::GetComponentCount( ); i++ ) {
+				for ( int i = 0; i < Pine::Components::GetComponentTypeCount( ); i++ ) {
 					components.push_back( static_cast< Pine::EComponentType >( i ) );
 
 					if ( i > 1 ) {
-						displayComponents.push_back( Pine::Components::GetComponentName( components[ i ] ) );
+						displayComponents.push_back( Pine::Components::GetComponentTypeName( components[ i ] ) );
 						displayComponentsType.push_back( static_cast< Pine::EComponentType >( i ) );
 					}
 				}
@@ -146,7 +146,7 @@ namespace {
 					char componentNameLowercase[ 64 ];
 					char searchBufferLowercase[ 64 ];
 
-					auto componentName = Pine::Components::GetComponentName( components[ i ] );
+					auto componentName = Pine::Components::GetComponentTypeName( components[ i ] );
 
 					for ( int j = 0; j < strlen( componentName ) + 1; j++ ) {
 						componentNameLowercase[ j ] = tolower( componentName[ j ] );
@@ -157,7 +157,7 @@ namespace {
 					}
 
 					if ( strstr( componentNameLowercase, searchBufferLowercase ) != 0 ) {
-						displayComponents.push_back( Pine::Components::GetComponentName( components[ i ] ) );
+						displayComponents.push_back( Pine::Components::GetComponentTypeName( components[ i ] ) );
 						displayComponentsType.push_back( components[ i ] );
 					}
 				}

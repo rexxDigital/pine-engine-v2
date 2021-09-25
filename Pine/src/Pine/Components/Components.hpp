@@ -6,6 +6,7 @@
 #include "Camera/Camera.hpp"
 #include "Light/Light.hpp"
 #include "NativeScript/NativeScript.hpp"
+#include "Collider/Collider.hpp"
 
 // To query stuff about components
 namespace Pine::Components
@@ -13,13 +14,19 @@ namespace Pine::Components
 	void Setup( );
 	void Dispose( );
 
-	const char* GetComponentName( EComponentType type );
-	int GetComponentCount( );
+	// Enumerate component types
+	const char* GetComponentTypeName( EComponentType type );
+	int GetComponentTypeCount( );
 
+	// Enumerate components within types
+	int GetComponentCount( EComponentType type );
+	IComponent* GetComponent( EComponentType type, int index );
+
+	// Manage components
 	IComponent* CreateComponent( EComponentType type, bool standalone = false );
+	IComponent* CopyComponent( const IComponent* component, bool standalone );
 	bool DeleteComponent( IComponent* component );
 
-	IComponent* CopyComponent( const IComponent* component, bool standalone );
 
 	namespace Internal
 	{

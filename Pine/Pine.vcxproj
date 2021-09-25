@@ -132,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScriptDebug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScriptDebug.lib;reactphysics3d-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +153,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScript.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScript.lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -179,6 +179,7 @@
     <ClInclude Include="src\Pine\Assets\Terrain\Terrain.hpp" />
     <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp" />
     <ClInclude Include="src\Pine\Components\Camera\Camera.hpp" />
+    <ClInclude Include="src\Pine\Components\Collider\Collider.hpp" />
     <ClInclude Include="src\Pine\Components\Components.hpp" />
     <ClInclude Include="src\Pine\Components\IComponent\IComponent.hpp" />
     <ClInclude Include="src\Pine\Components\Light\Light.hpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.hpp" />
     <ClInclude Include="src\Pine\OpenGL\UniformVariable\UniformVariable.hpp" />
     <ClInclude Include="src\Pine\OpenGL\VertexArray\VertexArray.hpp" />
+    <ClInclude Include="src\Pine\PhysicsManager\PhysicsManager.hpp" />
     <ClInclude Include="src\Pine\Pine.hpp" />
     <ClInclude Include="src\Pine\Rendering\PostProcessing\PostProcessing.hpp" />
     <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp" />
@@ -237,6 +239,7 @@
     <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp" />
     <ClCompile Include="src\Pine\Components\Behavior\Behavior.cpp" />
     <ClCompile Include="src\Pine\Components\Camera\Camera.cpp" />
+    <ClCompile Include="src\Pine\Components\Collider\Collider.cpp" />
     <ClCompile Include="src\Pine\Components\Components.cpp" />
     <ClCompile Include="src\Pine\Components\IComponent\IComponent.cpp" />
     <ClCompile Include="src\Pine\Components\Light\Light.cpp" />
@@ -260,6 +263,7 @@
     <ClCompile Include="src\Pine\OpenGL\UniformBuffer\UniformBuffer.cpp" />
     <ClCompile Include="src\Pine\OpenGL\UniformVariable\UniformVariable.cpp" />
     <ClCompile Include="src\Pine\OpenGL\VertexArray\VertexArray.cpp" />
+    <ClCompile Include="src\Pine\PhysicsManager\PhysicsManager.cpp" />
     <ClCompile Include="src\Pine\Pine.cpp" />
     <ClCompile Include="src\Pine\Rendering\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp" />

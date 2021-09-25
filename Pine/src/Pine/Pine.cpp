@@ -12,6 +12,7 @@
 #include "Components/Components.hpp"
 #include "Core/Log/Log.hpp"
 #include "Input/Input.hpp"
+#include "PhysicsManager/PhysicsManager.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
 #include "ScriptManager/ScriptManager.hpp"
 
@@ -106,6 +107,7 @@ bool Pine::Setup( )
 
 	RenderManager::SetRenderingContext( CreateDefaultRenderingContext( ) );
 
+	PhysicsManager::Setup( );
 	Renderer3D::Setup( );
 	Skybox::Setup( );
 	Gui::Setup( );
@@ -141,10 +143,21 @@ void Pine::Run( )
 
 	glCullFace( GL_BACK );
 
+	double lastFrameTime = 0.f;
+
 	while ( !glfwWindowShouldClose( window ) )
 	{
-		RenderManager::Run( );
+		const double currentTime = glfwGetTime( );
+		const double deltaTime = currentTime - lastFrameTime;
+
+		lastFrameTime = currentTime;
+
 		Input::Update( );
+
+		if ( g_AllowUpdates )
+			PhysicsManager::Update( deltaTime );
+
+		RenderManager::Run( );
 		Gui::Render( );
 
 		glfwSwapBuffers( window );
@@ -166,6 +179,7 @@ void Pine::Terminate( )
 	PostProcessing::Dispose( );
 	ScriptingManager::Dispose( );
 	Components::Dispose( );
+	PhysicsManager::Dispose( );
 
 	Window::Internal::Destroy( );
 }

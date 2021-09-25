@@ -146,7 +146,7 @@ void Pine::Gui::Render( ) {
 		g_GuiRenderCallback( );
 	}
 
-//	Pine::Components::Internal::ShowDebugUI( );
+	//Pine::Components::Internal::ShowDebugUI( );
 
 	glViewport( 0, 0, Window::GetCachedSize(  ).x, Window::GetCachedSize( ).y );
 

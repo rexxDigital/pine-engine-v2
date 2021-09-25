@@ -35,7 +35,7 @@ void Pine::IComponent::OnRender( ) {
 
 }
 
-void Pine::IComponent::OnDestroy( ) {
+void Pine::IComponent::OnDestroyed( ) {
 
 }
 

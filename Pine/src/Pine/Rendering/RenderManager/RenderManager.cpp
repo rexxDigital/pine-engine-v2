@@ -181,7 +181,6 @@ void Pine::RenderManager::Run( ) {
 		g_RenderingCallback( 1 );
 	}
 
-
 	entityRenderTime.Stop( );
 
 	Timer postProcessingTime;

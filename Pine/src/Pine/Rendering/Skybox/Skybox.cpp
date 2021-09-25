@@ -18,7 +18,7 @@ namespace {
 }
 
 void Pine::Skybox::Setup( ) {
-	Log::Debug( "Pine::Skybox::Setup()" );
+	Log::Debug( "Pine::Skybox::Setup( )" );
 
 	const std::vector<float> skyboxVertices = {
 		-1.0f,  1.0f, -1.0f,
