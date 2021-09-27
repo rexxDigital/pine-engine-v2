@@ -35,7 +35,7 @@ namespace Pine
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
 
-		void OnPrePhysicsUpdate( );
+		void OnPrePhysicsUpdate( ) const;
 		void OnPostPhysicsUpdate( ) const;
 
 		void OnCreated( ) override;

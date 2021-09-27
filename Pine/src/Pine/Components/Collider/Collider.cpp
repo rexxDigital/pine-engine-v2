@@ -46,10 +46,10 @@ void Pine::Collider::OnUpdate( float deltaTime )
 
 }
 
-void Pine::Collider::OnPrePhysicsUpdate( )
+void Pine::Collider::OnPrePhysicsUpdate( ) const
 {
-	auto transform = GetParent( )->GetTransform( );
-	auto rotQuat = glm::quat( transform->Rotation );
+	const auto transform = GetParent( )->GetTransform( );
+	const auto rotQuat = glm::quat( transform->Rotation );
 
 	reactphysics3d::Transform tr;
 

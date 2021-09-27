@@ -138,26 +138,22 @@ void Pine::Run( )
 
 	const auto window = Window::Internal::GetWindowPointer( );
 
-	glEnable( GL_DEPTH_TEST );
 	glEnable( GL_CULL_FACE );
-
 	glCullFace( GL_BACK );
 
-	double lastFrameTime = 0.f;
+	double lastFrameTime = 0;
 
 	while ( !glfwWindowShouldClose( window ) )
 	{
+		// Calculate delta time
 		const double currentTime = glfwGetTime( );
 		const double deltaTime = currentTime - lastFrameTime;
-
 		lastFrameTime = currentTime;
 
 		Input::Update( );
+		PhysicsManager::Update( deltaTime );
 
-		if ( g_AllowUpdates )
-			PhysicsManager::Update( deltaTime );
-
-		RenderManager::Run( );
+		RenderManager::Render( );
 		Gui::Render( );
 
 		glfwSwapBuffers( window );

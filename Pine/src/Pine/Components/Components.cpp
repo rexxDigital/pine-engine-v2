@@ -201,7 +201,6 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 		return nullptr;
 	}
 
-	// How do you do this properly?
 	const auto componentPtr = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
 	memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
@@ -304,7 +303,6 @@ Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* input
 			return nullptr;
 		}
 
-		// How do you do this properly?
 		component = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
 		comp->m_DataValid[ slot ] = true;

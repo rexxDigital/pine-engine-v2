@@ -1,5 +1,6 @@
 #include "PhysicsManager.hpp"
 #include "../Components/Components.hpp"
+#include "../Pine.hpp"
 
 namespace
 {
@@ -23,8 +24,11 @@ void Pine::PhysicsManager::Dispose( )
 
 void Pine::PhysicsManager::Update( const double deltaTime )
 {
+	if ( !Pine::IsAllowingUpdates( ) )
+		return;
+
 	static double accumulator = 0.0;
-	constexpr double timeStep = 1.0f / 60.0f;
+	constexpr double timeStep = 1.0 / 60.0; // we'll target 60 for now
 
 	accumulator += deltaTime;
 

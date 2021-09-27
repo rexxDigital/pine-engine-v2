@@ -40,7 +40,7 @@ namespace {
 
 }
 
-void Pine::RenderManager::Run( ) {
+void Pine::RenderManager::Render( ) {
 	if ( !VerifyRenderingContext( g_RenderingContext ) ) {
 		return;
 	}

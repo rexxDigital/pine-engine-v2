@@ -18,6 +18,6 @@ namespace Pine::RenderManager {
 	void FinishSceneRendering(  );
 	
 	void Setup( );
-	void Run( );
+	void Render( );
 
 }
