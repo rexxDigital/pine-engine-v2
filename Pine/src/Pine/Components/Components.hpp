@@ -7,6 +7,7 @@
 #include "Light/Light.hpp"
 #include "NativeScript/NativeScript.hpp"
 #include "Collider/Collider.hpp"
+#include "RigidBody/RigidBody.hpp"
 
 // To query stuff about components
 namespace Pine::Components

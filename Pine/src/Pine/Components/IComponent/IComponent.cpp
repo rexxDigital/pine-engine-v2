@@ -44,6 +44,11 @@ void Pine::IComponent::OnCreated( )
 
 }
 
+void Pine::IComponent::OnCopied( const IComponent* old )
+{
+
+}
+
 void Pine::IComponent::LoadFromJson( nlohmann::json& j )
 {
 

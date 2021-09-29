@@ -11,6 +11,7 @@
 #include "ImGui/imgui.h"
 #include "Pine/Components/Behavior/Behavior.hpp"
 #include "Pine/Components/Light/Light.hpp"
+#include "Pine/Components/rigidbody/RigidBody.hpp"
 #include "Pine/Components/TerrainRenderer/TerrainRenderer.hpp"
 
 using namespace Editor::Gui;
@@ -136,6 +137,28 @@ namespace {
 		}
 	}
 
+	void RenderRigidBody( Pine::RigidBody* rigidBody )
+	{
+		int currentType = static_cast< int >( rigidBody->GetRigidBodyType( ) );
+		float currentMass = rigidBody->GetMass( );
+		bool currentGravityEnabled = rigidBody->GetGravityEnabled( );
+
+		if ( Widgets::Combobox( "Type", currentType, "Static\0Kinematic\0Dynamic\0" ) )
+		{
+			rigidBody->SetRigidBodyType( static_cast< Pine::RigidBodyType >( currentType ) );
+		}
+
+		if ( Widgets::SliderFloat( "Mass", currentMass, 0.f, 10000.f, "%.2f kg" ) )
+		{
+			rigidBody->SetMass( currentMass );
+		}
+
+		if ( Widgets::Checkbox( "Enable Gravity", currentGravityEnabled ) )
+		{
+			rigidBody->SetGravityEnabled( currentGravityEnabled );
+		}
+	}
+
 }
 
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
@@ -153,6 +176,8 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderBehavior( dynamic_cast< Pine::Behavior* >( component ) ); break;
 	case Pine::EComponentType::TerrainRenderer:
 		RenderTerrainRenderer( dynamic_cast< Pine::TerrainRenderer* >( component ) ); break;
+	case Pine::EComponentType::RigidBody:
+		RenderRigidBody( dynamic_cast< Pine::RigidBody* >( component ) ); break;
 	default:
 		break;
 	}

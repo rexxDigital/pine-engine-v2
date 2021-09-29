@@ -84,13 +84,14 @@ namespace {
 
 		RegisterComponent( nullptr, 0, "Invalid" );
 		RegisterComponent( new Transform( ), sizeof( Transform ), "Transform" );
-		RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "ModelRenderer" );
+		RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "Model Renderer" );
 		RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
 		RegisterComponent( new Light( ), sizeof( Light ), "Light" );
 		RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
 		RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 		RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
 		RegisterComponent( new Collider( ), sizeof( Collider ), "Collider" );
+		RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 	}
 }
 
@@ -190,6 +191,8 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 
 		memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
 
+		component->OnCreated( );
+
 		return component;
 	}
 
@@ -210,6 +213,8 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 	componentPtr->SetStandalone( false );
 
 	Log::Debug( "Pine::Components::CreateComponent( " + std::string( g_Components[ static_cast<int>( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
+
+	componentPtr->OnCreated( );
 
 	return componentPtr;
 }
@@ -308,9 +313,16 @@ Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* input
 		comp->m_DataValid[ slot ] = true;
 	}
 
+	// By doing a simple memory copy we'll obviously only copy all the data within the component object itself only, including
+	// pointers and such to other objects, but this means it won't copy the the data within the pointers, and will probably cause issues
+	// for example the physics library.
+
 	memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
 
 	component->SetStandalone( standalone );
+
+	component->OnCreated( );
+	component->OnCopied( inputComponent );
 
 	return component;
 }

@@ -17,7 +17,7 @@ namespace Pine {
 		glm::vec3 m_Attenuation = glm::vec3( 1.f, 0.045f, 0.0075 );
 	public:
 		Light( );
-
+		
 		void SetLightColor( glm::vec3 lightColor );
 		const glm::vec3& GetLightColor( ) const;
 

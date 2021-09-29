@@ -161,7 +161,6 @@ void Pine::Entity::AddComponent( EComponentType type )
 
 void Pine::Entity::RegisterComponent( IComponent* component ) {
 	component->SetParent( this );
-	component->OnCreated( );
 
 	m_Components.push_back( component );
 }

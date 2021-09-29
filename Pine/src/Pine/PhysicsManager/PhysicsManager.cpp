@@ -17,8 +17,6 @@ void Pine::PhysicsManager::Setup( )
 
 void Pine::PhysicsManager::Dispose( )
 {
-//	m_PhysicsCommon->destroyPhysicsWorld( m_PhysicsWorld );
-
 	delete m_PhysicsCommon;
 }
 
@@ -32,12 +30,12 @@ void Pine::PhysicsManager::Update( const double deltaTime )
 
 	accumulator += deltaTime;
 
-	const auto colliderCount = Components::GetComponentCount( EComponentType::Collider );
+	const auto colliderCount = Components::GetComponentCount( EComponentType::RigidBody );
 
 	// Call pre-physics update
 	for ( int i = 0; i < colliderCount;i++ )
 	{
-		dynamic_cast<Pine::Collider*>( Components::GetComponent( EComponentType::Collider, i ) )->OnPrePhysicsUpdate( );
+		dynamic_cast<Pine::RigidBody*>( Components::GetComponent( EComponentType::RigidBody, i ) )->OnPrePhysicsUpdate( );
 	}
 
 	while ( accumulator >= timeStep ) {
@@ -49,7 +47,7 @@ void Pine::PhysicsManager::Update( const double deltaTime )
 	// Call post-physics update
 	for ( int i = 0; i < colliderCount; i++ )
 	{
-		dynamic_cast<Pine::Collider*>( Components::GetComponent( EComponentType::Collider, i ) )->OnPostPhysicsUpdate( );
+		dynamic_cast<Pine::RigidBody*>( Components::GetComponent( EComponentType::RigidBody, i ) )->OnPostPhysicsUpdate( );
 	}
 }
 
