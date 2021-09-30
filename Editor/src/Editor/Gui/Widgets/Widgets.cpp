@@ -31,7 +31,7 @@ namespace {
 		return std::nullopt;
 	}
 
-	Pine::IAsset* FindAssetFromAbsoulePath( const std::string& path ) {
+	Pine::IAsset* FindAssetFromAbsolutePath( const std::string& path ) {
 		for ( auto& a : Pine::Assets::GetAssets( ) ) {
 			if ( a.second->GetAbsoluteFilePath( ) == path ) {
 				return a.second;
@@ -42,7 +42,7 @@ namespace {
 	}
 }
 
-void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
+bool Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 
 	const float size = 50.f;
 
@@ -57,17 +57,17 @@ void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 	ImGui::Columns( 3, nullptr, false );
 
 	ImGui::SetNextItemWidth( size );
-	ImGui::DragFloat( std::string( "X##" + str ).c_str( ), &vec.x, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool xChanged = ImGui::DragFloat( std::string( "X##" + str ).c_str( ), &vec.x, 0.01f, -FLT_MAX, FLT_MAX );
 
 	ImGui::NextColumn( );
 
 	ImGui::SetNextItemWidth( size );
-	ImGui::DragFloat( std::string( "Y##" + str ).c_str( ), &vec.y, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool yChanged = ImGui::DragFloat( std::string( "Y##" + str ).c_str( ), &vec.y, 0.01f, -FLT_MAX, FLT_MAX );
 
 	ImGui::NextColumn( );
 
 	ImGui::SetNextItemWidth( size );
-	ImGui::DragFloat( std::string( "Z##" + str ).c_str( ), &vec.z, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool zChanged = ImGui::DragFloat( std::string( "Z##" + str ).c_str( ), &vec.z, 0.01f, -FLT_MAX, FLT_MAX );
 
 	ImGui::Columns( 1 );
 
@@ -75,6 +75,7 @@ void Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 
 	ImGui::Columns( 1 );
 
+	return xChanged || yChanged || zChanged;
 }
 
 bool Editor::Gui::Widgets::SliderFloat( const std::string& str, float& value, float min, float max, const std::string& format ) {
@@ -190,7 +191,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 	if ( ImGui::Button( std::string( "...##" + str ).c_str( ) ) ) {
 		auto file = OpenFile( "Asset File (*.*)\0*.*\0" );
 		if ( file ) {
-			if ( auto a = FindAssetFromAbsoulePath( *file ) ) {
+			if ( auto a = FindAssetFromAbsolutePath( *file ) ) {
 				if ( shouldRestrictType && a->GetType( ) == type ) {
 					returnValue.asset = a;
 					returnValue.valid = true;

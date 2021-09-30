@@ -8,6 +8,24 @@
 #include "../../Entity/Entity.hpp"
 #include "../../Core/Log/Log.hpp"
 
+#include "../Collider3D/Collider3D.hpp"
+
+void Pine::RigidBody::UpdateColliders( )
+{
+	auto collider = m_Parent->GetComponent<Pine::Collider3D>( );
+
+	if ( !collider )
+	{
+		return;
+	}
+
+	if ( m_RigidBody->getNbColliders(  ) == 0 )
+	{
+		
+	}
+
+}
+
 Pine::RigidBody::RigidBody( )
 {
 	m_ComponentType = EComponentType::RigidBody;
@@ -18,42 +36,29 @@ reactphysics3d::RigidBody* Pine::RigidBody::GetRigidBody( ) const
 	return m_RigidBody;
 }
 
-void Pine::RigidBody::SetMass( float mass ) const
+void Pine::RigidBody::SetMass( float mass )
 {
-	m_RigidBody->setMass( mass );
+	m_Mass = mass;
 }
 
 float Pine::RigidBody::GetMass( ) const
 {
-	return m_RigidBody->getMass( );
+	return m_Mass;
 }
 
-void Pine::RigidBody::SetGravityEnabled( bool value ) const
+void Pine::RigidBody::SetGravityEnabled( bool value )
 {
-	m_RigidBody->enableGravity( value );
+	m_GravityEnabled = value;
 }
 
 bool Pine::RigidBody::GetGravityEnabled( ) const
 {
-	return m_RigidBody->isGravityEnabled( );
+	return m_GravityEnabled;
 }
 
 void Pine::RigidBody::SetRigidBodyType( RigidBodyType type )
 {
 	m_RigidBodyType = type;
-
-	switch ( type )
-	{
-	case RigidBodyType::Static:
-		m_RigidBody->setType( reactphysics3d::BodyType::STATIC );
-		break;
-	case RigidBodyType::Kinematic:
-		m_RigidBody->setType( reactphysics3d::BodyType::KINEMATIC );
-		break;
-	case RigidBodyType::Dynamic:
-		m_RigidBody->setType( reactphysics3d::BodyType::DYNAMIC );
-		break;
-	}
 }
 
 Pine::RigidBodyType Pine::RigidBody::GetRigidBodyType( ) const
@@ -74,6 +79,21 @@ void Pine::RigidBody::OnPrePhysicsUpdate( ) const
 	tr.setOrientation( reactphysics3d::Quaternion::fromEulerAngles( reactphysics3d::Vector3( rotRadians.x, rotRadians.y, rotRadians.z ) ) );
 
 	m_RigidBody->setTransform( tr );
+	m_RigidBody->setMass( m_Mass );
+	m_RigidBody->enableGravity( m_GravityEnabled );
+
+	switch ( m_RigidBodyType )
+	{
+	case RigidBodyType::Static:
+		m_RigidBody->setType( reactphysics3d::BodyType::STATIC );
+		break;
+	case RigidBodyType::Kinematic:
+		m_RigidBody->setType( reactphysics3d::BodyType::KINEMATIC );
+		break;
+	case RigidBodyType::Dynamic:
+		m_RigidBody->setType( reactphysics3d::BodyType::DYNAMIC );
+		break;
+	}
 }
 
 void Pine::RigidBody::OnPostPhysicsUpdate( ) const
@@ -87,21 +107,20 @@ void Pine::RigidBody::OnPostPhysicsUpdate( ) const
 
 void Pine::RigidBody::OnCreated( )
 {
+	if ( m_Standalone )
+		return;
+
 	m_RigidBody = PhysicsManager::CreateRigidBody( m_PhysicsTransform );
 }
 
 void Pine::RigidBody::OnCopied( const IComponent* old )
 {
-	const auto oldRigidBody = dynamic_cast< const Pine::RigidBody* >( old );
-
-	SetMass( oldRigidBody->GetMass( ) );
-	SetGravityEnabled( oldRigidBody->GetGravityEnabled( ) );
-	SetRigidBodyType( oldRigidBody->GetRigidBodyType( ) );
 }
 
 void Pine::RigidBody::OnDestroyed( )
 {
-	PhysicsManager::DestroyRigidBody( m_RigidBody );
+	if ( m_RigidBody )
+		PhysicsManager::DestroyRigidBody( m_RigidBody );
 }
 
 void Pine::RigidBody::OnSetup( )
@@ -123,6 +142,7 @@ void Pine::RigidBody::SaveToJson( nlohmann::json& j )
 void Pine::RigidBody::LoadFromJson( nlohmann::json& j )
 {
 	SetRigidBodyType( static_cast< Pine::RigidBodyType >( j[ "rgType" ].get<int>( ) ) );
-	m_RigidBody->setMass( m_RigidBody->getMass( ) );
-	m_RigidBody->enableGravity( j[ "gvEnabled" ] );
+
+	m_Mass = j[ "mass" ];
+	m_GravityEnabled = j[ "gvEnabled" ];
 }

@@ -90,7 +90,7 @@ namespace {
 		RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
 		RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 		RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
-		RegisterComponent( new Collider( ), sizeof( Collider ), "Collider" );
+		RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
 		RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 	}
 }

@@ -14,7 +14,7 @@ namespace Pine
 		NativeScript,
 		Behavior,
 		TerrainRenderer,
-		Collider,
+		Collider3D,
 		RigidBody
 	};
 
@@ -27,7 +27,7 @@ namespace Pine
 		"Native Script",
 		"Behavior",
 		"Terrain Renderer",
-		"Collider",
+		"Collider3D",
 		"Rigid Body"
 	};
 

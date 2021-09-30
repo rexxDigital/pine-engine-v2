@@ -11,8 +11,9 @@
 #include "ImGui/imgui.h"
 #include "Pine/Components/Behavior/Behavior.hpp"
 #include "Pine/Components/Light/Light.hpp"
-#include "Pine/Components/rigidbody/RigidBody.hpp"
+#include "Pine/Components/RigidBody//RigidBody.hpp"
 #include "Pine/Components/TerrainRenderer/TerrainRenderer.hpp"
+#include "Pine/Components/Collider3D/Collider3D.hpp"
 
 using namespace Editor::Gui;
 
@@ -159,6 +160,59 @@ namespace {
 		}
 	}
 
+	void RenderCollider3D( Pine::Collider3D* collider3d )
+	{
+		int currentType = static_cast< int >( collider3d->GetColliderType( ) ) - 1; // - 1 because we don't want to show the "Invalid" option to the user
+
+		glm::vec3 currentPosition = collider3d->GetPosition( );
+		glm::vec3 currentSize = collider3d->GetSize( );
+
+		float currentRadius = collider3d->GetRadius( );
+		float currentHeight = collider3d->GetHeight( );
+
+		if ( Widgets::Combobox( "Collider Type" , currentType, "Box\0Sphere\0Capsule\0Convex Mesh\0Concave Mesh\0Height field\0") )
+		{
+			collider3d->SetColliderType( static_cast< Pine::ColliderType >( currentType + 1 ) );
+		}
+
+		ImGui::Spacing( );
+
+		if ( Widgets::Vector3( "Collider Position", currentPosition ) )
+		{
+			collider3d->SetPosition( currentPosition );
+		}
+
+		if ( currentType == 0 )
+		{
+			if ( Widgets::Vector3( "Collider Size", currentSize ) )
+			{
+				collider3d->SetSize( currentSize );
+			}
+		}
+
+		if ( currentType == 1 )
+		{
+			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 1000.f, "%.1f" ) )
+			{
+				collider3d->SetRadius( currentRadius );
+			}
+		}
+
+		if ( currentType == 2 )
+		{
+			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 1000.f, "%.1f m" ) )
+			{
+				collider3d->SetRadius( currentRadius );
+			}
+
+			if ( Widgets::SliderFloat( "Height", currentHeight, 0.f, 1000.f, "%.1f m" ) )
+			{
+				collider3d->SetHeight( currentHeight );
+			}
+		}
+
+	}
+ 
 }
 
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
@@ -178,6 +232,8 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderTerrainRenderer( dynamic_cast< Pine::TerrainRenderer* >( component ) ); break;
 	case Pine::EComponentType::RigidBody:
 		RenderRigidBody( dynamic_cast< Pine::RigidBody* >( component ) ); break;
+	case Pine::EComponentType::Collider3D:
+		RenderCollider3D( dynamic_cast< Pine::Collider3D* >( component ) ); break;
 	default:
 		break;
 	}

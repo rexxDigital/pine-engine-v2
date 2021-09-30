@@ -6,7 +6,7 @@
 #include "Camera/Camera.hpp"
 #include "Light/Light.hpp"
 #include "NativeScript/NativeScript.hpp"
-#include "Collider/Collider.hpp"
+#include "Collider3D/Collider3D.hpp"
 #include "RigidBody/RigidBody.hpp"
 
 // To query stuff about components

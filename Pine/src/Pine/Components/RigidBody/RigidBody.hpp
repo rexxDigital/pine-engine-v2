@@ -11,22 +11,31 @@ namespace Pine
 		Dynamic
 	};
 
+	class Collider3D;
+
 	class RigidBody : public IComponent
 	{
 	private:
 		reactphysics3d::Transform m_PhysicsTransform;
 		reactphysics3d::RigidBody* m_RigidBody{ };
 
+		float m_Mass = 1.0f;
+		bool m_GravityEnabled = true;
+
 		RigidBodyType m_RigidBodyType = RigidBodyType::Kinematic;
+
+		std::vector<Collider3D*> m_AttachedColliders;
+
+		void UpdateColliders( );
 	public:
 		RigidBody( );
 
 		reactphysics3d::RigidBody* GetRigidBody( ) const;
 
-		void SetMass( float mass ) const;
+		void SetMass( float mass );
 		float GetMass( ) const;
 
-		void SetGravityEnabled( bool value ) const;
+		void SetGravityEnabled( bool value );
 		bool GetGravityEnabled( ) const;
 
 		void SetRigidBodyType( RigidBodyType type );

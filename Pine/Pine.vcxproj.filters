@@ -183,10 +183,10 @@
     <ClInclude Include="src\Pine\PhysicsManager\PhysicsManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Components\Collider\Collider.hpp">
+    <ClInclude Include="src\Pine\Components\rigidbody\RigidBody.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Components\rigidbody\RigidBody.hpp">
+    <ClInclude Include="src\Pine\Components\Collider3D\Collider3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -356,10 +356,10 @@
     <ClCompile Include="src\Pine\PhysicsManager\PhysicsManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pine\Components\Collider\Collider.cpp">
+    <ClCompile Include="src\Pine\Components\rigidbody\RigidBody.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pine\Components\rigidbody\RigidBody.cpp">
+    <ClCompile Include="src\Pine\Components\Collider3D\Collider3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
