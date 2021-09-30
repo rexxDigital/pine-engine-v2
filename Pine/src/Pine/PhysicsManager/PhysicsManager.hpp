@@ -13,4 +13,10 @@ namespace Pine::PhysicsManager
 	// This is the main physics world used by all the entities.
 	reactphysics3d::PhysicsWorld* GetPhysicsWorld( );
 
+	// These are quick wrappers for creating and destroying stuff within the physics library,
+	// they are used so we can more easily keep track of allocations.
+
+	reactphysics3d::RigidBody* CreateRigidBody( const reactphysics3d::Transform& transform );
+	void DestroyRigidBody( reactphysics3d::RigidBody* body );
+
 }

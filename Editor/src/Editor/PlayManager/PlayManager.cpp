@@ -57,6 +57,8 @@ void Editor::PlayManager::Stop( )
 		g_BackupLevel->Load( );
 	}
 
+	g_BackupLevel->DisposeBlueprints( );
+
 	g_IsPlaying = false;
 }
 

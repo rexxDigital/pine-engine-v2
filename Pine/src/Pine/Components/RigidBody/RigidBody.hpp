@@ -15,7 +15,7 @@ namespace Pine
 	{
 	private:
 		reactphysics3d::Transform m_PhysicsTransform;
-		reactphysics3d::RigidBody* m_RigidBody;
+		reactphysics3d::RigidBody* m_RigidBody{ };
 
 		RigidBodyType m_RigidBodyType = RigidBodyType::Kinematic;
 	public:
@@ -23,10 +23,10 @@ namespace Pine
 
 		reactphysics3d::RigidBody* GetRigidBody( ) const;
 
-		void SetMass( float mass );
+		void SetMass( float mass ) const;
 		float GetMass( ) const;
 
-		void SetGravityEnabled( bool value );
+		void SetGravityEnabled( bool value ) const;
 		bool GetGravityEnabled( ) const;
 
 		void SetRigidBodyType( RigidBodyType type );

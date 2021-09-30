@@ -18,7 +18,7 @@ reactphysics3d::RigidBody* Pine::RigidBody::GetRigidBody( ) const
 	return m_RigidBody;
 }
 
-void Pine::RigidBody::SetMass( float mass )
+void Pine::RigidBody::SetMass( float mass ) const
 {
 	m_RigidBody->setMass( mass );
 }
@@ -28,7 +28,7 @@ float Pine::RigidBody::GetMass( ) const
 	return m_RigidBody->getMass( );
 }
 
-void Pine::RigidBody::SetGravityEnabled( bool value )
+void Pine::RigidBody::SetGravityEnabled( bool value ) const
 {
 	m_RigidBody->enableGravity( value );
 }
@@ -79,25 +79,19 @@ void Pine::RigidBody::OnPrePhysicsUpdate( ) const
 void Pine::RigidBody::OnPostPhysicsUpdate( ) const
 {
 	const auto transform = GetParent( )->GetTransform( );
-	const auto physTransform = m_RigidBody->getTransform( );
+	const auto& physTransform = m_RigidBody->getTransform( );
 
 	transform->Rotation = glm::eulerAngles( glm::quat( physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z, physTransform.getOrientation( ).w ) );
 	transform->Position = glm::vec3( physTransform.getPosition( ).x, physTransform.getPosition( ).y, physTransform.getPosition( ).z );
 }
 
-int m_OriginalInstance = 0;
-
 void Pine::RigidBody::OnCreated( )
 {
-	Pine::Log::Debug( "Pine::RigidBody::OnCreated( )" );
-
-	m_RigidBody = PhysicsManager::GetPhysicsWorld( )->createRigidBody( m_PhysicsTransform );
+	m_RigidBody = PhysicsManager::CreateRigidBody( m_PhysicsTransform );
 }
 
 void Pine::RigidBody::OnCopied( const IComponent* old )
 {
-	Pine::Log::Debug( "Pine::RigidBody::OnCopied( )" + std::to_string( m_OriginalInstance ) );
-
 	const auto oldRigidBody = dynamic_cast< const Pine::RigidBody* >( old );
 
 	SetMass( oldRigidBody->GetMass( ) );
@@ -107,9 +101,7 @@ void Pine::RigidBody::OnCopied( const IComponent* old )
 
 void Pine::RigidBody::OnDestroyed( )
 {
-	Pine::Log::Debug( "Pine::RigidBody::OnDestroyed( ): " + std::to_string( m_OriginalInstance ) );
-
-	PhysicsManager::GetPhysicsWorld( )->destroyRigidBody( m_RigidBody );
+	PhysicsManager::DestroyRigidBody( m_RigidBody );
 }
 
 void Pine::RigidBody::OnSetup( )
@@ -123,14 +115,14 @@ void Pine::RigidBody::OnUpdate( float deltaTime )
 
 void Pine::RigidBody::SaveToJson( nlohmann::json& j )
 {
-	j[ "type" ] = m_RigidBodyType;
+	j[ "rgType" ] = m_RigidBodyType;
 	j[ "mass" ] = m_RigidBody->getMass( );
 	j[ "gvEnabled" ] = m_RigidBody->isGravityEnabled( );
 } 
 
 void Pine::RigidBody::LoadFromJson( nlohmann::json& j )
 {
-	SetRigidBodyType( static_cast< Pine::RigidBodyType >( j[ "type" ].get<int>( ) ) );
+	SetRigidBodyType( static_cast< Pine::RigidBodyType >( j[ "rgType" ].get<int>( ) ) );
 	m_RigidBody->setMass( m_RigidBody->getMass( ) );
 	m_RigidBody->enableGravity( j[ "gvEnabled" ] );
 }

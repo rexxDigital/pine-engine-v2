@@ -26,7 +26,7 @@ void Pine::PhysicsManager::Update( const double deltaTime )
 		return;
 
 	static double accumulator = 0.0;
-	constexpr double timeStep = 1.0 / 60.0; // we'll target 60 for now
+	constexpr float timeStep = 1.0 / 60.0; // we'll target 60 for now
 
 	accumulator += deltaTime;
 
@@ -35,7 +35,12 @@ void Pine::PhysicsManager::Update( const double deltaTime )
 	// Call pre-physics update
 	for ( int i = 0; i < colliderCount;i++ )
 	{
-		dynamic_cast<Pine::RigidBody*>( Components::GetComponent( EComponentType::RigidBody, i ) )->OnPrePhysicsUpdate( );
+		const auto component = Components::GetComponent( EComponentType::RigidBody, i );
+
+		if ( !component )
+			continue;
+
+		dynamic_cast<Pine::RigidBody*>( component )->OnPrePhysicsUpdate( );
 	}
 
 	while ( accumulator >= timeStep ) {
@@ -47,7 +52,12 @@ void Pine::PhysicsManager::Update( const double deltaTime )
 	// Call post-physics update
 	for ( int i = 0; i < colliderCount; i++ )
 	{
-		dynamic_cast<Pine::RigidBody*>( Components::GetComponent( EComponentType::RigidBody, i ) )->OnPostPhysicsUpdate( );
+		const auto component = Components::GetComponent( EComponentType::RigidBody, i );
+
+		if ( !component )
+			continue;
+
+		dynamic_cast<Pine::RigidBody*>( component )->OnPostPhysicsUpdate( );
 	}
 }
 
@@ -59,4 +69,14 @@ reactphysics3d::PhysicsCommon* Pine::PhysicsManager::GetPhysicsCommon( )
 reactphysics3d::PhysicsWorld* Pine::PhysicsManager::GetPhysicsWorld( )
 {
 	return m_PhysicsWorld;
+}
+
+reactphysics3d::RigidBody* Pine::PhysicsManager::CreateRigidBody( const reactphysics3d::Transform& transform )
+{
+	return m_PhysicsWorld->createRigidBody( transform );
+}
+
+void Pine::PhysicsManager::DestroyRigidBody( reactphysics3d::RigidBody* body )
+{
+	m_PhysicsWorld->destroyRigidBody( body );
 }

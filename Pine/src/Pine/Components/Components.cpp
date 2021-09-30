@@ -106,8 +106,18 @@ void Pine::Components::Dispose( )
 {
 	Log::Debug( "Pine::Components::Dispose( )" );
 
-	for ( const auto& component : g_Components )
+	for ( auto& component : g_Components )
 	{
+		const int size = FindAvailableDataSlot( &component );
+
+		for ( int i = 0; i < size;i++ )
+		{
+			const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( component.m_Data ) + ( component.m_ComponentSize * i ) );
+
+			if ( component.m_DataValid[ i ] )
+				componentPtr->OnDestroyed( );
+		}
+
 		if ( component.m_Data )
 			free( component.m_Data );
 		if ( component.m_DataValid )
@@ -158,6 +168,9 @@ Pine::IComponent* Pine::Components::GetComponent( EComponentType type, int index
 	}
 
 	if ( !comp )
+		return nullptr;
+
+	if ( !comp->m_DataValid[ index ] )
 		return nullptr;
 
 	return reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
