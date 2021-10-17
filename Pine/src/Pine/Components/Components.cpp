@@ -25,7 +25,7 @@ namespace {
 
 	std::vector<Component_t> g_Components;
 
-	int FindAvailableDataSlot( Component_t* comp )
+	int FindAvailableDataSlot( const Component_t* comp )
 	{
 		for ( int i = 0; i < comp->m_DataValidSize; i++ )
 		{
@@ -42,7 +42,7 @@ namespace {
 			return;
 
 		void* data = malloc( elementSize * newSize );
-		bool* dataValid = static_cast<bool*>( malloc( newSize ) );
+		bool* dataValid = static_cast< bool* >( malloc( newSize ) );
 
 		if ( !data || !dataValid )
 			return;
@@ -110,7 +110,7 @@ void Pine::Components::Dispose( )
 	{
 		const int size = FindAvailableDataSlot( &component );
 
-		for ( int i = 0; i < size;i++ )
+		for ( int i = 0; i < size; i++ )
 		{
 			const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( component.m_Data ) + ( component.m_ComponentSize * i ) );
 
@@ -126,7 +126,7 @@ void Pine::Components::Dispose( )
 }
 
 int Pine::Components::GetComponentTypeCount( ) {
-	return static_cast<int>( g_Components.size( ) );
+	return static_cast< int >( g_Components.size( ) );
 }
 
 int Pine::Components::GetComponentCount( EComponentType type )
@@ -173,11 +173,11 @@ Pine::IComponent* Pine::Components::GetComponent( EComponentType type, int index
 	if ( !comp->m_DataValid[ index ] )
 		return nullptr;
 
-	return reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
+	return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
 }
 
 const char* Pine::Components::GetComponentTypeName( EComponentType type ) {
-	return g_Components[ static_cast<int>( type ) ].m_Name;
+	return g_Components[ static_cast< int >( type ) ].m_Name;
 }
 
 Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool standalone ) {
@@ -200,7 +200,7 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 
 	if ( standalone )
 	{
-		const auto component = static_cast<IComponent*>( malloc( comp->m_ComponentSize ) );
+		const auto component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
 
 		memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
 
@@ -217,7 +217,7 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 		return nullptr;
 	}
 
-	const auto componentPtr = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+	const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
 	memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
 
@@ -225,7 +225,7 @@ Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool s
 
 	componentPtr->SetStandalone( false );
 
-	Log::Debug( "Pine::Components::CreateComponent( " + std::string( g_Components[ static_cast<int>( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
+	Log::Debug( "Pine::Components::CreateComponent( " + std::string( g_Components[ static_cast< int >( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
 
 	componentPtr->OnCreated( );
 
@@ -270,7 +270,7 @@ bool Pine::Components::DeleteComponent( IComponent* inputComponent )
 
 	for ( int i = 0; i < comp->m_DataValidSize; i++ )
 	{
-		const auto componentPtr = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
+		const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
 
 		if ( componentPtr == inputComponent )
 		{
@@ -309,7 +309,7 @@ Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* input
 
 	if ( standalone )
 	{
-		component = static_cast<IComponent*>( malloc( comp->m_ComponentSize ) );
+		component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
 	}
 	else
 	{
@@ -321,7 +321,7 @@ Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* input
 			return nullptr;
 		}
 
-		component = reinterpret_cast<IComponent*>( reinterpret_cast<std::uintptr_t>( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+		component = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
 		comp->m_DataValid[ slot ] = true;
 	}

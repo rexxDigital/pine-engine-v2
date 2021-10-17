@@ -37,7 +37,7 @@ namespace Pine {
 		std::filesystem::path m_FilePath;
 
 		std::string m_FileName = "";
-		std::string m_AbsoulteFilePath = "";
+		std::string m_AbsoluteFilePath = "";
 		
 		EAssetType m_Type = EAssetType::Invalid;
 		
@@ -46,6 +46,9 @@ namespace Pine {
 		bool m_ReadOnly = false;
 		bool m_Updated = false;
 		bool m_IsMapped = false;
+
+		// If the asset has actually been loaded to memory, for example a texture is actually on the GPU.
+		bool m_InMemory = false;
 	public:
 		virtual ~IAsset( ) = default;
 

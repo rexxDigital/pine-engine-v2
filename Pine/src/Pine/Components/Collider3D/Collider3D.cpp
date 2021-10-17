@@ -7,6 +7,7 @@
 #include "../../PhysicsManager/PhysicsManager.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../Core/Log/Log.hpp"
+#include "../rigidbody/RigidBody.hpp"
 
 namespace Pine
 {
@@ -18,7 +19,7 @@ void Pine::Collider3D::UpdateBody( )
 	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
 
 	// If we already have a rigid body, we don't want a collision body.
-	if ( rigidBody ) 
+	if ( rigidBody )
 	{
 		if ( m_Body )
 		{
@@ -33,6 +34,21 @@ void Pine::Collider3D::UpdateBody( )
 	if ( !m_Body )
 	{
 		m_Body = PhysicsManager::GetPhysicsWorld( )->createCollisionBody( m_PhysTransform );
+	}
+}
+
+void Pine::Collider3D::UpdateParentRigidbody( )
+{
+	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
+
+	if ( !rigidBody )
+	{
+		return;
+	}
+
+	if ( !rigidBody->HasColliderAttached( this ) )
+	{
+		rigidBody->AttachCollider( this );
 	}
 }
 
@@ -62,6 +78,12 @@ void Pine::Collider3D::DisposeShape( )
 {
 	if ( !m_Shape )
 		return;
+
+	if ( const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( ) )
+	{
+		if ( rigidBody->HasColliderAttached( this ) )
+			rigidBody->DetachCollider( this );
+	}
 
 	switch ( m_Type )
 	{
@@ -155,7 +177,7 @@ const glm::vec3& Pine::Collider3D::GetSize( ) const
 }
 
 void Pine::Collider3D::SetRadius( float radius )
-{ 
+{
 	m_Size.x = radius;
 }
 
@@ -172,6 +194,11 @@ void Pine::Collider3D::SetHeight( float height )
 float Pine::Collider3D::GetHeight( ) const
 {
 	return m_Size.y;
+}
+
+reactphysics3d::CollisionShape* Pine::Collider3D::GetCollisionShape( ) const
+{
+	return m_Shape;
 }
 
 void Pine::Collider3D::OnCreated( )
@@ -198,6 +225,7 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 {
 	if ( m_Standalone ) return;
 
+	UpdateParentRigidbody( );
 	UpdateBody( );
 	UpdateShape( );
 
@@ -209,12 +237,12 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 
 	if ( m_Body )
 	{
-		if ( m_Body->getNbColliders(  ) <= 0 )
+		if ( m_Body->getNbColliders( ) <= 0 )
 		{
 			m_Body->addCollider( m_Shape, m_PhysTransform );
 		}
 
-		glm::vec3 finalPosition = m_Parent->GetTransform(  )->Position;
+		glm::vec3 finalPosition = m_Parent->GetTransform( )->Position;
 
 		finalPosition += m_Position;
 
@@ -226,7 +254,7 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 
 void Pine::Collider3D::OnSetup( )
 {
-
+	
 }
 
 void Pine::Collider3D::OnUpdate( float deltaTime )

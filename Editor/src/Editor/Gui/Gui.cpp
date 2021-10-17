@@ -16,10 +16,12 @@ namespace {
 		ImGuiViewport* viewport = ImGui::GetMainViewport( );
 
 		ImGui::SetNextWindowPos( viewport->WorkPos );
-		ImGui::SetNextWindowSize( viewport->WorkSize );
+		ImGui::SetNextWindowSize( ImVec2( viewport->WorkSize.x, viewport->WorkSize.y ) );
 		ImGui::SetNextWindowViewport( viewport->ID );
+
 		ImGui::PushStyleVar( ImGuiStyleVar_WindowRounding, 0.0f );
 		ImGui::PushStyleVar( ImGuiStyleVar_WindowBorderSize, 0.0f );
+
 		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
 		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
@@ -33,14 +35,14 @@ namespace {
 
 		ImGuiID dockspace_id = ImGui::GetID( "DockSpace" );
 
-		ImGui::DockSpace( dockspace_id, ImVec2( 0.0f, 0.0f ), ImGuiDockNodeFlags_None );
+		ImGui::DockSpace( dockspace_id, ImVec2( 0.0f, 0.f ), ImGuiDockNodeFlags_None );
 
 		ImGui::End( );
 	}
 
 	void OnRenderGui( ) {
 		ImGuizmo::BeginFrame( );
-		
+
 		if ( !Editor::ProjectManager::HasProjectOpen( ) ) {
 			Editor::Gui::Windows::RenderProjectWizard( );
 
@@ -51,13 +53,14 @@ namespace {
 
 		ImGui::ShowDemoWindow( );
 		Editor::Gui::MainMenuBar::Render( );
-		
+
 		Editor::Gui::Windows::RenderEntitylist( );
 		Editor::Gui::Windows::RenderViewports( );
 		Editor::Gui::Windows::RenderAssetBrowser( );
 		Editor::Gui::Windows::RenderProperties( );
 		Editor::Gui::Windows::RenderDebugWindows( );
 		Editor::Gui::Windows::RenderLevelSettings( );
+		Editor::Gui::Windows::RenderConsole( );
 	}
 
 }
@@ -68,6 +71,7 @@ void Editor::Gui::Setup( ) {
 
 	Fonts::TitleFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 34.f );
 	Fonts::CodeFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\Consolas.ttf", 13.f );
+	Fonts::BoldFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 24.f );
 
 	Pine::Gui::SetGuiRenderCallback( OnRenderGui );
 

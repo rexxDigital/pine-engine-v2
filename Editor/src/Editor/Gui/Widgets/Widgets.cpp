@@ -146,7 +146,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly );
-	
+
 	if ( ImGui::BeginDragDropTarget( ) ) {
 		if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
 			const auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );
@@ -175,7 +175,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 	{
 		ImGui::BeginTooltip( );
 
-		ImGui::Text( currentAsset->GetPath(  ).string(  ).c_str(  ) );
+		ImGui::Text( currentAsset->GetPath( ).string( ).c_str( ) );
 
 		ImGui::EndTooltip( );
 	}
@@ -310,11 +310,21 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 		if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
 			ImGui::SetDragDropPayload( "Asset", &asset, sizeof( Pine::IAsset* ), 0 );
 
-			ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 32.f, 32.f ) );
+			ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 64.f, 64.f ) );
 
 			ImGui::SameLine( );
 
+			ImGui::BeginChild( "AssetInfo", ImVec2( Fonts::BoldFont->CalcTextSizeA( 24.f, FLT_MAX, -1.f, text.c_str( ), nullptr, nullptr ).x + 2.f, -1.f ) );
+
+			ImGui::PushFont( Fonts::BoldFont );
+
 			ImGui::Text( text.c_str( ) );
+
+			ImGui::PopFont( );
+
+			ImGui::TextColored(  ImVec4( 0.6f, 0.6f, 0.6f, 1.f ), "%s", Pine::SAssetType[ static_cast< int >( asset->GetType( ) ) ] );
+
+			ImGui::EndChild( );
 
 			ImGui::EndDragDropSource( );
 		}
@@ -323,6 +333,7 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 	if ( !showBackground )
 		ImGui::PopStyleColor( );
 
+	ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + ( size / 2.f - ( ImGui::CalcTextSize( text.c_str( ) ).x / 2.f ) ) + 2.f );
 	ImGui::Text( text.c_str( ) );
 
 	ImGui::EndGroup( );

@@ -35,6 +35,7 @@ namespace Pine
 		reactphysics3d::Transform m_PhysTransform;
 
 		void UpdateBody( );
+		void UpdateParentRigidbody( );
 
 		void CreateShape( );
 		void DisposeShape( );
@@ -55,9 +56,11 @@ namespace Pine
 		void SetRadius( float radius );
 		float GetRadius( ) const;
 
-		// Used for capsule
+		// Used for capsule only
 		void SetHeight( float height );
 		float GetHeight( ) const;
+
+		reactphysics3d::CollisionShape* GetCollisionShape( ) const;
 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;

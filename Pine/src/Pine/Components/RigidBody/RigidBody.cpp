@@ -12,16 +12,16 @@
 
 void Pine::RigidBody::UpdateColliders( )
 {
-	auto collider = m_Parent->GetComponent<Pine::Collider3D>( );
+	const auto collider = m_Parent->GetComponent<Pine::Collider3D>( );
 
 	if ( !collider )
 	{
 		return;
 	}
 
-	if ( m_RigidBody->getNbColliders(  ) == 0 )
+	if ( m_RigidBody->getNbColliders( ) == 0 )
 	{
-		
+
 	}
 
 }
@@ -64,6 +64,29 @@ void Pine::RigidBody::SetRigidBodyType( RigidBodyType type )
 Pine::RigidBodyType Pine::RigidBody::GetRigidBodyType( ) const
 {
 	return m_RigidBodyType;
+}
+
+void Pine::RigidBody::AttachCollider( Collider3D* collider )
+{
+	m_AttachedColliders.push_back( collider );
+}
+
+void Pine::RigidBody::DetachCollider( Collider3D* collider )
+{
+	for ( int i = 0; i < m_AttachedColliders.size( ); i++ )
+	{
+		if ( m_AttachedColliders[ i ] == collider )
+		{
+//			m_RigidBody->removeCollider( collider->GetCollisionShape( ) );
+
+			m_AttachedColliders.erase( m_AttachedColliders.begin( ) + i );
+		}
+	}
+}
+
+bool Pine::RigidBody::HasColliderAttached( Collider3D* collider ) const
+{
+	return false;
 }
 
 void Pine::RigidBody::OnPrePhysicsUpdate( ) const
@@ -137,7 +160,7 @@ void Pine::RigidBody::SaveToJson( nlohmann::json& j )
 	j[ "rgType" ] = m_RigidBodyType;
 	j[ "mass" ] = m_RigidBody->getMass( );
 	j[ "gvEnabled" ] = m_RigidBody->isGravityEnabled( );
-} 
+}
 
 void Pine::RigidBody::LoadFromJson( nlohmann::json& j )
 {

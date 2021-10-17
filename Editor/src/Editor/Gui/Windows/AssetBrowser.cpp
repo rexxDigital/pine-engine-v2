@@ -100,10 +100,9 @@ namespace {
 	}
 
 	PathItem_t* g_RootDirectory = nullptr;
-
-	constexpr int IconSize = 48;
-
 	PathItem_t* g_CurrentDirectory = nullptr;
+
+	int g_IconSize = 64;
 
 	void DisplayItems( PathItem_t* dir ) {
 		static auto directoryIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
@@ -120,7 +119,7 @@ namespace {
 			if ( !directory->m_IsDirectory )
 				continue;
 
-			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory, directoryIcon, 48, nullptr ) ) {
+			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory, directoryIcon, g_IconSize, nullptr ) ) {
 				if ( directory->m_DisplayText == "..." ) {
 					g_CurrentDirectory = directory->m_Parent;
 				}
@@ -149,7 +148,7 @@ namespace {
 
 			auto icon = file->m_DisplayIcon != nullptr ? file->m_DisplayIcon : unknownFileIcon;
 
-			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, 48, file->m_Asset ) ) {
+			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset ) ) {
 				if ( file->m_Asset != nullptr ) {
 					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
@@ -214,11 +213,15 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 		ProjectManager::ReloadProjectAssets( );
 	}
 
-	//ImGui::Separator();
+	ImGui::SameLine( );
+
+	ImGui::SetCursorPosX( ImGui::GetWindowWidth( ) - 128.f - 10.f );
+	ImGui::SetNextItemWidth( 128.f );
+	ImGui::InputInt( "##IconSize", &g_IconSize, 4, 16, 0 );
 
 	ImGui::BeginChild( "##Assets", ImVec2( -1.f, -1.f ), true, 0 );
 
-	constexpr int iconSizePadding = IconSize + 16;
+	const int iconSizePadding = g_IconSize + 16;
 
 	const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - ( iconSizePadding * 2 );
 	const int nrColumns = static_cast< int >( spaceAvailable ) / iconSizePadding;

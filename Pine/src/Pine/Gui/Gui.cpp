@@ -3,7 +3,6 @@
 #include "../../ImGui/imgui_impl_glfw.h"
 #include "../../ImGui/imgui_impl_opengl3.h"
 #include "../Core/Window/Window.hpp"
-#include "Console/Console.hpp"
 
 #include <GL/glew.h>
 #include <GLFW\glfw3.h>

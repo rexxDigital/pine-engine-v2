@@ -198,7 +198,6 @@
     <ClInclude Include="src\Pine\Core\Window\Window.hpp" />
     <ClInclude Include="src\Pine\Entitylist\EntityList.hpp" />
     <ClInclude Include="src\Pine\Entity\Entity.hpp" />
-    <ClInclude Include="src\Pine\Gui\Console\Console.hpp" />
     <ClInclude Include="src\Pine\Gui\Gui.hpp" />
     <ClInclude Include="src\Pine\Input\Input.hpp" />
     <ClInclude Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.hpp" />
@@ -257,7 +256,6 @@
     <ClCompile Include="src\Pine\Core\Window\Window.cpp" />
     <ClCompile Include="src\Pine\Entitylist\EntityList.cpp" />
     <ClCompile Include="src\Pine\Entity\Entity.cpp" />
-    <ClCompile Include="src\Pine\Gui\Console\Console.cpp" />
     <ClCompile Include="src\Pine\Gui\Gui.cpp" />
     <ClCompile Include="src\Pine\Input\Input.cpp" />
     <ClCompile Include="src\Pine\OpenGL\FrameBuffer\FrameBuffer.cpp" />

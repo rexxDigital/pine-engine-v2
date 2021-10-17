@@ -160,6 +160,7 @@
     <ClCompile Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.cpp" />
     <ClCompile Include="src\Editor\Gui\Widgets\Widgets.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\AssetBrowser.cpp" />
+    <ClCompile Include="src\Editor\Gui\Windows\Console.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\LevelSettings.cpp" />

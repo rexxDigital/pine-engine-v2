@@ -94,7 +94,7 @@ void Pine::ScriptingManager::CompileScripts( )
 
 	// Go through all scripts, tell em shit has compiled
 	// and let em locate their shit.
-	for ( auto script : compiledScripts )
+	for ( const auto script : compiledScripts )
 	{
 		script->OnCompile( );
 	}

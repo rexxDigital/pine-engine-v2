@@ -6,7 +6,7 @@ void Pine::IAsset::SetFilePath(const std::string& str)
 {
 	m_FilePath = std::filesystem::path(str);
 	m_FileName = m_FilePath.filename().string();
-	m_AbsoulteFilePath = std::filesystem::absolute( m_FilePath ).string( );
+	m_AbsoluteFilePath = std::filesystem::absolute( m_FilePath ).string( );
 }
 
 const std::filesystem::path& Pine::IAsset::GetPath() const
@@ -20,7 +20,7 @@ const std::string& Pine::IAsset::GetFileName() const
 }
 
 const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const {
-	return m_AbsoulteFilePath;
+	return m_AbsoluteFilePath;
 }
 
 Pine::EAssetType Pine::IAsset::GetType() const
@@ -32,7 +32,7 @@ void Pine::IAsset::UpdateLastWriteTime( ) {
 	try
 	{
 		// Apparently only this could break.
-		m_LastWriteTime = std::filesystem::last_write_time( m_AbsoulteFilePath ).time_since_epoch( );
+		m_LastWriteTime = std::filesystem::last_write_time( m_AbsoluteFilePath ).time_since_epoch( );
 	}
 	catch ( std::exception& e )
 	{
