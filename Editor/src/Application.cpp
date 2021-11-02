@@ -1,8 +1,6 @@
 #include <iostream>
 #include <Pine/Pine.hpp>
 #include "Editor/Editor.hpp"
-#include <Pine/Entitylist/EntityList.hpp>
-#include <Pine/Components/ModelRenderer/ModelRenderer.hpp>
 
 int main( ) {
 	if ( !Pine::Setup( ) ) {

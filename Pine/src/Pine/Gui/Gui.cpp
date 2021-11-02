@@ -42,6 +42,7 @@ namespace {
 		style->WindowRounding = 0.f;
 
 		ImVec4* colors = ImGui::GetStyle( ).Colors;
+
 		colors[ ImGuiCol_Text ] = ImVec4( 1.00f, 1.00f, 1.00f, 1.00f );
 		colors[ ImGuiCol_TextDisabled ] = ImVec4( 0.50f, 0.50f, 0.50f, 1.00f );
 		colors[ ImGuiCol_WindowBg ] = ImVec4( 0.06f, 0.06f, 0.06f, 1.00f );
@@ -115,16 +116,13 @@ void Pine::Gui::Setup( ) {
 	ImGuiIO& io = ImGui::GetIO( );
 
 	SetupGuiStyle( );
-//	ImGui::StyleColorsLight( );
 
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 17.f );
-	//io.Fonts->AddFontFromFileTTF( "C:\\Windows\\Fonts\\segoeui.ttf", 17.f );
 }
 
 void Pine::Gui::Dispose( ) {
-	// Cleanup
 	ImGui_ImplOpenGL3_Shutdown( );
 	ImGui_ImplGlfw_Shutdown( );
 	ImGui::DestroyContext( );

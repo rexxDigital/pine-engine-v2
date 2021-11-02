@@ -20,7 +20,7 @@ namespace
 
 	void SetConsoleColor( int colorCode )
 	{
-		// TODO: Do something for other operating systems, not that I really support them right now but you get the idea.}
+		// TODO: Do something for other operating systems, not that I really support them right now but you get the idea.
 	}
 
 #endif

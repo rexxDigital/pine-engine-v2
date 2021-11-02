@@ -7,7 +7,7 @@
 #include "../../PhysicsManager/PhysicsManager.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../Core/Log/Log.hpp"
-#include "../rigidbody/RigidBody.hpp"
+#include "../RigidBody/RigidBody.hpp"
 
 namespace Pine
 {
@@ -207,8 +207,6 @@ void Pine::Collider3D::OnCreated( )
 
 	if ( m_Standalone )
 		return;
-
-	m_Body = PhysicsManager::CreateRigidBody( m_PhysTransform );
 }
 
 void Pine::Collider3D::OnCopied( const IComponent* old )
@@ -235,21 +233,9 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 		return;
 	}
 
-	if ( m_Body )
-	{
-		if ( m_Body->getNbColliders( ) <= 0 )
-		{
-			m_Body->addCollider( m_Shape, m_PhysTransform );
-		}
 
-		glm::vec3 finalPosition = m_Parent->GetTransform( )->Position;
 
-		finalPosition += m_Position;
 
-		m_PhysTransform.setPosition( reactphysics3d::Vector3( finalPosition.x, finalPosition.y, finalPosition.z ) );
-
-		m_Body->setTransform( m_PhysTransform );
-	}
 }
 
 void Pine::Collider3D::OnSetup( )

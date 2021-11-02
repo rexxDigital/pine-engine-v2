@@ -48,7 +48,7 @@ void Windows::RenderConsole( ) {
 
 		ImGui::PushStyleColor( ImGuiCol_::ImGuiCol_ChildBg, ImVec4( 0.04f, 0.04f, 0.04f, 1.00f ) );
 
-		ImGui::BeginChild( "##ConsoleLogs", ImVec2( -1.f, -1.f ), false, 0 );
+		ImGui::BeginChild( "##ConsoleLogs", ImVec2( -1.f, -1.f ), false, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize );
 
 		const auto& msgs = Pine::Log::GetLogMessages( );
 
