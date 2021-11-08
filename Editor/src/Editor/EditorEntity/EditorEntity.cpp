@@ -23,11 +23,11 @@ class EditorEntityScript final : public Pine::NativeScript
 private:
 	bool m_IsMovingCamera = false;
 
-	Pine::Input::InputBinding* m_Pitch = nullptr;
-	Pine::Input::InputBinding* m_Yaw = nullptr;
+	Pine::InputBinding* m_Pitch = nullptr;
+	Pine::InputBinding* m_Yaw = nullptr;
 
-	Pine::Input::InputBinding* m_Forward = nullptr;
-	Pine::Input::InputBinding* m_Sideways = nullptr;
+	Pine::InputBinding* m_Forward = nullptr;
+	Pine::InputBinding* m_Sideways = nullptr;
 public:
 
 	void OnSetup( ) override
@@ -36,17 +36,17 @@ public:
 
 	void OnCreated( ) override
 	{
-		m_Pitch = Pine::Input::CreateBinding( "Pitch" );
-		m_Pitch->AddAxisBinding( Pine::Input::Axis::MouseY, 0.15f );
+		m_Pitch = Pine::Input->CreateBinding( "Pitch" );
+		m_Pitch->AddAxisBinding( Pine::Axis::MouseY, 0.15f );
 
-		m_Yaw = Pine::Input::CreateBinding( "Yaw" );
-		m_Yaw->AddAxisBinding( Pine::Input::Axis::MouseX, 0.15f );
+		m_Yaw = Pine::Input->CreateBinding( "Yaw" );
+		m_Yaw->AddAxisBinding( Pine::Axis::MouseX, 0.15f );
 
-		m_Forward = Pine::Input::CreateBinding( "Forward" );
+		m_Forward = Pine::Input->CreateBinding( "Forward" );
 		m_Forward->AddKeyboardBinding( GLFW_KEY_W, 1.f );
 		m_Forward->AddKeyboardBinding( GLFW_KEY_S, -1.f );
 
-		m_Sideways = Pine::Input::CreateBinding( "Sideways" );
+		m_Sideways = Pine::Input->CreateBinding( "Sideways" );
 		m_Sideways->AddKeyboardBinding( GLFW_KEY_D, 1.f );
 		m_Sideways->AddKeyboardBinding( GLFW_KEY_A, -1.f );
 	}
@@ -91,7 +91,7 @@ public:
 
 void Editor::EditorEntity::Create( )
 {
-	g_EditorEntity = Pine::EntityList::CreateEntity( );
+	g_EditorEntity = Pine::EntityList->CreateEntity( );
 
 	g_EditorEntity->SetTemporary( true );
 	g_EditorEntity->SetName( "Editor Entity" );

@@ -1,7 +1,0 @@
-{
-	"VertexShader": "Skybox\\Vertex.glsl",
-	"FragmentShader": "Skybox\\Fragment.glsl",
-	"UniformBuffers": {
-		"Matrices": "Matrices"
-	}
-}

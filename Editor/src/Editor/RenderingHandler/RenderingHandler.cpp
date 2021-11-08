@@ -31,16 +31,16 @@ namespace
 
 		if ( modelRenderer && modelRenderer->GetTargetModel( ) )
 		{
-			Pine::Renderer3D::SetStencilFunction( 0x0205, 0xFF );
-			Pine::Renderer3D::SetStencilMask( 0x00 );
-			Pine::Renderer3D::SetDepthTesting( false );
+			Pine::Renderer3D->SetStencilFunction( 0x0205, 0xFF );
+			Pine::Renderer3D->SetStencilMask( 0x00 );
+			Pine::Renderer3D->SetDepthTesting( false );
 
 			if ( const auto model = modelRenderer->GetTargetModel( ) )
 			{
 				for ( const auto mesh : model->GetMeshList( ) )
 				{
-					Pine::Renderer3D::PrepareMesh( mesh );
-					Pine::Renderer3D::SetShader( g_OutlineShader );
+					Pine::Renderer3D->PrepareMesh( mesh );
+					Pine::Renderer3D->SetShader( g_OutlineShader );
 
 					g_OutlineShader->Use( );
 
@@ -48,13 +48,13 @@ namespace
 
 					mat = glm::scale( mat, glm::vec3( 1.04f, 1.04f, 1.04f ) );
 
-					Pine::Renderer3D::RenderMesh( mat );
+					Pine::Renderer3D->RenderMesh( mat );
 				}
 			}
 
-			Pine::Renderer3D::SetStencilMask( 0xFF );
-			Pine::Renderer3D::SetStencilFunction( 0x0207, 0xFF );
-			Pine::Renderer3D::SetDepthTesting( true );
+			Pine::Renderer3D->SetStencilMask( 0xFF );
+			Pine::Renderer3D->SetStencilFunction( 0x0207, 0xFF );
+			Pine::Renderer3D->SetDepthTesting( true );
 		}
 	}
 
@@ -63,9 +63,9 @@ namespace
 		// Render with level editor entity camera
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{
-			g_BackupCamera = Pine::RenderManager::GetRenderingContext( )->m_Camera;
+			g_BackupCamera = Pine::RenderManager->GetRenderingContext( )->m_Camera;
 
-			Pine::RenderManager::GetRenderingContext( )->m_Camera = g_EditorCamera;
+			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_EditorCamera;
 
 			// Prepare the stencil buffer for the outline for the selected entity.
 			if ( !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
@@ -90,7 +90,7 @@ namespace
 	{
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{
-			Pine::RenderManager::GetRenderingContext( )->m_Camera = g_BackupCamera;
+			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_BackupCamera;
 		}
 	}
 
@@ -110,17 +110,17 @@ void Editor::RenderingHandler::Setup( )
 	g_RenderingFrameBuffer = new Pine::FrameBuffer( );
 	g_RenderingFrameBuffer->Create( 1600, 900 );
 
-	Pine::RenderManager::GetRenderingContext( )->m_FrameBuffer = g_RenderingFrameBuffer;
+	Pine::RenderManager->GetRenderingContext( )->m_FrameBuffer = g_RenderingFrameBuffer;
 
-	Pine::RenderManager::GetRenderingContext( )->m_Width = 1920;
-	Pine::RenderManager::GetRenderingContext( )->m_Height = 1080;
+	Pine::RenderManager->GetRenderingContext( )->m_Width = 1920;
+	Pine::RenderManager->GetRenderingContext( )->m_Height = 1080;
 
-	Pine::RenderManager::GetRenderingContext( )->m_AutoUpdateSize = false;
+	Pine::RenderManager->GetRenderingContext( )->m_AutoUpdateSize = false;
 
-	Pine::RenderManager::SetRenderingCallback( OnRenderingPass );
+	Pine::RenderManager->SetRenderingCallback( OnRenderingPass );
 
 	g_EditorCamera = Editor::EditorEntity::GetEntity( )->GetComponent<Pine::Camera>( );
-	g_OutlineShader = Pine::Assets::GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ObjectOutline.shr" );
+	g_OutlineShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ObjectOutline.shr" );
 }
 
 Pine::FrameBuffer* Editor::RenderingHandler::GetFrameBuffer( )
@@ -130,6 +130,6 @@ Pine::FrameBuffer* Editor::RenderingHandler::GetFrameBuffer( )
 
 void Editor::RenderingHandler::SetViewportSize( const int w, const int h )
 {
-	Pine::RenderManager::GetRenderingContext( )->m_Width = w;
-	Pine::RenderManager::GetRenderingContext( )->m_Height = h;
+	Pine::RenderManager->GetRenderingContext( )->m_Width = w;
+	Pine::RenderManager->GetRenderingContext( )->m_Height = h;
 }

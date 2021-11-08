@@ -32,7 +32,7 @@ namespace {
 	}
 
 	Pine::IAsset* FindAssetFromAbsolutePath( const std::string& path ) {
-		for ( auto& a : Pine::Assets::GetAssets( ) ) {
+		for ( auto& a : Pine::Assets->GetAssets( ) ) {
 			if ( a.second->GetAbsoluteFilePath( ) == path ) {
 				return a.second;
 			}

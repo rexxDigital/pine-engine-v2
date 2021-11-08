@@ -6,7 +6,7 @@
 #include <fstream>
 
 // don't ask
-#define ctx ScriptingManager::ScriptContext
+#define ctx ScriptingManager->ScriptContext
 
 Pine::Script::Script( )
 {
@@ -23,12 +23,11 @@ asIScriptObject* Pine::Script::CreateObject( )
 	// Create instance of script class
 	asIScriptFunction* factory = m_ScriptClassInfo->GetFactoryByDecl( std::string( className + " @" + className + "()" ).c_str( ) );
 
-	ScriptingManager::ScriptContext->Prepare( factory );
-
-	ScriptingManager::ScriptContext->Execute( );
+	ScriptingManager->ScriptContext->Prepare( factory );
+	ScriptingManager->ScriptContext->Execute( );
 
 	// Get script object instance
-	asIScriptObject* obj = *reinterpret_cast< asIScriptObject** >( ScriptingManager::ScriptContext->GetAddressOfReturnValue( ) );
+	asIScriptObject* obj = *reinterpret_cast< asIScriptObject** >( ScriptingManager->ScriptContext->GetAddressOfReturnValue( ) );
 
 	// Make sure the AS(S) GC aint fuckin this bitch up
 	obj->AddRef( );
@@ -82,7 +81,7 @@ void Pine::Script::OnCompile( )
 	const std::string className = m_FilePath.stem( ).string( );
 
 	// Find script class
-	asITypeInfo* type = ScriptingManager::ScriptModule->GetTypeInfoByDecl( className.c_str( ) );
+	asITypeInfo* type = ScriptingManager->ScriptModule->GetTypeInfoByDecl( className.c_str( ) );
 	if ( !type )
 	{
 		m_IsValid = false;

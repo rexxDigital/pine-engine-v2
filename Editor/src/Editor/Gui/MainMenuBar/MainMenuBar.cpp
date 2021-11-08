@@ -68,10 +68,10 @@ void Editor::Gui::MainMenuBar::Render( ) {
 
 			if ( ImGui::MenuItem( "Reload Engine Shaders" ) )
 			{
-				Pine::Log::Message( "Loading engine shaders..." );
+				Pine::Log->Message( "Loading engine shaders..." );
 
-				if ( Pine::Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
-					Pine::Log::Fatal( "Failed to load engine shaders." );
+				if ( Pine::Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
+					Pine::Log->Fatal( "Failed to load engine shaders." );
 				}
 			}
 

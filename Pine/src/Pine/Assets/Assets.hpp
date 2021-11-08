@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IAsset/IAsset.hpp"
+#include "../Core/Interfaces/Interfaces.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -23,37 +24,40 @@
  * we'll load it, and to add onto load assets that's used within a Level after a level is loaded.
  */
 
-namespace Pine::Assets {
+namespace Pine
+{
 
-	// Loads a asset file from the disk
-	// Uses the file extension to determine asset type
-	// Returns nullptr on failure.
-	IAsset* LoadFromFile( const std::string& filePath, bool readOnly = false );
+	class IAssets : public IInterface
+	{
+	public:
+		// Loads a asset file from the disk
+		// Uses the file extension to determine asset type
+		// Returns nullptr on failure.
+		virtual IAsset* LoadFromFile( const std::string& filePath, bool readOnly = false ) = 0;
 
-	// Loads all asset in a directory recursively, returns amount of assets loaded.
-	int LoadFromDirectory( const std::string& directoryPath, bool readOnly = false );
+		// Loads all asset in a directory recursively, returns amount of assets loaded.
+		virtual int LoadFromDirectory( const std::string& directoryPath, bool readOnly = false ) = 0;
 
-	// Returns a loaded asset by file path, your job to cast to the right type.
-	IAsset* GetAsset( const std::string& assetPath );
+		// Returns a loaded asset by file path, your job to cast to the right type.
+		virtual IAsset* GetAsset( const std::string& assetPath ) = 0;
 
-	// Fakes an asset being loaded at a specific path, will also make the asset manager handle disposing of assets.
-	void MapAsset( IAsset* asset, const std::string& fakePath );
-	
-	bool DisposeAsset( const std::string& assetPath );
-	bool DisposeAsset( Pine::IAsset* asset );
+		template <class T>
+		T* GetAsset( const std::string& assetPath ) {
+			auto asset = GetAsset( assetPath );
+			return dynamic_cast< T* >( asset );
+		}
 
-	template <class T>
-	T* GetAsset( const std::string& assetPath ) {
-		auto asset = GetAsset( assetPath );
-		return dynamic_cast< T* >( asset );
-	}
+		// Fakes an asset being loaded at a specific path, will also make the asset manager handle disposing of assets.
+		virtual void MapAsset( IAsset* asset, const std::string& fakePath ) = 0;
 
-	void Setup( );
-	void Dispose( );
+		virtual bool DisposeAsset( const std::string& assetPath ) = 0;
+		virtual bool DisposeAsset( Pine::IAsset* asset ) = 0;
 
-	// This will go through all assets and save them to their original file if it has been modified in any way, this shouldn't really be used by a game runtime or something similar, it's used
-	// by the editor so the user can customize an asset and save them. 
-	void SaveAssets( );
+		// This will go through all assets and save them to their original file if it has been modified in any way, this shouldn't really be used by a game runtime or something similar, it's used
+		// by the editor so the user can customize an asset and save them. 
+		virtual void SaveAssets( ) = 0;
 
-	const std::unordered_map<std::string, IAsset*>& GetAssets( );
+		virtual const std::unordered_map<std::string, IAsset*>& GetAssets( ) = 0;
+	};
+
 }

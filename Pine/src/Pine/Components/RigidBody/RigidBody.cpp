@@ -133,7 +133,7 @@ void Pine::RigidBody::OnCreated( )
 	if ( m_Standalone )
 		return;
 
-	m_RigidBody = PhysicsManager::CreateRigidBody( m_PhysicsTransform );
+	m_RigidBody = PhysicsManager->CreateRigidBody( m_PhysicsTransform );
 }
 
 void Pine::RigidBody::OnCopied( const IComponent* old )
@@ -143,7 +143,7 @@ void Pine::RigidBody::OnCopied( const IComponent* old )
 void Pine::RigidBody::OnDestroyed( )
 {
 	if ( m_RigidBody )
-		PhysicsManager::DestroyRigidBody( m_RigidBody );
+		PhysicsManager->DestroyRigidBody( m_RigidBody );
 }
 
 void Pine::RigidBody::OnSetup( )

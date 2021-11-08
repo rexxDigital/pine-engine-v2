@@ -100,7 +100,7 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
 
 	if ( status != GL_FRAMEBUFFER_COMPLETE )
 	{
-		Log::Error( "Failure in creating frame buffer: " + std::to_string( status ) );
+		Log->Error( "Failure in creating frame buffer: " + std::to_string( status ) );
 	}
 
 	glBindFramebuffer( GL_FRAMEBUFFER, 0 );

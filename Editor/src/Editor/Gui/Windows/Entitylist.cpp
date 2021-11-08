@@ -135,10 +135,10 @@ namespace {
 			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
 				const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
 
-				if ( entityIndex >= Pine::EntityList::GetEntities( ).size( ) )
-					entityIndex = Pine::EntityList::GetEntities( ).size( ) - 1;
+				if ( entityIndex >= Pine::EntityList->GetEntities( ).size( ) )
+					entityIndex = Pine::EntityList->GetEntities( ).size( ) - 1;
 
-				Pine::EntityList::MoveEntity( entity, entityIndex );
+				Pine::EntityList->MoveEntity( entity, entityIndex );
 			}
 
 			ImGui::EndDragDropTarget( );
@@ -153,7 +153,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 	ImGui::Begin( "Entity list", &ShowEntitylist );
 
-	auto& entities = Pine::EntityList::GetEntities( );
+	auto& entities = Pine::EntityList->GetEntities( );
 
 	bool isDragDroppingEntity = false;
 
@@ -182,7 +182,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			continue;
 		}
 
-		RenderEntity( Pine::EntityList::GetEntity( entityRenderIndex - 1 ) );
+		RenderEntity( Pine::EntityList->GetEntity( entityRenderIndex - 1 ) );
 
 		if ( isDragDroppingEntity )
 			EntityMoveSeparator( entityRenderIndex );
@@ -210,7 +210,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		Pine::Entity* e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 
 		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RemoveEntityKey ) ) {
-			Pine::EntityList::DeleteEntity( e );
+			Pine::EntityList->DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		}
 
@@ -241,7 +241,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 
 		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
-			Pine::EntityList::DeleteEntity( e );
+			Pine::EntityList->DeleteEntity( e );
 			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 			ImGui::CloseCurrentPopup( );
 		}
@@ -271,7 +271,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 		ImGui::Separator( );
 
 		if ( ImGui::MenuItem( "Create entity" ) ) {
-			Pine::EntityList::CreateEntity( );
+			Pine::EntityList->CreateEntity( );
 			ImGui::CloseCurrentPopup( );
 		}
 

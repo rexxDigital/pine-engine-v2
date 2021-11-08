@@ -2,13 +2,17 @@
 #include <Pine\Rendering\RenderManager\RenderManager.hpp>
 #include <Pine\Entity\Entity.hpp>
 
+#include "../Widgets/Widgets.hpp"
+
+#include "Pine/RuntimeLoader/RuntimeLoader.hpp"
+
 using namespace Editor::Gui;
 
 namespace {
 
 	void RenderRenderingContext( ) {
 		if ( ImGui::Begin( "Rendering Context", &Windows::ShowRenderingContext, 0 ) ) {
-			auto context = Pine::RenderManager::GetRenderingContext( );
+			auto context = Pine::RenderManager->GetRenderingContext( );
 
 			if ( !context ) {
 				ImGui::Text( "The rendering context is a nullptr." );
@@ -37,6 +41,45 @@ namespace {
 		ImGui::End( );
 	}
 
+	void RenderModuleManager( )
+	{
+		static char buff[ 64 ];
+		static Pine::ModuleHandle* handle = nullptr;
+
+		ImGui::Begin( "Module Manager", nullptr, 0 );
+
+		ImGui::InputText( "Path", buff, 64 );
+
+		bool restoreFlag = false;
+
+		if ( handle )
+		{
+			restoreFlag = true;
+			Widgets::PushDisabled( );
+		}
+
+		if ( ImGui::Button( "Load Module" ) )
+		{
+			handle = Pine::RuntimeLoader->LoadModule( buff );
+		}
+
+		if ( restoreFlag )
+			Widgets::PopDisabled( );
+
+		if ( ImGui::Button( "Unload Module" ) )
+		{
+			if ( handle )
+			{
+				Pine::RuntimeLoader->UnloadModule( handle );
+
+				handle = nullptr;
+			}
+		}
+
+		ImGui::End( );
+
+	}
+
 }
 
 void Windows::RenderDebugWindows( ) {
@@ -44,5 +87,7 @@ void Windows::RenderDebugWindows( ) {
 	if ( Windows::ShowRenderingContext ) {
 		RenderRenderingContext( );
 	}
+
+	RenderModuleManager( );
 
 }

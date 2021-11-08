@@ -79,6 +79,6 @@ void Editor::Gui::Setup( ) {
 
 	Fonts::CodeFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\Consolas.ttf", 13.f );
 
-	Pine::Gui::SetGuiRenderCallback( OnRenderGui );
+	Pine::Gui->SetGuiRenderCallback( OnRenderGui );
 
 }

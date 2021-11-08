@@ -1,17 +1,21 @@
 #pragma once
+#include "../Core/Interfaces/Interfaces.hpp"
 
 class asIScriptEngine;
 class asIScriptModule;
 class asIScriptContext;
 
-namespace Pine::ScriptingManager
+namespace Pine
 {
-	inline asIScriptEngine* ScriptEngine = nullptr;
-	inline asIScriptContext* ScriptContext = nullptr;
-	inline asIScriptModule* ScriptModule = nullptr;
-	
-	void CompileScripts( );
-	void Setup( );
-	void Dispose( );
-	
+
+	class IScriptManager : public IInterface
+	{
+	public:
+		virtual void CompileScripts( ) = 0;
+
+		asIScriptEngine* ScriptEngine = nullptr;
+		asIScriptContext* ScriptContext = nullptr;
+		asIScriptModule* ScriptModule = nullptr;
+	};
+
 }

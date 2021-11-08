@@ -50,13 +50,13 @@ int Pine::Level::GetBlueprintCount( ) const
 
 void Pine::Level::CreateFromCurrentLevel( )
 {
-	auto& entities = Pine::EntityList::GetEntities( );
+	auto& entities = Pine::EntityList->GetEntities( );
 
 	uint64_t currentId = 1;
 	Entity* currentCameraEntity = nullptr;
 
-	if ( RenderManager::GetRenderingContext( )->m_Camera != nullptr )
-		currentCameraEntity = RenderManager::GetRenderingContext( )->m_Camera->GetParent( );
+	if ( RenderManager->GetRenderingContext( )->m_Camera != nullptr )
+		currentCameraEntity = RenderManager->GetRenderingContext( )->m_Camera->GetParent( );
 
 	// Clear current list if we have one
 	DisposeBlueprints( );
@@ -80,7 +80,7 @@ void Pine::Level::CreateFromCurrentLevel( )
 		currentId++;
 	}
 
-	m_LevelSettings->m_Skybox = Pine::Skybox::GetSkyboxCubemap( );
+	m_LevelSettings->m_Skybox = Pine::Skybox->GetSkyboxCubemap( );
 }
 
 void Pine::Level::Load( )
@@ -88,7 +88,7 @@ void Pine::Level::Load( )
 	uint64_t currentId = 1;
 
 	// Clear current non temporaries entities
-	Pine::EntityList::ClearEntities( );
+	Pine::EntityList->ClearEntities( );
 
 	// Add our blueprint entities
 	for ( auto bp : m_Blueprints )
@@ -98,14 +98,14 @@ void Pine::Level::Load( )
 		// This fucking sucks and I hate it
 		if ( m_LevelSettings->m_CameraEntity != 0 && m_LevelSettings->m_CameraEntity == currentId )
 		{
-			RenderManager::GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
+			RenderManager->GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
 		}
 		
 		currentId++;
 	}
 
 	if ( m_LevelSettings->m_Skybox != nullptr )
-		Pine::Skybox::SetSkyboxCubemap( m_LevelSettings->m_Skybox );
+		Pine::Skybox->SetSkyboxCubemap( m_LevelSettings->m_Skybox );
 }
 
 Pine::LevelSettings* Pine::Level::GetSettings( ) const
@@ -150,11 +150,11 @@ bool Pine::Level::LoadFromFile( )
 
 		if ( j.contains( "skybox" ) )
 		{
-			m_LevelSettings->m_Skybox = Pine::Assets::GetAsset<Texture3D>( j[ "skybox" ] );
+			m_LevelSettings->m_Skybox = Pine::Assets->GetAsset<Texture3D>( j[ "skybox" ] );
 		}
 	}
 	catch ( std::exception& e ) {
-		Pine::Log::Error( "JSON parsing error: " + std::string( e.what( ) ) );
+		Pine::Log->Error( "JSON parsing error: " + std::string( e.what( ) ) );
 
 		return false;
 	}

@@ -63,10 +63,10 @@ namespace
 		// Load components
 		for ( auto componentJson : j[ "components" ] )
 		{
-			const auto component = Pine::Components::CreateComponent( static_cast< Pine::EComponentType >( componentJson[ "type" ] ), true );
+			const auto component = Pine::Components->CreateComponent( static_cast< Pine::EComponentType >( componentJson[ "type" ] ), true );
 			if ( component == nullptr )
 			{
-				Pine::Log::Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
+				Pine::Log->Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
 				continue;
 			}
 
@@ -95,13 +95,13 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 	target->SetActive( entity->GetActive( ) );
 
 	// Copy components
-	for ( auto component : entity->GetComponents( ) )
+	for ( const auto component : entity->GetComponents( ) )
 	{
-		target->RegisterComponent( Components::CopyComponent( component, !createInstance ) );
+		target->RegisterComponent( Components->CopyComponent( component, !createInstance ) );
 	}
 
 	// Copy children
-	for ( auto child : entity->GetChildren( ) )
+	for ( const auto child : entity->GetChildren( ) )
 	{
 		const auto newChild = target->CreateChild( createInstance );
 
@@ -130,7 +130,7 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 		return nullptr;
 	}
 
-	Entity* newEntity = Pine::EntityList::CreateEntity( );
+	Entity* newEntity = Pine::EntityList->CreateEntity( );
 
 	newEntity->ClearComponents( );
 
@@ -186,7 +186,7 @@ bool Pine::Blueprint::LoadFromFile( )
 
 	}
 	catch ( std::exception& e ) {
-		Pine::Log::Error( "JSON parsing error: " + std::string( e.what( ) ) );
+		Pine::Log->Error( "JSON parsing error: " + std::string( e.what( ) ) );
 		return false;
 	}
 

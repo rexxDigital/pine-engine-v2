@@ -1,7 +1,0 @@
-{
-	"VertexShader": "ObjectOutline\\Vertex.glsl",
-	"FragmentShader": "ObjectOutline\\Fragment.glsl",
-	"UniformBuffers": {
-		"Matrices": "Matrices"
-	}
-}

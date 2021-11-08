@@ -65,11 +65,11 @@ Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std
 				return nullptr;
 			}
 
-			if ( const auto asset = Assets::GetAsset( j.at( name ) ) ) {
+			if ( const auto asset = Assets->GetAsset( j.at( name ) ) ) {
 				return asset;
 			}
 
-			return Assets::LoadFromFile( j.at( name ) );
+			return Assets->LoadFromFile( j.at( name ) );
 		}
 
 		return nullptr;

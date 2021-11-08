@@ -98,13 +98,13 @@ namespace {
 				aiString file_path;
 				material->GetTexture( aiTextureType_DIFFUSE, 0, &file_path );
 
-				eMaterial->SetDiffuse( reinterpret_cast<Pine::Texture2D*>( Pine::Assets::LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
+				eMaterial->SetDiffuse( reinterpret_cast<Pine::Texture2D*>( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
 			}
 
 			//if ( material->GetTextureCount( aiTextureType_SPECULAR ) > 0 ) {
 			//	aiString file_path;
 			//	material->GetTexture( aiTextureType_SPECULAR, 0, &file_path );
-			//	eMaterial->SetSpecular( reinterpret_cast< Pine::Texture2D* >( Pine::Assets::LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
+			//	eMaterial->SetSpecular( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
 			//}
 
 			eMaterial->SetGenerated( true );
@@ -154,7 +154,7 @@ bool Pine::Model::LoadFromFile( ) {
 	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenBoundingBoxes );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode ) {
-		Log::Error( "Assimp loading error " + m_FilePath.string( ) + ", " + importer.GetErrorString( ) );
+		Log->Error( "Assimp loading error " + m_FilePath.string( ) + ", " + importer.GetErrorString( ) );
 		return false;
 	}
 
@@ -182,15 +182,15 @@ bool Pine::Model::LoadFromFile( ) {
 				{
 					if ( !std::filesystem::exists( jsonObject[ meshStr ][ "mat" ].get<std::string>( ) ) )
 					{
-						Log::Warning( "Could not load mesh material file " + jsonObject[ meshStr ][ "mat" ].get<std::string>( ) + ", file doesn't exist." );
+						Log->Warning( "Could not load mesh material file " + jsonObject[ meshStr ][ "mat" ].get<std::string>( ) + ", file doesn't exist." );
 						continue;
 					}
 
-					const auto materialAsset = dynamic_cast<Pine::Material*>( Pine::Assets::LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
+					const auto materialAsset = dynamic_cast<Pine::Material*>( Pine::Assets->LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
 
 					if ( materialAsset == nullptr ) // weird but ok
 					{
-						Log::Warning( "Failed to find material file from mesh" );
+						Log->Warning( "Failed to find material file from mesh" );
 						continue;
 					}
 
@@ -200,7 +200,7 @@ bool Pine::Model::LoadFromFile( ) {
 		}
 		catch ( std::exception& e )
 		{
-			Log::Error( "Failed to parse model asset json, " + std::string( e.what( ) ) );
+			Log->Error( "Failed to parse model asset json, " + std::string( e.what( ) ) );
 		}
 
 	}

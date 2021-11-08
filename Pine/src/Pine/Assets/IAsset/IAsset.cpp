@@ -36,8 +36,8 @@ void Pine::IAsset::UpdateLastWriteTime( ) {
 	}
 	catch ( std::exception& e )
 	{
-		Log::Warning( "Failed to set last write time on asset, " + m_FilePath.string( ) );
-		Log::Warning( e.what( ) );
+		Log->Warning( "Failed to set last write time on asset, " + m_FilePath.string( ) );
+		Log->Warning( e.what( ) );
 	}
 }
 

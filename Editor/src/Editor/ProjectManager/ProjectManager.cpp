@@ -28,9 +28,9 @@ namespace {
 		g_CurrentProject = directory;
 		g_ProjectOpen = true;
 
-		Pine::Log::Message( "Loading project '" + g_CurrentProject + "' assets..." );
+		Pine::Log->Message( "Loading project '" + g_CurrentProject + "' assets..." );
 
-		Pine::Assets::LoadFromDirectory( directory );
+		Pine::Assets->LoadFromDirectory( directory );
 
 		Pine::Window::SetSize( 1024, 768 );
 		Pine::Window::UpdateCachedSize( );
@@ -54,7 +54,7 @@ void Editor::ProjectManager::Setup( ) {
 }
 
 void Editor::ProjectManager::Save( ) {
-	Pine::Log::Message( "Saving all assets..." );
+	Pine::Log->Message( "Saving all assets..." );
 	
 	if ( g_CurrentLevel )
 	{
@@ -62,7 +62,7 @@ void Editor::ProjectManager::Save( ) {
 		g_CurrentLevel->SetUpdated( true );
 	}
 
-	Pine::Assets::SaveAssets( );
+	Pine::Assets->SaveAssets( );
 }
 
 bool Editor::ProjectManager::HasProjectOpen( ) {
@@ -79,7 +79,7 @@ Pine::Level* Editor::ProjectManager::GetCurrentLevel( ) {
 
 void Editor::ProjectManager::OpenLevel( const std::string& path )
 {
-	auto level = Pine::Assets::GetAsset<Pine::Level>( path );
+	auto level = Pine::Assets->GetAsset<Pine::Level>( path );
 	if ( !level )
 		return;
 
@@ -131,9 +131,9 @@ void Editor::ProjectManager::ReloadProjectAssets( ) {
 
 	level->CreateFromCurrentLevel( );
 	
-	Pine::Assets::LoadFromDirectory( GetCurrentProjectDirectory( ) );
+	Pine::Assets->LoadFromDirectory( GetCurrentProjectDirectory( ) );
 
-	Pine::ScriptingManager::CompileScripts( );
+	Pine::ScriptingManager->CompileScripts( );
 
 	level->Load( );
 	level->Dispose( );

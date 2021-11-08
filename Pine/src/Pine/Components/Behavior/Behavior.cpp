@@ -43,7 +43,7 @@ void Pine::Behavior::SetScriptFile( const std::string& str )
 
 void Pine::Behavior::LoadScriptFile( )
 {
-	SetAttachedScript( Pine::Assets::GetAsset<Pine::Script>( m_ScriptFile ) );
+	SetAttachedScript( Pine::Assets->GetAsset<Pine::Script>( m_ScriptFile ) );
 }
 
 void Pine::Behavior::OnSetup( )

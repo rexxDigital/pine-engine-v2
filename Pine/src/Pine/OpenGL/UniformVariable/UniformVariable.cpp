@@ -8,7 +8,7 @@ Pine::UniformVariable::UniformVariable( ShaderProgram* program, const std::strin
 	m_Valid = m_Location >= 0;
 
 	if ( !m_Valid ) {
-		Log::Warning( "Failed to find uniform variable, " + name );
+		Log->Warning( "Failed to find uniform variable, " + name );
 	}
 }
 

@@ -7,7 +7,7 @@
 
 Pine::Entity::Entity( uint64_t id )
 {
-	Log::Debug( "Pine::Entity::Entity( )" );
+	Log->Debug( "Pine::Entity::Entity( )" );
 
 	m_Id = id;
 	AddComponent( EComponentType::Transform );
@@ -15,7 +15,7 @@ Pine::Entity::Entity( uint64_t id )
 
 Pine::Entity::Entity( uint64_t id, bool empty )
 {
-	Log::Debug( "Pine::Entity::Entity( )" );
+	Log->Debug( "Pine::Entity::Entity( )" );
 
 	m_Id = id;
 
@@ -27,11 +27,11 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 Pine::Entity::~Entity( )
 {
-	Log::Debug( "Pine::Entity::~Entity( )" );
+	Log->Debug( "Pine::Entity::~Entity( )" );
 
 	for ( const auto component : m_Components )
 	{
-		Components::DeleteComponent( component );
+		Components->DeleteComponent( component );
 	}
 
 	// TODO: How are we going to handle this? Remove children?
@@ -80,7 +80,7 @@ uint64_t Pine::Entity::GetEntityIndex( ) const {
 	return m_EntityIndex;
 }
 
-void Pine::Entity::SetEntityIndex( uint64_t indx ) {
+void Pine::Entity::SetEntityIndex( const uint64_t indx ) {
 	m_EntityIndex = indx;
 }
 
@@ -112,7 +112,7 @@ Pine::Entity* Pine::Entity::CreateChild( bool createEntity )
 	Pine::Entity* entity = nullptr;
 
 	if ( createEntity )
-		entity = Pine::EntityList::CreateEntity( );
+		entity = Pine::EntityList->CreateEntity( );
 	else
 		entity = new Pine::Entity( 0, true );
 
@@ -148,7 +148,7 @@ void Pine::Entity::DeleteChildren( )
 {
 	for ( const auto entity : m_Children )
 	{
-		EntityList::DeleteEntity( entity );
+		EntityList->DeleteEntity( entity );
 	}
 
 	m_Children.clear( );
@@ -156,7 +156,7 @@ void Pine::Entity::DeleteChildren( )
 
 void Pine::Entity::AddComponent( EComponentType type )
 {
-	RegisterComponent( Components::CreateComponent( type ) );
+	RegisterComponent( Components->CreateComponent( type ) );
 }
 
 void Pine::Entity::RegisterComponent( IComponent* component ) {
@@ -172,7 +172,7 @@ bool Pine::Entity::RemoveComponent( IComponent* component )
 	{
 		if ( comp == component )
 		{
-			Components::DeleteComponent( component );
+			Components->DeleteComponent( component );
 
 			m_Components.erase( m_Components.begin( ) + i );
 
@@ -194,7 +194,7 @@ bool Pine::Entity::RemoveComponent( const int index )
 
 	const auto component = m_Components[ index ];
 
-	Pine::Components::DeleteComponent( component );
+	Pine::Components->DeleteComponent( component );
 
 	m_Components.erase( m_Components.begin( ) + index );
 
@@ -205,7 +205,7 @@ void Pine::Entity::ClearComponents( )
 {
 	for ( const auto component : m_Components )
 	{
-		Pine::Components::DeleteComponent( component );
+		Pine::Components->DeleteComponent( component );
 	}
 
 	m_Components.clear( );

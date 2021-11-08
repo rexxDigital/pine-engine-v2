@@ -1,23 +1,29 @@
 #pragma once
 #include <vector>
 #include "../Entity/Entity.hpp"
+#include "../Core/Interfaces/Interfaces.hpp"
 
-namespace Pine::EntityList {
+namespace Pine
+{
 
-	void Setup( );
+	class IEntityList : public IInterface
+	{
+	public:
 
-	Entity* CreateEntity( );
-	Entity* CreateEntity( const std::string& name );
+		virtual Entity* CreateEntity( ) = 0;
+		virtual Entity* CreateEntity( const std::string& name ) = 0;
 
-	void ClearEntities( bool temp = false );
-	bool DeleteEntity( Entity* entity );
+		virtual void ClearEntities( bool temp = false ) = 0;
+		virtual	bool DeleteEntity( Entity* entity ) = 0;
 
-	void MoveEntity( Entity* entity, int newPosition );
+		virtual void MoveEntity( Entity* entity, int newPosition ) = 0;
 
-	void RunOnSetup( );
-	void RunOnUpdate( float deltaTime );
+		virtual void RunOnSetup( ) = 0;
+		virtual void RunOnUpdate( float deltaTime ) = 0;
 
-	const std::vector<Entity>& GetEntities( );
-	Entity* GetEntity( const int index );
-	
+		virtual const std::vector<Entity>& GetEntities( ) = 0;
+		virtual Entity* GetEntity( const int index ) = 0;
+
+	};
+
 }

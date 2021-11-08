@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "../Interfaces/Interfaces.hpp"
 
-namespace Pine::Log {
+namespace Pine
+{
 
 	enum class LogLevel
 	{
@@ -13,17 +15,21 @@ namespace Pine::Log {
 		Fatal // When something fucked up bad that also causes the engine to "crash" and quit.
 	};
 
-	// Log functions
+	class ILog : public IInterface
+	{
+	public:
+		// Log functions
+		virtual void Debug( const std::string& str ) = 0;
+		virtual void Message( const std::string& str ) = 0;
+		virtual void Warning( const std::string& str ) = 0;
+		virtual void Error( const std::string& str ) = 0;
+		virtual void Fatal( const std::string& str ) = 0;
 
-	void Debug( const std::string& str );
-	void Message( const std::string& str );
-	void Warning( const std::string& str );
-	void Error( const std::string& str );
-	void Fatal( const std::string& str );
+		// Can be used to render a console, stores all the log messages in a vector that will never be longer than 256 messages.
 
-	// Can be used to render a console, stores all the log messages in a vector that will never be longer than 256 messages.
-
-	const std::vector<std::pair<std::string, LogLevel>>& GetLogMessages( );
-	void ClearLogMessages( );
+		virtual const std::vector<std::pair<std::string, LogLevel>>& GetLogMessages( ) = 0;
+		virtual void ClearLogMessages( ) = 0;
+		 
+	};
 
 }

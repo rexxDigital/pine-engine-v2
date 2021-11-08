@@ -59,7 +59,7 @@ bool Pine::Texture2D::LoadFromFile( ) {
 	if ( !data ) {
 		stbi_image_free( data );
 
-		Log::Error( "Failed to load texture, " + m_FilePath.string( ) );
+		Log->Error( "Failed to load texture, " + m_FilePath.string( ) );
 
 		return false;
 	}
