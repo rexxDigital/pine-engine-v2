@@ -34,7 +34,7 @@ bool Pine::ShaderProgram::CompileShader( const std::string& src, EShaderType typ
 
 	if ( type == -1 )
 	{
-		Log::Error( "Failed to compile shader, invalid shader type." );
+		Log->Error( "Failed to compile shader, invalid shader type." );
 		return false;
 	}
 
@@ -64,7 +64,7 @@ bool Pine::ShaderProgram::CompileShader( const std::string& src, EShaderType typ
 		// NULL character, this will work fine.
 		const char* errorMessage = errorMessageArray.data( );
 
-		Log::Error( "Failed to compile shader, error: " + std::string( errorMessage ) );
+		Log->Error( "Failed to compile shader, error: " + std::string( errorMessage ) );
 
 		return false;
 	}
@@ -114,7 +114,7 @@ void Pine::ShaderProgram::LinkProgram( )
 		// NULL escape character, this will work fine.
 		const char* errorMessage = errorMessageArray.data( );
 	
-		Log::Error( "Failed to link program: " + std::string( errorMessage ) );
+		Log->Error( "Failed to link program: " + std::string( errorMessage ) );
 
 		// Pine::ShaderProgram::DisposeShader( ) should dispose the remaining shaders
 		// if the application closes or the shader is reloaded.
@@ -146,7 +146,7 @@ void Pine::ShaderProgram::SetupUniformBuffer( const UniformBuffer* buffer, const
 	const int bufferIndex = glGetUniformBlockIndex( m_Id, name.c_str( ) );
 
 	if ( 0 > bufferIndex ) {
-		Log::Error( "Failed to find uniform buffer, " + name );
+		Log->Error( "Failed to find uniform buffer, " + name );
 	}
 
 	glUniformBlockBinding( m_Id, bufferIndex, buffer->GetBinding( ) );

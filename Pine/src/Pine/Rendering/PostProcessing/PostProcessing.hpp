@@ -1,18 +1,18 @@
 #pragma once
+#include "../../Core/Interfaces/Interfaces.hpp"
 
 namespace Pine
 {
 	class FrameBuffer;
-}
 
-namespace Pine::PostProcessing
-{
+	class IPostProcessing : public IInterface
+	{
+	public:
 
-	void Setup( );
-	void Dispose( );
+		virtual void Render( ) = 0;
+		virtual FrameBuffer* GetRenderBuffer( ) = 0;
 
-	void Render( );
-	
-	Pine::FrameBuffer* GetRenderBuffer( );
-	
+	};
+
+
 }

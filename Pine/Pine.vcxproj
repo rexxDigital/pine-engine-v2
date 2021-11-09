@@ -190,6 +190,7 @@
     <ClInclude Include="src\Pine\Components\TerrainRenderer\TerrainRenderer.hpp" />
     <ClInclude Include="src\Pine\Components\Transform\Transform.hpp" />
     <ClInclude Include="src\Pine\Core\Core.hpp" />
+    <ClInclude Include="src\Pine\Core\Interfaces\Interfaces.hpp" />
     <ClInclude Include="src\Pine\Core\Log\Log.hpp" />
     <ClInclude Include="src\Pine\Core\Memory\Memory.hpp" />
     <ClInclude Include="src\Pine\Core\Serialization\Serialization.hpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp" />
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.hpp" />
+    <ClInclude Include="src\Pine\RuntimeLoader\RuntimeLoader.hpp" />
     <ClInclude Include="src\Pine\ScriptManager\ScriptManager.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -248,6 +250,7 @@
     <ClCompile Include="src\Pine\Components\rigidbody\RigidBody.cpp" />
     <ClCompile Include="src\Pine\Components\TerrainRenderer\TerrainRenderer.cpp" />
     <ClCompile Include="src\Pine\Components\Transform\Transform.cpp" />
+    <ClCompile Include="src\Pine\Core\Interfaces\Interfaces.cpp" />
     <ClCompile Include="src\Pine\Core\Log\Log.cpp" />
     <ClCompile Include="src\Pine\Core\Memory\Memory.cpp" />
     <ClCompile Include="src\Pine\Core\Serialization\Serialization.cpp" />
@@ -271,6 +274,7 @@
     <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp" />
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.cpp" />
+    <ClCompile Include="src\Pine\RuntimeLoader\RuntimeLoader.cpp" />
     <ClCompile Include="src\Pine\ScriptManager\ScriptManager.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@
 #include "../../PhysicsManager/PhysicsManager.hpp"
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../Core/Log/Log.hpp"
-#include "../rigidbody/RigidBody.hpp"
+#include "../RigidBody/RigidBody.hpp"
 
 namespace Pine
 {
@@ -23,7 +23,7 @@ void Pine::Collider3D::UpdateBody( )
 	{
 		if ( m_Body )
 		{
-			PhysicsManager::GetPhysicsWorld( )->destroyCollisionBody( m_Body );
+			PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_Body );
 
 			m_Body = nullptr;
 		}
@@ -33,7 +33,7 @@ void Pine::Collider3D::UpdateBody( )
 
 	if ( !m_Body )
 	{
-		m_Body = PhysicsManager::GetPhysicsWorld( )->createCollisionBody( m_PhysTransform );
+		m_Body = PhysicsManager->GetPhysicsWorld( )->createCollisionBody( m_PhysTransform );
 	}
 }
 
@@ -57,13 +57,13 @@ void Pine::Collider3D::CreateShape( )
 	switch ( m_Type )
 	{
 	case ColliderType::Box:
-		m_Shape = PhysicsManager::GetPhysicsCommon( )->createBoxShape( reactphysics3d::Vector3( m_Size.x, m_Size.y, m_Size.z ) );
+		m_Shape = PhysicsManager->GetPhysicsCommon( )->createBoxShape( reactphysics3d::Vector3( m_Size.x, m_Size.y, m_Size.z ) );
 		break;
 	case ColliderType::Sphere:
-		m_Shape = PhysicsManager::GetPhysicsCommon( )->createSphereShape( m_Size.x );
+		m_Shape = PhysicsManager->GetPhysicsCommon( )->createSphereShape( m_Size.x );
 		break;
 	case ColliderType::Capsule:
-		m_Shape = PhysicsManager::GetPhysicsCommon( )->createCapsuleShape( m_Size.x, m_Size.y );
+		m_Shape = PhysicsManager->GetPhysicsCommon( )->createCapsuleShape( m_Size.x, m_Size.y );
 		break;
 	case ColliderType::ConcaveMesh:
 	case ColliderType::ConvexMesh:
@@ -88,22 +88,22 @@ void Pine::Collider3D::DisposeShape( )
 	switch ( m_Type )
 	{
 	case ColliderType::Box:
-		PhysicsManager::GetPhysicsCommon( )->destroyBoxShape( dynamic_cast< reactphysics3d::BoxShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroyBoxShape( dynamic_cast< reactphysics3d::BoxShape* >( m_Shape ) );
 		break;
 	case ColliderType::Sphere:
-		PhysicsManager::GetPhysicsCommon( )->destroySphereShape( dynamic_cast< reactphysics3d::SphereShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroySphereShape( dynamic_cast< reactphysics3d::SphereShape* >( m_Shape ) );
 		break;
 	case ColliderType::Capsule:
-		PhysicsManager::GetPhysicsCommon( )->destroyCapsuleShape( dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroyCapsuleShape( dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape ) );
 		break;
 	case ColliderType::ConcaveMesh:
-		PhysicsManager::GetPhysicsCommon( )->destroyConcaveMeshShape( dynamic_cast< reactphysics3d::ConcaveMeshShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroyConcaveMeshShape( dynamic_cast< reactphysics3d::ConcaveMeshShape* >( m_Shape ) );
 		break;
 	case ColliderType::ConvexMesh:
-		PhysicsManager::GetPhysicsCommon( )->destroyConvexMeshShape( dynamic_cast< reactphysics3d::ConvexMeshShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroyConvexMeshShape( dynamic_cast< reactphysics3d::ConvexMeshShape* >( m_Shape ) );
 		break;
 	case ColliderType::Heightfield:
-		PhysicsManager::GetPhysicsCommon( )->destroyHeightFieldShape( dynamic_cast< reactphysics3d::HeightFieldShape* >( m_Shape ) );
+		PhysicsManager->GetPhysicsCommon( )->destroyHeightFieldShape( dynamic_cast< reactphysics3d::HeightFieldShape* >( m_Shape ) );
 		break;
 	default:
 		break;
@@ -207,8 +207,6 @@ void Pine::Collider3D::OnCreated( )
 
 	if ( m_Standalone )
 		return;
-
-	m_Body = PhysicsManager::CreateRigidBody( m_PhysTransform );
 }
 
 void Pine::Collider3D::OnCopied( const IComponent* old )
@@ -218,7 +216,7 @@ void Pine::Collider3D::OnCopied( const IComponent* old )
 
 void Pine::Collider3D::OnDestroyed( )
 {
-	PhysicsManager::GetPhysicsWorld( )->destroyCollisionBody( m_Body );
+	PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_Body );
 }
 
 void Pine::Collider3D::OnPrePhysicsUpdate( )
@@ -231,25 +229,13 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 
 	if ( !m_Shape )
 	{
-		Pine::Log::Warning( "Pine::Collider3D::OnPrePhysicsUpdate( ): No collision shape?" );
+		Pine::Log->Warning( "Pine::Collider3D::OnPrePhysicsUpdate( ): No collision shape?" );
 		return;
 	}
 
-	if ( m_Body )
-	{
-		if ( m_Body->getNbColliders( ) <= 0 )
-		{
-			m_Body->addCollider( m_Shape, m_PhysTransform );
-		}
 
-		glm::vec3 finalPosition = m_Parent->GetTransform( )->Position;
 
-		finalPosition += m_Position;
 
-		m_PhysTransform.setPosition( reactphysics3d::Vector3( finalPosition.x, finalPosition.y, finalPosition.z ) );
-
-		m_Body->setTransform( m_PhysTransform );
-	}
 }
 
 void Pine::Collider3D::OnSetup( )

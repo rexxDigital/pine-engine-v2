@@ -2,6 +2,11 @@
 #include <Pine\Assets\Level\Level.hpp>
 #include <string>
 
+namespace Pine
+{
+	struct ModuleHandle;
+}
+
 namespace Editor::ProjectManager {
 
 	void Setup( );
@@ -10,6 +15,7 @@ namespace Editor::ProjectManager {
 	void CreateProject( const std::string& directory );
 	void OpenProject( const std::string& directory );
 
+	void Update( );
 	void ReloadProjectAssets( );
 
 	bool HasProjectOpen( );
@@ -22,5 +28,7 @@ namespace Editor::ProjectManager {
 	Pine::Level* GetCurrentLevel( );
 
 	const std::vector<std::string>& GetAvaliableProjects( );
+
+	Pine::ModuleHandle* GetProjectRuntimeLibrary( );
 
 }

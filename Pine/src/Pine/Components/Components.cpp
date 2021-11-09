@@ -7,7 +7,8 @@
 
 #include "../../ImGui/imgui.h"
 
-namespace {
+namespace
+{
 
 	struct Component_t
 	{
@@ -22,8 +23,6 @@ namespace {
 		bool* m_DataValid = nullptr;
 		size_t m_DataValidSize = 0;
 	};
-
-	std::vector<Component_t> g_Components;
 
 	int FindAvailableDataSlot( const Component_t* comp )
 	{
@@ -77,319 +76,303 @@ namespace {
 		comp->m_DataValidSize = newSize;
 	}
 
-	void RegisterInternalComponents( )
-	{
-		using namespace Pine;
-		using namespace Pine::Components::Internal;
-
-		RegisterComponent( nullptr, 0, "Invalid" );
-		RegisterComponent( new Transform( ), sizeof( Transform ), "Transform" );
-		RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "Model Renderer" );
-		RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
-		RegisterComponent( new Light( ), sizeof( Light ), "Light" );
-		RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
-		RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
-		RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
-		RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
-		RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
-	}
 }
 
-void Pine::Components::Setup( )
+namespace Pine
 {
-	Log::Debug( "Pine::Components::Setup( )" );
 
-	RegisterInternalComponents( );
-}
-
-void Pine::Components::Dispose( )
-{
-	Log::Debug( "Pine::Components::Dispose( )" );
-
-	for ( auto& component : g_Components )
+	class CComponents : public IComponents
 	{
-		const int size = FindAvailableDataSlot( &component );
+	private:
 
-		for ( int i = 0; i < size; i++ )
+		std::vector<Component_t> g_Components;
+
+		void RegisterInternalComponents( )
 		{
-			const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( component.m_Data ) + ( component.m_ComponentSize * i ) );
-
-			if ( component.m_DataValid[ i ] )
-				componentPtr->OnDestroyed( );
+			RegisterComponent( nullptr, 0, "Invalid" );
+			RegisterComponent( new Transform( ), sizeof( Transform ), "Transform" );
+			RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "Model Renderer" );
+			RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
+			RegisterComponent( new Light( ), sizeof( Light ), "Light" );
+			RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
+			RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
+			RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
+			RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
+			RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 		}
 
-		if ( component.m_Data )
-			free( component.m_Data );
-		if ( component.m_DataValid )
-			free( component.m_DataValid );
-	}
-}
+	public:
 
-int Pine::Components::GetComponentTypeCount( ) {
-	return static_cast< int >( g_Components.size( ) );
-}
-
-int Pine::Components::GetComponentCount( EComponentType type )
-{
-	Component_t* comp = nullptr;
-
-	for ( auto& component : g_Components )
-	{
-		if ( !component.m_Component )
-			continue;
-
-		if ( component.m_Component->GetType( ) == type )
+		void Setup( ) override
 		{
-			comp = &component;
-			break;
-		}
-	}
+			Log->Debug( "Pine::Components->Setup( )" );
 
-	if ( !comp )
-		return 0;
-
-	return FindAvailableDataSlot( comp );
-}
-
-Pine::IComponent* Pine::Components::GetComponent( EComponentType type, int index )
-{
-	Component_t* comp = nullptr;
-
-	for ( auto& component : g_Components )
-	{
-		if ( !component.m_Component )
-			continue;
-
-		if ( component.m_Component->GetType( ) == type )
-		{
-			comp = &component;
-			break;
-		}
-	}
-
-	if ( !comp )
-		return nullptr;
-
-	if ( !comp->m_DataValid[ index ] )
-		return nullptr;
-
-	return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
-}
-
-const char* Pine::Components::GetComponentTypeName( EComponentType type ) {
-	return g_Components[ static_cast< int >( type ) ].m_Name;
-}
-
-Pine::IComponent* Pine::Components::CreateComponent( EComponentType type, bool standalone ) {
-	Component_t* comp = nullptr;
-
-	for ( auto& component : g_Components )
-	{
-		if ( !component.m_Component )
-			continue;
-
-		if ( component.m_Component->GetType( ) == type )
-		{
-			comp = &component;
-			break;
-		}
-	}
-
-	if ( !comp )
-		return nullptr;
-
-	if ( standalone )
-	{
-		const auto component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
-
-		memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
-
-		component->OnCreated( );
-
-		return component;
-	}
-
-	const int slot = FindAvailableDataSlot( comp );
-
-	if ( slot == -1 ) // TODO: Resize vector or something
-	{
-		Pine::Log::Warning( "Failed to find available slot for component!" );
-		return nullptr;
-	}
-
-	const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
-
-	memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
-
-	comp->m_DataValid[ slot ] = true;
-
-	componentPtr->SetStandalone( false );
-
-	Log::Debug( "Pine::Components::CreateComponent( " + std::string( g_Components[ static_cast< int >( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
-
-	componentPtr->OnCreated( );
-
-	return componentPtr;
-}
-
-bool Pine::Components::DeleteComponent( IComponent* inputComponent )
-{
-	// If this is during shutdown, we might have called Pine::Components::Dispose( ) already.
-	if ( g_Components.empty( ) )
-	{
-		return true;
-	}
-
-	Log::Debug( "Pine::Components::DeleteComponent( ): standalone -> " + std::to_string( inputComponent->GetStandalone( ) ) );
-
-	inputComponent->OnDestroyed( );
-
-	if ( inputComponent->GetStandalone( ) )
-	{
-		free( inputComponent );
-
-		return true;
-	}
-
-	Component_t* comp = nullptr;
-
-	for ( auto& component : g_Components )
-	{
-		if ( !component.m_Component )
-			continue;
-
-		if ( component.m_Component->GetType( ) == inputComponent->GetType( ) )
-		{
-			comp = &component;
-			break;
-		}
-	}
-
-	if ( !comp )
-		return false;
-
-	for ( int i = 0; i < comp->m_DataValidSize; i++ )
-	{
-		const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
-
-		if ( componentPtr == inputComponent )
-		{
-			// Just mark it as invalid and it will probably get overwritten sooner or later.
-			comp->m_DataValid[ i ] = false;
-
-			return true;
-		}
-	}
-
-	return false;
-}
-
-Pine::IComponent* Pine::Components::CopyComponent( const Pine::IComponent* inputComponent, bool standalone )
-{
-	Log::Debug( "Pine::Components::CopyComponent( ): standalone -> " + std::to_string( standalone ) );
-
-	Component_t* comp = nullptr;
-
-	for ( auto& component : g_Components )
-	{
-		if ( !component.m_Component )
-			continue;
-
-		if ( component.m_Component->GetType( ) == inputComponent->GetType( ) )
-		{
-			comp = &component;
-			break;
-		}
-	}
-
-	if ( !comp )
-		return nullptr;
-
-	IComponent* component = nullptr;
-
-	if ( standalone )
-	{
-		component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
-	}
-	else
-	{
-		const int slot = FindAvailableDataSlot( comp );
-
-		if ( slot == -1 ) // TODO: Resize vector or something
-		{
-			Pine::Log::Warning( "Failed to find available slot for component!" );
-			return nullptr;
+			RegisterInternalComponents( );
 		}
 
-		component = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
-
-		comp->m_DataValid[ slot ] = true;
-	}
-
-	// By doing a simple memory copy we'll obviously only copy all the data within the component object itself only, including
-	// pointers and such to other objects, but this means it won't copy the the data within the pointers, and will probably cause issues
-	// for example the physics library.
-
-	memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
-
-	component->SetStandalone( standalone );
-
-	component->OnCreated( );
-	component->OnCopied( inputComponent );
-
-	return component;
-}
-
-void Pine::Components::Internal::RegisterComponent( IComponent* component, const size_t componentSize, const char* str ) {
-	Component_t comp;
-
-	comp.m_Component = component;
-	comp.m_Name = str;
-	comp.m_ComponentSize = componentSize;
-
-	if ( component )
-	{
-		component->SetStandalone( false );
-
-		ResizeData( &comp, componentSize, 128 ); // By default make space for 128 components
-	}
-
-	g_Components.push_back( comp );
-}
-
-void Pine::Components::Internal::ShowDebugUI( )
-{
-	static int selectedComponent = 0;
-	static int newSize = 128;
-
-	if ( ImGui::Begin( "Components System Debug", nullptr, 0 ) )
-	{
-		std::vector<const char*> components;
-
-		components.reserve( g_Components.size( ) );
-
-		for ( auto& c : g_Components )
-			components.push_back( c.m_Name );
-
-		ImGui::Combo( "Component Type", &selectedComponent, components.data( ), components.size( ) );
-
-		auto component = &g_Components[ selectedComponent ];
-
-		ImGui::Text( "Available slot: %d", FindAvailableDataSlot( component ) );
-		ImGui::Text( "Size: %u elements", component->m_DataValidSize );
-		ImGui::Text( "Allocated memory: %u bytes (%u KB)", component->m_DataSize + component->m_DataValidSize, ( component->m_DataSize + component->m_DataValidSize ) / 1000 );
-
-
-		ImGui::InputInt( "##Size", &newSize, 2, 8, 0 );
-
-		ImGui::SameLine( );
-
-		if ( ImGui::Button( "Resize" ) )
+		void Dispose( ) override
 		{
-			ResizeData( component, component->m_ComponentSize, newSize );
-		}
-	}
-	ImGui::End( );
+			Log->Debug( "Pine::Components->Dispose( )" );
 
+			for ( auto& component : g_Components )
+			{
+				const int size = FindAvailableDataSlot( &component );
+
+				for ( int i = 0; i < size; i++ )
+				{
+					const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( component.m_Data ) + ( component.m_ComponentSize * i ) );
+
+					if ( component.m_DataValid[ i ] )
+						componentPtr->OnDestroyed( );
+				}
+
+				if ( component.m_Data )
+					free( component.m_Data );
+				if ( component.m_DataValid )
+					free( component.m_DataValid );
+			}
+		}
+
+		int GetComponentTypeCount( ) override
+		{
+			return static_cast< int >( g_Components.size( ) );
+		}
+
+		int GetComponentCount( EComponentType type ) override
+		{
+			Component_t* comp = nullptr;
+
+			for ( auto& component : g_Components )
+			{
+				if ( !component.m_Component )
+					continue;
+
+				if ( component.m_Component->GetType( ) == type )
+				{
+					comp = &component;
+					break;
+				}
+			}
+
+			if ( !comp )
+				return 0;
+
+			return FindAvailableDataSlot( comp );
+		}
+
+		Pine::IComponent* GetComponent( EComponentType type, int index ) override
+		{
+			Component_t* comp = nullptr;
+
+			for ( auto& component : g_Components )
+			{
+				if ( !component.m_Component )
+					continue;
+
+				if ( component.m_Component->GetType( ) == type )
+				{
+					comp = &component;
+					break;
+				}
+			}
+
+			if ( !comp )
+				return nullptr;
+
+			if ( !comp->m_DataValid[ index ] )
+				return nullptr;
+
+			return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
+		}
+
+		const char* GetComponentTypeName( EComponentType type ) override
+		{
+			return g_Components[ static_cast< int >( type ) ].m_Name;
+		}
+
+		Pine::IComponent* CreateComponent( EComponentType type, bool standalone ) override
+		{
+			Component_t* comp = nullptr;
+
+			for ( auto& component : g_Components )
+			{
+				if ( !component.m_Component )
+					continue;
+
+				if ( component.m_Component->GetType( ) == type )
+				{
+					comp = &component;
+					break;
+				}
+			}
+
+			if ( !comp )
+				return nullptr;
+
+			if ( standalone )
+			{
+				const auto component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
+
+				memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
+
+				component->OnCreated( );
+
+				return component;
+			}
+
+			const int slot = FindAvailableDataSlot( comp );
+
+			if ( slot == -1 ) // TODO: Resize vector or something
+			{
+				Pine::Log->Warning( "Failed to find available slot for component!" );
+				return nullptr;
+			}
+
+			const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+
+			memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
+
+			comp->m_DataValid[ slot ] = true;
+
+			componentPtr->SetStandalone( false );
+
+			Log->Debug( "Pine::Components->CreateComponent( " + std::string( g_Components[ static_cast< int >( type ) ].m_Name ) + ", " + std::to_string( standalone ) + " ): slot -> " + std::to_string( slot ) );
+
+			componentPtr->OnCreated( );
+
+			return componentPtr;
+		}
+
+		bool DeleteComponent( IComponent* inputComponent ) override
+		{
+			// If this is during shutdown, we might have called Pine::Components->Dispose( ) already.
+			if ( g_Components.empty( ) )
+			{
+				return true;
+			}
+
+			Log->Debug( "Pine::Components->DeleteComponent( ): standalone -> " + std::to_string( inputComponent->GetStandalone( ) ) );
+
+			inputComponent->OnDestroyed( );
+
+			if ( inputComponent->GetStandalone( ) )
+			{
+				free( inputComponent );
+
+				return true;
+			}
+
+			Component_t* comp = nullptr;
+
+			for ( auto& component : g_Components )
+			{
+				if ( !component.m_Component )
+					continue;
+
+				if ( component.m_Component->GetType( ) == inputComponent->GetType( ) )
+				{
+					comp = &component;
+					break;
+				}
+			}
+
+			if ( !comp )
+				return false;
+
+			for ( int i = 0; i < comp->m_DataValidSize; i++ )
+			{
+				const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * i ) );
+
+				if ( componentPtr == inputComponent )
+				{
+					// Just mark it as invalid and it will probably get overwritten sooner or later.
+					comp->m_DataValid[ i ] = false;
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		Pine::IComponent* CopyComponent( const Pine::IComponent* inputComponent, bool standalone ) override
+		{
+			Log->Debug( "Pine::Components->CopyComponent( ): standalone -> " + std::to_string( standalone ) );
+
+			Component_t* comp = nullptr;
+
+			for ( auto& component : g_Components )
+			{
+				if ( !component.m_Component )
+					continue;
+
+				if ( component.m_Component->GetType( ) == inputComponent->GetType( ) )
+				{
+					comp = &component;
+					break;
+				}
+			}
+
+			if ( !comp )
+				return nullptr;
+
+			IComponent* component = nullptr;
+
+			if ( standalone )
+			{
+				component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
+			}
+			else
+			{
+				const int slot = FindAvailableDataSlot( comp );
+
+				if ( slot == -1 ) // TODO: Resize vector or something
+				{
+					Pine::Log->Warning( "Failed to find available slot for component!" );
+					return nullptr;
+				}
+
+				component = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
+
+				comp->m_DataValid[ slot ] = true;
+			}
+
+			// By doing a simple memory copy we'll obviously only copy all the data within the component object itself only, including
+			// pointers and such to other objects, but this means it won't copy the the data within the pointers, and will probably cause issues
+			// for example the physics library.
+
+			memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
+
+			component->SetStandalone( standalone );
+
+			component->OnCreated( );
+			component->OnCopied( inputComponent );
+
+			return component;
+		}
+
+		void RegisterComponent( IComponent* component, const size_t componentSize, const char* str ) override
+		{
+			Component_t comp;
+
+			comp.m_Component = component;
+			comp.m_Name = str;
+			comp.m_ComponentSize = componentSize;
+
+			if ( component )
+			{
+				component->SetStandalone( false );
+
+				ResizeData( &comp, componentSize, 128 ); // By default make space for 128 components
+			}
+
+			g_Components.push_back( comp );
+		}
+	};
+
+	IComponents* CreateComponentsInterface( )
+	{
+		return new CComponents( );
+	}
 
 }

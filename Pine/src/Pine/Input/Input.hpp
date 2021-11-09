@@ -3,7 +3,9 @@
 #include <vector>
 #include <memory>
 
-namespace Pine::Input {
+#include "../Core/Interfaces/Interfaces.hpp"
+
+namespace Pine {
 
 	enum class Axis {
 		None = 0,
@@ -11,25 +13,23 @@ namespace Pine::Input {
 		MouseY
 	};
 
-	namespace Internal {
-		struct KeyboardBinding_t {
-			int Key = 0;
-			float ActivationValue = 0.f;
-		};
+	struct KeyboardBinding_t {
+		int Key = 0;
+		float ActivationValue = 0.f;
+	};
 
-		struct AxisBinding_t {
-			Axis Axis = Axis::None;
-			float Sensitivity = 0.f;
-		};
-	}
+	struct AxisBinding_t {
+		Axis Axis = Axis::None;
+		float Sensitivity = 0.f;
+	};
 
 	class InputBinding {
 	private:
 		std::string m_Name = "";
 		float m_Value = 0.f;
 
-		std::vector<std::unique_ptr<Internal::KeyboardBinding_t>> m_KeyboardBindings;
-		std::vector<std::unique_ptr<Internal::AxisBinding_t>> m_AxisBindings;
+		std::vector<std::unique_ptr<KeyboardBinding_t>> m_KeyboardBindings;
+		std::vector<std::unique_ptr<AxisBinding_t>> m_AxisBindings;
 	public:
 		InputBinding( const std::string& name );
 
@@ -42,35 +42,34 @@ namespace Pine::Input {
 		std::string& Name( );
 		float& Value( );
 
-		const std::vector<std::unique_ptr<Pine::Input::Internal::KeyboardBinding_t>>& GetKeyboardBindings( );
-		const std::vector<std::unique_ptr<Pine::Input::Internal::AxisBinding_t>>& GetAxisBindings( );
+		const std::vector<std::unique_ptr<KeyboardBinding_t>>& GetKeyboardBindings( );
+		const std::vector<std::unique_ptr<AxisBinding_t>>& GetAxisBindings( );
 	};
 
-	class InputBindingContainer
+	class IInputSystem : public IInterface
 	{
-	private:
-
 	public:
+
+		virtual InputBinding* CreateBinding( const std::string& name ) = 0;
+		virtual void RemoveBinding( InputBinding* binding ) = 0;
+
+		// To loop through bindings if you need that.
+		virtual int BindingCount( ) = 0;
+		virtual InputBinding* GetBindingById( int i ) = 0;
+
+		// Please don't call each frame, call once and store it. It won't get removed, if you don't do it yourself!
+		virtual InputBinding* FindBinding( const std::string& name ) = 0;
+
+		// Called internally by the engine
+		virtual void Update( ) = 0;
+
+		// Saves all input bindings to a file
+		virtual void Save( const std::string& file ) = 0;
+		virtual bool Load( const std::string& file ) = 0;
+
+		// Simple wrappers
+		virtual bool IsKeyDown( int key ) = 0;
+
 	};
-	
-	InputBinding* CreateBinding( const std::string& name );
-	void RemoveBinding( InputBinding* binding );
-
-	// To loop through bindings if you need that.
-	int BindingCount( );
-	InputBinding* GetBindingById( int i );
-
-	// Please don't call each frame, call once and store it. It won't get removed, if you don't do it yourself!
-	InputBinding* FindBinding( const std::string& name );
-
-	// Called internally by the engine
-	void Update( );
-
-	// Saves all input bindings to a file
-	void Save( const std::string& file );
-	bool Load( const std::string& file );
-
-	// Simple wrappers
-	bool IsKeyDown( int key );
 
 }

@@ -1,22 +1,27 @@
 #pragma once
 #include <reactphysics3d/reactphysics3d.h>
+#include "../Core/Interfaces/Interfaces.hpp"
 
-namespace Pine::PhysicsManager
+namespace Pine
 {
-	void Setup( );
-	void Dispose( );
 
-	void Update( const double deltaTime );
+	class IPhysicsManager : public IInterface
+	{
+	private:
+	public:
+		virtual void Update( const double deltaTime ) = 0;
 
-	reactphysics3d::PhysicsCommon* GetPhysicsCommon( );
+		virtual reactphysics3d::PhysicsCommon* GetPhysicsCommon( ) = 0;
 
-	// This is the main physics world used by all the entities.
-	reactphysics3d::PhysicsWorld* GetPhysicsWorld( );
+		// This is the main physics world used by all the entities.
+		virtual reactphysics3d::PhysicsWorld* GetPhysicsWorld( ) = 0;
 
-	// These are quick wrappers for creating and destroying stuff within the physics library,
-	// they are used so we can more easily keep track of allocations.
+		// These are quick wrappers for creating and destroying stuff within the physics library,
+		// they are used so we can more easily keep track of allocations.
 
-	reactphysics3d::RigidBody* CreateRigidBody( const reactphysics3d::Transform& transform );
-	void DestroyRigidBody( reactphysics3d::RigidBody* body );
+		virtual reactphysics3d::RigidBody* CreateRigidBody( const reactphysics3d::Transform& transform ) = 0;
+		virtual void DestroyRigidBody( reactphysics3d::RigidBody* body ) = 0;
+	};
+
 
 }

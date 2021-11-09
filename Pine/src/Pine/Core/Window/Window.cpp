@@ -20,7 +20,7 @@ bool Pine::Window::Internal::Create( ) {
 
 	m_Window = glfwCreateWindow( 1024, 768, "Pine", nullptr, nullptr );
 	if ( m_Window == nullptr ) 	{
-		Log::Fatal( "Failed to create window." );
+		Log->Fatal( "Failed to create window." );
 		return false;
 	}
 

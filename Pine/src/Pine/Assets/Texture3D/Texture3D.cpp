@@ -38,7 +38,7 @@ bool Pine::Texture3D::LoadFromFile() {
 	}
 
 	if (fileNames.size() != 6) {
-		Log::Error("Failed to load cube map due to not having 6 textures.");
+		Log->Error("Failed to load cube map due to not having 6 textures.");
 		return false;
 	}
 
@@ -56,7 +56,7 @@ bool Pine::Texture3D::LoadFromFile() {
 		data = stbi_load(fileName.c_str(), &width, &height, &nrChannels, 0);
 
 		if (!data) {
-			Log::Error("Failed to load texture, " + fileName);
+			Log->Error("Failed to load texture, " + fileName);
 
 			glDeleteTextures(1, &m_Id);
 			stbi_image_free(data);

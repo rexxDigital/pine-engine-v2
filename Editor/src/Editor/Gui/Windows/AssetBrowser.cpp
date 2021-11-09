@@ -77,7 +77,7 @@ namespace {
 
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
-				entry->m_Asset = Pine::Assets::GetAsset( entry->m_Path.string( ) );
+				entry->m_Asset = Pine::Assets->GetAsset( entry->m_Path.string( ) );
 				entry->m_DisplayIcon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( entry->m_Path.string( ) );
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
@@ -105,8 +105,8 @@ namespace {
 	int g_IconSize = 64;
 
 	void DisplayItems( PathItem_t* dir ) {
-		static auto directoryIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
-		static auto unknownFileIcon = Pine::Assets::GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
+		static auto directoryIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
+		static auto unknownFileIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
 
 		Pine::IAsset* selectedAsset = nullptr;
 
@@ -296,7 +296,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 				if ( !asset->GetReadOnly( ) ) {
 					std::filesystem::remove( asset->GetPath( ) );
 
-					Pine::Assets::DisposeAsset( asset );
+					Pine::Assets->DisposeAsset( asset );
 
 					ProjectManager::ReloadProjectAssets( );
 
@@ -360,7 +360,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 			if ( !asset->GetReadOnly( ) ) {
 				std::filesystem::rename( asset->GetPath( ), std::string( asset->GetPath( ).parent_path( ).string( ) + "\\" + buff ) );
 
-				Pine::Assets::DisposeAsset( asset );
+				Pine::Assets->DisposeAsset( asset );
 
 				ProjectManager::ReloadProjectAssets( );
 

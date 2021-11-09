@@ -1,15 +1,17 @@
 #pragma once
+#include "../../Core/Interfaces/Interfaces.hpp"
 
-namespace Pine { class Texture3D; }
+namespace Pine
+{
+	class Texture3D;
 
-namespace Pine::Skybox {
+	class ISkybox : public IInterface
+	{
+	public:
+		virtual void SetSkyboxCubemap( Texture3D* texture ) = 0;
+		virtual Texture3D* GetSkyboxCubemap( ) = 0;
 
-	void Setup( );
-	void Dispose( );
-
-	void SetSkyboxCubemap( Texture3D* texture );
-	Texture3D* GetSkyboxCubemap( );
-
-	void Render( );
+		virtual void Render( ) = 0;
+	};
 
 }

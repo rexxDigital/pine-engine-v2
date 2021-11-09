@@ -186,6 +186,12 @@
     <ClInclude Include="src\Pine\Components\Collider3D\Collider3D.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pine\Core\Interfaces\Interfaces.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pine\RuntimeLoader\RuntimeLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pine\Pine.cpp">
@@ -354,6 +360,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Components\Collider3D\Collider3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\Core\Interfaces\Interfaces.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pine\RuntimeLoader\RuntimeLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

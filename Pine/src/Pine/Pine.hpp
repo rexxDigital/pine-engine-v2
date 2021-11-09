@@ -5,6 +5,7 @@
 */
 
 // Core headers
+#include "Core/Interfaces/Interfaces.hpp"
 #include "Core/Log/Log.hpp"
 #include "Core/Window/Window.hpp"
 
@@ -15,11 +16,14 @@
 #include "OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Rendering/Renderer3D/Renderer3D.hpp"
 
-
 namespace Pine {
+
 	void SetAllowUpdates( bool value );
 	bool IsAllowingUpdates( );
-	
+
+	float GetTime( );
+	PineInstance* GetPineInstance( );
+
 	// Main engine setup
 	bool Setup( );
 
@@ -28,4 +32,5 @@ namespace Pine {
 
 	// Clean up resources
 	void Terminate( );
+
 }

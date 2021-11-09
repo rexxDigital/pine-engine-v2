@@ -9,14 +9,14 @@
 #include "../../Rendering/RenderManager/RenderManager.hpp"
 
 void Pine::Camera::BuildProjectionMatrix( ) {
-	auto renderingContext = Pine::RenderManager::GetRenderingContext( );
+	const auto renderingContext = Pine::RenderManager->GetRenderingContext( );
 
 	m_AspectRatio = static_cast< float >( renderingContext->m_Width ) / static_cast< float >( renderingContext->m_Height );
 	m_ProjectionMatrix = glm::perspective( glm::radians( m_FieldOfView ), m_AspectRatio, m_NearPlane, m_FarPlane );
 }
 
 void Pine::Camera::BuildViewMatrix( ) {
-	auto transform = m_Parent->GetTransform( );
+	const auto transform = m_Parent->GetTransform( );
 
 	const float verticalAngle = glm::radians( transform->Rotation.x );
 	const float horizontalAngle = glm::radians( transform->Rotation.y );
@@ -54,16 +54,16 @@ float Pine::Camera::GetFieldOfView( ) const {
 	return m_FieldOfView;
 }
 
-void Pine::Camera::SetNearPlane( float value ) {
+void Pine::Camera::SetNearPlane( const float value ) {
 	m_NearPlane = value;
 	BuildProjectionMatrix( );
 }
 
-void Pine::Camera::SetFarPlane( float value ) {
+void Pine::Camera::SetFarPlane( const float value ) {
 	m_FarPlane = value;
 }
 
-void Pine::Camera::SetFieldOfView( float value ) {
+void Pine::Camera::SetFieldOfView( const float value ) {
 	m_FieldOfView = value;
 	BuildProjectionMatrix( );
 }

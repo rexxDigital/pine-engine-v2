@@ -2,13 +2,17 @@
 #include <Pine\Rendering\RenderManager\RenderManager.hpp>
 #include <Pine\Entity\Entity.hpp>
 
+#include "../Widgets/Widgets.hpp"
+
+#include "Pine/RuntimeLoader/RuntimeLoader.hpp"
+
 using namespace Editor::Gui;
 
 namespace {
 
 	void RenderRenderingContext( ) {
 		if ( ImGui::Begin( "Rendering Context", &Windows::ShowRenderingContext, 0 ) ) {
-			auto context = Pine::RenderManager::GetRenderingContext( );
+			auto context = Pine::RenderManager->GetRenderingContext( );
 
 			if ( !context ) {
 				ImGui::Text( "The rendering context is a nullptr." );

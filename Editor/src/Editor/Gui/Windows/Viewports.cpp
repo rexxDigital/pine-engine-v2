@@ -194,7 +194,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			const auto avSize = ImGui::GetContentRegionAvail( );
 			const auto cursorScreen = ImGui::GetCursorScreenPos( );
 
-			if ( Pine::RenderManager::GetRenderingContext( )->m_Camera != nullptr )
+			if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
 			{
 				ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 			}
@@ -270,7 +270,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 				}
 			}
 
-			for ( const auto& entity : Pine::EntityList::GetEntities(  ) ) {
+			for ( const auto& entity : Pine::EntityList->GetEntities(  ) ) {
 				if ( !entity.GetActive( ) )
 					continue;
 

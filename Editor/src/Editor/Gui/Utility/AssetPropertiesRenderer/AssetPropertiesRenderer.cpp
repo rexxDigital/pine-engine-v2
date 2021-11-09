@@ -146,13 +146,13 @@ namespace {
 					std::string materialFile = model->GetPath( ).parent_path( ).string( ) + "\\" + model->GetPath( ).stem( ).string( ) + ".mat";
 
 					if ( std::filesystem::exists( materialFile ) ) {
-						mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets::LoadFromFile( materialFile ) ) );
+						mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets->LoadFromFile( materialFile ) ) );
 						return;
 					}
 
 					std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", materialFile );
 
-					mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets::LoadFromFile( materialFile ) ) );
+					mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets->LoadFromFile( materialFile ) ) );
 
 					UpdateAssetCache( );
 				}
@@ -187,7 +187,7 @@ namespace {
 
 		if ( ImGui::Button( "Use as sky box" ) )
 		{
-			Pine::Skybox::SetSkyboxCubemap( cubeMap );
+			Pine::Skybox->SetSkyboxCubemap( cubeMap );
 		}
 	}
 

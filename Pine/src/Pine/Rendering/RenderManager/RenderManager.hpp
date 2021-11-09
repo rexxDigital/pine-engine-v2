@@ -1,27 +1,31 @@
 #pragma once
 #include "..\RenderingContext\RenderingContext.hpp"
+#include "../../Core/Interfaces/Interfaces.hpp"
 
 namespace Pine {
 	class Camera;
 
 	typedef void ( *RenderCallback )( int pass );
-}
 
-namespace Pine::RenderManager {
 
-	void SetRenderingContext( RenderingContext* renderingContext );
-	RenderingContext* GetRenderingContext( );
+	class IRenderManager : public IInterface
+	{
+	public:
 
-	// Called during different passes during the rendering,
-	// 0 == pre render
-	// 1 == after rendering scene (pre post-processing)
-	// 2 == after all rendering is done
-	void SetRenderingCallback( RenderCallback fn );
+		virtual void SetRenderingContext( RenderingContext* renderingContext ) = 0;
+		virtual RenderingContext* GetRenderingContext( ) = 0;
 
-	void PrepareSceneRendering(  );
-	void FinishSceneRendering(  );
-	
-	void Setup( );
-	void Render( );
+		// Called during different passes during the rendering,
+		// 0 == pre render
+		// 1 == after rendering scene (pre post-processing)
+		// 2 == after all rendering is done
+		virtual void SetRenderingCallback( RenderCallback fn ) = 0;
+
+		virtual void PrepareSceneRendering( ) = 0;
+		virtual void FinishSceneRendering( ) = 0;
+
+		virtual void Render( ) = 0;
+
+	};
 
 }

@@ -16,14 +16,14 @@ void UpdateAssetCache( );
 
 void Editor::Setup( ) {
 
-	Pine::Log::Message( "Setting up editor..." );
+	Pine::Log->Message( "Setting up editor..." );
 	
 	ProjectManager::Setup( );
 	ProjectManager::OpenProject( "Projects\\Default" );
 
-	Pine::Log::Message( "Loading editor assets..." );
+	Pine::Log->Message( "Loading editor assets..." );
 	
-	Pine::Assets::LoadFromDirectory( "Assets\\Editor" );
+	Pine::Assets->LoadFromDirectory( "Assets\\Editor" );
 
 	Gui::Setup( );
 	Gui::Utility::AssetIconGen::Update( );
@@ -36,6 +36,6 @@ void Editor::Setup( ) {
 
 	Pine::SetAllowUpdates( false );
 
-	Pine::Log::Message( "Ready." );
+	Pine::Log->Message( "Ready." );
 	
 }

@@ -17,11 +17,11 @@ namespace {
 			const std::string filePath = shaderDirectory + "\\" + j[ name ].get<std::string>( );
 
 			if ( !std::filesystem::exists( filePath ) ) {
-				Pine::Log::Warning( "Unable to find shader at path " + filePath );
+				Pine::Log->Warning( "Unable to find shader at path " + filePath );
 				return false;
 			}
 
-			shaderFiles.push_back( Pine::Assets::LoadFromFile( filePath ) );
+			shaderFiles.push_back( Pine::Assets->LoadFromFile( filePath ) );
 
 			std::ifstream stream( filePath );
 

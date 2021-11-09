@@ -9,25 +9,25 @@ using namespace Editor::Gui;
 namespace
 {
 
-	void RenderMessage( const std::string& msg, Pine::Log::LogLevel level )
+	void RenderMessage( const std::string& msg, Pine::LogLevel level )
 	{
 		ImVec4 color;
 
 		switch ( level )
 		{
-		case Pine::Log::LogLevel::Debug:
+		case Pine::LogLevel::Debug:
 			color = ImVec4( 0.50f, 0.50f, 0.50f, 1.00f );
 			break;
-		case Pine::Log::LogLevel::Message:
+		case Pine::LogLevel::Message:
 			color = ImVec4( 1.f, 1.f, 1.f, 1.00f );
 			break;
-		case Pine::Log::LogLevel::Warning:
+		case Pine::LogLevel::Warning:
 			color = ImVec4( 1.f, 0.5f, 0.f, 1.00f );
 			break;
-		case Pine::Log::LogLevel::Error:
+		case Pine::LogLevel::Error:
 			color = ImVec4( 1.f, 0.f, 0.f, 1.00f );
 			break;
-		case Pine::Log::LogLevel::Fatal:
+		case Pine::LogLevel::Fatal:
 			color = ImVec4( 1.f, 0.f, 0.f, 1.00f );
 			break;
 		}
@@ -43,14 +43,14 @@ void Windows::RenderConsole( ) {
 	{
 		if ( ImGui::Button( "Clear" ) )
 		{
-			Pine::Log::ClearLogMessages( );
+			Pine::Log->ClearLogMessages( );
 		}
 
 		ImGui::PushStyleColor( ImGuiCol_::ImGuiCol_ChildBg, ImVec4( 0.04f, 0.04f, 0.04f, 1.00f ) );
 
-		ImGui::BeginChild( "##ConsoleLogs", ImVec2( -1.f, -1.f ), false, 0 );
+		ImGui::BeginChild( "##ConsoleLogs", ImVec2( -1.f, -1.f ), false, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize );
 
-		const auto& msgs = Pine::Log::GetLogMessages( );
+		const auto& msgs = Pine::Log->GetLogMessages( );
 
 		for ( const auto& msg: msgs )
 		{

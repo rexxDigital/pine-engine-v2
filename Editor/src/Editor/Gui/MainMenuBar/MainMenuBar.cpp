@@ -68,10 +68,10 @@ void Editor::Gui::MainMenuBar::Render( ) {
 
 			if ( ImGui::MenuItem( "Reload Engine Shaders" ) )
 			{
-				Pine::Log::Message( "Loading engine shaders..." );
+				Pine::Log->Message( "Loading engine shaders..." );
 
-				if ( Pine::Assets::LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
-					Pine::Log::Fatal( "Failed to load engine shaders." );
+				if ( Pine::Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
+					Pine::Log->Fatal( "Failed to load engine shaders." );
 				}
 			}
 
@@ -91,6 +91,7 @@ void Editor::Gui::MainMenuBar::Render( ) {
 			ImGui::MenuItem( "Game Viewport", nullptr, &Windows::ShowGameViewport );
 			ImGui::MenuItem( "Level Viewport", nullptr, &Windows::ShowLevelViewport );
 			ImGui::MenuItem( "Level Settings", nullptr, &Windows::ShowLevelSettings );
+			ImGui::MenuItem( "Console", nullptr, &Windows::ShowConsole );
 
 			if ( ImGui::BeginMenu( "Debug" ) ) {
 				ImGui::MenuItem( "Rendering Context", nullptr, &Windows::ShowRenderingContext );

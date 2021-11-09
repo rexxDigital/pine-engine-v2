@@ -1,15 +1,18 @@
 #pragma once
+#include "../Core/Interfaces/Interfaces.hpp"
 
 typedef void ( *GuiRenderCallback )( );
 
+namespace Pine
+{
 
-namespace Pine::Gui {
+	class IGui : public IInterface
+	{
+	public:
 
-	void SetGuiRenderCallback( GuiRenderCallback callback );
+		virtual void SetGuiRenderCallback( GuiRenderCallback callback ) = 0;
+		virtual void Render( ) = 0;
 
-	void Setup( );
-	void Dispose( );
-	void Render( );
-
+	};
 
 }

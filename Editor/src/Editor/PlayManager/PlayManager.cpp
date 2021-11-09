@@ -38,7 +38,7 @@ void Editor::PlayManager::Start( )
 
 	Pine::SetAllowUpdates( true );
 
-	Pine::EntityList::RunOnSetup( );
+	Pine::EntityList->RunOnSetup( );
 }
 
 void Editor::PlayManager::Pause( )

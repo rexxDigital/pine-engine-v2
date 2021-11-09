@@ -13,7 +13,7 @@ namespace {
 
 void Pine::Memory::EnableMemoryTracking( ) {
 	g_MemoryTrackingEnabled = true;
-	Log::Warning( "Memory tracking is now enabled!" );
+	Log->Warning( "Memory tracking is now enabled!" );
 }
 
 void Pine::Memory::DisableMemoryTracking( ) {
@@ -60,7 +60,7 @@ void Pine::Memory::Free( void* ptr ) {
 		}
 	}
 
-	Log::Warning( "Failed to free allocated memory." );
+	Log->Warning( "Failed to free allocated memory." );
 }
 
 void* operator new( size_t size )

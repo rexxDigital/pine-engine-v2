@@ -9,32 +9,29 @@
 #include "Collider3D/Collider3D.hpp"
 #include "RigidBody/RigidBody.hpp"
 
-// To query stuff about components
-namespace Pine::Components
+namespace Pine
 {
-	void Setup( );
-	void Dispose( );
 
-	// Enumerate component types
-	const char* GetComponentTypeName( EComponentType type );
-	int GetComponentTypeCount( );
-
-	// Enumerate components within types
-	int GetComponentCount( EComponentType type );
-	IComponent* GetComponent( EComponentType type, int index );
-
-	// Manage components
-	IComponent* CreateComponent( EComponentType type, bool standalone = false );
-	IComponent* CopyComponent( const IComponent* component, bool standalone );
-	bool DeleteComponent( IComponent* component );
-
-
-	namespace Internal
+	class IComponents : public IInterface
 	{
-		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.
-		void RegisterComponent( IComponent* component, const size_t componentSize, const char* str );
+	public:
 
-		void ShowDebugUI( );
-	}
+		// Enumerate component types
+		virtual const char* GetComponentTypeName( EComponentType type ) = 0;
+		virtual int GetComponentTypeCount( ) = 0;
+
+		// Enumerate components within types
+		virtual int GetComponentCount( EComponentType type ) = 0;
+		virtual IComponent* GetComponent( EComponentType type, int index ) = 0;
+
+		// Manage components
+		virtual IComponent* CreateComponent( EComponentType type, bool standalone = false ) = 0;
+		virtual IComponent* CopyComponent( const IComponent* component, bool standalone ) = 0;
+		virtual bool DeleteComponent( IComponent* component ) = 0;
+
+		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.
+		virtual void RegisterComponent( IComponent* component, const size_t componentSize, const char* str ) = 0;
+
+	};
 
 }

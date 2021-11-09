@@ -3,108 +3,124 @@
 #include <vector>
 #include <Windows.h>
 
-namespace
+namespace Pine
 {
 
-	std::vector<std::pair<std::string, Pine::Log::LogLevel>> m_ConsoleLogs;
+	class CLog : public ILog
+	{
+	private:
+		std::vector<std::pair<std::string, LogLevel>> m_ConsoleLogs;
 
 #ifdef _WIN32
 
-	void SetConsoleColor( int colorCode )
-	{
-		static auto consoleHandle = GetStdHandle( STD_OUTPUT_HANDLE );
-		SetConsoleTextAttribute( consoleHandle, colorCode );
-	}
+		void SetConsoleColor( int colorCode )
+		{
+			static auto consoleHandle = GetStdHandle( STD_OUTPUT_HANDLE );
+			SetConsoleTextAttribute( consoleHandle, colorCode );
+		}
 
 #else
 
-	void SetConsoleColor( int colorCode )
-	{
-		// TODO: Do something for other operating systems, not that I really support them right now but you get the idea.}
-	}
-
-#endif
-
-	void AddToLogBuffer( const std::string& str, Pine::Log::LogLevel level )
-	{
-		if ( m_ConsoleLogs.size( ) >= 256 )
+		void SetConsoleColor( int colorCode )
 		{
-			m_ConsoleLogs.erase( m_ConsoleLogs.begin( ) );
+			// TODO: Do something for other operating systems, not that I really support them right now but you get the idea.
 		}
 
-		m_ConsoleLogs.push_back( std::make_pair( str, level ) );
-	}
+#endif
 
-}
+		void AddToLogBuffer( const std::string& str, LogLevel level )
+		{
+			if ( m_ConsoleLogs.size( ) >= 256 )
+			{
+				m_ConsoleLogs.erase( m_ConsoleLogs.begin( ) );
+			}
 
-void Pine::Log::Debug( const std::string& msg )
-{
+			m_ConsoleLogs.push_back( std::make_pair( str, level ) );
+		}
+
+	public:
+
+		void Debug( const std::string& msg ) override
+		{
 #ifdef _DEBUG
-	SetConsoleColor( 8 );
+			SetConsoleColor( 8 );
 
-	std::cout << "[Debug] ";
+			std::cout << "[Debug] ";
 
-	std::cout << msg << std::endl;
+			std::cout << msg << std::endl;
 
-	AddToLogBuffer( "[Debug] " + msg, LogLevel::Debug );
+			AddToLogBuffer( "[Debug] " + msg, LogLevel::Debug );
 
 #endif
-}
+		}
 
-void Pine::Log::Message( const std::string& str ) {
-	SetConsoleColor( 15 );
+		void Message( const std::string& str ) override
+		{
+			SetConsoleColor( 15 );
 
-	std::cout << "[Message] ";
+			std::cout << "[Message] ";
 
-	SetConsoleColor( 7 );
+			SetConsoleColor( 7 );
 
-	std::cout << str << std::endl;
+			std::cout << str << std::endl;
 
-	AddToLogBuffer( "[Message] " + str, LogLevel::Message );
+			AddToLogBuffer( "[Message] " + str, LogLevel::Message );
 
-}
+		}
 
-void Pine::Log::Warning( const std::string& str ) {
-	SetConsoleColor( 14 );
+		void Warning( const std::string& str ) override
+		{
+			SetConsoleColor( 14 );
 
-	std::cout << "[Warning] ";
+			std::cout << "[Warning] ";
 
-	SetConsoleColor( 7 );
+			SetConsoleColor( 7 );
 
-	std::cout << str << std::endl;
+			std::cout << str << std::endl;
 
-	AddToLogBuffer( "[Warning] " + str, LogLevel::Warning );
+			AddToLogBuffer( "[Warning] " + str, LogLevel::Warning );
 
-}
+		}
 
-void Pine::Log::Error( const std::string& str ) {
-	SetConsoleColor( 12 );
+		void Error( const std::string& str ) override
+		{
+			SetConsoleColor( 12 );
 
-	std::cout << "[Error] ";
+			std::cout << "[Error] ";
 
-	SetConsoleColor( 7 );
+			SetConsoleColor( 7 );
 
-	std::cout << str << std::endl;
+			std::cout << str << std::endl;
 
-	AddToLogBuffer( "[Error] " + str, LogLevel::Error );
-}
+			AddToLogBuffer( "[Error] " + str, LogLevel::Error );
+		}
 
-void Pine::Log::Fatal( const std::string& str ) {
-	SetConsoleColor( 12 );
+		void Fatal( const std::string& str ) override
+		{
+			SetConsoleColor( 12 );
 
-	std::cout << "[FATAL] ";
-	std::cout << str << std::endl;
+			std::cout << "[FATAL] ";
+			std::cout << str << std::endl;
 
-	AddToLogBuffer( "[FATAL] " + str, LogLevel::Fatal );
-}
+			AddToLogBuffer( "[FATAL] " + str, LogLevel::Fatal );
+		}
 
-const std::vector<std::pair<std::string, Pine::Log::LogLevel>>& Pine::Log::GetLogMessages( )
-{
-	return m_ConsoleLogs;
-}
+		const std::vector<std::pair<std::string, LogLevel>>& GetLogMessages( ) override
+		{
+			return m_ConsoleLogs;
+		}
 
-void Pine::Log::ClearLogMessages( )
-{
-	m_ConsoleLogs.clear( );
+		void ClearLogMessages( ) override
+		{
+			m_ConsoleLogs.clear( );
+		}
+
+	};
+
+	ILog* CreateLogInterface( )
+	{
+		return new CLog( );
+	}
+
 }
 

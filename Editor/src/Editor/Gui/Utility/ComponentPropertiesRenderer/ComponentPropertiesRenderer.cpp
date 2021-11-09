@@ -48,11 +48,11 @@ namespace {
 		float nearPlane = camera->GetNearPlane( );
 		float farPlane = camera->GetFarPlane( );
 		float fieldOfView = camera->GetFieldOfView( );
-		bool isActiveCamera = Pine::RenderManager::GetRenderingContext( )->m_Camera == camera;
+		bool isActiveCamera = Pine::RenderManager->GetRenderingContext( )->m_Camera == camera;
 
 		if ( Widgets::Checkbox( "Active", isActiveCamera ) )
 		{
-			Pine::RenderManager::GetRenderingContext( )->m_Camera = isActiveCamera ? camera : nullptr;
+			Pine::RenderManager->GetRenderingContext( )->m_Camera = isActiveCamera ? camera : nullptr;
 		}
 
 		if ( Widgets::SliderFloat( "Near Plane", nearPlane, 0.01f, 1.f, "%.2f" ) )
