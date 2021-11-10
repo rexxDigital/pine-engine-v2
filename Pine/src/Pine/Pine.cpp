@@ -28,6 +28,8 @@ namespace
 	bool g_StopUpdateThread = false;
 	bool g_AllowUpdates = true;
 
+	float g_WindowTime = 0.0f;
+
 	double GetTimeAsDouble( ) {
 		using namespace std::chrono;
 		using SecondsFP = std::chrono::duration<double>;
@@ -60,6 +62,11 @@ void Pine::SetAllowUpdates( bool value )
 bool Pine::IsAllowingUpdates( )
 {
 	return g_AllowUpdates;
+}
+
+float Pine::GetTime( )
+{
+	return g_WindowTime;
 }
 
 Pine::PineInstance* Pine::GetPineInstance()
@@ -161,9 +168,9 @@ void Pine::Run( )
 	while ( !glfwWindowShouldClose( window ) )
 	{
 		// Calculate delta time
-		const double currentTime = glfwGetTime( );
-		const double deltaTime = currentTime - lastFrameTime;
-		lastFrameTime = currentTime;
+		g_WindowTime = glfwGetTime( );
+		const double deltaTime = g_WindowTime - lastFrameTime;
+		lastFrameTime = g_WindowTime;
 
 		Input->Update( );
 		PhysicsManager->Update( deltaTime );

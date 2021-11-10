@@ -9,6 +9,7 @@
 
 #include "Editor/EditorEntity/EditorEntity.hpp"
 #include "Editor/Gui/Gui.hpp"
+#include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 
 namespace
@@ -60,6 +61,8 @@ namespace
 
 	void OnPreRender( )
 	{
+		Editor::ProjectManager::Update( );
+
 		// Render with level editor entity camera
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{

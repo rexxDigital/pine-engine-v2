@@ -5,10 +5,10 @@
 namespace Editor::EditorEntity
 {
 
-	void Create();
+	void Create( );
 
-	Pine::Entity* GetEntity();
+	Pine::Entity* GetEntity( );
 
-	Pine::Camera* GetCamera();
-	
+	Pine::Camera* GetCamera( );
+
 }

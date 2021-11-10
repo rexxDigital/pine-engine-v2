@@ -59,17 +59,49 @@ namespace Pine
 			handle->m_Path = modPath;
 			handle->m_Instance = dllHandle;
 
+			m_Modules.push_back( handle );
+
 			return handle;
 		}
 
 		bool UnloadModule( ModuleHandle* handle ) override
 		{
-			if ( handle->m_Loaded )
-				FreeLibrary( static_cast< HMODULE >( handle->m_Instance ) );
+			const auto mod = static_cast< HMODULE >( handle->m_Instance );
+			const auto loaded = handle->m_Loaded;
+
+			for ( int i = 0; i < m_Modules.size( ); i++ )
+			{
+				if ( handle == m_Modules[ i ] )
+				{
+					m_Modules.erase( m_Modules.begin( ) + i );
+					break;
+				}
+			}
 
 			delete handle;
 
+			if ( loaded )
+				FreeLibrary( mod );
+
 			return true;
+		}
+
+		NativeScriptFactory* FindNativeScriptFactory( const std::string& name ) override
+		{
+			for ( const auto mod : m_Modules )
+			{
+				if ( !mod->m_Loaded ) continue;
+
+				for ( auto& factory : mod->m_Factories )
+				{
+					if ( factory.m_Name == name )
+					{
+						return &factory;
+					}
+				}
+			}
+
+			return nullptr;
 		}
 
 	};
@@ -77,6 +109,17 @@ namespace Pine
 	IRuntimeLoader* CreateRuntimeLoaderInterface( )
 	{
 		return new CRuntimeLoader;
+	}
+
+	void ModuleHandle::RegisterNativeScript( const std::string& name, size_t size, std::function<NativeScript* ( )> factory )
+	{
+		NativeScriptFactory f;
+
+		f.m_Name = name;
+		f.m_Size = size;
+		f.m_Factory = factory;
+
+		m_Factories.push_back( std::move( f ) );
 	}
 
 }

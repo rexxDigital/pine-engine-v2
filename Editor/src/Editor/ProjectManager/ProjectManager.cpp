@@ -4,9 +4,10 @@
 #include <Pine\Assets\Assets.hpp>
 #include <Pine\Core\Window\Window.hpp>
 
-
+#include "Pine/Pine.hpp"
 #include "Pine/Core/Log/Log.hpp"
 #include "Pine/ScriptManager/ScriptManager.hpp"
+#include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 
 // TODO: Store project meta data, and verify stuff.
 // This will probably never get done, lol.
@@ -24,13 +25,36 @@ namespace {
 
 	std::vector<std::string> g_AvaliableProjects;
 
+	std::chrono::system_clock::duration g_LastProjectRuntimeWriteTime;
+	Pine::ModuleHandle* g_ProjectRuntime = nullptr;
+
+	void ReloadRuntimeLibrary( const std::filesystem::path& path )
+	{
+		Pine::Log->Message( "Reloading game runtime library..." );
+
+		if ( g_ProjectRuntime )
+		{
+			Pine::RuntimeLoader->UnloadModule( g_ProjectRuntime );
+			g_ProjectRuntime = nullptr;
+		}
+
+		g_ProjectRuntime = Pine::RuntimeLoader->LoadModule( path );
+		g_LastProjectRuntimeWriteTime = std::filesystem::last_write_time( path ).time_since_epoch( );
+	}
+
 	void LoadProject( const std::string& directory ) {
 		g_CurrentProject = directory;
 		g_ProjectOpen = true;
+		g_ProjectRuntime = nullptr;
 
 		Pine::Log->Message( "Loading project '" + g_CurrentProject + "' assets..." );
 
 		Pine::Assets->LoadFromDirectory( directory );
+
+		if ( std::filesystem::exists( directory + "\\GameRuntime.dll" ) )
+		{
+			ReloadRuntimeLibrary( directory + "\\GameRuntime.dll" );
+		}
 
 		Pine::Window::SetSize( 1024, 768 );
 		Pine::Window::UpdateCachedSize( );
@@ -41,8 +65,6 @@ namespace {
 }
 
 void Editor::ProjectManager::Setup( ) {
-
-	//	g_CurrentLevel = new Pine::Level;
 
 	for ( const auto& dirEntry : std::filesystem::directory_iterator( "Projects" ) ) {
 		if ( !dirEntry.is_directory( ) )
@@ -55,7 +77,7 @@ void Editor::ProjectManager::Setup( ) {
 
 void Editor::ProjectManager::Save( ) {
 	Pine::Log->Message( "Saving all assets..." );
-	
+
 	if ( g_CurrentLevel )
 	{
 		g_CurrentLevel->CreateFromCurrentLevel( );
@@ -110,6 +132,37 @@ void Editor::ProjectManager::OpenProject( const std::string& directory ) {
 	LoadProject( directory );
 }
 
+void Editor::ProjectManager::Update( )
+{
+	static float lastExecTime = 0.0;
+
+	if ( Pine::GetTime( ) - lastExecTime > 2.f )
+	{
+		lastExecTime = Pine::GetTime( );
+	}
+	else
+	{
+		return;
+	}
+
+	// Auto reload assets
+
+
+	// Auto reload project runtime
+	const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
+
+	if ( !g_ProjectRuntime )
+	{
+		ReloadRuntimeLibrary( runtimePath );
+		return;
+	}
+
+	if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
+	{
+		ReloadRuntimeLibrary( runtimePath );
+	}
+}
+
 void Editor::ProjectManager::CreateProject( const std::string& directory ) {
 	if ( std::filesystem::exists( directory ) )
 		return;
@@ -123,14 +176,19 @@ const std::vector<std::string>& Editor::ProjectManager::GetAvaliableProjects( ) 
 	return g_AvaliableProjects;
 }
 
+Pine::ModuleHandle* Editor::ProjectManager::GetProjectRuntimeLibrary( )
+{
+	return g_ProjectRuntime;
+}
+
 void Editor::ProjectManager::ReloadProjectAssets( ) {
 	if ( !g_ProjectOpen )
 		return;
-	
+
 	auto level = new Pine::Level;
 
 	level->CreateFromCurrentLevel( );
-	
+
 	Pine::Assets->LoadFromDirectory( GetCurrentProjectDirectory( ) );
 
 	Pine::ScriptingManager->CompileScripts( );

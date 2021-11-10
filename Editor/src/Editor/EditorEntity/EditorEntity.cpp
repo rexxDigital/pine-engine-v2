@@ -30,6 +30,11 @@ private:
 	Pine::InputBinding* m_Sideways = nullptr;
 public:
 
+	EditorEntityScript( )
+	{
+		m_CreateFromFactory = false;
+	}
+
 	void OnSetup( ) override
 	{
 	}
@@ -100,7 +105,7 @@ void Editor::EditorEntity::Create( )
 	g_EditorEntity->RegisterComponent( new EditorEntityScript( ) ); // this sucks.
 
 	// We have to manually call OnCreated for these soon to be unsupported NativeScript
-	g_EditorEntity->GetComponent<EditorEntityScript>( )->OnCreated( ); 
+	g_EditorEntity->GetComponent<EditorEntityScript>( )->OnCreated( );
 
 	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>( );
 }

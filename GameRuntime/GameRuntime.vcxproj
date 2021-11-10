@@ -132,7 +132,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutputPath)GameRuntime.dll $(SolutionDir)Editor\GameRuntime.dll /Y</Command>
+      <Command>copy $(OutputPath)GameRuntime.dll $(SolutionDir)Editor\Projects\Default\GameRuntime.dll /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,12 +157,16 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\Controllers\GameController\GameController.cpp" />
+    <ClCompile Include="src\DllMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pine\Pine.vcxproj">
       <Project>{e486519c-83fd-4dd0-8844-57cd7f63b01e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Controllers\GameController\GameController.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
