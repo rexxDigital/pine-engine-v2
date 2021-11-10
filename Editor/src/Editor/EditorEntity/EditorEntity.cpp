@@ -18,7 +18,7 @@ namespace
 
 using namespace Editor::Gui;
 
-class EditorEntityScript final : public Pine::NativeScript
+class EditorEntityScript final : public Pine::IComponent
 {
 private:
 	bool m_IsMovingCamera = false;
@@ -29,11 +29,6 @@ private:
 	Pine::InputBinding* m_Forward = nullptr;
 	Pine::InputBinding* m_Sideways = nullptr;
 public:
-
-	EditorEntityScript( )
-	{
-		m_CreateFromFactory = false;
-	}
 
 	void OnSetup( ) override
 	{

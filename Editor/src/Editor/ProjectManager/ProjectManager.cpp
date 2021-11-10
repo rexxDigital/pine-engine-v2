@@ -148,19 +148,19 @@ void Editor::ProjectManager::Update( )
 	// Auto reload assets
 
 
-	// Auto reload project runtime
-	const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
+	//// Auto reload project runtime
+	//const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
 
-	if ( !g_ProjectRuntime )
-	{
-		ReloadRuntimeLibrary( runtimePath );
-		return;
-	}
+	//if ( !g_ProjectRuntime )
+	//{
+	//	ReloadRuntimeLibrary( runtimePath );
+	//	return;
+	//}
 
-	if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
-	{
-		ReloadRuntimeLibrary( runtimePath );
-	}
+	//if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
+	//{
+	//	ReloadRuntimeLibrary( runtimePath );
+	//}
 }
 
 void Editor::ProjectManager::CreateProject( const std::string& directory ) {
@@ -174,6 +174,20 @@ void Editor::ProjectManager::CreateProject( const std::string& directory ) {
 
 const std::vector<std::string>& Editor::ProjectManager::GetAvaliableProjects( ) {
 	return g_AvaliableProjects;
+}
+
+void Editor::ProjectManager::LoadRuntimeLibrary( )
+{
+	ReloadRuntimeLibrary( g_CurrentProject + "\\GameRuntime.dll" );
+}
+
+void Editor::ProjectManager::UnloadRuntimeLibrary( )
+{
+	if ( g_ProjectRuntime )
+	{
+		Pine::RuntimeLoader->UnloadModule( g_ProjectRuntime );
+		g_ProjectRuntime = nullptr;
+	}
 }
 
 Pine::ModuleHandle* Editor::ProjectManager::GetProjectRuntimeLibrary( )

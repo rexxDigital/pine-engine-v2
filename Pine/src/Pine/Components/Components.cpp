@@ -94,7 +94,7 @@ namespace Pine
 			RegisterComponent( new ModelRenderer( ), sizeof( ModelRenderer ), "Model Renderer" );
 			RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
 			RegisterComponent( new Light( ), sizeof( Light ), "Light" );
-			RegisterComponent( nullptr, sizeof( NativeScript ), "Native Script" );
+			RegisterComponent( new NativeScript( ), sizeof( NativeScript ), "Native Script" );
 			RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 			RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
 			RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );

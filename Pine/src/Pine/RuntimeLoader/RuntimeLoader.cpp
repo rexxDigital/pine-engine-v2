@@ -2,6 +2,7 @@
 
 #include "../Pine.hpp"
 
+#include <utility>
 #include <vector>
 #include <Windows.h>
 
@@ -40,7 +41,7 @@ namespace Pine
 
 			// Attempt to find and call the initialize module function every game runtime should have
 
-			auto modInit = reinterpret_cast< ModuleInitializeFn >( GetProcAddress( dllHandle, "ModuleInitialize" ) );
+			const auto modInit = reinterpret_cast< ModuleInitializeFn >( GetProcAddress( dllHandle, "ModuleInitialize" ) );
 
 			if ( !modInit )
 			{
@@ -117,7 +118,7 @@ namespace Pine
 
 		f.m_Name = name;
 		f.m_Size = size;
-		f.m_Factory = factory;
+		f.m_Factory = std::move( factory );
 
 		m_Factories.push_back( std::move( f ) );
 	}

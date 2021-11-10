@@ -41,45 +41,6 @@ namespace {
 		ImGui::End( );
 	}
 
-	void RenderModuleManager( )
-	{
-		static char buff[ 64 ];
-		static Pine::ModuleHandle* handle = nullptr;
-
-		ImGui::Begin( "Module Manager", nullptr, 0 );
-
-		ImGui::InputText( "Path", buff, 64 );
-
-		bool restoreFlag = false;
-
-		if ( handle )
-		{
-			restoreFlag = true;
-			Widgets::PushDisabled( );
-		}
-
-		if ( ImGui::Button( "Load Module" ) )
-		{
-			handle = Pine::RuntimeLoader->LoadModule( buff );
-		}
-
-		if ( restoreFlag )
-			Widgets::PopDisabled( );
-
-		if ( ImGui::Button( "Unload Module" ) )
-		{
-			if ( handle )
-			{
-				Pine::RuntimeLoader->UnloadModule( handle );
-
-				handle = nullptr;
-			}
-		}
-
-		ImGui::End( );
-
-	}
-
 }
 
 void Windows::RenderDebugWindows( ) {
@@ -87,7 +48,5 @@ void Windows::RenderDebugWindows( ) {
 	if ( Windows::ShowRenderingContext ) {
 		RenderRenderingContext( );
 	}
-
-	RenderModuleManager( );
 
 }

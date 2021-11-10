@@ -29,6 +29,9 @@ namespace Editor::ProjectManager {
 
 	const std::vector<std::string>& GetAvaliableProjects( );
 
+	void LoadRuntimeLibrary( );
+	void UnloadRuntimeLibrary( );
+
 	Pine::ModuleHandle* GetProjectRuntimeLibrary( );
 
 }

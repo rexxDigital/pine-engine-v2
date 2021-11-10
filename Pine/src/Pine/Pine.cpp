@@ -33,7 +33,7 @@ namespace
 	double GetTimeAsDouble( ) {
 		using namespace std::chrono;
 		using SecondsFP = std::chrono::duration<double>;
-		return duration_cast<SecondsFP>( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
+		return duration_cast< SecondsFP >( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
 	}
 
 	void UpdateThread( )
@@ -43,13 +43,13 @@ namespace
 		while ( !g_StopUpdateThread )
 		{
 			const double currentTime = GetTimeAsDouble( );
-			const float deltaTime = static_cast<float>( currentTime - lastTime );
+			const float deltaTime = static_cast< float >( currentTime - lastTime );
 
 			if ( g_AllowUpdates )
 				Pine::EntityList->RunOnUpdate( deltaTime );
 
 			lastTime = currentTime;
-			std::this_thread::sleep_for( std::chrono::milliseconds( static_cast<int>( 1000.f / TickRate ) ) );
+			std::this_thread::sleep_for( std::chrono::milliseconds( static_cast< int >( 1000.f / TickRate ) ) );
 		}
 	}
 }
@@ -69,7 +69,7 @@ float Pine::GetTime( )
 	return g_WindowTime;
 }
 
-Pine::PineInstance* Pine::GetPineInstance()
+Pine::PineInstance* Pine::GetPineInstance( )
 {
 	return &g_PineInstance;
 }
@@ -106,7 +106,7 @@ bool Pine::Setup( )
 
 	const auto gpuRenderer = glGetString( GL_RENDERER );
 
-	Log->Message( "Using GPU: " + std::string( reinterpret_cast<const char*>( gpuRenderer ) ) );
+	Log->Message( "Using GPU: " + std::string( reinterpret_cast< const char* >( gpuRenderer ) ) );
 
 	// Setup some core stuff first.
 	Assets->Setup( );
@@ -128,7 +128,7 @@ bool Pine::Setup( )
 	}
 
 	RenderManager->SetRenderingContext( CreateDefaultRenderingContext( ) );
-	
+
 	PhysicsManager->Setup( );
 	Renderer3D->Setup( );
 	Skybox->Setup( );

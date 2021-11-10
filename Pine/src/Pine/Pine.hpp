@@ -21,6 +21,7 @@ namespace Pine {
 	void SetAllowUpdates( bool value );
 	bool IsAllowingUpdates( );
 
+	float GetTime( );
 	PineInstance* GetPineInstance( );
 
 	// Main engine setup

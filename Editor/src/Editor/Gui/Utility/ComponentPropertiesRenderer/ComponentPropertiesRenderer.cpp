@@ -14,6 +14,7 @@
 #include "Pine/Components/RigidBody//RigidBody.hpp"
 #include "Pine/Components/TerrainRenderer/TerrainRenderer.hpp"
 #include "Pine/Components/Collider3D/Collider3D.hpp"
+#include "Pine/Components/NativeScript/NativeScript.hpp"
 
 using namespace Editor::Gui;
 
@@ -170,7 +171,7 @@ namespace {
 		float currentRadius = collider3d->GetRadius( );
 		float currentHeight = collider3d->GetHeight( );
 
-		if ( Widgets::Combobox( "Collider Type" , currentType, "Box\0Sphere\0Capsule\0Convex Mesh\0Concave Mesh\0Height field\0") )
+		if ( Widgets::Combobox( "Collider Type", currentType, "Box\0Sphere\0Capsule\0Convex Mesh\0Concave Mesh\0Height field\0" ) )
 		{
 			collider3d->SetColliderType( static_cast< Pine::ColliderType >( currentType + 1 ) );
 		}
@@ -212,7 +213,53 @@ namespace {
 		}
 
 	}
- 
+
+	void RenderNativeScript( Pine::NativeScript* nativeScript )
+	{
+		static bool showNativeScriptSelector = false;
+
+		const auto renderNativeScriptSelector = [ ]
+		{
+
+		};
+
+		ImGui::Columns( 2, nullptr, false );
+
+		ImGui::Text( "Script" );
+
+		ImGui::NextColumn( );
+
+		char buff[ 64 ];
+
+		strcpy_s( buff, nativeScript->GetFactoryName( ).c_str( ) );
+
+		ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
+		ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );
+
+		if ( ImGui::InputText( "##NativeScriptName", buff, 64, 0, 0 ) )
+		{
+			nativeScript->SetFactoryName( buff );
+		}
+
+		ImGui::SameLine( );
+
+		if ( ImGui::Button( "...##NativeScript" ) )
+		{
+			showNativeScriptSelector = true;
+		}
+
+		ImGui::PopStyleVar( );
+
+		ImGui::Columns( 1 );
+
+		if ( showNativeScriptSelector )
+		{
+			renderNativeScriptSelector( );
+		}
+
+
+	}
+
 }
 
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
@@ -234,6 +281,8 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderRigidBody( dynamic_cast< Pine::RigidBody* >( component ) ); break;
 	case Pine::EComponentType::Collider3D:
 		RenderCollider3D( dynamic_cast< Pine::Collider3D* >( component ) ); break;
+	case Pine::EComponentType::NativeScript:
+		RenderNativeScript( dynamic_cast< Pine::NativeScript* >( component ) ); break;
 	default:
 		break;
 	}
