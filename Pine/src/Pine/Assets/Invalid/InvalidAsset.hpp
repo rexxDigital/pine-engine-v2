@@ -9,10 +9,10 @@ namespace Pine
 	private:
 	public:
 
-		bool SaveToFile() override;
-		bool LoadFromFile() override;
-		void Dispose() override;
-		
+		bool SaveToFile( ) override;
+		bool LoadFromFile( ) override;
+		void Dispose( ) override;
+
 	};
-	
+
 }

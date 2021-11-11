@@ -23,8 +23,6 @@ namespace Pine
 	private:
 		ColliderType m_Type = ColliderType::Invalid;
 
-		reactphysics3d::CollisionBody* m_Body = nullptr;
-
 		// A pointer to the underlying shape, t.ex BoxCollider
 		reactphysics3d::CollisionShape* m_Shape = nullptr;
 
@@ -32,10 +30,15 @@ namespace Pine
 		glm::vec3 m_Position = glm::vec3( );
 		glm::vec3 m_Size = glm::vec3( 1.f, 1.f, 1.f );
 
-		reactphysics3d::Transform m_PhysTransform;
+		reactphysics3d::Transform m_CollisionBodyTransform;
+		reactphysics3d::Transform m_CollisionTransform;
+
+		reactphysics3d::Collider* m_Collider = nullptr;
+		reactphysics3d::CollisionBody* m_CollisionBody = nullptr;
+
+		bool m_ShapeUpdated = false;
 
 		void UpdateBody( );
-		void UpdateParentRigidbody( );
 
 		void CreateShape( );
 		void DisposeShape( );
@@ -59,6 +62,8 @@ namespace Pine
 		// Used for capsule only
 		void SetHeight( float height );
 		float GetHeight( ) const;
+
+		bool PollShapeUpdated( );
 
 		reactphysics3d::CollisionShape* GetCollisionShape( ) const;
 

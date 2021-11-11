@@ -16,39 +16,31 @@ namespace Pine
 
 void Pine::Collider3D::UpdateBody( )
 {
-	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
+	const bool hasRigidBody = m_Parent->GetComponent<RigidBody>( ) != nullptr;
 
-	// If we already have a rigid body, we don't want a collision body.
-	if ( rigidBody )
+	if ( hasRigidBody )
 	{
-		if ( m_Body )
+		if ( m_CollisionBody )
 		{
-			PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_Body );
+			PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_CollisionBody );
 
-			m_Body = nullptr;
+			m_Collider = nullptr;
+			m_CollisionBody = nullptr;
+		}
+	}
+	else
+	{
+		m_ShapeUpdated = false;
+
+		if ( !m_CollisionBody )
+		{
+			m_CollisionBody = PhysicsManager->GetPhysicsWorld( )->createCollisionBody( m_CollisionBodyTransform );
 		}
 
-		return;
-	}
-
-	if ( !m_Body )
-	{
-		m_Body = PhysicsManager->GetPhysicsWorld( )->createCollisionBody( m_PhysTransform );
-	}
-}
-
-void Pine::Collider3D::UpdateParentRigidbody( )
-{
-	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
-
-	if ( !rigidBody )
-	{
-		return;
-	}
-
-	if ( !rigidBody->HasColliderAttached( this ) )
-	{
-		rigidBody->AttachCollider( this );
+		if ( !m_Collider && m_Shape )
+		{
+			m_Collider = m_CollisionBody->addCollider( m_Shape, m_CollisionTransform );
+		}
 	}
 }
 
@@ -72,18 +64,14 @@ void Pine::Collider3D::CreateShape( )
 	default:
 		break;
 	}
+
+	m_ShapeUpdated = true;
 }
 
 void Pine::Collider3D::DisposeShape( )
 {
 	if ( !m_Shape )
 		return;
-
-	if ( const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( ) )
-	{
-		if ( rigidBody->HasColliderAttached( this ) )
-			rigidBody->DetachCollider( this );
-	}
 
 	switch ( m_Type )
 	{
@@ -108,6 +96,10 @@ void Pine::Collider3D::DisposeShape( )
 	default:
 		break;
 	}
+
+	m_Shape = nullptr;
+	m_Collider = nullptr;
+	m_ShapeUpdated = true;
 }
 
 void Pine::Collider3D::UpdateShape( ) const
@@ -196,6 +188,15 @@ float Pine::Collider3D::GetHeight( ) const
 	return m_Size.y;
 }
 
+bool Pine::Collider3D::PollShapeUpdated( )
+{
+	const bool ret = m_ShapeUpdated;
+
+	m_ShapeUpdated = false;
+
+	return ret;
+}
+
 reactphysics3d::CollisionShape* Pine::Collider3D::GetCollisionShape( ) const
 {
 	return m_Shape;
@@ -211,21 +212,26 @@ void Pine::Collider3D::OnCreated( )
 
 void Pine::Collider3D::OnCopied( const IComponent* old )
 {
-	auto oldCollider = dynamic_cast< const Pine::Collider3D* >( old );
+	m_CollisionBody = nullptr;
+	m_Shape = nullptr; 
 }
 
 void Pine::Collider3D::OnDestroyed( )
 {
-	PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_Body );
+	if ( m_CollisionBody )
+	{
+		PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_CollisionBody );
+	}
+
+	DisposeShape( );
 }
 
 void Pine::Collider3D::OnPrePhysicsUpdate( )
 {
 	if ( m_Standalone ) return;
 
-	UpdateParentRigidbody( );
-	UpdateBody( );
 	UpdateShape( );
+	UpdateBody( );
 
 	if ( !m_Shape )
 	{
@@ -233,14 +239,25 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 		return;
 	}
 
+	if ( m_CollisionBody )
+	{
+		const auto transform = GetParent( )->GetTransform( );
+		const auto rotQuat = glm::quat( transform->Rotation );
 
+		reactphysics3d::Transform tr;
 
+		const auto rotRadians = glm::radians( transform->Rotation );
 
+		tr.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
+		tr.setOrientation( reactphysics3d::Quaternion::fromEulerAngles( reactphysics3d::Vector3( rotRadians.x, rotRadians.y, rotRadians.z ) ) );
+
+		m_CollisionBody->setTransform( tr );
+	}
 }
 
 void Pine::Collider3D::OnSetup( )
 {
-	
+
 }
 
 void Pine::Collider3D::OnUpdate( float deltaTime )

@@ -215,6 +215,7 @@ namespace Pine
 
 				memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
 
+				component->SetStandalone( true );
 				component->OnCreated( );
 
 				return component;
@@ -345,8 +346,8 @@ namespace Pine
 
 			component->SetStandalone( standalone );
 
-			component->OnCreated( );
 			component->OnCopied( inputComponent );
+			component->OnCreated( );
 
 			return component;
 		}

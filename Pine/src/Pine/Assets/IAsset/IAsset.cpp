@@ -2,19 +2,19 @@
 
 #include "../../Core/Log/Log.hpp"
 
-void Pine::IAsset::SetFilePath(const std::string& str)
+void Pine::IAsset::SetFilePath( const std::string& str )
 {
-	m_FilePath = std::filesystem::path(str);
-	m_FileName = m_FilePath.filename().string();
+	m_FilePath = std::filesystem::path( str );
+	m_FileName = m_FilePath.filename( ).string( );
 	m_AbsoluteFilePath = std::filesystem::absolute( m_FilePath ).string( );
 }
 
-const std::filesystem::path& Pine::IAsset::GetPath() const
+const std::filesystem::path& Pine::IAsset::GetPath( ) const
 {
 	return m_FilePath;
 }
 
-const std::string& Pine::IAsset::GetFileName() const
+const std::string& Pine::IAsset::GetFileName( ) const
 {
 	return m_FileName;
 }
@@ -23,7 +23,7 @@ const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const {
 	return m_AbsoluteFilePath;
 }
 
-Pine::EAssetType Pine::IAsset::GetType() const
+Pine::EAssetType Pine::IAsset::GetType( ) const
 {
 	return m_Type;
 }

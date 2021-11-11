@@ -26,13 +26,6 @@ namespace Pine
 
 		struct AssetFactory_t
 		{
-			AssetFactory_t( std::vector<std::string> fileExtensions, Pine::EAssetType type, std::function<Pine::IAsset* ( )> factory )
-			{
-				m_FileExtensions = std::move( fileExtensions );
-				m_Type = type;
-				m_Factory = std::move( factory );
-			}
-
 			// The file extensions for this asset type.
 			std::vector<std::string> m_FileExtensions;
 
@@ -49,15 +42,15 @@ namespace Pine
 			// Some asset types (like models, textures) could possible have more file extensions supported here, as the library that handles the parsing
 			// supports more. I've listed the popular ones so far.
 
-			m_AssetFactories.push_back( AssetFactory_t( { ".mat" }, Pine::EAssetType::Material, [ ] ( ) { return new Pine::Material( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".shr" }, Pine::EAssetType::Shader, [ ] ( ) { return new Pine::Shader( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".obj", ".fbx", ".3d", ".3ds", ".stl", ".dae", ".stp", ".wrl", ".ply" }, Pine::EAssetType::Model, [ ] ( ) { return new Pine::Model( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".psd", ".gif" }, Pine::EAssetType::Texture2D, [ ] ( ) { return new Pine::Texture2D( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".cmap" }, Pine::EAssetType::Texture3D, [ ] ( ) { return new Pine::Texture3D( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".bpt" }, Pine::EAssetType::Blueprint, [ ] ( ) { return new Pine::Blueprint( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".lvl" }, Pine::EAssetType::Level, [ ] ( ) { return new Pine::Level( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".as" }, Pine::EAssetType::Script, [ ] ( ) { return new Pine::Script( ); } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { ".ter" }, Pine::EAssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".mat" }, Pine::EAssetType::Material, [ ] ( ) { return new Pine::Material( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".shr" }, Pine::EAssetType::Shader, [ ] ( ) { return new Pine::Shader( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".obj", ".fbx", ".3d", ".3ds", ".stl", ".dae", ".stp", ".wrl", ".ply" }, Pine::EAssetType::Model, [ ] ( ) { return new Pine::Model( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".png", ".jpg", ".jpeg", ".tga", ".bmp", ".psd", ".gif" }, Pine::EAssetType::Texture2D, [ ] ( ) { return new Pine::Texture2D( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".cmap" }, Pine::EAssetType::Texture3D, [ ] ( ) { return new Pine::Texture3D( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".bpt" }, Pine::EAssetType::Blueprint, [ ] ( ) { return new Pine::Blueprint( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".lvl" }, Pine::EAssetType::Level, [ ] ( ) { return new Pine::Level( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".as" }, Pine::EAssetType::Script, [ ] ( ) { return new Pine::Script( ); } } ) );
+			m_AssetFactories.push_back( AssetFactory_t( { { ".ter" }, Pine::EAssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } } ) );
 
 			Pine::Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );
 		}
@@ -119,6 +112,8 @@ namespace Pine
 
 							shader->Dispose( );
 							shader->LoadFromFile( );
+
+							return asset;
 						}
 					}
 				}
@@ -185,7 +180,7 @@ namespace Pine
 
 		int LoadFromDirectory( const std::string& directoryPath, bool readOnly ) override
 		{
-			uint32_t loadedAssets = 0;
+			int loadedAssets = 0;
 
 			if ( !std::filesystem::exists( directoryPath ) )
 			{

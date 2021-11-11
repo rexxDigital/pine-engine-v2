@@ -16,14 +16,36 @@ void Pine::RigidBody::UpdateColliders( )
 
 	if ( !collider )
 	{
+		if ( m_Collider )
+			m_RigidBody->removeCollider( m_Collider );
+
+		m_Collider3D = nullptr;
+		m_Collider = nullptr;
+
 		return;
 	}
 
-	if ( m_RigidBody->getNbColliders( ) == 0 )
-	{
+	collider->OnPrePhysicsUpdate( );
 
+	m_Collider3D = collider;
+
+	if ( collider->PollShapeUpdated( ) )
+	{
+		if ( m_Collider )
+			m_RigidBody->removeCollider( m_Collider );
+
+		m_Collider = nullptr;
 	}
 
+	if ( !m_Collider )
+		m_Collider = m_RigidBody->addCollider( collider->GetCollisionShape( ), m_ColliderTransform );
+
+	if ( m_Collider && collider )
+	{
+
+		
+
+	}
 }
 
 Pine::RigidBody::RigidBody( )
@@ -68,20 +90,10 @@ Pine::RigidBodyType Pine::RigidBody::GetRigidBodyType( ) const
 
 void Pine::RigidBody::AttachCollider( Collider3D* collider )
 {
-	m_AttachedColliders.push_back( collider );
 }
 
 void Pine::RigidBody::DetachCollider( Collider3D* collider )
 {
-	for ( int i = 0; i < m_AttachedColliders.size( ); i++ )
-	{
-		if ( m_AttachedColliders[ i ] == collider )
-		{
-//			m_RigidBody->removeCollider( collider->GetCollisionShape( ) );
-
-			m_AttachedColliders.erase( m_AttachedColliders.begin( ) + i );
-		}
-	}
 }
 
 bool Pine::RigidBody::HasColliderAttached( Collider3D* collider ) const
@@ -89,7 +101,7 @@ bool Pine::RigidBody::HasColliderAttached( Collider3D* collider ) const
 	return false;
 }
 
-void Pine::RigidBody::OnPrePhysicsUpdate( ) const
+void Pine::RigidBody::OnPrePhysicsUpdate( )
 {
 	const auto transform = GetParent( )->GetTransform( );
 	const auto rotQuat = glm::quat( transform->Rotation );
@@ -101,9 +113,9 @@ void Pine::RigidBody::OnPrePhysicsUpdate( ) const
 	tr.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
 	tr.setOrientation( reactphysics3d::Quaternion::fromEulerAngles( reactphysics3d::Vector3( rotRadians.x, rotRadians.y, rotRadians.z ) ) );
 
-	m_RigidBody->setTransform( tr );
 	m_RigidBody->setMass( m_Mass );
 	m_RigidBody->enableGravity( m_GravityEnabled );
+	m_RigidBody->setTransform( tr );
 
 	switch ( m_RigidBodyType )
 	{
@@ -117,9 +129,11 @@ void Pine::RigidBody::OnPrePhysicsUpdate( ) const
 		m_RigidBody->setType( reactphysics3d::BodyType::DYNAMIC );
 		break;
 	}
+
+	UpdateColliders( );
 }
 
-void Pine::RigidBody::OnPostPhysicsUpdate( ) const
+void Pine::RigidBody::OnPostPhysicsUpdate( )
 {
 	const auto transform = GetParent( )->GetTransform( );
 	const auto& physTransform = m_RigidBody->getTransform( );
@@ -133,17 +147,20 @@ void Pine::RigidBody::OnCreated( )
 	if ( m_Standalone )
 		return;
 
-	m_RigidBody = PhysicsManager->CreateRigidBody( m_PhysicsTransform );
+	m_RigidBody = PhysicsManager->CreateRigidBody( m_RigidBodyTransform );
 }
 
 void Pine::RigidBody::OnCopied( const IComponent* old )
 {
+	m_RigidBody = nullptr;
 }
 
 void Pine::RigidBody::OnDestroyed( )
 {
 	if ( m_RigidBody )
 		PhysicsManager->DestroyRigidBody( m_RigidBody );
+
+	m_RigidBody = nullptr;
 }
 
 void Pine::RigidBody::OnSetup( )
@@ -158,8 +175,8 @@ void Pine::RigidBody::OnUpdate( float deltaTime )
 void Pine::RigidBody::SaveToJson( nlohmann::json& j )
 {
 	j[ "rgType" ] = m_RigidBodyType;
-	j[ "mass" ] = m_RigidBody->getMass( );
-	j[ "gvEnabled" ] = m_RigidBody->isGravityEnabled( );
+	j[ "mass" ] = m_Mass;
+	j[ "gvEnabled" ] = m_GravityEnabled;
 }
 
 void Pine::RigidBody::LoadFromJson( nlohmann::json& j )

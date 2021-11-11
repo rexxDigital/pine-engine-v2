@@ -16,7 +16,9 @@ namespace Pine
 	class RigidBody : public IComponent
 	{
 	private:
-		reactphysics3d::Transform m_PhysicsTransform;
+		reactphysics3d::Transform m_RigidBodyTransform;
+		reactphysics3d::Transform m_ColliderTransform;
+
 		reactphysics3d::RigidBody* m_RigidBody{ };
 
 		float m_Mass = 1.0f;
@@ -24,7 +26,10 @@ namespace Pine
 
 		RigidBodyType m_RigidBodyType = RigidBodyType::Kinematic;
 
-		std::vector<Collider3D*> m_AttachedColliders;
+		// TODO: Add support for multiple colliders
+
+		reactphysics3d::Collider* m_Collider = nullptr;
+		Pine::Collider3D* m_Collider3D = nullptr;
 
 		void UpdateColliders( );
 	public:
@@ -46,8 +51,8 @@ namespace Pine
 
 		bool HasColliderAttached( Collider3D* collider ) const;
 
-		void OnPrePhysicsUpdate( ) const;
-		void OnPostPhysicsUpdate( ) const;
+		void OnPrePhysicsUpdate( );
+		void OnPostPhysicsUpdate( );
 
 		void OnCreated( ) override;
 		void OnCopied( const IComponent* old ) override;
