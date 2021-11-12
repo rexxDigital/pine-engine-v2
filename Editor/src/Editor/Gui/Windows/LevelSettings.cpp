@@ -2,6 +2,7 @@
 #include "Editor/Gui/Widgets/Widgets.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Entity/Entity.hpp"
+#include "Pine/PhysicsManager/PhysicsManager.hpp"
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 #include "Pine/Rendering/Skybox/Skybox.hpp"
 
@@ -59,6 +60,10 @@ void Windows::RenderLevelSettings( )
 		Pine::Skybox->SetSkyboxCubemap( reinterpret_cast< Pine::Texture3D* >( newSkybox.asset ) );
 	}
 
+	ImGui::Spacing( );
+	ImGui::Separator( );
+	ImGui::Spacing( );
+
 	ImGui::Text( "Runtime library target file: %s%s", Editor::ProjectManager::GetCurrentProjectDirectory( ).c_str( ), "\\GameRuntime.dll" );
 	ImGui::Text( "Runtime library loaded: %s", Editor::ProjectManager::GetProjectRuntimeLibrary( ) != nullptr ? "Yes" : "No" );
 
@@ -69,6 +74,13 @@ void Windows::RenderLevelSettings( )
 		else
 			Editor::ProjectManager::UnloadRuntimeLibrary( );
 	}
+
+	ImGui::Spacing( );
+	ImGui::Separator( );
+	ImGui::Spacing( );
+
+	ImGui::Text( "Rigid body(s) in scene: %d", Pine::PhysicsManager->GetPhysicsWorld( )->getNbRigidBodies( ) );
+	ImGui::Text( "Collision body(s) in scene: %d", Pine::PhysicsManager->GetPhysicsWorld( )->getNbCollisionBodies( ) );
 
 	ImGui::End( );
 }

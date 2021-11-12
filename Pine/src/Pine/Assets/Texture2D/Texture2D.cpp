@@ -70,7 +70,8 @@ bool Pine::Texture2D::LoadFromFile( ) {
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
-	const int format = channels == 4 ? GL_RGBA : GL_RGB;
+	// clean readable code :tm:
+	const int format = channels == 1 ? GL_R8 : channels == 4 ? GL_RGBA : GL_RGB;
 
 	glTexImage2D( GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data );
 	glGenerateMipmap( GL_TEXTURE_2D );

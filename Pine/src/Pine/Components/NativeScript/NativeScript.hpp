@@ -28,6 +28,9 @@ namespace Pine
 		void OnRender( ) override;
 		void OnUpdate( float deltaTime ) override;
 
+		void LoadFromJson( nlohmann::json& j ) override;
+		void SaveToJson( nlohmann::json& j ) override;
+
 		void OnDestroyed( ) override;
 	};
 

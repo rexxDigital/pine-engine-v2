@@ -42,7 +42,19 @@ void Pine::RigidBody::UpdateColliders( )
 
 	if ( m_Collider && collider )
 	{
+		auto transform = m_Parent->GetTransform( );
 
+		reactphysics3d::Transform tr;
+
+		tr.identity( );
+
+		const auto rotRadians = glm::radians( transform->Rotation );
+		const auto quat = glm::quat( rotRadians );
+
+		tr.setPosition( reactphysics3d::Vector3( collider->GetPosition( ).x, collider->GetPosition( ).y, collider->GetPosition( ).z ) );
+		//	tr.setOrientation(  );
+
+		m_Collider->setLocalToBodyTransform( tr );
 	}
 }
 

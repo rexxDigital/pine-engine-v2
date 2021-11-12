@@ -163,7 +163,7 @@ namespace {
 
 	void RenderCollider3D( Pine::Collider3D* collider3d )
 	{
-		int currentType = static_cast< int >( collider3d->GetColliderType( ) ) - 1; // - 1 because we don't want to show the "Invalid" option to the user
+		int currentType = static_cast< int >( collider3d->GetColliderType( ) );
 
 		glm::vec3 currentPosition = collider3d->GetPosition( );
 		glm::vec3 currentSize = collider3d->GetSize( );
@@ -173,7 +173,7 @@ namespace {
 
 		if ( Widgets::Combobox( "Collider Type", currentType, "Box\0Sphere\0Capsule\0Convex Mesh\0Concave Mesh\0Height field\0" ) )
 		{
-			collider3d->SetColliderType( static_cast< Pine::ColliderType >( currentType + 1 ) );
+			collider3d->SetColliderType( static_cast< Pine::ColliderType >( currentType ) );
 		}
 
 		ImGui::Spacing( );
@@ -193,7 +193,7 @@ namespace {
 
 		if ( currentType == 1 )
 		{
-			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 1000.f, "%.1f" ) )
+			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 10.f, "%.1f" ) )
 			{
 				collider3d->SetRadius( currentRadius );
 			}
@@ -201,12 +201,12 @@ namespace {
 
 		if ( currentType == 2 )
 		{
-			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 1000.f, "%.1f m" ) )
+			if ( Widgets::SliderFloat( "Radius", currentRadius, 0.f, 10.f, "%.1f m" ) )
 			{
 				collider3d->SetRadius( currentRadius );
 			}
 
-			if ( Widgets::SliderFloat( "Height", currentHeight, 0.f, 1000.f, "%.1f m" ) )
+			if ( Widgets::SliderFloat( "Height", currentHeight, 0.f, 10.f, "%.1f m" ) )
 			{
 				collider3d->SetHeight( currentHeight );
 			}

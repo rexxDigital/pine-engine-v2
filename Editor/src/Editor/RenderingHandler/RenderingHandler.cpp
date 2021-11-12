@@ -49,7 +49,15 @@ namespace
 
 					glm::mat4 mat = entity->GetTransform( )->GetTransformationMatrix( );
 
-					mat = glm::scale( mat, glm::vec3( 1.04f, 1.04f, 1.04f ) );
+					// I did some testing around and found a nice size for the border.
+
+					const auto camPosition = Editor::EditorEntity::GetEntity( )->GetTransform( )->Position;
+					const auto entPosition = entity->GetTransform( )->Position;
+
+					const float distance = glm::length( camPosition - entPosition );
+					const float scaleSize = 1.02f + ( 0.0031105f * distance );
+
+					mat = glm::scale( mat, glm::vec3( scaleSize, scaleSize, scaleSize ) );
 
 					Pine::Renderer3D->RenderMesh( mat );
 				}
@@ -89,23 +97,42 @@ namespace
 
 			static auto boxColliderShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ColliderBox.shr" );
 
+			glm::vec3 scaleSize = collider3D->GetSize( );
+
 			switch ( collider3D->GetColliderType( ) )
 			{
 			case Pine::ColliderType::Box:
 				model = boxPrimitiveModel; break;
 			case Pine::ColliderType::Capsule:
-				model = capsulePrimitiveModel; break;
+				model = capsulePrimitiveModel;
+				scaleSize.x = collider3D->GetSize( ).x;
+				scaleSize.y = collider3D->GetSize( ).y;
+				scaleSize.z = 1.f;
+				break;
 			case Pine::ColliderType::Sphere:
-				model = spherePrimitiveModel; break;
+				model = spherePrimitiveModel;
+				scaleSize = glm::vec3( collider3D->GetSize( ).x );
+				break;
 			default:
 				model = boxPrimitiveModel; break;
 			}
 
-			auto mesh = model->GetMeshList( )[ 0 ];
+			const auto mesh = model->GetMeshList( )[ 0 ];
 
 			dummyEntity->GetTransform( )->Position = entity->GetTransform( )->Position + collider3D->GetPosition( );
-			dummyEntity->GetTransform( )->Scale = collider3D->GetSize( ) * entity->GetTransform( )->Scale;
+			dummyEntity->GetTransform( )->Scale = scaleSize * entity->GetTransform( )->Scale;
 			dummyEntity->GetTransform( )->Rotation = entity->GetTransform( )->Rotation;
+
+			if ( collider3D->GetColliderType( ) == Pine::ColliderType::Capsule )
+			{
+				dummyEntity->GetTransform( )->Rotation.x += 90.f;
+				dummyEntity->GetTransform( )->Rotation.y += 90.f;
+			}
+
+			if ( collider3D->GetColliderType( ) == Pine::ColliderType::Sphere )
+			{
+				dummyEntity->GetTransform( )->Rotation.x += 90.f;
+			}
 
 			dummyEntity->GetTransform( )->OnRender( );
 
@@ -113,12 +140,14 @@ namespace
 			Pine::Renderer3D->SetShader( boxColliderShader );
 
 			Pine::Renderer3D->SetDepthTesting( false );
+			Pine::Renderer3D->SetWireframeMode( true );
 
 			boxColliderShader->Use( );
 
 			Pine::Renderer3D->RenderMesh( dummyEntity->GetTransform( )->GetTransformationMatrix( ) );
 
 			Pine::Renderer3D->SetDepthTesting( true );
+			Pine::Renderer3D->SetWireframeMode( false );
 
 		}
 	}

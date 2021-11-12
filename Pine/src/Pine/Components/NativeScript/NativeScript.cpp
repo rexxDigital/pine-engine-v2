@@ -65,6 +65,16 @@ void Pine::NativeScript::OnUpdate( float deltaTime )
 		m_InternalComponent->OnUpdate( deltaTime );
 }
 
+void Pine::NativeScript::LoadFromJson( nlohmann::json& j )
+{
+	m_FactoryName = j[ "factoryName" ];
+}
+
+void Pine::NativeScript::SaveToJson( nlohmann::json& j )
+{
+	j[ "factoryName" ] = m_FactoryName;
+}
+
 void Pine::NativeScript::OnDestroyed( )
 {
 	if ( m_InternalComponent )

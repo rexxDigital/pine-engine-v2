@@ -51,10 +51,10 @@ namespace {
 
 		Pine::Assets->LoadFromDirectory( directory );
 
-		if ( std::filesystem::exists( directory + "\\GameRuntime.dll" ) )
-		{
-			ReloadRuntimeLibrary( directory + "\\GameRuntime.dll" );
-		}
+		//if ( std::filesystem::exists( directory + "\\GameRuntime.dll" ) )
+		//{
+		//	ReloadRuntimeLibrary( directory + "\\GameRuntime.dll" );
+		//}
 
 		Pine::Window::SetSize( 1024, 768 );
 		Pine::Window::UpdateCachedSize( );

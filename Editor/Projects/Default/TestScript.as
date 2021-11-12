@@ -1,5 +1,0 @@
-class TestScript {
-	void OnSetup() {
-		
-	}
-}

@@ -133,7 +133,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	ImGui::NextColumn( );
 
-	char buff[ 64 ];
+	char buff[ 255 ];
 
 	if ( currentAsset != nullptr ) {
 		strcpy_s( buff, currentAsset->GetPath( ).string( ).c_str( ) );

@@ -181,7 +181,11 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 		if ( g_StartedPlaying )
 		{
-			ImGui::SetNextWindowFocus( );
+			const auto& io = ImGui::GetIO( );
+
+			if ( !io.KeyAlt )
+				ImGui::SetNextWindowFocus( );
+
 			g_StartedPlaying = false;
 		}
 

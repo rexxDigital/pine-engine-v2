@@ -9,7 +9,6 @@ namespace Pine
 
 	enum class ColliderType
 	{
-		Invalid,
 		Box,
 		Sphere,
 		Capsule,
@@ -21,7 +20,7 @@ namespace Pine
 	class Collider3D : public IComponent
 	{
 	private:
-		ColliderType m_Type = ColliderType::Invalid;
+		ColliderType m_Type = ColliderType::Box;
 
 		// A pointer to the underlying shape, t.ex BoxCollider
 		reactphysics3d::CollisionShape* m_Shape = nullptr;
@@ -42,7 +41,7 @@ namespace Pine
 
 		void CreateShape( );
 		void DisposeShape( );
-		void UpdateShape( ) const;
+		void UpdateShape( );
 	public:
 		Collider3D( );
 

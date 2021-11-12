@@ -349,3 +349,5 @@ MigrationBackup/
 .ionide/
 /Editor/Projects/Default/Models
 /Libraries/include/glm/out/build/x64-Debug
+/Editor/Projects/Default/Skybox
+/Editor/Projects/Default/Textures

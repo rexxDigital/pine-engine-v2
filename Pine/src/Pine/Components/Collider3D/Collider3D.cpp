@@ -102,11 +102,14 @@ void Pine::Collider3D::DisposeShape( )
 	m_ShapeUpdated = true;
 }
 
-void Pine::Collider3D::UpdateShape( ) const
+void Pine::Collider3D::UpdateShape( )
 {
 	auto size = m_Size;
 
 	size *= m_Parent->GetTransform( )->Scale;
+
+	if ( !m_Shape )
+		CreateShape( );
 
 	switch ( m_Type )
 	{
@@ -208,8 +211,6 @@ reactphysics3d::CollisionShape* Pine::Collider3D::GetCollisionShape( ) const
 
 void Pine::Collider3D::OnCreated( )
 {
-	SetColliderType( ColliderType::Box );
-
 	if ( m_Standalone )
 		return;
 }
@@ -274,6 +275,7 @@ void Pine::Collider3D::OnUpdate( float deltaTime )
 void Pine::Collider3D::SaveToJson( nlohmann::json& j )
 {
 	j[ "colliderType" ] = static_cast< int >( m_Type );
+
 	Serialization::SaveVec3( j[ "position" ], m_Position );
 	Serialization::SaveVec3( j[ "size" ], m_Size );
 }
