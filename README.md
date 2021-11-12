@@ -1,19 +1,20 @@
 # Pine Engine
 A game engine written in C++
 
-Current features (2020-11-28):
+Current features (2021-11-12):
 * Basic 3D renderer
-* Entities, built up with components
-* Editor
+* Basic 3D physics implementation via [ReactPhysics3D](https://www.reactphysics3d.com/) 
+* Entities that are built up with components
+* Editor built with [ImGui](https://github.com/ocornut/imgui)
+* C++ "hot reloadable" .DLL for gameplay code
 * And a lot more
 
 Plan:
 * Get 3D rendering more stable and add more basic features
-* Optimize entities and components
-* Implement some sort of physics library
 * Implement basic 2D support
 * Implement multi threaded asset loading system
 
+Screenshot:
 ![Screenshot](https://i.imgur.com/OcqGjev.png)
 
 Used libraries:
@@ -26,4 +27,5 @@ Used libraries:
 * stb_image (Part of the single-file public domain for loading images)
 * ImGui (Engine GUI library)
 * Freetype (Font renderer)
+* ReactPhysics3D (3D physics library)
 
