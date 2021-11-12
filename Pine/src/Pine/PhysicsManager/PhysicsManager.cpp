@@ -29,7 +29,7 @@ namespace Pine
 
 		void Update( const double deltaTime ) override
 		{
-			if ( !Pine::IsAllowingUpdates( ) )
+			if ( !IsAllowingUpdates( ) )
 				return;
 
 			static double accumulator = 0.0;
@@ -37,27 +37,42 @@ namespace Pine
 
 			accumulator += deltaTime;
 
-			const auto colliderCount = Components->GetComponentCount( EComponentType::RigidBody );
+			const auto rigidBodyCount = Components->GetComponentCount( EComponentType::RigidBody );
+			const auto collider3DCount = Components->GetComponentCount( EComponentType::Collider3D );
 
 			// Call pre-physics update
-			for ( int i = 0; i < colliderCount; i++ )
+
+			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigid body
 			{
 				const auto component = Components->GetComponent( EComponentType::RigidBody, i );
 
 				if ( !component )
 					continue;
 
-				dynamic_cast< Pine::RigidBody* >( component )->OnPrePhysicsUpdate( );
+				dynamic_cast< RigidBody* >( component )->OnPrePhysicsUpdate( );
 			}
 
-			while ( accumulator >= timeStep ) {
+			for ( int i = 0; i < collider3DCount; i++ ) // Collider 3D
+			{
+				const auto component = Components->GetComponent( EComponentType::Collider3D, i );
+
+				if ( !component )
+					continue;
+
+				dynamic_cast< Collider3D* >( component )->OnPrePhysicsUpdate( );
+			}
+
+			// Run physics simulation:
+			while ( accumulator >= timeStep ) 
+			{
 				m_PhysicsWorld->update( timeStep );
 
 				accumulator -= timeStep;
 			}
 
 			// Call post-physics update
-			for ( int i = 0; i < colliderCount; i++ )
+
+			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigidbody
 			{
 				const auto component = Components->GetComponent( EComponentType::RigidBody, i );
 

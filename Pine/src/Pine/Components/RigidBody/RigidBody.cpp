@@ -43,8 +43,6 @@ void Pine::RigidBody::UpdateColliders( )
 	if ( m_Collider && collider )
 	{
 
-		
-
 	}
 }
 
@@ -104,14 +102,14 @@ bool Pine::RigidBody::HasColliderAttached( Collider3D* collider ) const
 void Pine::RigidBody::OnPrePhysicsUpdate( )
 {
 	const auto transform = GetParent( )->GetTransform( );
-	const auto rotQuat = glm::quat( transform->Rotation );
 
 	reactphysics3d::Transform tr;
 
 	const auto rotRadians = glm::radians( transform->Rotation );
+	const auto quat = glm::quat( rotRadians );
 
 	tr.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
-	tr.setOrientation( reactphysics3d::Quaternion::fromEulerAngles( reactphysics3d::Vector3( rotRadians.x, rotRadians.y, rotRadians.z ) ) );
+	tr.setOrientation( reactphysics3d::Quaternion( quat.x, quat.y, quat.z, quat.w ) );
 
 	m_RigidBody->setMass( m_Mass );
 	m_RigidBody->enableGravity( m_GravityEnabled );
@@ -138,7 +136,7 @@ void Pine::RigidBody::OnPostPhysicsUpdate( )
 	const auto transform = GetParent( )->GetTransform( );
 	const auto& physTransform = m_RigidBody->getTransform( );
 
-	transform->Rotation = glm::eulerAngles( glm::quat( physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z, physTransform.getOrientation( ).w ) );
+	transform->Rotation = glm::degrees( glm::eulerAngles( glm::quat( physTransform.getOrientation( ).w, physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z ) ) );
 	transform->Position = glm::vec3( physTransform.getPosition( ).x, physTransform.getPosition( ).y, physTransform.getPosition( ).z );
 }
 

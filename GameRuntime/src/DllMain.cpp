@@ -5,6 +5,7 @@
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 
 #include "Controllers/GameController/GameController.hpp"
+#include "Pine/Assets/Level/Level.hpp"
 
 extern "C" {
 

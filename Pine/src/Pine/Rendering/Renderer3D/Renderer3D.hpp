@@ -19,6 +19,7 @@ namespace Pine
 		virtual void SetStencilFunction( const int function, std::uint8_t mask ) = 0;
 		virtual void SetStencilMask( std::uint8_t mask ) = 0;
 		virtual void SetDepthTesting( bool value ) = 0;
+		virtual void SetWireframeMode( bool value ) = 0;
 
 		// Used for very early debugging purposes.
 		virtual void RenderVertexArray( const VertexArray* vao, int renderCount, bool indices ) = 0;

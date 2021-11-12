@@ -72,7 +72,7 @@ void Pine::Transform::OnRender( ) {
 		update = true;
 	}
 
-	if ( GetParent( )->GetParent( ) != nullptr )
+	if ( GetParent( ) && GetParent( )->GetParent( ) != nullptr )
 		update = true;
 
 	if ( !update ) {

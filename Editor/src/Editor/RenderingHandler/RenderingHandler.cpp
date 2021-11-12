@@ -10,6 +10,8 @@
 #include "Editor/EditorEntity/EditorEntity.hpp"
 #include "Editor/Gui/Gui.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
+#include "Pine/Components/Components.hpp"
+#include "Pine/Components/Collider3D/Collider3D.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 
 namespace
@@ -59,6 +61,68 @@ namespace
 		}
 	}
 
+	void RenderSelectedColliderAABB( )
+	{
+		static Pine::Entity* dummyEntity = nullptr;
+		static Pine::ModelRenderer* dummyModelRenderer = nullptr;
+
+		if ( dummyEntity == nullptr )
+		{
+			dummyEntity = new Pine::Entity( 0 );
+			dummyEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::EComponentType::ModelRenderer, true ) );
+			dummyModelRenderer = dummyEntity->GetComponent<Pine::ModelRenderer>( );
+		}
+
+		if ( Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
+			return;
+
+		const auto entity = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
+		const auto collider3D = entity->GetComponent<Pine::Collider3D>( );
+
+		if ( collider3D )
+		{
+			Pine::Model* model;
+
+			static auto boxPrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" );
+			static auto capsulePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\capsule.fbx" );
+			static auto spherePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\sphere.fbx" );
+
+			static auto boxColliderShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ColliderBox.shr" );
+
+			switch ( collider3D->GetColliderType( ) )
+			{
+			case Pine::ColliderType::Box:
+				model = boxPrimitiveModel; break;
+			case Pine::ColliderType::Capsule:
+				model = capsulePrimitiveModel; break;
+			case Pine::ColliderType::Sphere:
+				model = spherePrimitiveModel; break;
+			default:
+				model = boxPrimitiveModel; break;
+			}
+
+			auto mesh = model->GetMeshList( )[ 0 ];
+
+			dummyEntity->GetTransform( )->Position = entity->GetTransform( )->Position + collider3D->GetPosition( );
+			dummyEntity->GetTransform( )->Scale = collider3D->GetSize( ) * entity->GetTransform( )->Scale;
+			dummyEntity->GetTransform( )->Rotation = entity->GetTransform( )->Rotation;
+
+			dummyEntity->GetTransform( )->OnRender( );
+
+			Pine::Renderer3D->PrepareMesh( mesh );
+			Pine::Renderer3D->SetShader( boxColliderShader );
+
+			Pine::Renderer3D->SetDepthTesting( false );
+
+			boxColliderShader->Use( );
+
+			Pine::Renderer3D->RenderMesh( dummyEntity->GetTransform( )->GetTransformationMatrix( ) );
+
+			Pine::Renderer3D->SetDepthTesting( true );
+
+		}
+	}
+
 	void OnPreRender( )
 	{
 		Editor::ProjectManager::Update( );
@@ -86,7 +150,11 @@ namespace
 
 	void OnPostEntityRender( )
 	{
-		RenderHighlightedEntity( );
+		if ( Editor::Gui::Globals::IsInLevelView )
+		{
+			RenderHighlightedEntity( );
+			RenderSelectedColliderAABB( );
+		}
 	}
 
 	void OnPostRenderFinal( )

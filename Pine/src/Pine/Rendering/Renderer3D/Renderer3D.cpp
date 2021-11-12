@@ -277,6 +277,14 @@ namespace Pine
 				glDisable( GL_DEPTH_TEST );
 		}
 
+		void SetWireframeMode( const bool value ) override
+		{
+			if ( value )
+				glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+			else
+				glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		}
+
 		void SetShader( Pine::Shader* shader ) override
 		{
 			if ( !shader )

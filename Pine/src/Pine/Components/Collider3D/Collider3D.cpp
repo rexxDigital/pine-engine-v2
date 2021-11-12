@@ -104,17 +104,21 @@ void Pine::Collider3D::DisposeShape( )
 
 void Pine::Collider3D::UpdateShape( ) const
 {
+	auto size = m_Size;
+
+	size *= m_Parent->GetTransform( )->Scale;
+
 	switch ( m_Type )
 	{
 	case ColliderType::Box:
-		dynamic_cast< reactphysics3d::BoxShape* >( m_Shape )->setHalfExtents( reactphysics3d::Vector3( m_Size.x, m_Size.y, m_Size.z ) );
+		dynamic_cast< reactphysics3d::BoxShape* >( m_Shape )->setHalfExtents( reactphysics3d::Vector3( size.x, size.y, size.z ) );
 		break;
 	case ColliderType::Sphere:
-		dynamic_cast< reactphysics3d::SphereShape* >( m_Shape )->setRadius( m_Size.x );
+		dynamic_cast< reactphysics3d::SphereShape* >( m_Shape )->setRadius( size.x );
 		break;
 	case ColliderType::Capsule:
-		dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape )->setRadius( m_Size.x );
-		dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape )->setHeight( m_Size.y );
+		dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape )->setRadius( size.x );
+		dynamic_cast< reactphysics3d::CapsuleShape* >( m_Shape )->setHeight( size.y );
 		break;
 	case ColliderType::ConcaveMesh:
 	case ColliderType::ConvexMesh:
@@ -221,6 +225,8 @@ void Pine::Collider3D::OnDestroyed( )
 	if ( m_CollisionBody )
 	{
 		PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_CollisionBody );
+
+		m_CollisionBody = nullptr;
 	}
 
 	DisposeShape( );
