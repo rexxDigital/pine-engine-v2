@@ -14,6 +14,7 @@ namespace Pine
 	IGui* CreateGuiInterface( );
 	IPostProcessing* CreatePostProcessingInterface( );
 	IRuntimeLoader* CreateRuntimeLoaderInterface( );
+	IDebugOverlay* CreateDebugOverlay( );
 }
 
 void Pine::IInterface::Setup( )
@@ -40,6 +41,7 @@ Pine::PineInstance Pine::CreateInstance( )
 	in.Gui = CreateGuiInterface( );
 	in.PostProcessing = CreatePostProcessingInterface( );
 	in.RuntimeLoader = CreateRuntimeLoaderInterface( );
+	in.DebugOverlay = CreateDebugOverlay( );
 
 	return in;
 }
@@ -58,4 +60,5 @@ void Pine::UseInstance( const PineInstance* instance )
 	Gui = instance->Gui;
 	PostProcessing = instance->PostProcessing;
 	RuntimeLoader = instance->RuntimeLoader;
+	DebugOverlay = instance->DebugOverlay;
 }

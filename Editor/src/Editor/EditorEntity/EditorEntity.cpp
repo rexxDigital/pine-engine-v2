@@ -84,7 +84,6 @@ public:
 
 	void OnUpdate( float deltaTime ) override
 	{
-
 	}
 
 };

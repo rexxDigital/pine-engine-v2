@@ -23,7 +23,6 @@ private:
 	Pine::Entity* m_EnemySpawnLocation;
 	Pine::Entity* m_ChunkSpawnLocation;
 
-
 public:
 
 	void OnSetup( ) override;

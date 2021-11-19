@@ -8,6 +8,7 @@
 #include "Pine/Entity/Entity.hpp"
 #include "Pine/Entitylist/EntityList.hpp"
 #include "Pine/Input/Input.hpp"
+#include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 
 constexpr float ChunkSize = 10.f;
@@ -30,14 +31,7 @@ void GameController::CreateChunk( int x, int y )
 	ent->AddComponent( Pine::EComponentType::ModelRenderer );
 
 	ent->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" ) );
-	ent->GetComponent<Pine::ModelRenderer>( )->SetActive( false ); // We'll only render it while it's 
-
-	// Create the collision box
-	/*ent->AddComponent( Pine::EComponentType::Collider3D );
-
-	ent->GetComponent<Pine::Collider3D>( )->SetColliderType( Pine::ColliderType::Box );
-	ent->GetComponent<Pine::Collider3D>( )->SetSize( glm::vec3( 5.f, 0.1f, 5.f ) );*/
-	//ent->GetComponent<Pine::Collider3D>( )->GetCollider( )->setUserData( &chunk );
+	ent->GetComponent<Pine::ModelRenderer>( )->SetActive( false ); // We'll only render it while it's hovered
 
 	// 5 seems to work fine for the current chunk size.
 	ent->GetTransform( )->Scale = glm::vec3( 5.f, 0.1f, 5.f );
@@ -49,6 +43,7 @@ void GameController::CreateChunk( int x, int y )
 void GameController::OnSetup( )
 {
 	Pine::Log->Message( "GameController::OnSetup( )" );
+
 
 	// We could get these from our children but this will do.
 	m_EnemySpawnLocation = Pine::EntityList->FindEntity( "Enemy Spawn Location" );
@@ -72,26 +67,37 @@ void GameController::OnRender( )
 	// meaning that we are currently hovering over it.
 
 	const auto cam = Pine::RenderManager->GetRenderingContext( )->m_Camera;
+	const auto viewport = Pine::DebugOverlay->GetViewport( );
 
-	const auto mouseX = Pine::Input->GetMouseX( );
-	const auto mouseY = Pine::Input->GetMouseY( );
+	auto mouseX = Pine::Input->GetMouseX( );
+	auto mouseY = Pine::Input->GetMouseY( );
 
-	for ( int y = 0; y < 12; y++ )
+	mouseX -= viewport.x;
+	mouseY -= viewport.y;
+
+	float closestChunk = FLT_MAX;
+	int closestChunkIndex = 0;
+
+	for ( int i = 0; i < m_Chunks.size( ); i++ )
 	{
-		for ( int x = 0; x < 12; x++ )
+		// Compute 3d coords to 2d screen coords, this will probably get wrapped cleaner into the engine in the future.
+		const auto screenPos = glm::project( m_Chunks[ i ].m_Entity->GetTransform( )->Position, cam->GetViewMatrix( ), cam->GetProjectionMatrix( ), glm::vec4( 0.f, 0.f, viewport.z, viewport.w ) );
+
+		// Calculate the delta between our cursor and the screen coords.
+		auto delta = glm::vec3( mouseX,  mouseY, 0.f ) - glm::vec3( screenPos.x, viewport.w - screenPos.y, screenPos.z );
+
+		const float deltaLen = glm::length( delta );
+
+		if ( closestChunk > deltaLen )
 		{
-			auto screenPos = glm::project( m_Chunks[ y + x ].m_Entity->GetTransform( )->Position, cam->GetViewMatrix( ) * m_Chunks[ y + x ].m_Entity->GetTransform( )->GetTransformationMatrix( ), cam->GetProjectionMatrix( ), glm::vec4( 0.f, 0.f, 600.f, 600.f ) );
-			auto delta = glm::vec3( mouseX, mouseY, 0.f ) - screenPos;
-
-			// TODO: Implement a debug overlay to quickly render debug stuff.
-
-			if ( length( delta ) < 50.f )
-			{
-				m_Chunks[ y + x ].m_Entity->GetComponent<Pine::ModelRenderer>( )->SetActive( true );
-			}
+			closestChunk = deltaLen;
+			closestChunkIndex = i;
 		}
+
+		m_Chunks[ i ].m_Entity->GetComponent<Pine::ModelRenderer>( )->SetActive( false );
 	}
 
+	m_Chunks[ closestChunkIndex ].m_Entity->GetComponent<Pine::ModelRenderer>( )->SetActive( true );
 }
 
 void GameController::OnUpdate( float deltaTime )

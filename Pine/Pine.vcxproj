@@ -264,6 +264,7 @@
     <ClCompile Include="src\Pine\OpenGL\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\Pine\PhysicsManager\PhysicsManager.cpp" />
     <ClCompile Include="src\Pine\Pine.cpp" />
+    <ClCompile Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.cpp" />
     <ClCompile Include="src\Pine\Rendering\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp" />
     <ClCompile Include="src\Pine\Rendering\RenderingContext\RenderingContext.cpp" />

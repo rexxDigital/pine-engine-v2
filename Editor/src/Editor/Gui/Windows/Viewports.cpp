@@ -22,6 +22,7 @@
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
+#include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
 
 namespace {
 
@@ -206,6 +207,9 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			{
 				ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorScreen.x + 10.f, cursorScreen.y + 10.f ), ImColor( 255, 255, 255, 255 ), "No active camera, please make at least one is active." );
 			}
+
+			Pine::DebugOverlay->SetViewport( cursorScreen.x, cursorScreen.y, avSize.x, avSize.y );
+			Pine::DebugOverlay->Render( );
 		}
 
 		ImGui::End( );
@@ -230,6 +234,9 @@ void Editor::Gui::Windows::RenderViewports( ) {
 			ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
 			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+
+			Pine::DebugOverlay->SetViewport( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
+			Pine::DebugOverlay->Render( );
 
 			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 

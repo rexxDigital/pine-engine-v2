@@ -353,6 +353,9 @@
     <ClCompile Include="src\Pine\RuntimeLoader\RuntimeLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Pine\Assets\Texture3D\Texture3D.hpp" />

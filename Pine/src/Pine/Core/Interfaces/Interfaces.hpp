@@ -25,6 +25,7 @@ namespace Pine
 	class IGui;
 	class IPostProcessing;
 	class IRuntimeLoader;
+	class IDebugOverlay;
 
 	inline ILog* Log;
 	inline IAssets* Assets;
@@ -39,6 +40,7 @@ namespace Pine
 	inline IGui* Gui;
 	inline IPostProcessing* PostProcessing;
 	inline IRuntimeLoader* RuntimeLoader;
+	inline IDebugOverlay* DebugOverlay;
 
 	struct PineInstance
 	{
@@ -55,6 +57,7 @@ namespace Pine
 		IGui* Gui;
 		IPostProcessing* PostProcessing;
 		IRuntimeLoader* RuntimeLoader;
+		IDebugOverlay* DebugOverlay;
 	};
 
 	PineInstance CreateInstance( );
