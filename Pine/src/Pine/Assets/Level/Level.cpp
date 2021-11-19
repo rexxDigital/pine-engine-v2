@@ -30,7 +30,7 @@ Pine::Blueprint* Pine::Level::CreateBlueprintOfEntity( const Pine::Entity* entit
 		return nullptr;
 	}
 
-	auto blueprint = new Pine::Blueprint( );
+	const auto blueprint = new Pine::Blueprint( );
 
 	blueprint->CreateFromEntity( entity );
 
@@ -93,14 +93,14 @@ void Pine::Level::Load( )
 	// Add our blueprint entities
 	for ( auto bp : m_Blueprints )
 	{
-		auto entity = bp->SpawnEntity( );
+		const auto entity = bp->SpawnEntity( );
 
 		// This fucking sucks and I hate it
 		if ( m_LevelSettings->m_CameraEntity != 0 && m_LevelSettings->m_CameraEntity == currentId )
 		{
 			RenderManager->GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
 		}
-		
+
 		currentId++;
 	}
 
@@ -150,7 +150,7 @@ bool Pine::Level::LoadFromFile( )
 
 		if ( j.contains( "skybox" ) )
 		{
-			m_LevelSettings->m_Skybox = Pine::Assets->GetAsset<Texture3D>( j[ "skybox" ] );
+			m_LevelSettings->m_Skybox = dynamic_cast< Texture3D* >( Pine::Assets->LoadFromFile( j[ "skybox" ] ) );
 		}
 	}
 	catch ( std::exception& e ) {
@@ -166,7 +166,7 @@ bool Pine::Level::SaveToFile( )
 {
 	auto j = nlohmann::json( );
 
-	for ( auto bp : m_Blueprints )
+	for ( const auto bp : m_Blueprints )
 	{
 		// Something probably went wrong here, since they should always contain an entity.
 		if ( !bp->HasValidEntity( ) )
@@ -174,7 +174,7 @@ bool Pine::Level::SaveToFile( )
 			continue;
 		}
 
-		// Insert an entities array at "entities", since we might store more level data in the future.
+		// Insert an entities array at "entities".
 		j[ "entities" ].push_back( bp->ToJson( ) );
 	}
 

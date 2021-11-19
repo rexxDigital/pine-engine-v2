@@ -50,6 +50,9 @@ void Pine::NativeScript::OnSetup( )
 
 	CreateInternalComponent( );
 
+	if ( !m_InternalComponent )
+		return;
+
 	m_InternalComponent->OnSetup( );
 }
 

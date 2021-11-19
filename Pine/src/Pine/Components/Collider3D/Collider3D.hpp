@@ -65,7 +65,8 @@ namespace Pine
 		bool PollShapeUpdated( );
 
 		reactphysics3d::CollisionShape* GetCollisionShape( ) const;
-
+		reactphysics3d::Collider* GetCollider( ) const; // WARNING: This object will only be present if no RigidBody(s) are attached to the parent.
+		 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
 

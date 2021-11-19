@@ -21,7 +21,7 @@ namespace Pine
 
 		void Setup( ) override
 		{
-			m_Entities.reserve( 128 );
+			m_Entities.reserve( 512 );
 		}
 
 		Entity* CreateEntity( ) override
@@ -95,6 +95,19 @@ namespace Pine
 		Entity* GetEntity( const int index ) override
 		{
 			return &m_Entities[ index ];
+		}
+
+		Entity* FindEntity( const std::string& name ) override
+		{
+			for ( auto& entity : m_Entities )
+			{
+				if ( entity.GetName( ) == name )
+				{
+					return &entity;
+				}
+			}
+
+			return nullptr;
 		}
 
 		void ClearEntities( bool temp ) override

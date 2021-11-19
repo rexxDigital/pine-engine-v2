@@ -162,6 +162,23 @@ namespace Pine
 			return false;
 		}
 
+		int GetMouseX(  ) override
+		{
+			double x;
+
+			glfwGetCursorPos( Pine::Window::Internal::GetWindowPointer( ), &x, nullptr );
+
+			return x;
+		}
+
+		int GetMouseY( ) override
+		{
+			double y;
+
+			glfwGetCursorPos( Pine::Window::Internal::GetWindowPointer( ), nullptr, &y );
+
+			return y;
+		}
 
 	};
 

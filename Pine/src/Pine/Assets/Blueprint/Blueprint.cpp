@@ -105,6 +105,8 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 	{
 		const auto newChild = target->CreateChild( createInstance );
 
+		newChild->ClearComponents( );
+
 		CopyEntity( newChild, child, createInstance );
 	}
 }

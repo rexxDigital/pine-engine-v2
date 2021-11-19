@@ -110,7 +110,7 @@ namespace {
 
 			if ( ImGui::BeginDragDropTarget( ) ) {
 				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
-					const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
+					const auto entity = *static_cast<Pine::Entity**>( payload->Data );
 
 					e->AddChild( entity );
 				}
@@ -157,7 +157,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 	bool isDragDroppingEntity = false;
 
-	if ( auto payload = ImGui::GetDragDropPayload( ) )
+	if ( const auto payload = ImGui::GetDragDropPayload( ) )
 	{
 		if ( std::string( payload->DataType ).find( "Entity" ) != std::string::npos )
 		{
@@ -237,8 +237,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 
 		Pine::Entity* e = nullptr;
 		if ( isTargetingEntity )
-			e = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
-
+			e = Globals::SelectedEntityPtrs[ 0 ];
 
 		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) {
 			Pine::EntityList->DeleteEntity( e );
@@ -262,7 +261,7 @@ void Editor::Gui::Windows::RenderEntitylist( ) {
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e->GetParent( ) != nullptr ) ) {
+		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e != nullptr && e->GetParent( ) != nullptr ) ) {
 			e->GetParent( )->RemoveChild( e );
 
 			ImGui::CloseCurrentPopup( );

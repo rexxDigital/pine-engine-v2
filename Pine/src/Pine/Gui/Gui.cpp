@@ -101,6 +101,8 @@ namespace Pine
 			colors[ ImGuiCol_ButtonHovered ] = ImVec4( 0.15f, 0.56f, 0.17f, 1.00f );
 			colors[ ImGuiCol_TitleBg ] = ImVec4( 0.21f, 0.21f, 0.21f, 0.53f );
 			colors[ ImGuiCol_TabUnfocused ] = ImVec4( 0.08f, 0.17f, 0.08f, 1.00f );
+			colors[ ImGuiCol_Text ] = ImVec4( 0.93f, 0.93f, 0.93f, 1.00f );
+			colors[ ImGuiCol_TextDisabled ] = ImVec4( 0.41f, 0.41f, 0.41f, 1.00f );
 			colors[ ImGuiCol_TabUnfocusedActive ] = ImVec4( 0.19f, 0.43f, 0.17f, 1.00f );
 		}
 

@@ -209,6 +209,11 @@ reactphysics3d::CollisionShape* Pine::Collider3D::GetCollisionShape( ) const
 	return m_Shape;
 }
 
+reactphysics3d::Collider* Pine::Collider3D::GetCollider() const
+{
+	return m_Collider;
+}
+
 void Pine::Collider3D::OnCreated( )
 {
 	if ( m_Standalone )

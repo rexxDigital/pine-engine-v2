@@ -22,6 +22,9 @@ namespace Pine
 		virtual void RunOnUpdate( float deltaTime ) = 0;
 
 		virtual const std::vector<Entity>& GetEntities( ) = 0;
+
+		virtual Entity* FindEntity( const std::string& name ) = 0;
+
 		virtual Entity* GetEntity( const int index ) = 0;
 
 	};
