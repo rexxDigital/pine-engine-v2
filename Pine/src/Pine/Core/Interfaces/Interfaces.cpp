@@ -13,7 +13,6 @@ namespace Pine
 	ISkybox* CreateSkyboxInterface( );
 	IGui* CreateGuiInterface( );
 	IPostProcessing* CreatePostProcessingInterface( );
-	IScriptManager* CreateScriptingManagerInterface( );
 	IRuntimeLoader* CreateRuntimeLoaderInterface( );
 }
 
@@ -40,7 +39,6 @@ Pine::PineInstance Pine::CreateInstance( )
 	in.Skybox = CreateSkyboxInterface( );
 	in.Gui = CreateGuiInterface( );
 	in.PostProcessing = CreatePostProcessingInterface( );
-	in.ScriptingManager = CreateScriptingManagerInterface( );
 	in.RuntimeLoader = CreateRuntimeLoaderInterface( );
 
 	return in;
@@ -59,6 +57,5 @@ void Pine::UseInstance( const PineInstance* instance )
 	Skybox = instance->Skybox;
 	Gui = instance->Gui;
 	PostProcessing = instance->PostProcessing;
-	ScriptingManager = instance->ScriptingManager;
 	RuntimeLoader = instance->RuntimeLoader;
 }

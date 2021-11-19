@@ -132,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScriptDebug.lib;reactphysics3d-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,7 +153,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;AngelScript.lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -174,7 +174,6 @@
     <ClInclude Include="src\Pine\Assets\Material\Material.hpp" />
     <ClInclude Include="src\Pine\Assets\Mesh\Mesh.hpp" />
     <ClInclude Include="src\Pine\Assets\Model\Model.hpp" />
-    <ClInclude Include="src\Pine\Assets\Script\Script.hpp" />
     <ClInclude Include="src\Pine\Assets\Shader\Shader.hpp" />
     <ClInclude Include="src\Pine\Assets\Terrain\Terrain.hpp" />
     <ClInclude Include="src\Pine\Assets\Texture2D\Texture2D.hpp" />
@@ -185,7 +184,6 @@
     <ClInclude Include="src\Pine\Components\Light\Light.hpp" />
     <ClInclude Include="src\Pine\Components\ModelRenderer\ModelRenderer.hpp" />
     <ClInclude Include="src\Pine\Components\NativeScript\NativeScript.hpp" />
-    <ClInclude Include="src\Pine\Components\Behavior\Behavior.hpp" />
     <ClInclude Include="src\Pine\Components\rigidbody\RigidBody.hpp" />
     <ClInclude Include="src\Pine\Components\TerrainRenderer\TerrainRenderer.hpp" />
     <ClInclude Include="src\Pine\Components\Transform\Transform.hpp" />
@@ -208,6 +206,7 @@
     <ClInclude Include="src\Pine\OpenGL\VertexArray\VertexArray.hpp" />
     <ClInclude Include="src\Pine\PhysicsManager\PhysicsManager.hpp" />
     <ClInclude Include="src\Pine\Pine.hpp" />
+    <ClInclude Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.hpp" />
     <ClInclude Include="src\Pine\Rendering\PostProcessing\PostProcessing.hpp" />
     <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp" />
     <ClInclude Include="src\Pine\Rendering\RenderingContext\RenderingContext.hpp" />
@@ -215,7 +214,6 @@
     <ClInclude Include="src\Pine\Rendering\Skybox\Skybox.hpp" />
     <ClInclude Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.hpp" />
     <ClInclude Include="src\Pine\RuntimeLoader\RuntimeLoader.hpp" />
-    <ClInclude Include="src\Pine\ScriptManager\ScriptManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ImGui\imgui.cpp" />
@@ -234,12 +232,10 @@
     <ClCompile Include="src\Pine\Assets\Material\Material.cpp" />
     <ClCompile Include="src\Pine\Assets\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Pine\Assets\Model\Model.cpp" />
-    <ClCompile Include="src\Pine\Assets\Script\Script.cpp" />
     <ClCompile Include="src\Pine\Assets\Shader\Shader.cpp" />
     <ClCompile Include="src\Pine\Assets\Terrain\Terrain.cpp" />
     <ClCompile Include="src\Pine\Assets\Texture2D\Texture2D.cpp" />
     <ClCompile Include="src\Pine\Assets\Texture3D\Texture3D.cpp" />
-    <ClCompile Include="src\Pine\Components\Behavior\Behavior.cpp" />
     <ClCompile Include="src\Pine\Components\Camera\Camera.cpp" />
     <ClCompile Include="src\Pine\Components\Collider3D\Collider3D.cpp" />
     <ClCompile Include="src\Pine\Components\Components.cpp" />
@@ -275,7 +271,6 @@
     <ClCompile Include="src\Pine\Rendering\Skybox\Skybox.cpp" />
     <ClCompile Include="src\Pine\Rendering\UniformBuffers\UniformBuffers.cpp" />
     <ClCompile Include="src\Pine\RuntimeLoader\RuntimeLoader.cpp" />
-    <ClCompile Include="src\Pine\ScriptManager\ScriptManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Pine\Assets\Texture3D\Texture3D.hpp" />

@@ -6,7 +6,6 @@
 
 #include "Pine/Pine.hpp"
 #include "Pine/Core/Log/Log.hpp"
-#include "Pine/ScriptManager/ScriptManager.hpp"
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 
 // TODO: Store project meta data, and verify stuff.
@@ -204,8 +203,6 @@ void Editor::ProjectManager::ReloadProjectAssets( ) {
 	level->CreateFromCurrentLevel( );
 
 	Pine::Assets->LoadFromDirectory( GetCurrentProjectDirectory( ) );
-
-	Pine::ScriptingManager->CompileScripts( );
 
 	level->Load( );
 	level->Dispose( );

@@ -24,7 +24,6 @@ namespace Pine
 	class ISkybox;
 	class IGui;
 	class IPostProcessing;
-	class IScriptManager;
 	class IRuntimeLoader;
 
 	inline ILog* Log;
@@ -39,7 +38,6 @@ namespace Pine
 	inline ISkybox* Skybox;
 	inline IGui* Gui;
 	inline IPostProcessing* PostProcessing;
-	inline IScriptManager* ScriptingManager;
 	inline IRuntimeLoader* RuntimeLoader;
 
 	struct PineInstance
@@ -56,7 +54,6 @@ namespace Pine
 		ISkybox* Skybox;
 		IGui* Gui;
 		IPostProcessing* PostProcessing;
-		IScriptManager* ScriptingManager;
 		IRuntimeLoader* RuntimeLoader;
 	};
 

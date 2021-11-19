@@ -9,7 +9,6 @@
 #include "Editor/Gui/Gui.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
-#include "Pine/Assets/Script/Script.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Rendering/Skybox/Skybox.hpp"
 
@@ -139,7 +138,6 @@ namespace {
 				if ( material && material->IsGenerated( ) )
 					showButton = true;
 
-
 				if ( showButton && ImGui::Button( std::string( "Create Custom Material##" + std::to_string( i ) ).c_str( ) ) )
 				{
 					// Clean readable code :tm:
@@ -191,27 +189,6 @@ namespace {
 		}
 	}
 
-	void RenderScript( Pine::Script* script )
-	{
-		if ( !script )
-			return;
-
-		ImGui::Text( "Has 'OnSetup()': %d", script->HasOnSetup( ) );
-		ImGui::Text( "Has 'OnUpdate()': %d", script->HasOnUpdate( ) );
-
-		ImGui::Separator( );
-
-		// This is also stupid, don't care. InputText will be set with
-		// read only anyway.
-		char* text = const_cast< char* >( script->GetScriptFileText( ).c_str( ) );
-
-		ImGui::PushFont( Editor::Gui::Fonts::CodeFont );
-
-		ImGui::InputTextMultiline( "##ScriptText", text, script->GetScriptFileText( ).size( ), ImVec2( -1, -1 ), ImGuiInputTextFlags_ReadOnly );
-
-		ImGui::PopFont( );
-	}
-
 }
 
 void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine::IAsset* asset ) {
@@ -233,9 +210,6 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		break;
 	case Pine::EAssetType::Texture3D:
 		RenderCubemap( dynamic_cast< Pine::Texture3D* >( asset ) );
-		break;
-	case Pine::EAssetType::Script:
-		RenderScript( dynamic_cast< Pine::Script* >( asset ) );
 		break;
 	default:
 		break;

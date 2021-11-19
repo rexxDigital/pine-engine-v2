@@ -65,6 +65,7 @@ bool Pine::Texture3D::LoadFromFile( ) {
 		const int format = nrChannels == 1 ? GL_R8 : nrChannels == 4 ? GL_RGBA : GL_RGB;
 
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data );
+
 		stbi_image_free( data );
 	}
 

@@ -11,7 +11,6 @@
 #include "..\Utility\AssetIconGen\AssetIconGen.hpp"
 #include "Pine/Assets/Terrain/Terrain.hpp"
 #include "Pine/Core/String/String.hpp"
-#include "Pine/ScriptManager/ScriptManager.hpp"
 
 namespace {
 

@@ -147,15 +147,6 @@
     <ClInclude Include="src\Pine\Rendering\PostProcessing\PostProcessing.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pine\Assets\Script\Script.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pine\ScriptManager\ScriptManager.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pine\Components\Behavior\Behavior.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Pine\Assets\Level\Level.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -190,6 +181,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pine\RuntimeLoader\RuntimeLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -318,15 +312,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Rendering\PostProcessing\PostProcessing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pine\Assets\Script\Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pine\ScriptManager\ScriptManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pine\Components\Behavior\Behavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pine\Assets\Level\Level.cpp">

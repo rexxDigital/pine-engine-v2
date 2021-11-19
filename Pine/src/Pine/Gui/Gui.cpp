@@ -153,9 +153,7 @@ namespace Pine
 			if ( g_GuiRenderCallback ) {
 				g_GuiRenderCallback( );
 			}
-
-			//Pine::Components->Internal::ShowDebugUI( );
-
+			
 			glViewport( 0, 0, Window::GetCachedSize( ).x, Window::GetCachedSize( ).y );
 
 			ImGui::Render( );

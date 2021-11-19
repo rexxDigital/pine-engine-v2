@@ -1,6 +1,5 @@
 #include "Components.hpp"
 
-#include "Behavior/Behavior.hpp"
 #include "TerrainRenderer/TerrainRenderer.hpp"
 
 #include "../Core/Log/Log.hpp"
@@ -95,7 +94,6 @@ namespace Pine
 			RegisterComponent( new Camera( ), sizeof( Camera ), "Camera" );
 			RegisterComponent( new Light( ), sizeof( Light ), "Light" );
 			RegisterComponent( new NativeScript( ), sizeof( NativeScript ), "Native Script" );
-			RegisterComponent( new Behavior( ), sizeof( Behavior ), "Behavior" );
 			RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
 			RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
 			RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
@@ -296,7 +294,7 @@ namespace Pine
 			return false;
 		}
 
-		Pine::IComponent* CopyComponent( const Pine::IComponent* inputComponent, bool standalone ) override
+		IComponent* CopyComponent( const Pine::IComponent* inputComponent, bool standalone ) override
 		{
 			Log->Debug( "Pine::Components->CopyComponent( ): standalone -> " + std::to_string( standalone ) );
 

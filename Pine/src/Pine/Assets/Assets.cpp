@@ -9,7 +9,6 @@
 #include "Level/Level.hpp"
 #include "Material/Material.hpp"
 #include "Model/Model.hpp"
-#include "Script/Script.hpp"
 #include "Terrain/Terrain.hpp"
 #include "Texture2D/Texture2D.hpp"
 #include "Texture3D/Texture3D.hpp"
@@ -49,7 +48,6 @@ namespace Pine
 			m_AssetFactories.push_back( AssetFactory_t( { { ".cmap" }, Pine::EAssetType::Texture3D, [ ] ( ) { return new Pine::Texture3D( ); } } ) );
 			m_AssetFactories.push_back( AssetFactory_t( { { ".bpt" }, Pine::EAssetType::Blueprint, [ ] ( ) { return new Pine::Blueprint( ); } } ) );
 			m_AssetFactories.push_back( AssetFactory_t( { { ".lvl" }, Pine::EAssetType::Level, [ ] ( ) { return new Pine::Level( ); } } ) );
-			m_AssetFactories.push_back( AssetFactory_t( { { ".as" }, Pine::EAssetType::Script, [ ] ( ) { return new Pine::Script( ); } } ) );
 			m_AssetFactories.push_back( AssetFactory_t( { { ".ter" }, Pine::EAssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } } ) );
 
 			Pine::Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );

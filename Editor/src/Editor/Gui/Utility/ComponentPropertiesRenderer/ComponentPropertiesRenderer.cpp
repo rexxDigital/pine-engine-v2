@@ -6,10 +6,7 @@
 #include <Pine/Components/Camera/Camera.hpp>
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 
-#include <Pine/Assets/Script/Script.hpp>
-
 #include "ImGui/imgui.h"
-#include "Pine/Components/Behavior/Behavior.hpp"
 #include "Pine/Components/Light/Light.hpp"
 #include "Pine/Components/RigidBody//RigidBody.hpp"
 #include "Pine/Components/TerrainRenderer/TerrainRenderer.hpp"
@@ -99,16 +96,6 @@ namespace {
 		if ( Widgets::SliderFloat( "Quadratic", attenuation.z, 0.0001f, 2.f, "%.5f" ) )
 		{
 			light->SetAttenuation( attenuation );
-		}
-	}
-
-	void RenderBehavior( Pine::Behavior* behavior )
-	{
-		const auto currentAsset = behavior->GetAttachedScript( );
-		const auto scriptRet = Widgets::AssetPicker( "Script", currentAsset, true, Pine::EAssetType::Script );
-		if ( scriptRet.valid )
-		{
-			behavior->SetAttachedScript( dynamic_cast< Pine::Script* >( scriptRet.asset ) );
 		}
 	}
 
@@ -273,8 +260,6 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 		RenderCamera( dynamic_cast< Pine::Camera* >( component ) ); break;
 	case Pine::EComponentType::Light:
 		RenderLight( dynamic_cast< Pine::Light* >( component ) ); break;
-	case Pine::EComponentType::Behavior:
-		RenderBehavior( dynamic_cast< Pine::Behavior* >( component ) ); break;
 	case Pine::EComponentType::TerrainRenderer:
 		RenderTerrainRenderer( dynamic_cast< Pine::TerrainRenderer* >( component ) ); break;
 	case Pine::EComponentType::RigidBody:
@@ -286,5 +271,7 @@ void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentPropertie
 	default:
 		break;
 	}
+
+
 
 }

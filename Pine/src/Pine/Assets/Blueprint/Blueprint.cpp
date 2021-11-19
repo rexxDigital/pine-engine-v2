@@ -5,7 +5,6 @@
 #include "../../Entity/Entity.hpp"
 #include "../../Entitylist/EntityList.hpp"
 
-#include "../../Components/Behavior/Behavior.hpp"
 #include "../../Components/Camera/Camera.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/ModelRenderer/ModelRenderer.hpp"
@@ -137,14 +136,6 @@ Pine::Entity* Pine::Blueprint::SpawnEntity( ) const
 	newEntity->ClearComponents( );
 
 	CopyEntity( newEntity, m_Entity, true );
-
-	for ( const auto component : newEntity->GetComponents( ) )
-	{
-		if ( component->GetType( ) == Pine::EComponentType::Behavior )
-		{
-			dynamic_cast< Pine::Behavior* >( component )->LoadScriptFile( );
-		}
-	}
 
 	return newEntity;
 }

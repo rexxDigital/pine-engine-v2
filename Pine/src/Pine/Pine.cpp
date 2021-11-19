@@ -17,7 +17,6 @@
 #include "Input/Input.hpp"
 #include "PhysicsManager/PhysicsManager.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
-#include "ScriptManager/ScriptManager.hpp"
 
 namespace
 {
@@ -135,7 +134,6 @@ bool Pine::Setup( )
 	Gui->Setup( );
 	RenderManager->Setup( );
 	PostProcessing->Setup( );
-	ScriptingManager->Setup( );
 	Components->Setup( );
 	EntityList->Setup( );
 
@@ -150,8 +148,6 @@ void Pine::Run( )
 {
 	Window::Show( );
 	Window::UpdateCachedSize( );
-
-	ScriptingManager->CompileScripts( );
 
 	if ( g_AllowUpdates )
 		EntityList->RunOnSetup( );
@@ -195,7 +191,6 @@ void Pine::Terminate( )
 	Gui->Dispose( );
 	Skybox->Dispose( );
 	PostProcessing->Dispose( );
-	ScriptingManager->Dispose( );
 	Components->Dispose( );
 	PhysicsManager->Dispose( );
 
