@@ -1,4 +1,5 @@
 #include "RenderManager.hpp"
+
 #include <unordered_map>
 #include <vector>
 #include <chrono>
@@ -27,11 +28,11 @@ namespace Pine
 	{
 	private:
 
-		Pine::RenderingContext* g_RenderingContext = nullptr;
+		RenderingContext* g_RenderingContext = nullptr;
+		RenderCallback g_RenderingCallback = nullptr;
 
-		Pine::RenderCallback g_RenderingCallback = nullptr;
-
-		bool VerifyRenderingContext( Pine::RenderingContext* context ) {
+		bool VerifyRenderingContext( RenderingContext* context )
+		{
 			if ( !context )
 				return false;
 
@@ -45,10 +46,10 @@ namespace Pine
 
 	public:
 
-
 		void Render( ) override
 		{
-			if ( !VerifyRenderingContext( g_RenderingContext ) ) {
+			if ( !VerifyRenderingContext( g_RenderingContext ) ) 
+			{
 				return;
 			}
 
@@ -61,7 +62,8 @@ namespace Pine
 			// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
 			// to fix this temporary just update that and set the rendering context's size accordingly.
 
-			if ( g_RenderingCallback ) {
+			if ( g_RenderingCallback ) 
+			{
 				g_RenderingCallback( 0 );
 			}
 
@@ -76,39 +78,48 @@ namespace Pine
 			if ( g_RenderingContext->m_Camera == nullptr )
 				return;
 
-			std::unordered_map<Pine::Model*, std::vector<Pine::ModelRenderer*>> renderBatch;
-			std::vector<Pine::Light*> lights;
-			std::vector<Pine::TerrainRenderer*> terrainRenderers;
+			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
+			std::vector<Light*> lights;
+			std::vector<TerrainRenderer*> terrainRenderers;
 
-			auto processEntity = [ & ] ( const Pine::Entity* entity ) {
-				for ( auto& component : entity->GetComponents( ) ) {
-					if ( !component->GetActive( ) ) {
+			auto processEntity = [ & ] ( const Pine::Entity* entity )
+			{
+				for ( auto& component : entity->GetComponents( ) ) 
+				{
+					if ( !component->GetActive( ) ) 
+					{
 						continue;
 					}
 
 					component->OnRender( );
 
-					if ( component->GetType( ) == EComponentType::ModelRenderer ) {
-						const auto modelRenderer = dynamic_cast< Pine::ModelRenderer* >( component );
+					if ( component->GetType( ) == EComponentType::ModelRenderer ) 
+					{
+						const auto modelRenderer = dynamic_cast< ModelRenderer* >( component );
 						auto model = modelRenderer->GetTargetModel( );
 
-						if ( model != nullptr ) {
+						if ( model != nullptr ) 
+						{
 							renderBatch[ model ].push_back( modelRenderer );
 						}
 					}
-					else if ( component->GetType( ) == EComponentType::Light ) {
-						lights.push_back( dynamic_cast< Pine::Light* >( component ) );
+					else if ( component->GetType( ) == EComponentType::Light ) 
+					{
+						lights.push_back( dynamic_cast< Light* >( component ) );
 					}
-					else if ( component->GetType( ) == EComponentType::TerrainRenderer ) {
-						terrainRenderers.push_back( dynamic_cast< Pine::TerrainRenderer* >( component ) );
+					else if ( component->GetType( ) == EComponentType::TerrainRenderer ) 
+					{
+						terrainRenderers.push_back( dynamic_cast< TerrainRenderer* >( component ) );
 					}
 				}
 			};
 
 			Timer entitySortTimer;
 
-			for ( auto& entity : EntityList->GetEntities( ) ) {
-				if ( !entity.GetActive( ) ) {
+			for ( auto& entity : EntityList->GetEntities( ) ) 
+			{
+				if ( !entity.GetActive( ) ) 
+				{
 					continue;
 				}
 
@@ -123,7 +134,8 @@ namespace Pine
 			// Prepare the light data before uploading it to the GPU:
 			Renderer3D->ResetLightData( );
 
-			for ( const auto light : lights ) {
+			for ( const auto light : lights ) 
+			{
 				Renderer3D->PrepareLightData( light );
 			}
 
@@ -135,7 +147,8 @@ namespace Pine
 
 			// Render Terrain Chunks
 
-			for ( const auto terrainRenderer : terrainRenderers ) {
+			for ( const auto terrainRenderer : terrainRenderers ) 
+			{
 				const auto terrain = terrainRenderer->GetTerrain( );
 
 				if ( !terrain )
@@ -152,11 +165,14 @@ namespace Pine
 
 			// Render Normal Entities
 
-			for ( auto& renderItem : renderBatch ) {
-				for ( auto& mesh : renderItem.first->GetMeshList( ) ) {
+			for ( auto& renderItem : renderBatch ) 
+			{
+				for ( auto& mesh : renderItem.first->GetMeshList( ) ) 
+				{
 					Renderer3D->PrepareMesh( mesh );
 
-					for ( const auto modelRenderer : renderItem.second ) {
+					for ( const auto modelRenderer : renderItem.second ) 
+					{
 						const auto entity = modelRenderer->GetParent( );
 
 						bool restoreMesh = false;
@@ -184,7 +200,8 @@ namespace Pine
 
 			Skybox->Render( );
 
-			if ( g_RenderingCallback ) {
+			if ( g_RenderingCallback ) 
+			{
 				g_RenderingCallback( 1 );
 			}
 
@@ -202,7 +219,8 @@ namespace Pine
 			g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
 			g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
 
-			if ( g_RenderingCallback ) {
+			if ( g_RenderingCallback ) 
+			{
 				g_RenderingCallback( 2 );
 			}
 		}
@@ -248,16 +266,19 @@ namespace Pine
 			const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
 			// Setup frame buffer
-			if ( hasFrameBuffer ) {
+			if ( hasFrameBuffer ) 
+			{
 				g_RenderingContext->m_FrameBuffer->Bind( );
 
 				// Override rendering context's size variables.
-				if ( g_RenderingContext->m_AutoUpdateSize ) {
+				if ( g_RenderingContext->m_AutoUpdateSize ) 
+				{
 					g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
 					g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
 				}
 			}
-			else {
+			else 
+			{
 				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 			}
 

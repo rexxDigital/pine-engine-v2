@@ -16,7 +16,8 @@
 #include "OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "Rendering/Renderer3D/Renderer3D.hpp"
 
-namespace Pine {
+namespace Pine
+{
 
 	void SetAllowUpdates( bool value );
 	bool IsAllowingUpdates( );

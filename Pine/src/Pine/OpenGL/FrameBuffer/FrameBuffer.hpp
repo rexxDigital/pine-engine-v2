@@ -1,8 +1,10 @@
 #pragma once
 
-namespace Pine {
+namespace Pine
+{
 
-	class FrameBuffer {
+	class FrameBuffer
+	{
 	private:
 		unsigned int m_Id = 0;
 
@@ -13,7 +15,6 @@ namespace Pine {
 		int m_Width = 0;
 		int m_Height = 0;
 	public:
-
 		FrameBuffer( );
 
 		unsigned int GetId( ) const;
@@ -30,7 +31,6 @@ namespace Pine {
 		void Dispose( ) const;
 
 		void Create( int width, int height, bool normalColorBuffer = false );
-
 	};
 
 }

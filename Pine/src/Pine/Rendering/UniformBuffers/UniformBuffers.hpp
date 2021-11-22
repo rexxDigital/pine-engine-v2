@@ -3,14 +3,17 @@
 #include <glm/mat4x4.hpp>
 #include "../../OpenGL/UniformBuffer/UniformBuffer.hpp"
 
-namespace Pine::UniformBuffers {
+namespace Pine::UniformBuffers
+{
 
-	struct MatrixBufferData_t {
+	struct MatrixBufferData_t
+	{
 		glm::mat4 ProjectionMatrix;
 		glm::mat4 ViewMatrix;
 	};
 
-	struct LightData_t {
+	struct LightData_t
+	{
 		glm::vec3 position;
 		float padding0;
 		glm::vec3 rotation;
@@ -21,11 +24,13 @@ namespace Pine::UniformBuffers {
 		float padding3;
 	};
 
-	struct LightBufferData_t {
+	struct LightBufferData_t
+	{
 		LightData_t lights[ 4 ];
 	};
 
-	struct MaterialBufferData_t {
+	struct MaterialBufferData_t
+	{
 		glm::vec3 diffuseColor;
 		float padding0;
 		glm::vec3 specularColor;

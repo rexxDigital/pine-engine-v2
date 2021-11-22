@@ -39,19 +39,22 @@ namespace Pine
 			g_ScreenQuad->Create( );
 			g_ScreenQuad->Bind( );
 
-			const std::vector<float> quads = {
+			const std::vector<float> quads = 
+			{
 				-1.f, 1.f, 0.f,
 				-1.f, -1.f, 0.f,
 				1.f, -1.f, 0.f,
 				1.f, 1.f, 0.f,
 			};
 
-			const std::vector<int> indices = {
+			const std::vector<int> indices = 
+			{
 				0,1,3,
 				3,1,2
 			};
 
-			const std::vector<float> uvs = {
+			const std::vector<float> uvs = 
+			{
 				0,0,
 				0,1,
 				1,1,

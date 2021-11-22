@@ -2,14 +2,17 @@
 #include "../IComponent/IComponent.hpp"
 #include <glm/vec3.hpp>
 
-namespace Pine {
+namespace Pine
+{
 
-	enum ELightType {
+	enum ELightType
+	{
 		Directional,
 		PointLight
 	};
 
-	class Light : public IComponent {
+	class Light : public IComponent
+	{
 	private:
 		glm::vec3 m_LightColor = glm::vec3( 1.f, 1.f, 1.f );
 		ELightType m_LightType = ELightType::Directional;
@@ -17,7 +20,7 @@ namespace Pine {
 		glm::vec3 m_Attenuation = glm::vec3( 1.f, 0.045f, 0.0075 );
 	public:
 		Light( );
-		
+
 		void SetLightColor( glm::vec3 lightColor );
 		const glm::vec3& GetLightColor( ) const;
 
@@ -26,7 +29,7 @@ namespace Pine {
 
 		void SetAttenuation( glm::vec3 vec );
 		const glm::vec3& GetAttenuation( ) const;
-		
+
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
 

@@ -7,7 +7,8 @@ namespace Pine
 	struct ModuleHandle;
 }
 
-namespace Editor::ProjectManager {
+namespace Editor::ProjectManager
+{
 
 	void Setup( );
 	void Save( );
@@ -27,7 +28,7 @@ namespace Editor::ProjectManager {
 	void SaveLevel( const std::string& path );
 	Pine::Level* GetCurrentLevel( );
 
-	const std::vector<std::string>& GetAvaliableProjects( );
+	const std::vector<std::string>& GetAvailableProjects( );
 
 	void LoadRuntimeLibrary( );
 	void UnloadRuntimeLibrary( );

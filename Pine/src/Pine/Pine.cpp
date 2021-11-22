@@ -29,9 +29,10 @@ namespace
 
 	float g_WindowTime = 0.0f;
 
-	double GetTimeAsDouble( ) {
+	double GetTimeAsDouble( )
+	{
 		using namespace std::chrono;
-		using SecondsFP = std::chrono::duration<double>;
+		using SecondsFP = duration<double>;
 		return duration_cast< SecondsFP >( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
 	}
 
@@ -114,14 +115,16 @@ bool Pine::Setup( )
 	// We want to load engine shaders first because some other engine assets needs the shaders to be ready first.
 	Log->Message( "Loading engine shaders..." );
 
-	if ( Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) {
+	if ( Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) 
+	{
 		Log->Fatal( "Failed to load engine shaders, required engine files are missing from the executable directory." );
 		return false;
 	}
 
 	Log->Message( "Loading engine assets..." );
 
-	if ( Assets->LoadFromDirectory( "Assets\\Engine", true ) == 0 ) {
+	if ( Assets->LoadFromDirectory( "Assets\\Engine", true ) == 0 ) 
+	{
 		Log->Fatal( "Failed to load engine assets, required engine files are missing from the executable directory." );
 		return false;
 	}

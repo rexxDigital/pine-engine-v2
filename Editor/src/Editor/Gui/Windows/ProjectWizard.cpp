@@ -44,7 +44,7 @@ void Editor::Gui::Windows::RenderProjectWizard( ) {
 
 	ImGui::Text( "Available projects:" );
 
-	for ( auto& project : ProjectManager::GetAvaliableProjects( ) ) {
+	for ( auto& project : ProjectManager::GetAvailableProjects( ) ) {
 		if ( ImGui::Button( project.c_str( ), ImVec2( -1.f, 30.f ) ) ) {
 			ProjectManager::OpenProject( project );
 		}

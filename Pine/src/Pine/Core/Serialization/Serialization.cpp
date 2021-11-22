@@ -4,14 +4,17 @@
 
 #include "../../Assets/Assets.hpp"
 
-nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileName ) {
-	if ( !std::filesystem::exists( fileName ) ) {
+nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileName )
+{
+	if ( !std::filesystem::exists( fileName ) )
+	{
 		return nlohmann::json( );
 	}
 
 	std::ifstream stream( fileName );
 
-	if ( !stream.is_open( ) ) {
+	if ( !stream.is_open( ) ) 
+	{
 		return nlohmann::json( );
 	}
 
@@ -22,8 +25,10 @@ nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileNam
 	return j;
 }
 
-glm::vec3 Pine::Serialization::LoadVec3( const nlohmann::json& j, const std::string& name ) {
-	try {
+glm::vec3 Pine::Serialization::LoadVec3( const nlohmann::json& j, const std::string& name )
+{
+	try 
+	{
 		glm::vec3 vec;
 
 		vec.x = j.at( name ).at( "x" );
@@ -32,7 +37,8 @@ glm::vec3 Pine::Serialization::LoadVec3( const nlohmann::json& j, const std::str
 
 		return vec;
 	}
-	catch ( ... ) {
+	catch ( ... ) 
+	{
 		return glm::vec3( 0.f, 0.f, 0.f );
 	}
 }
@@ -57,15 +63,19 @@ void Pine::Serialization::SaveAsset( nlohmann::json& j, IAsset* asset )
 	j = asset->GetPath( ).string( );
 }
 
-Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std::string& name ) {
-	try {
-		if ( j.contains( name ) ) {
+Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std::string& name )
+{
+	try 
+	{
+		if ( j.contains( name ) ) 
+		{
 			if ( j.at( name ) == "null" )
 			{
 				return nullptr;
 			}
 
-			if ( const auto asset = Assets->GetAsset( j.at( name ) ) ) {
+			if ( const auto asset = Assets->GetAsset( j.at( name ) ) ) 
+			{
 				return asset;
 			}
 
@@ -74,7 +84,8 @@ Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std
 
 		return nullptr;
 	}
-	catch ( ... ) {
+	catch ( ... ) 
+	{
 		return nullptr;
 	}
 }

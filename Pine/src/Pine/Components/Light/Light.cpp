@@ -3,23 +3,28 @@
 #include "../../../ImGui/imgui.h"
 #include "../../Core/Serialization/Serialization.hpp"
 
-Pine::Light::Light( ) {
+Pine::Light::Light( )
+{
 	m_ComponentType = EComponentType::Light;
 }
 
-void Pine::Light::SetLightColor( glm::vec3 lightColor ) {
+void Pine::Light::SetLightColor( glm::vec3 lightColor )
+{
 	m_LightColor = lightColor;
 }
 
-const glm::vec3& Pine::Light::GetLightColor( ) const {
+const glm::vec3& Pine::Light::GetLightColor( ) const
+{
 	return m_LightColor;
 }
 
-void Pine::Light::SetLightType( ELightType type ) {
+void Pine::Light::SetLightType( ELightType type )
+{
 	m_LightType = type;
 }
 
-Pine::ELightType Pine::Light::GetLightType( ) const {
+Pine::ELightType Pine::Light::GetLightType( ) const
+{
 	return m_LightType;
 }
 
@@ -33,9 +38,9 @@ const glm::vec3& Pine::Light::GetAttenuation( ) const
 	return m_Attenuation;
 }
 
-void Pine::Light::OnSetup( ) {}
+void Pine::Light::OnSetup( ) { }
 
-void Pine::Light::OnUpdate( float deltaTime ) {}
+void Pine::Light::OnUpdate( float deltaTime ) { }
 
 void Pine::Light::SaveToJson( nlohmann::json& j )
 {

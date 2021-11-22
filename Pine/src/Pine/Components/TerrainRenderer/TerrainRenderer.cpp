@@ -27,11 +27,11 @@ void Pine::TerrainRenderer::OnUpdate( float deltaTime )
 
 void Pine::TerrainRenderer::SaveToJson( nlohmann::json& j )
 {
-	Serialization::SaveAsset( j[ "terrain" ], m_Terrain  );
+	Serialization::SaveAsset( j[ "terrain" ], m_Terrain );
 }
 
 void Pine::TerrainRenderer::LoadFromJson( nlohmann::json& j )
 {
-	m_Terrain = dynamic_cast<Pine::Terrain*>( Serialization::LoadAsset( j, "terrain" ) );
+	m_Terrain = dynamic_cast< Pine::Terrain* >( Serialization::LoadAsset( j, "terrain" ) );
 }
 

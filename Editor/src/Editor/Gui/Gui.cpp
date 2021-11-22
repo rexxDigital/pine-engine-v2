@@ -11,7 +11,8 @@
 
 namespace {
 
-	void SetupDockspace( ) {
+	void SetupDockspace( )
+	{
 		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 		const ImGuiViewport* viewport = ImGui::GetMainViewport( );
 
@@ -31,17 +32,19 @@ namespace {
 
 		ImGui::PopStyleVar( 3 );
 
-		const ImGuiID dockspaceId = ImGui::GetID( "DockSpace" );
+		const ImGuiID dockSpaceID = ImGui::GetID( "DockSpace" );
 
-		ImGui::DockSpace( dockspaceId, ImVec2( 0.0f, 0.f ), ImGuiDockNodeFlags_None );
+		ImGui::DockSpace( dockSpaceID, ImVec2( 0.0f, 0.f ), ImGuiDockNodeFlags_None );
 
 		ImGui::End( );
 	}
 
-	void OnRenderGui( ) {
+	void OnRenderGui( )
+	{
 		ImGuizmo::BeginFrame( );
 
-		if ( !Editor::ProjectManager::HasProjectOpen( ) ) {
+		if ( !Editor::ProjectManager::HasProjectOpen( ) ) 
+		{
 			Editor::Gui::Windows::RenderProjectWizard( );
 
 			return;
@@ -70,7 +73,8 @@ namespace {
 
 }
 
-void Editor::Gui::Setup( ) {
+void Editor::Gui::Setup( )
+{
 
 	const ImGuiIO& io = ImGui::GetIO( );
 

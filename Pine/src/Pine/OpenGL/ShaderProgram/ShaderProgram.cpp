@@ -133,8 +133,10 @@ void Pine::ShaderProgram::LinkProgram( )
 	m_IsReady = true;
 }
 
-Pine::UniformVariable* Pine::ShaderProgram::GetUniformVariable( const std::string& variableName ) {
-	if ( m_UniformVariables.count( variableName ) == 0 ) {
+Pine::UniformVariable* Pine::ShaderProgram::GetUniformVariable( const std::string& variableName )
+{
+	if ( m_UniformVariables.count( variableName ) == 0 ) 
+	{
 		m_UniformVariables[ variableName ] = new UniformVariable( this, variableName );
 	}
 
@@ -145,7 +147,8 @@ void Pine::ShaderProgram::SetupUniformBuffer( const UniformBuffer* buffer, const
 {
 	const int bufferIndex = glGetUniformBlockIndex( m_Id, name.c_str( ) );
 
-	if ( 0 > bufferIndex ) {
+	if ( 0 > bufferIndex ) 
+	{
 		Log->Error( "Failed to find uniform buffer, " + name );
 	}
 
@@ -169,6 +172,7 @@ void Pine::ShaderProgram::DisposeShader( )
 	glDeleteProgram( m_Id );
 }
 
-void Pine::ShaderProgram::Use( ) const {
+void Pine::ShaderProgram::Use( ) const
+{
 	glUseProgram( m_Id );
 }

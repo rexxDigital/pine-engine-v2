@@ -2,23 +2,28 @@
 
 #include "../../Core/Serialization/Serialization.hpp"
 
-Pine::ModelRenderer::ModelRenderer( ) {
+Pine::ModelRenderer::ModelRenderer( )
+{
 	m_ComponentType = EComponentType::ModelRenderer;
 }
 
-Pine::Model* Pine::ModelRenderer::GetTargetModel( ) const {
+Pine::Model* Pine::ModelRenderer::GetTargetModel( ) const
+{
 	return m_TargetModel;
 }
 
-void Pine::ModelRenderer::SetTargetModel( Pine::Model* mdl ) {
+void Pine::ModelRenderer::SetTargetModel( Pine::Model* mdl )
+{
 	m_TargetModel = mdl;
 }
 
-Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const {
+Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const
+{
 	return m_MaterialOverride;
 }
 
-void Pine::ModelRenderer::SetMaterialOverride( Pine::Material* mat ) {
+void Pine::ModelRenderer::SetMaterialOverride( Pine::Material* mat )
+{
 	m_MaterialOverride = mat;
 }
 
@@ -38,13 +43,16 @@ std::uint8_t Pine::ModelRenderer::GetOverridedStencilBufferMask( ) const
 	return m_StencilBufferMask;
 }
 
-void Pine::ModelRenderer::OnSetup( ) {
+void Pine::ModelRenderer::OnSetup( )
+{
 }
 
-void Pine::ModelRenderer::OnUpdate( float deltaTime ) {
+void Pine::ModelRenderer::OnUpdate( float deltaTime )
+{
 }
 
-void Pine::ModelRenderer::OnRender( ) {
+void Pine::ModelRenderer::OnRender( )
+{
 }
 
 void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
@@ -54,5 +62,5 @@ void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
 
 void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )
 {
-	m_TargetModel = dynamic_cast<Pine::Model*>( Serialization::LoadAsset( j, "model" ) );
+	m_TargetModel = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
 }

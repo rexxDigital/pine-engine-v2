@@ -23,7 +23,8 @@ void Pine::Transform::BuildDirections( )
 	m_Up = glm::cross( m_Right, m_Forward );
 }
 
-void Pine::Transform::BuildTransformationMatrix( ) {
+void Pine::Transform::BuildTransformationMatrix( )
+{
 	m_TransformationMatrix = glm::mat4( 1.f );
 
 	glm::vec3 pos( 0.f );
@@ -44,17 +45,21 @@ void Pine::Transform::BuildTransformationMatrix( ) {
 	m_TransformationMatrix = glm::scale( m_TransformationMatrix, Scale );
 }
 
-Pine::Transform::Transform( ) {
+Pine::Transform::Transform( )
+{
 	m_ComponentType = EComponentType::Transform;
 }
 
-void Pine::Transform::OnSetup( ) {
+void Pine::Transform::OnSetup( )
+{
 }
 
-void Pine::Transform::OnUpdate( float deltaTime ) {
+void Pine::Transform::OnUpdate( float deltaTime )
+{
 }
 
-void Pine::Transform::OnRender( ) {
+void Pine::Transform::OnRender( )
+{
 	// FIXME: This is really ugly code...
 	const float posLength = Position.x + Position.y + Position.z;
 	const float rotLength = Rotation.x + Rotation.y + Rotation.z;
@@ -62,20 +67,24 @@ void Pine::Transform::OnRender( ) {
 
 	bool update = false;
 
-	if ( posLength != m_LastPositionLen ) {
+	if ( posLength != m_LastPositionLen )
+	{
 		update = true;
 	}
-	else if ( rotLength != m_LastRotationLen ) {
+	else if ( rotLength != m_LastRotationLen )
+	{
 		update = true;
 	}
-	else if ( sclLength != m_LastScaleLen ) {
+	else if ( sclLength != m_LastScaleLen )
+	{
 		update = true;
 	}
 
 	if ( GetParent( ) && GetParent( )->GetParent( ) != nullptr )
 		update = true;
 
-	if ( !update ) {
+	if ( !update )
+	{
 		return;
 	}
 

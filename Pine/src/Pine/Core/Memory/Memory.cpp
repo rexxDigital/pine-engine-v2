@@ -3,31 +3,36 @@
 
 #include "../Log/Log.hpp"
 
-namespace {
+namespace
+{
 	bool g_MemoryTrackingEnabled = false;
 
 	std::vector<Pine::Memory::MemoryAllocation> g_MemoryAllocations;
 }
 
-
-
-void Pine::Memory::EnableMemoryTracking( ) {
+void Pine::Memory::EnableMemoryTracking( )
+{
 	g_MemoryTrackingEnabled = true;
+
 	Log->Warning( "Memory tracking is now enabled!" );
 }
 
-void Pine::Memory::DisableMemoryTracking( ) {
+void Pine::Memory::DisableMemoryTracking( )
+{
 	g_MemoryTrackingEnabled = false;
 }
 
-std::vector<Pine::Memory::MemoryAllocation>& Pine::Memory::GetMemoryAllocations( ) {
+std::vector<Pine::Memory::MemoryAllocation>& Pine::Memory::GetMemoryAllocations( )
+{
 	return g_MemoryAllocations;
 }
 
-void* Pine::Memory::Allocate( size_t size, const char* name ) {
+void* Pine::Memory::Allocate( size_t size, const char* name )
+{
 	const auto ptr = malloc( size );
 
-	if ( !g_MemoryTrackingEnabled ) 	{
+	if ( !g_MemoryTrackingEnabled ) 
+	{
 		return ptr;
 	}
 
@@ -42,19 +47,23 @@ void* Pine::Memory::Allocate( size_t size, const char* name ) {
 	return ptr;
 }
 
-void Pine::Memory::Free( void* ptr ) {
+void Pine::Memory::Free( void* ptr )
+{
 	free( ptr );
 
-	if ( !g_MemoryTrackingEnabled ) {
+	if ( !g_MemoryTrackingEnabled ) 
+	{
 		return;
 	}
 
 	// Find the allocated memory
-	for ( int i = 0; i < g_MemoryAllocations.size( ); i++ ) 	{
-		auto& mem = g_MemoryAllocations[ i ];
+	for ( int i = 0; i < g_MemoryAllocations.size( ); i++ ) 
+	{
+		const auto& mem = g_MemoryAllocations[ i ];
 
 		// Remove it!
-		if ( mem.ptr == ptr ) 		{
+		if ( mem.ptr == ptr ) 
+		{
 			g_MemoryAllocations.erase( g_MemoryAllocations.begin( ) + i );
 			return;
 		}

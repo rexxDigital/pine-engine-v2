@@ -2,9 +2,11 @@
 #include "../IComponent/IComponent.hpp"
 #include <glm/mat4x4.hpp>
 
-namespace Pine {
+namespace Pine
+{
 
-	class Camera : public IComponent {
+	class Camera : public IComponent
+	{
 	private:
 		float m_NearPlane = 1.f;
 		float m_FarPlane = 300.f;

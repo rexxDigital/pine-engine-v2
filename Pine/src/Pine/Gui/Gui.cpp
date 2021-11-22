@@ -150,7 +150,8 @@ namespace Pine
 			ImGui_ImplGlfw_NewFrame( );
 			ImGui::NewFrame( );
 
-			if ( g_GuiRenderCallback ) {
+			if ( g_GuiRenderCallback ) 
+			{
 				g_GuiRenderCallback( );
 			}
 			

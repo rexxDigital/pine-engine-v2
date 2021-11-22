@@ -2,11 +2,11 @@
 #include "..\RenderingContext\RenderingContext.hpp"
 #include "../../Core/Interfaces/Interfaces.hpp"
 
-namespace Pine {
+namespace Pine
+{
 	class Camera;
 
 	typedef void ( *RenderCallback )( int pass );
-
 
 	class IRenderManager : public IInterface
 	{

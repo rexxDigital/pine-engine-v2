@@ -6,7 +6,8 @@
 // and to track memory leaks.
 namespace Pine::Memory
 {
-	struct MemoryAllocation {
+	struct MemoryAllocation
+	{
 		void* ptr = nullptr;
 		size_t size = 0;
 

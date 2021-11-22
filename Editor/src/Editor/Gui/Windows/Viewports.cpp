@@ -29,37 +29,42 @@ namespace {
 
 	bool g_StartedPlaying = false;
 
-	void ShowViewportControls( bool inLevelViewport ) {
+	void ShowViewportControls( const bool inLevelViewport )
+	{
 		using namespace Editor::Gui;
 
-		if ( ImGui::BeginMenuBar( ) ) {
-			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) ) {
-				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
+		if ( ImGui::BeginMenuBar( ) ) 
+		{
+			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) ) 
+			{
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
 			}
 
-			if ( ImGui::MenuItem( "Rotate", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, inLevelViewport ) ) {
-				Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
+			if ( ImGui::MenuItem( "Rotate", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, inLevelViewport ) )
+			{
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
 			}
 
-			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) ) {
-				Editor::Gui::Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
+			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) ) 
+			{
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
 			}
 
 			if ( inLevelViewport && Globals::IsHoveringLevelView )
 			{
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::TransformGizmo ) )
+				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::TransformGizmo ) )
 				{
-					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
+					Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
 				}
 
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::RotateGizmo ) )
+				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::RotateGizmo ) )
 				{
-					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
+					Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
 				}
 
-				if ( Editor::Gui::HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::ScaleGizmo ) )
+				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::ScaleGizmo ) )
 				{
-					Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Scale;
+					Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
 				}
 			}
 
@@ -73,7 +78,7 @@ namespace {
 				if ( isPlaying )
 				{
 					Editor::PlayManager::Stop( );
-					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+					Globals::SelectedEntityPtrs.clear( );
 				}
 				else
 				{
@@ -89,8 +94,10 @@ namespace {
 
 	void HandleAssetViewportDrop( )
 	{
-		if ( ImGui::BeginDragDropTarget( ) ) {
-			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
+		if ( ImGui::BeginDragDropTarget( ) )
+		{
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) 
+			{
 				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
 
 				if ( asset->GetType( ) == Pine::EAssetType::Level )
@@ -112,7 +119,8 @@ namespace {
 		}
 	}
 
-	void RenderEntityIcon( Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition, ImVec2 screenSize ) {
+	void RenderEntityIcon( const Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition )
+	{
 		constexpr float IconSize = 24.f;
 
 		static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
@@ -154,12 +162,12 @@ namespace {
 
 }
 
-void Editor::Gui::Windows::RenderViewports( ) {
-
+void Editor::Gui::Windows::RenderViewports( )
+{
 	// --- Game viewport ---
 
-	if ( ShowGameViewport ) {
-
+	if ( ShowGameViewport ) 
+	{
 		if ( g_StartedPlaying )
 		{
 			const auto& io = ImGui::GetIO( );
@@ -198,7 +206,8 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 	// --- Level viewport ---
 
-	if ( ShowLevelViewport ) {
+	if ( ShowLevelViewport ) 
+	{
 		if ( ImGui::Begin( "Level", &ShowLevelViewport, ImGuiWindowFlags_MenuBar ) )
 		{
 			Globals::IsInLevelView = true;
@@ -228,7 +237,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 			if ( !Globals::SelectedEntityPtrs.empty( ) )
 			{
-				auto e = Globals::SelectedEntityPtrs[ 0 ];
+				const auto e = Globals::SelectedEntityPtrs[ 0 ];
 
 				if ( cam != nullptr )
 				{
@@ -271,7 +280,8 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 			ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
 
-			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ ) {
+			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ ) 
+			{
 				const auto entity = Pine::EntityList->GetEntity( i );
 
 				if ( !entity->GetActive( ) )
@@ -281,7 +291,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 				if ( !Globals::SelectedEntityPtrs.empty( ) && Globals::SelectedEntityPtrs[ 0 ] == entity )
 					continue;
 
-				RenderEntityIcon( entity, cam, cursorPos, avSize );
+				RenderEntityIcon( entity, cam, cursorPos );
 			}
 
 			ImGui::GetWindowDrawList( )->PopClipRect( );

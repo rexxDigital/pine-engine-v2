@@ -46,11 +46,13 @@ Pine::Entity::~Entity( )
 	}
 }
 
-bool Pine::Entity::GetActive( ) const {
+bool Pine::Entity::GetActive( ) const
+{
 	return m_Active;
 }
 
-void Pine::Entity::SetActive( bool value ) {
+void Pine::Entity::SetActive( bool value )
+{
 	m_Active = value;
 }
 
@@ -64,31 +66,38 @@ void Pine::Entity::SetTemporary( bool value )
 	m_IsTemporary = value;
 }
 
-const std::string& Pine::Entity::GetName( ) const {
+const std::string& Pine::Entity::GetName( ) const
+{
 	return m_Name;
 }
 
-void Pine::Entity::SetName( const std::string& str ) {
+void Pine::Entity::SetName( const std::string& str )
+{
 	m_Name = str;
 }
 
-uint64_t Pine::Entity::GetId( ) const {
+uint64_t Pine::Entity::GetId( ) const
+{
 	return m_Id;
 }
 
-uint64_t Pine::Entity::GetEntityIndex( ) const {
+uint64_t Pine::Entity::GetEntityIndex( ) const
+{
 	return m_EntityIndex;
 }
 
-void Pine::Entity::SetEntityIndex( const uint64_t indx ) {
+void Pine::Entity::SetEntityIndex( const uint64_t indx )
+{
 	m_EntityIndex = indx;
 }
 
-Pine::Transform* Pine::Entity::GetTransform( ) const {
+Pine::Transform* Pine::Entity::GetTransform( ) const
+{
 	return reinterpret_cast< Transform* >( m_Components[ 0 ] );
 }
 
-const std::vector<Pine::IComponent*>& Pine::Entity::GetComponents( ) const {
+const std::vector<Pine::IComponent*>& Pine::Entity::GetComponents( ) const
+{
 	return m_Components;
 }
 

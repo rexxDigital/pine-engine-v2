@@ -2,9 +2,11 @@
 #include "../IComponent/IComponent.hpp"
 #include "../../Assets/Model/Model.hpp"
 
-namespace Pine {
+namespace Pine
+{
 
-	class ModelRenderer : public IComponent {
+	class ModelRenderer : public IComponent
+	{
 	private:
 		Pine::Model* m_TargetModel = nullptr;
 		Pine::Material* m_MaterialOverride = nullptr;

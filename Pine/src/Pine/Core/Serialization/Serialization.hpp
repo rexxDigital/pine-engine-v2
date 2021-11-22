@@ -5,12 +5,14 @@
 #include <json.hpp>
 #include <glm/vec3.hpp>
 
-namespace Pine {
+namespace Pine
+{
 	class IAsset;
 }
 
 // Wrapper for JSON loading/writing.
-namespace Pine::Serialization {
+namespace Pine::Serialization
+{
 
 	nlohmann::json LoadJSONFromFile(const std::string& fileName);
 

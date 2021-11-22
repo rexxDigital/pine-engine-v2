@@ -16,16 +16,17 @@ namespace Pine
 	class CSkybox : public ISkybox
 	{
 	private:
-		Pine::VertexArray* g_SkyboxVertexArray = nullptr;
-		Pine::Texture3D* g_SkyboxCubemap = nullptr;
-		Pine::Shader* g_SkyboxShader = nullptr;
+		VertexArray* g_SkyboxVertexArray = nullptr;
+		Texture3D* g_SkyboxCubemap = nullptr;
+		Shader* g_SkyboxShader = nullptr;
 	public:
 
 		void Setup( ) override
 		{
 			Log->Debug( "Pine::Skybox->Setup( )" );
 
-			const std::vector<float> skyboxVertices = {
+			const std::vector<float> skyboxVertices = 
+			{
 				-1.0f,  1.0f, -1.0f,
 				-1.0f, -1.0f, -1.0f,
 				 1.0f, -1.0f, -1.0f,
@@ -69,13 +70,13 @@ namespace Pine
 				 1.0f, -1.0f,  1.0f
 			};
 
-			g_SkyboxVertexArray = new Pine::VertexArray( );
+			g_SkyboxVertexArray = new VertexArray( );
 
 			g_SkyboxVertexArray->Create( );
 			g_SkyboxVertexArray->Bind( );
 			g_SkyboxVertexArray->StoreFloatBuffer( skyboxVertices, 3, 0 );
 
-			g_SkyboxShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Skybox.shr" );
+			g_SkyboxShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Skybox.shr" );
 		}
 
 		void Dispose( ) override
@@ -96,7 +97,8 @@ namespace Pine
 
 		void Render( ) override
 		{
-			if ( !g_SkyboxCubemap ) {
+			if ( !g_SkyboxCubemap ) 
+			{
 				return;
 			}
 

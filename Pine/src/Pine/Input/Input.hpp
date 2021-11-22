@@ -6,25 +6,30 @@
 
 #include "../Core/Interfaces/Interfaces.hpp"
 
-namespace Pine {
+namespace Pine
+{
 
-	enum class Axis {
+	enum class Axis
+	{
 		None = 0,
 		MouseX,
 		MouseY
 	};
 
-	struct KeyboardBinding_t {
+	struct KeyboardBinding_t
+	{
 		int Key = 0;
 		float ActivationValue = 0.f;
 	};
 
-	struct AxisBinding_t {
+	struct AxisBinding_t
+	{
 		Axis Axis = Axis::None;
 		float Sensitivity = 0.f;
 	};
 
-	class InputBinding {
+	class InputBinding
+	{
 	private:
 		std::string m_Name = "";
 		float m_Value = 0.f;
@@ -50,7 +55,6 @@ namespace Pine {
 	class IInputSystem : public IInterface
 	{
 	public:
-
 		virtual InputBinding* CreateBinding( const std::string& name ) = 0;
 		virtual void RemoveBinding( InputBinding* binding ) = 0;
 

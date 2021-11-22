@@ -54,8 +54,10 @@ namespace Pine
 
 		bool DeleteEntity( Entity* entity ) override
 		{
-			for ( int i = 0; i < m_Entities.size( ); i++ ) {
-				if ( &m_Entities[ i ] == entity ) {
+			for ( int i = 0; i < m_Entities.size( ); i++ ) 
+			{
+				if ( &m_Entities[ i ] == entity ) 
+				{
 					m_Entities.erase( m_Entities.begin( ) + i );
 
 					return true;
@@ -127,8 +129,10 @@ namespace Pine
 
 		void RunOnSetup( ) override
 		{
-			for ( auto& entity : m_Entities ) {
-				for ( const auto comp : entity.GetComponents( ) ) {
+			for ( auto& entity : m_Entities ) 
+			{
+				for ( const auto comp : entity.GetComponents( ) ) 
+				{
 					comp->OnSetup( );
 				}
 			}
@@ -136,8 +140,10 @@ namespace Pine
 
 		void RunOnUpdate( float deltaTime ) override
 		{
-			for ( auto& entity : m_Entities ) {
-				for ( const auto comp : entity.GetComponents( ) ) {
+			for ( auto& entity : m_Entities ) 
+			{
+				for ( const auto comp : entity.GetComponents( ) ) 
+				{
 					comp->OnUpdate( deltaTime );
 				}
 			}

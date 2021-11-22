@@ -1,24 +1,26 @@
 #pragma once
 #include <cstdint>
 
-namespace Pine {
+namespace Pine
+{
 
-	class UniformBuffer {
+	class UniformBuffer
+	{
 	private:
 		uint32_t m_Id = 0;
 		int m_Binding = 0;
 	public:
 
-		void Create(int size, int binding);
+		void Create( int size, int binding );
 
-		void Bind() const;
+		void Bind( ) const;
 
-		void Dispose();
+		void Dispose( );
 
-		uint32_t GetId() const;
-		int GetBinding() const;
+		uint32_t GetId( ) const;
+		int GetBinding( ) const;
 
-		void UploadData(int offset, int size, void* data);
+		void UploadData( int offset, int size, void* data );
 	};
 
 }

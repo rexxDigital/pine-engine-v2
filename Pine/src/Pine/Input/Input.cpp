@@ -51,8 +51,10 @@ namespace Pine
 
 		InputBinding* FindBinding( const std::string& name ) override
 		{
-			for ( const auto& bind : m_InputBindings ) {
-				if ( bind->Name( ) == name ) {
+			for ( const auto& bind : m_InputBindings ) 
+			{
+				if ( bind->Name( ) == name ) 
+				{
 					return bind.get( );
 				}
 			}
@@ -78,22 +80,28 @@ namespace Pine
 
 			m_MouseDelta = glm::ivec2( mouseX, mouseY );
 
-			for ( const auto& bind : m_InputBindings ) {
+			for ( const auto& bind : m_InputBindings ) 
+			{
 				bind->Value( ) = 0;
 
-				for ( auto& axis : bind->GetAxisBindings( ) ) {
+				for ( auto& axis : bind->GetAxisBindings( ) ) 
+				{
 					// Mouse Axis
-					if ( axis->Axis == Axis::MouseX ) {
+					if ( axis->Axis == Axis::MouseX ) 
+					{
 						bind->Value( ) = mouseX * axis->Sensitivity;
 					}
 
-					if ( axis->Axis == Axis::MouseY ) {
+					if ( axis->Axis == Axis::MouseY ) 
+					{
 						bind->Value( ) = mouseY * axis->Sensitivity;
 					}
 				}
 
-				for ( auto& key : bind->GetKeyboardBindings( ) ) {
-					if ( glfwGetKey( window, key->Key ) == GLFW_PRESS ) {
+				for ( auto& key : bind->GetKeyboardBindings( ) ) 
+				{
+					if ( glfwGetKey( window, key->Key ) == GLFW_PRESS ) 
+					{
 						bind->Value( ) += key->ActivationValue;
 					}
 				}
@@ -105,13 +113,15 @@ namespace Pine
 			std::ofstream stream( file );
 			nlohmann::json json;
 
-			for ( int i = 0; i < m_InputBindings.size( ); i++ ) {
+			for ( int i = 0; i < m_InputBindings.size( ); i++ ) 
+			{
 				const auto binding = m_InputBindings[ i ].get( );
 
 				json[ i ][ "Name" ] = binding->Name( );
 
 				// Write keyboard bindings
-				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ ) {
+				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ ) 
+				{
 					const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
 
 					json[ i ][ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
@@ -119,7 +129,8 @@ namespace Pine
 				}
 
 				// Write axis bindings
-				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ ) {
+				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ ) 
+				{
 					const auto axis = binding->GetAxisBindings( )[ j ].get( );
 
 					json[ i ][ "Axis" ][ j ][ "Axis" ] = axis->Axis;
@@ -141,21 +152,25 @@ namespace Pine
 			std::string str( ( std::istreambuf_iterator<char>( stream ) ),
 				std::istreambuf_iterator<char>( ) );
 
-			if ( str.empty( ) ) {
+			if ( str.empty( ) ) 
+			{
 				stream.close( );
 				return false;
 			}
 
 			nlohmann::json json = nlohmann::json::parse( str );
 
-			for ( const auto& bindingJson : json.items( ) ) {
+			for ( const auto& bindingJson : json.items( ) ) 
+			{
 				const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
 
-				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) ) {
+				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) ) 
+				{
 					binding->AddKeyboardBinding( keyboardJson.value( )[ "Key" ], keyboardJson.value( )[ "ActivationValue" ] );
 				}
 
-				for ( const auto& axisJson : bindingJson.value( )[ "Axis" ].items( ) ) {
+				for ( const auto& axisJson : bindingJson.value( )[ "Axis" ].items( ) ) 
+				{
 					binding->AddAxisBinding( static_cast< Axis >( axisJson.value( )[ "Axis" ].get<int>( ) ), axisJson.value( )[ "Sensitivity" ] );
 				}
 			}
@@ -198,12 +213,13 @@ namespace Pine
 
 }
 
-
-Pine::InputBinding::InputBinding( const std::string& name ) {
+Pine::InputBinding::InputBinding( const std::string& name )
+{
 	m_Name = name;
 }
 
-void Pine::InputBinding::AddKeyboardBinding( const int key, const float value ) {
+void Pine::InputBinding::AddKeyboardBinding( const int key, const float value )
+{
 	auto binding = std::make_unique< KeyboardBinding_t >( );
 
 	binding->Key = key;
@@ -212,7 +228,8 @@ void Pine::InputBinding::AddKeyboardBinding( const int key, const float value ) 
 	m_KeyboardBindings.push_back( std::move( binding ) );
 }
 
-void Pine::InputBinding::AddAxisBinding( const Axis axis, const float sensitivity ) {
+void Pine::InputBinding::AddAxisBinding( const Axis axis, const float sensitivity )
+{
 	auto binding = std::make_unique< AxisBinding_t >( );
 
 	binding->Axis = axis;
@@ -221,26 +238,32 @@ void Pine::InputBinding::AddAxisBinding( const Axis axis, const float sensitivit
 	m_AxisBindings.push_back( std::move( binding ) );
 }
 
-void Pine::InputBinding::DeleteKeyboardBinding( const int i ) {
+void Pine::InputBinding::DeleteKeyboardBinding( const int i )
+{
 	m_KeyboardBindings.erase( m_KeyboardBindings.begin( ) + i );
 }
 
-void Pine::InputBinding::DeleteAxisBinding( const int i ) {
+void Pine::InputBinding::DeleteAxisBinding( const int i )
+{
 	m_AxisBindings.erase( m_AxisBindings.begin( ) + i );
 }
 
-std::string& Pine::InputBinding::Name( ) {
+std::string& Pine::InputBinding::Name( )
+{
 	return m_Name;
 }
 
-float& Pine::InputBinding::Value( ) {
+float& Pine::InputBinding::Value( )
+{
 	return m_Value;
 }
 
-const std::vector<std::unique_ptr<Pine::KeyboardBinding_t>>& Pine::InputBinding::GetKeyboardBindings( ) {
+const std::vector<std::unique_ptr<Pine::KeyboardBinding_t>>& Pine::InputBinding::GetKeyboardBindings( )
+{
 	return m_KeyboardBindings;
 }
 
-const std::vector<std::unique_ptr<Pine::AxisBinding_t>>& Pine::InputBinding::GetAxisBindings( ) {
+const std::vector<std::unique_ptr<Pine::AxisBinding_t>>& Pine::InputBinding::GetAxisBindings( )
+{
 	return m_AxisBindings;
 }
