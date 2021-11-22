@@ -69,6 +69,7 @@ namespace
 		}
 	}
 
+	// Renders a preview of the collision boxes on the selected entity.
 	void RenderSelectedColliderAABB( )
 	{
 		static Pine::Entity* dummyEntity = nullptr;

@@ -22,6 +22,7 @@
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
+#include "Pine/Core/Math/Math.hpp"
 #include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
 
 namespace {
@@ -92,7 +93,7 @@ namespace {
 			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
 				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
 
-				if ( asset->GetType(  ) == Pine::EAssetType::Level )
+				if ( asset->GetType( ) == Pine::EAssetType::Level )
 				{
 					if ( const auto level = dynamic_cast< Pine::Level* >( asset ) )
 					{
@@ -101,75 +102,54 @@ namespace {
 						Editor::ProjectManager::OpenLevel( level );
 					}
 				}
-				else if ( asset->GetType(  ) == Pine::EAssetType::Model )
+				else if ( asset->GetType( ) == Pine::EAssetType::Model )
 				{
-					
+
 				}
 			}
 
 			ImGui::EndDragDropTarget( );
-		}	
-	}
-
-	void RenderHighlightBoundingBox( Pine::ModelRenderer* modelRenderer, Pine::Camera* camera ) {
-
-		auto model = modelRenderer->GetTargetModel( );
-
-		if ( !model )
-			return;
-
-		for ( auto mesh : model->GetMeshList(  ) )
-		{
-			auto mins = mesh->GetMins( );
-			auto maxs = mesh->GetMins( );
-
-			
 		}
-
 	}
 
 	void RenderEntityIcon( Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition, ImVec2 screenSize ) {
-		int renderIcon = 0;
-		Pine::IComponent* renderComponent = nullptr;
+		constexpr float IconSize = 24.f;
 
-		for ( const auto component : entity->GetComponents( ) ) {
-			switch ( component->GetType( ) ) {
-			case Pine::EComponentType::Camera:
-				renderIcon = 1;
-				renderComponent = component;
-				break;
-			case Pine::EComponentType::Light:
-				renderIcon = 2;
-				renderComponent = component;
-				break;
-			default:
-				break;
+		static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
+		static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\light-bulb.png" );
+
+		// Find the correct icon
+
+		Pine::Texture2D* renderIcon = nullptr;
+
+		for ( const auto component : entity->GetComponents( ) )
+		{
+			switch ( component->GetType( ) )
+			{
+				case Pine::EComponentType::Camera:
+					renderIcon = cameraIcon;
+					break;
+				case Pine::EComponentType::Light:
+					renderIcon = lightIcon;
+					break;
+				default:
+					break;
 			}
 		}
 
-		if ( renderIcon == 0 ) {
+		if ( !renderIcon )
 			return;
-		}
- 
-		auto transform = entity->GetTransform( );
-		auto res = glm::project( transform->Position, camera->GetViewMatrix(  ), camera->GetProjectionMatrix( ) , glm::vec4( 0.f, 0.f, screenSize.x, screenSize.y ) );
-		
-		if ( renderIcon == 1 )
-			ImGui::GetForegroundDrawList( )->AddText( ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImColor( 255, 255, 255, 255 ), "Camera" );
-		else
-			ImGui::GetForegroundDrawList( )->AddText( ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImColor( 255, 255, 255, 255 ), "Light" );
-	}
 
-	void RenderHighlight( Pine::Entity* e, Pine::Camera* camera, ImVec2 size ) {
-		for ( const auto component : e->GetComponents(  ) ) {
-			switch ( component->GetType(  ) ) {
-			case Pine::EComponentType::ModelRenderer:
-				RenderHighlightBoundingBox( dynamic_cast< Pine::ModelRenderer* >( component ), camera );
-				return;
-			default:
-				break;
-			}
-		}
+		// Calculate the screen coordinates
+		auto res = Pine::Math->WorldToScreen( entity->GetTransform( )->Position, camera );
+
+		if ( res.z > 1.f ) // z > 1.f == Out of bounds 
+			return;
+
+		// To keep the icon centered
+		res -= IconSize * 0.5f;
+
+		ImGui::GetWindowDrawList( )->AddImage( reinterpret_cast< ImTextureID >( renderIcon->GetId( ) ), ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImVec2( screenPosition.x + res.x + IconSize, screenPosition.y + res.y + IconSize ) );
 	}
 
 }
@@ -242,9 +222,11 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 			HandleAssetViewportDrop( );
 
-			auto cam = EditorEntity::GetCamera( );
+			const auto cam = EditorEntity::GetCamera( );
 
-			if ( !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
+			// Render ImGuizmo
+
+			if ( !Globals::SelectedEntityPtrs.empty( ) )
 			{
 				auto e = Globals::SelectedEntityPtrs[ 0 ];
 
@@ -259,7 +241,13 @@ void Editor::Gui::Windows::RenderViewports( ) {
 					if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale )
 						op = ImGuizmo::OPERATION::SCALE;
 
-					if ( ImGuizmo::Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), nullptr, nullptr ) )
+					ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
+					ImGuizmo::SetDrawlist( ImGui::GetWindowDrawList( ) );
+
+					// Because ImGuizmo has problems respecting the max view port width and height for whatever reason.
+					ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
+
+					if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), nullptr, nullptr ) )
 					{
 						float translation[ 3 ];
 						float rotation[ 3 ];
@@ -267,7 +255,7 @@ void Editor::Gui::Windows::RenderViewports( ) {
 
 						ImGuizmo::DecomposeMatrixToComponents( glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), translation, rotation, scale );
 
-						glm::vec3 base_position = glm::vec3( 0.f );
+						auto base_position = glm::vec3( 0.f );
 
 						if ( e->GetParent( ) != nullptr )
 							base_position = e->GetParent( )->GetTransform( )->Position;
@@ -277,16 +265,26 @@ void Editor::Gui::Windows::RenderViewports( ) {
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}
 
-			//		RenderHighlight( e, cam, avSize );
+					ImGui::GetWindowDrawList( )->PopClipRect( );
 				}
 			}
 
-			for ( const auto& entity : Pine::EntityList->GetEntities(  ) ) {
-				if ( !entity.GetActive( ) )
+			ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
+
+			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ ) {
+				const auto entity = Pine::EntityList->GetEntity( i );
+
+				if ( !entity->GetActive( ) )
+					continue;
+				if ( entity == EditorEntity::GetEntity( ) )
+					continue;
+				if ( !Globals::SelectedEntityPtrs.empty( ) && Globals::SelectedEntityPtrs[ 0 ] == entity )
 					continue;
 
-			//	RenderEntityIcon( entity, cam, cursorPos, avSize );
+				RenderEntityIcon( entity, cam, cursorPos, avSize );
 			}
+
+			ImGui::GetWindowDrawList( )->PopClipRect( );
 		}
 
 		ImGui::End( );

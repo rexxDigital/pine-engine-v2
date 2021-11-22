@@ -5,6 +5,7 @@
 
 #include "Pine/Components/Collider3D/Collider3D.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
+#include "Pine/Core/Math/Math.hpp"
 #include "Pine/Entity/Entity.hpp"
 #include "Pine/Entitylist/EntityList.hpp"
 #include "Pine/Input/Input.hpp"
@@ -44,7 +45,6 @@ void GameController::OnSetup( )
 {
 	Pine::Log->Message( "GameController::OnSetup( )" );
 
-
 	// We could get these from our children but this will do.
 	m_EnemySpawnLocation = Pine::EntityList->FindEntity( "Enemy Spawn Location" );
 	m_ChunkSpawnLocation = Pine::EntityList->FindEntity( "Tower Chunk Spawn" );
@@ -67,24 +67,18 @@ void GameController::OnRender( )
 	// meaning that we are currently hovering over it.
 
 	const auto cam = Pine::RenderManager->GetRenderingContext( )->m_Camera;
-	const auto viewport = Pine::DebugOverlay->GetViewport( );
+	const auto mouse = Pine::Input->GetMousePosition( );
 
-	auto mouseX = Pine::Input->GetMouseX( );
-	auto mouseY = Pine::Input->GetMouseY( );
-
-	mouseX -= viewport.x;
-	mouseY -= viewport.y;
-
-	float closestChunk = FLT_MAX;
+	float closestChunk = std::numeric_limits<float>::max( );
 	int closestChunkIndex = 0;
 
 	for ( int i = 0; i < m_Chunks.size( ); i++ )
 	{
 		// Compute 3d coords to 2d screen coords, this will probably get wrapped cleaner into the engine in the future.
-		const auto screenPos = glm::project( m_Chunks[ i ].m_Entity->GetTransform( )->Position, cam->GetViewMatrix( ), cam->GetProjectionMatrix( ), glm::vec4( 0.f, 0.f, viewport.z, viewport.w ) );
+		const auto screenPos = Pine::Math->WorldToScreen( m_Chunks[ i ].m_Entity->GetTransform( )->Position, cam );
 
 		// Calculate the delta between our cursor and the screen coords.
-		auto delta = glm::vec3( mouseX,  mouseY, 0.f ) - glm::vec3( screenPos.x, viewport.w - screenPos.y, screenPos.z );
+		auto delta = glm::vec3( mouse, 0 ) - screenPos;
 
 		const float deltaLen = glm::length( delta );
 
@@ -102,5 +96,4 @@ void GameController::OnRender( )
 
 void GameController::OnUpdate( float deltaTime )
 {
-
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <glm/vec2.hpp>
 
 #include "../Core/Interfaces/Interfaces.hpp"
 
@@ -70,9 +71,8 @@ namespace Pine {
 		// Simple wrappers
 		virtual bool IsKeyDown( int key ) = 0;
 
-		virtual int GetMouseX( ) = 0;
-		virtual int GetMouseY( ) = 0;
-
+		virtual glm::ivec2 GetMousePosition( ) = 0;
+		virtual glm::ivec2 GetMouseDelta( ) = 0;
 	};
 
 }

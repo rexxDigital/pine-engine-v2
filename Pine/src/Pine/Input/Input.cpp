@@ -1,10 +1,11 @@
 #include "Input.hpp"
 
 #include <json.hpp>
-
 #include <fstream>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
+
 #include "../Core/Window/Window.hpp"
+#include "../Rendering/DebugOverlay/DebugOverlay.hpp"
 
 namespace Pine
 {
@@ -13,6 +14,9 @@ namespace Pine
 	{
 	private:
 		std::vector<std::unique_ptr<InputBinding>> m_InputBindings;
+
+		glm::ivec2 m_MouseDelta;
+
 	public:
 
 		InputBinding* CreateBinding( const std::string& name ) override
@@ -47,7 +51,7 @@ namespace Pine
 
 		InputBinding* FindBinding( const std::string& name ) override
 		{
-			for ( auto& bind : m_InputBindings ) {
+			for ( const auto& bind : m_InputBindings ) {
 				if ( bind->Name( ) == name ) {
 					return bind.get( );
 				}
@@ -72,7 +76,9 @@ namespace Pine
 			lastX = x;
 			lastY = y;
 
-			for ( auto& bind : m_InputBindings ) {
+			m_MouseDelta = glm::ivec2( mouseX, mouseY );
+
+			for ( const auto& bind : m_InputBindings ) {
 				bind->Value( ) = 0;
 
 				for ( auto& axis : bind->GetAxisBindings( ) ) {
@@ -100,13 +106,13 @@ namespace Pine
 			nlohmann::json json;
 
 			for ( int i = 0; i < m_InputBindings.size( ); i++ ) {
-				auto binding = m_InputBindings[ i ].get( );
+				const auto binding = m_InputBindings[ i ].get( );
 
 				json[ i ][ "Name" ] = binding->Name( );
 
 				// Write keyboard bindings
 				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ ) {
-					auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
+					const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
 
 					json[ i ][ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
 					json[ i ][ "Keyboard" ][ j ][ "Key" ] = keyboard->Key;
@@ -114,7 +120,7 @@ namespace Pine
 
 				// Write axis bindings
 				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ ) {
-					auto axis = binding->GetAxisBindings( )[ j ].get( );
+					const auto axis = binding->GetAxisBindings( )[ j ].get( );
 
 					json[ i ][ "Axis" ][ j ][ "Axis" ] = axis->Axis;
 					json[ i ][ "Axis" ][ j ][ "Sensitivity" ] = axis->Sensitivity;
@@ -142,8 +148,8 @@ namespace Pine
 
 			nlohmann::json json = nlohmann::json::parse( str );
 
-			for ( auto bindingJson : json.items( ) ) {
-				auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
+			for ( const auto& bindingJson : json.items( ) ) {
+				const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
 
 				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) ) {
 					binding->AddKeyboardBinding( keyboardJson.value( )[ "Key" ], keyboardJson.value( )[ "ActivationValue" ] );
@@ -162,22 +168,25 @@ namespace Pine
 			return false;
 		}
 
-		int GetMouseX(  ) override
+		glm::ivec2 GetMousePosition( ) override
 		{
-			double x;
+			double x, y;
 
-			glfwGetCursorPos( Pine::Window::Internal::GetWindowPointer( ), &x, nullptr );
+			glfwGetCursorPos( Window::Internal::GetWindowPointer( ), &x, &y );
 
-			return x;
+			// The returned cursor position should always be relative to the game output, so if the viewport position
+			// has been changed, like for instance in the editor, we'll have to account for that.
+			const auto viewport = Pine::DebugOverlay->GetViewport( );
+
+			x -= viewport.x;
+			y -= viewport.y;
+
+			return glm::ivec2( x, y );
 		}
 
-		int GetMouseY( ) override
+		glm::ivec2 GetMouseDelta( ) override
 		{
-			double y;
-
-			glfwGetCursorPos( Pine::Window::Internal::GetWindowPointer( ), nullptr, &y );
-
-			return y;
+			return m_MouseDelta;
 		}
 
 	};

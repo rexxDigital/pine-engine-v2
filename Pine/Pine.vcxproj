@@ -190,6 +190,7 @@
     <ClInclude Include="src\Pine\Core\Core.hpp" />
     <ClInclude Include="src\Pine\Core\Interfaces\Interfaces.hpp" />
     <ClInclude Include="src\Pine\Core\Log\Log.hpp" />
+    <ClInclude Include="src\Pine\Core\Math\Math.hpp" />
     <ClInclude Include="src\Pine\Core\Memory\Memory.hpp" />
     <ClInclude Include="src\Pine\Core\Serialization\Serialization.hpp" />
     <ClInclude Include="src\Pine\Core\String\String.hpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="src\Pine\Components\Transform\Transform.cpp" />
     <ClCompile Include="src\Pine\Core\Interfaces\Interfaces.cpp" />
     <ClCompile Include="src\Pine\Core\Log\Log.cpp" />
+    <ClCompile Include="src\Pine\Core\Math\Math.cpp" />
     <ClCompile Include="src\Pine\Core\Memory\Memory.cpp" />
     <ClCompile Include="src\Pine\Core\Serialization\Serialization.cpp" />
     <ClCompile Include="src\Pine\Core\String\String.cpp" />
