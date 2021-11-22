@@ -24,8 +24,11 @@
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 #include "Pine/Core/Math/Math.hpp"
 #include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
+#include "Pine/Assets/Texture3D/Texture3D.hpp"
+#include "Pine/Rendering/Skybox/Skybox.hpp"
 
-namespace {
+namespace
+{
 
 	bool g_StartedPlaying = false;
 
@@ -33,9 +36,9 @@ namespace {
 	{
 		using namespace Editor::Gui;
 
-		if ( ImGui::BeginMenuBar( ) ) 
+		if ( ImGui::BeginMenuBar( ) )
 		{
-			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) ) 
+			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) )
 			{
 				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
 			}
@@ -45,7 +48,7 @@ namespace {
 				Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
 			}
 
-			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) ) 
+			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) )
 			{
 				Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
 			}
@@ -96,7 +99,7 @@ namespace {
 	{
 		if ( ImGui::BeginDragDropTarget( ) )
 		{
-			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) 
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
 			{
 				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
 
@@ -111,7 +114,25 @@ namespace {
 				}
 				else if ( asset->GetType( ) == Pine::EAssetType::Model )
 				{
+					// Create the model in front of the camera.
+					if ( const auto model = dynamic_cast< Pine::Model* >( asset ) )
+					{
+						const auto entity = Pine::EntityList->CreateEntity( );
+						const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
 
+						entity->AddComponent( Pine::EComponentType::ModelRenderer );
+
+						entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
+
+						entity->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
+					}
+				}
+				else if ( asset->GetType( ) == Pine::EAssetType::Texture3D )
+				{
+					if ( const auto texture3D = dynamic_cast< Pine::Texture3D* >( asset ) )
+					{
+						Pine::Skybox->SetSkyboxCubemap( texture3D );
+					}
 				}
 			}
 
@@ -134,14 +155,14 @@ namespace {
 		{
 			switch ( component->GetType( ) )
 			{
-				case Pine::EComponentType::Camera:
-					renderIcon = cameraIcon;
-					break;
-				case Pine::EComponentType::Light:
-					renderIcon = lightIcon;
-					break;
-				default:
-					break;
+			case Pine::EComponentType::Camera:
+				renderIcon = cameraIcon;
+				break;
+			case Pine::EComponentType::Light:
+				renderIcon = lightIcon;
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -166,7 +187,7 @@ void Editor::Gui::Windows::RenderViewports( )
 {
 	// --- Game viewport ---
 
-	if ( ShowGameViewport ) 
+	if ( ShowGameViewport )
 	{
 		if ( g_StartedPlaying )
 		{
@@ -206,7 +227,7 @@ void Editor::Gui::Windows::RenderViewports( )
 
 	// --- Level viewport ---
 
-	if ( ShowLevelViewport ) 
+	if ( ShowLevelViewport )
 	{
 		if ( ImGui::Begin( "Level", &ShowLevelViewport, ImGuiWindowFlags_MenuBar ) )
 		{
@@ -280,7 +301,7 @@ void Editor::Gui::Windows::RenderViewports( )
 
 			ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
 
-			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ ) 
+			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ )
 			{
 				const auto entity = Pine::EntityList->GetEntity( i );
 
