@@ -6,6 +6,14 @@
 
 #include "../../ImGui/imgui.h"
 
+#include "Transform/Transform.hpp"
+#include "ModelRenderer/ModelRenderer.hpp"
+#include "Camera/Camera.hpp"
+#include "Light/Light.hpp"
+#include "NativeScript/NativeScript.hpp"
+#include "Collider3D/Collider3D.hpp"
+#include "RigidBody/RigidBody.hpp"
+
 namespace
 {
 
@@ -136,7 +144,7 @@ namespace Pine
 			return static_cast< int >( g_Components.size( ) );
 		}
 
-		int GetComponentCount( EComponentType type ) override
+		int GetComponentCount( ComponentType type ) override
 		{
 			Component_t* comp = nullptr;
 
@@ -158,7 +166,7 @@ namespace Pine
 			return FindAvailableDataSlot( comp );
 		}
 
-		Pine::IComponent* GetComponent( EComponentType type, int index ) override
+		Pine::IComponent* GetComponent( ComponentType type, int index ) override
 		{
 			Component_t* comp = nullptr;
 
@@ -183,12 +191,12 @@ namespace Pine
 			return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
 		}
 
-		const char* GetComponentTypeName( EComponentType type ) override
+		const char* GetComponentTypeName( ComponentType type ) override
 		{
 			return g_Components[ static_cast< int >( type ) ].m_Name;
 		}
 
-		Pine::IComponent* CreateComponent( EComponentType type, bool standalone ) override
+		Pine::IComponent* CreateComponent( ComponentType type, bool standalone ) override
 		{
 			Component_t* comp = nullptr;
 

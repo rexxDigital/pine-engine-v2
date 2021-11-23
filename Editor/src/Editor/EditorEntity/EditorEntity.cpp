@@ -95,7 +95,7 @@ void Editor::EditorEntity::Create( )
 	g_EditorEntity->SetTemporary( true );
 	g_EditorEntity->SetName( "Editor Entity" );
 
-	g_EditorEntity->AddComponent( Pine::EComponentType::Camera );
+	g_EditorEntity->AddComponent( Pine::ComponentType::Camera );
 	g_EditorEntity->RegisterComponent( new EditorEntityScript( ) ); // this sucks.
 
 	// We have to manually call OnCreated for these soon to be unsupported NativeScript

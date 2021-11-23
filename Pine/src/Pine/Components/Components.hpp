@@ -1,13 +1,7 @@
 #pragma once
 
 #include "IComponent/IComponent.hpp"
-#include "Transform/Transform.hpp"
-#include "ModelRenderer/ModelRenderer.hpp"
-#include "Camera/Camera.hpp"
-#include "Light/Light.hpp"
-#include "NativeScript/NativeScript.hpp"
-#include "Collider3D/Collider3D.hpp"
-#include "RigidBody/RigidBody.hpp"
+#include "../Core/Interfaces/Interfaces.hpp"
 
 namespace Pine
 {
@@ -17,15 +11,15 @@ namespace Pine
 	public:
 
 		// Enumerate component types
-		virtual const char* GetComponentTypeName( EComponentType type ) = 0;
+		virtual const char* GetComponentTypeName( ComponentType type ) = 0;
 		virtual int GetComponentTypeCount( ) = 0;
 
 		// Enumerate components within types
-		virtual int GetComponentCount( EComponentType type ) = 0;
-		virtual IComponent* GetComponent( EComponentType type, int index ) = 0;
+		virtual int GetComponentCount( ComponentType type ) = 0;
+		virtual IComponent* GetComponent( ComponentType type, int index ) = 0;
 
 		// Manage components
-		virtual IComponent* CreateComponent( EComponentType type, bool standalone = false ) = 0;
+		virtual IComponent* CreateComponent( ComponentType type, bool standalone = false ) = 0;
 		virtual IComponent* CopyComponent( const IComponent* component, bool standalone ) = 0;
 		virtual bool DeleteComponent( IComponent* component ) = 0;
 

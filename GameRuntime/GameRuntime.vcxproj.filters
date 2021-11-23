@@ -21,9 +21,15 @@
     <ClCompile Include="src\Controllers\GameController\GameController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controllers\RGBExperiment\RGBExperiment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Controllers\GameController\GameController.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Controllers\RGBExperiment\RGBExperiment.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

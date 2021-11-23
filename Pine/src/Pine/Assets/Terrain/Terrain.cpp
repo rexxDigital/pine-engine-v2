@@ -105,7 +105,7 @@ void Pine::TerrainChunk::Dispose( )
 
 Pine::Terrain::Terrain( )
 {
-	m_Type = EAssetType::Terrain;
+	m_Type = AssetType::Terrain;
 }
 
 Pine::TerrainChunk& Pine::Terrain::CreateChunk( glm::ivec2 pos )

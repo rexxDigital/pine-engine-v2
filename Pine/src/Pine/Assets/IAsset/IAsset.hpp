@@ -3,8 +3,10 @@
 
 namespace Pine { class FrameBuffer; }
 
-namespace Pine {
-	enum class EAssetType {
+namespace Pine
+{
+	enum class AssetType
+	{
 		Invalid,
 		Material,
 		Mesh,
@@ -32,15 +34,16 @@ namespace Pine {
 		"Terrain"
 	};
 
-	class IAsset {
+	class IAsset
+	{
 	protected:
 		std::filesystem::path m_FilePath;
 
 		std::string m_FileName = "";
 		std::string m_AbsoluteFilePath = "";
-		
-		EAssetType m_Type = EAssetType::Invalid;
-		
+
+		AssetType m_Type = AssetType::Invalid;
+
 		std::chrono::system_clock::duration m_LastWriteTime;
 
 		bool m_ReadOnly = false;
@@ -58,7 +61,7 @@ namespace Pine {
 		const std::string& GetFileName( ) const;
 		const std::string& GetAbsoluteFilePath( ) const;
 
-		EAssetType GetType( ) const;
+		AssetType GetType( ) const;
 
 		void UpdateLastWriteTime( );
 		bool HasBeenUpdated( ) const;
@@ -71,7 +74,7 @@ namespace Pine {
 
 		bool IsMapped( ) const;
 		void SetMapped( bool value );
-		
+
 		virtual bool LoadFromFile( ) = 0;
 		virtual bool SaveToFile( ) = 0;
 		virtual void Dispose( ) = 0;

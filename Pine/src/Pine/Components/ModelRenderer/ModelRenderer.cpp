@@ -4,7 +4,7 @@
 
 Pine::ModelRenderer::ModelRenderer( )
 {
-	m_ComponentType = EComponentType::ModelRenderer;
+	m_ComponentType = ComponentType::ModelRenderer;
 }
 
 Pine::Model* Pine::ModelRenderer::GetTargetModel( ) const

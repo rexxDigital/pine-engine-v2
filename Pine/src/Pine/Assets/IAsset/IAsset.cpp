@@ -23,7 +23,7 @@ const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const {
 	return m_AbsoluteFilePath;
 }
 
-Pine::EAssetType Pine::IAsset::GetType( ) const
+Pine::AssetType Pine::IAsset::GetType( ) const
 {
 	return m_Type;
 }

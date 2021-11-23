@@ -6,7 +6,7 @@
 #include <stb_image.h>
 
 Pine::Texture3D::Texture3D( ) {
-	m_Type = EAssetType::Texture3D;
+	m_Type = AssetType::Texture3D;
 }
 
 unsigned int Pine::Texture3D::GetId( ) const {

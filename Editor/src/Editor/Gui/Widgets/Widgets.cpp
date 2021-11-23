@@ -124,7 +124,7 @@ void Editor::Gui::Widgets::PopDisabled( ) {
 
 }
 
-PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::EAssetType type /*= Pine::EAssetType::Invalid */ ) {
+PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::AssetType type /*= Pine::AssetType::Invalid */ ) {
 	PickerReturn returnValue;
 
 	ImGui::Columns( 2, nullptr, false );
@@ -160,7 +160,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 		ImGui::EndDragDropTarget( );
 	}
 
-	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::EAssetType::Texture2D ) {
+	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::AssetType::Texture2D ) {
 		const auto texture = dynamic_cast< Pine::Texture2D* >( currentAsset );
 
 		ImGui::BeginTooltip( );

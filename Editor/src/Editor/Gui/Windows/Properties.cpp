@@ -106,10 +106,10 @@ namespace {
 		static bool initialize = true;
 		static int selectedItem = 0;
 
-		static std::vector<Pine::EComponentType> components;
+		static std::vector<Pine::ComponentType> components;
 
 		static std::vector<const char*> displayComponents;
-		static std::vector<Pine::EComponentType> displayComponentsType;
+		static std::vector<Pine::ComponentType> displayComponentsType;
 
 		if ( ImGui::BeginPopup( "AddNewComponent", 0 ) ) {
 			if ( initialize ) {
@@ -120,11 +120,11 @@ namespace {
 				displayComponentsType.clear( );
 
 				for ( int i = 0; i < Pine::Components->GetComponentTypeCount( ); i++ ) {
-					components.push_back( static_cast< Pine::EComponentType >( i ) );
+					components.push_back( static_cast< Pine::ComponentType >( i ) );
 
 					if ( i > 1 ) {
 						displayComponents.push_back( Pine::Components->GetComponentTypeName( components[ i ] ) );
-						displayComponentsType.push_back( static_cast< Pine::EComponentType >( i ) );
+						displayComponentsType.push_back( static_cast< Pine::ComponentType >( i ) );
 					}
 				}
 

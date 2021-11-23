@@ -20,7 +20,7 @@ void Pine::NativeScript::CreateInternalComponent( )
 
 Pine::NativeScript::NativeScript( )
 {
-	m_ComponentType = EComponentType::NativeScript;
+	m_ComponentType = ComponentType::NativeScript;
 }
 
 void Pine::NativeScript::SetCreateFromFactory( bool value )

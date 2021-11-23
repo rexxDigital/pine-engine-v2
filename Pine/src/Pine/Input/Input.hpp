@@ -74,6 +74,7 @@ namespace Pine
 
 		// Simple wrappers
 		virtual bool IsKeyDown( int key ) = 0;
+		virtual bool IsKeyReleased( int key ) = 0;
 
 		virtual glm::ivec2 GetMousePosition( ) = 0;
 		virtual glm::ivec2 GetMouseDelta( ) = 0;

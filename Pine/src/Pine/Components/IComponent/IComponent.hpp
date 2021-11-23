@@ -4,7 +4,7 @@
 namespace Pine
 {
 
-	enum class EComponentType
+	enum class ComponentType
 	{
 		Invalid,
 		Transform,
@@ -39,12 +39,12 @@ namespace Pine
 		bool m_Active = true;
 		bool m_Standalone = true;
 
-		EComponentType m_ComponentType = EComponentType::Invalid;
+		ComponentType m_ComponentType = ComponentType::Invalid;
 		Pine::Entity* m_Parent = nullptr;
 	public:
 		virtual ~IComponent( ) = default;
 
-		EComponentType GetType( ) const;
+		ComponentType GetType( ) const;
 
 		void SetParent( Pine::Entity* parent );
 		Pine::Entity* GetParent( ) const;

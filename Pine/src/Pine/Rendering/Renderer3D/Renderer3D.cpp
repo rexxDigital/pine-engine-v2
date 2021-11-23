@@ -19,29 +19,27 @@ namespace Pine
 	{
 	private:
 		// The mesh we're supposed to render.
-		Pine::Mesh* g_CurrentRenderMesh = nullptr;
+		Mesh* g_CurrentRenderMesh = nullptr;
 
 		// Shader stuff.
-		Pine::Shader* g_CurrentShader = nullptr;
-		Pine::Shader* g_TerrainShader = nullptr;
-		Pine::UniformVariable* g_ShaderTransformationVariable = nullptr;
+		Shader* g_CurrentShader = nullptr;
+		Shader* g_TerrainShader = nullptr;
+		UniformVariable* g_ShaderTransformationVariable = nullptr;
 
 		// The texture we use if there is no texture applied, 1x1 white.
-		Pine::Texture2D* g_DefaultTexture = nullptr;
+		Texture2D* g_DefaultTexture = nullptr;
 
 		// Some optimizations for OpenGL, we store stuff in CPU memory instead of querying the GPU each frame
 		uint32_t g_CurrentBoundTexture[ 32 ] = { };
 		uint8_t g_CurrentStencilMode = 0x00;
 
-		// TODO: When this engine gets a little bit more advanced, we should get the nearest cube map
-		// or something for this function. Time will tell.
+		// TODO: When and if this engine gets a little bit more advanced, we should get the nearest cube map
 		int GetBestEnvironmentMap( )
 		{
-			return Pine::Skybox->GetSkyboxCubemap( )->GetId( );
+			return Skybox->GetSkyboxCubemap( )->GetId( );
 		}
 
 		int g_CurrentDynamicLightCount = 0;
-
 	public:
 
 		void RenderVertexArray( const VertexArray* vao, int renderCount, bool indices ) override
@@ -67,29 +65,9 @@ namespace Pine
 				material = overrideMaterial;
 			}
 
-			if ( overrideStencilBuffer != 0x00 )
-			{
-				if ( g_CurrentStencilMode == 0x00 )
-				{
-					glStencilFunc( GL_ALWAYS, 1, overrideStencilBuffer );
-					glStencilMask( overrideStencilBuffer );
-
-					g_CurrentStencilMode = overrideStencilBuffer;
-				}
-			}
-			else
-			{
-				if ( g_CurrentStencilMode != 0x00 )
-				{
-					glStencilFunc( GL_ALWAYS, 0, 0xFF );
-					glStencilMask( 0x00 );
-					g_CurrentStencilMode = 0x00;
-				}
-			}
-
 			mesh->GetVertexArray( )->Bind( );
 
-			if ( material->GetShader( ) != g_CurrentShader ) 
+			if ( material->GetShader( ) != g_CurrentShader )
 			{
 				SetShader( material->GetShader( ) );
 			}
@@ -97,15 +75,15 @@ namespace Pine
 			if ( !g_CurrentShader )
 				return;
 
-			// Diffuse texture
 			const Texture2D* diffuseTexture = g_DefaultTexture;
-			if ( material->GetDiffuse( ) != nullptr ) 
+
+			if ( material->GetDiffuse( ) != nullptr )
 			{
 				diffuseTexture = material->GetDiffuse( );
 			}
 
 			// Only bind the texture if required.
-			if ( g_CurrentBoundTexture[ 0 ] != diffuseTexture->GetId( ) ) 
+			if ( g_CurrentBoundTexture[ 0 ] != diffuseTexture->GetId( ) )
 			{
 				glActiveTexture( GL_TEXTURE0 );
 				glBindTexture( GL_TEXTURE_2D, diffuseTexture->GetId( ) );
@@ -115,7 +93,7 @@ namespace Pine
 
 			// Specular map texture
 			const Texture2D* specularMapTexture = g_DefaultTexture;
-			if ( material->GetSpecular( ) != nullptr ) 
+			if ( material->GetSpecular( ) != nullptr )
 			{
 				specularMapTexture = material->GetSpecular( );
 			}
@@ -123,7 +101,7 @@ namespace Pine
 			g_CurrentShader->GetUniformVariable( "materialSamplers.specular" )->LoadInteger( 1 );
 
 			// Only bind the texture if required.
-			if ( g_CurrentBoundTexture[ 1 ] != specularMapTexture->GetId( ) ) 
+			if ( g_CurrentBoundTexture[ 1 ] != specularMapTexture->GetId( ) )
 			{
 				glActiveTexture( GL_TEXTURE1 );
 				glBindTexture( GL_TEXTURE_2D, specularMapTexture->GetId( ) );
@@ -155,6 +133,15 @@ namespace Pine
 			// if not, I've fucked something up.
 			UniformBuffers::GetMaterialUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MaterialBufferData_t ), materialDataBuffer );
 
+			// Apply correct stencil buffer mode
+			if ( g_CurrentStencilMode != overrideStencilBuffer )
+			{
+				glStencilFunc( GL_ALWAYS, 1, overrideStencilBuffer );
+				glStencilMask( overrideStencilBuffer );
+
+				g_CurrentStencilMode = overrideStencilBuffer;
+			}
+
 			g_CurrentShader->Use( );
 			g_CurrentRenderMesh = mesh;
 		}
@@ -164,16 +151,16 @@ namespace Pine
 			if ( g_CurrentRenderMesh == nullptr )
 				return;
 
-			if ( g_ShaderTransformationVariable != nullptr ) 
+			if ( g_ShaderTransformationVariable != nullptr )
 			{
 				g_ShaderTransformationVariable->LoadMatrix4( transformationMatrix );
 			}
 
-			if ( g_CurrentRenderMesh->HasElementBuffer( ) ) 
+			if ( g_CurrentRenderMesh->HasElementBuffer( ) )
 			{
 				glDrawElements( GL_TRIANGLES, g_CurrentRenderMesh->GetRenderCount( ), GL_UNSIGNED_INT, nullptr );
 			}
-			else 
+			else
 			{
 				glDrawArrays( GL_TRIANGLES, 0, g_CurrentRenderMesh->GetRenderCount( ) );
 			}
@@ -218,9 +205,7 @@ namespace Pine
 
 		void PrepareLightData( Light* light ) override
 		{
-			// If it's a directional light, always put it at index 0. There should only be one active directional light per scene anyway.
-			// The other types of lights we put at (1 + g_CurrentDynamicLightCount), up till the max dynamic light count
-
+			// Make sure we're not overflowing the light(s) buffer
 			if ( g_CurrentDynamicLightCount == 3 )
 			{
 				// This will spam the living fuck out of the console.
@@ -229,32 +214,26 @@ namespace Pine
 				return;
 			}
 
-			if ( light->GetLightType( ) == Directional )
-			{
-				UniformBuffers::GetLightsBufferData( )->lights[ 0 ].position = light->GetParent( )->GetTransform( )->Position;
-				UniformBuffers::GetLightsBufferData( )->lights[ 0 ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
-				UniformBuffers::GetLightsBufferData( )->lights[ 0 ].color = light->GetLightColor( );
-				UniformBuffers::GetLightsBufferData( )->lights[ 0 ].attenuation = light->GetAttenuation( );
-			}
-			else
-			{
-				UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].position = light->GetParent( )->GetTransform( )->Position;
-				UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );
-				UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].color = light->GetLightColor( );
-				UniformBuffers::GetLightsBufferData( )->lights[ 1 + g_CurrentDynamicLightCount ].attenuation = light->GetAttenuation( );
-			}
+			// If it's a directional light, always put it at index 0. There should only be one active directional light per scene anyway.
+			// The other types of lights we put at (1 + g_CurrentDynamicLightCount), up till the max dynamic light count
+			const int lightSlot = light->GetLightType( ) == LightType::Directional ? 0 : 1 + g_CurrentDynamicLightCount;
 
-			g_CurrentDynamicLightCount++;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->Position;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = normalize( light->GetParent( )->GetTransform( )->Rotation );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].color = light->GetLightColor( );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].attenuation = light->GetAttenuation( );
 
+			if ( light->GetLightType( ) != LightType::Directional )
+				g_CurrentDynamicLightCount++;
 		}
 
 		void ResetLightData( ) override
 		{
-			for ( int i = 0; i < 4; i++ ) 
+			for ( auto& light : UniformBuffers::GetLightsBufferData( )->lights )
 			{
-				UniformBuffers::GetLightsBufferData( )->lights[ i ].color = glm::vec3( 0.f, 0.f, 0.f );
-				UniformBuffers::GetLightsBufferData( )->lights[ i ].position = glm::vec3( 0.f, 0.f, 0.f );
-				UniformBuffers::GetLightsBufferData( )->lights[ i ].attenuation = glm::vec3( 0.f, 0.f, 0.f );
+				light.color = glm::vec3( 0.f, 0.f, 0.f );
+				light.position = glm::vec3( 0.f, 0.f, 0.f );
+				light.attenuation = glm::vec3( 0.f, 0.f, 0.f );
 			}
 
 			g_CurrentDynamicLightCount = 0;

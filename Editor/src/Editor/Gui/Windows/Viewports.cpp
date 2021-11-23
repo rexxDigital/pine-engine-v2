@@ -103,7 +103,7 @@ namespace
 			{
 				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
 
-				if ( asset->GetType( ) == Pine::EAssetType::Level )
+				if ( asset->GetType( ) == Pine::AssetType::Level )
 				{
 					if ( const auto level = dynamic_cast< Pine::Level* >( asset ) )
 					{
@@ -112,7 +112,7 @@ namespace
 						Editor::ProjectManager::OpenLevel( level );
 					}
 				}
-				else if ( asset->GetType( ) == Pine::EAssetType::Model )
+				else if ( asset->GetType( ) == Pine::AssetType::Model )
 				{
 					// Create the model in front of the camera.
 					if ( const auto model = dynamic_cast< Pine::Model* >( asset ) )
@@ -120,14 +120,14 @@ namespace
 						const auto entity = Pine::EntityList->CreateEntity( );
 						const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
 
-						entity->AddComponent( Pine::EComponentType::ModelRenderer );
+						entity->AddComponent( Pine::ComponentType::ModelRenderer );
 
 						entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
 
 						entity->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
 					}
 				}
-				else if ( asset->GetType( ) == Pine::EAssetType::Texture3D )
+				else if ( asset->GetType( ) == Pine::AssetType::Texture3D )
 				{
 					if ( const auto texture3D = dynamic_cast< Pine::Texture3D* >( asset ) )
 					{
@@ -155,10 +155,10 @@ namespace
 		{
 			switch ( component->GetType( ) )
 			{
-			case Pine::EComponentType::Camera:
+			case Pine::ComponentType::Camera:
 				renderIcon = cameraIcon;
 				break;
-			case Pine::EComponentType::Light:
+			case Pine::ComponentType::Light:
 				renderIcon = lightIcon;
 				break;
 			default:

@@ -39,7 +39,7 @@ Pine::Blueprint* Pine::Level::CreateBlueprintOfEntity( const Pine::Entity* entit
 
 Pine::Level::Level( )
 {
-	m_Type = EAssetType::Level;
+	m_Type = AssetType::Level;
 	m_LevelSettings = new Pine::LevelSettings;
 }
 

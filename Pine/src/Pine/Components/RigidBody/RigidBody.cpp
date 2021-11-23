@@ -60,7 +60,7 @@ void Pine::RigidBody::UpdateColliders( )
 
 Pine::RigidBody::RigidBody( )
 {
-	m_ComponentType = EComponentType::RigidBody;
+	m_ComponentType = ComponentType::RigidBody;
 }
 
 reactphysics3d::RigidBody* Pine::RigidBody::GetRigidBody( ) const

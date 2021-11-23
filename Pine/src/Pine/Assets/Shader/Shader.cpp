@@ -40,7 +40,7 @@ namespace {
 }
 
 Pine::Shader::Shader( ) {
-	m_Type = EAssetType::Shader;
+	m_Type = AssetType::Shader;
 }
 
 const std::vector<Pine::IAsset*> Pine::Shader::GetAttachedShaderFiles( ) const

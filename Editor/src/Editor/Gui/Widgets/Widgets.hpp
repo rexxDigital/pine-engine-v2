@@ -23,7 +23,7 @@ namespace Editor::Gui::Widgets {
 
 	bool ColorPicker( const std::string& str, glm::vec3& vec );
 
-	PickerReturn AssetPicker( const std::string& str, Pine::IAsset* currentAsset = nullptr, bool shouldRestrictType = false, Pine::EAssetType type = Pine::EAssetType::Invalid );
+	PickerReturn AssetPicker( const std::string& str, Pine::IAsset* currentAsset = nullptr, bool shouldRestrictType = false, Pine::AssetType type = Pine::AssetType::Invalid );
 	PickerReturn EntityPicker( const std::string& str, Pine::Entity* currentEntity = nullptr );
 
 	bool Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size = 48, Pine::IAsset* asset = nullptr );

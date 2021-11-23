@@ -4,7 +4,7 @@
 
 Pine::TerrainRenderer::TerrainRenderer( )
 {
-	m_ComponentType = EComponentType::TerrainRenderer;
+	m_ComponentType = ComponentType::TerrainRenderer;
 }
 
 void Pine::TerrainRenderer::SetTerrain( Pine::Terrain* terrain )

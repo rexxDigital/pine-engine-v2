@@ -5,7 +5,7 @@
 
 Pine::Light::Light( )
 {
-	m_ComponentType = EComponentType::Light;
+	m_ComponentType = ComponentType::Light;
 }
 
 void Pine::Light::SetLightColor( glm::vec3 lightColor )
@@ -18,12 +18,12 @@ const glm::vec3& Pine::Light::GetLightColor( ) const
 	return m_LightColor;
 }
 
-void Pine::Light::SetLightType( ELightType type )
+void Pine::Light::SetLightType( LightType type )
 {
 	m_LightType = type;
 }
 
-Pine::ELightType Pine::Light::GetLightType( ) const
+Pine::LightType Pine::Light::GetLightType( ) const
 {
 	return m_LightType;
 }
@@ -46,13 +46,13 @@ void Pine::Light::SaveToJson( nlohmann::json& j )
 {
 	Serialization::SaveVec3( j[ "light_color" ], m_LightColor );
 	Serialization::SaveVec3( j[ "anno" ], m_Attenuation );
-	j[ "light_type" ] = static_cast< int >( m_LightType );
+	j[ "light_type" ] = m_LightType;
 }
 
 void Pine::Light::LoadFromJson( nlohmann::json& j )
 {
 	m_LightColor = Serialization::LoadVec3( j, "light_color" );
 	m_Attenuation = Serialization::LoadVec3( j, "anno" );
-	m_LightType = static_cast< Pine::ELightType >( j[ "light_type" ].get<int>( ) );
+	m_LightType = static_cast< Pine::LightType >( j[ "light_type" ].get<int>( ) );
 }
 

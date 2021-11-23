@@ -5,6 +5,9 @@
 #include "../Components/Components.hpp"
 #include "../Pine.hpp"
 
+#include "../Components/Collider3D/Collider3D.hpp"
+#include "../Components/RigidBody/RigidBody.hpp"
+
 namespace Pine
 {
 
@@ -37,14 +40,14 @@ namespace Pine
 
 			accumulator += deltaTime;
 
-			const auto rigidBodyCount = Components->GetComponentCount( EComponentType::RigidBody );
-			const auto collider3DCount = Components->GetComponentCount( EComponentType::Collider3D );
+			const auto rigidBodyCount = Components->GetComponentCount( ComponentType::RigidBody );
+			const auto collider3DCount = Components->GetComponentCount( ComponentType::Collider3D );
 
 			// Call pre-physics update
 
 			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigid body
 			{
-				const auto component = Components->GetComponent( EComponentType::RigidBody, i );
+				const auto component = Components->GetComponent( ComponentType::RigidBody, i );
 
 				if ( !component )
 					continue;
@@ -54,7 +57,7 @@ namespace Pine
 
 			for ( int i = 0; i < collider3DCount; i++ ) // Collider 3D
 			{
-				const auto component = Components->GetComponent( EComponentType::Collider3D, i );
+				const auto component = Components->GetComponent( ComponentType::Collider3D, i );
 
 				if ( !component )
 					continue;
@@ -74,7 +77,7 @@ namespace Pine
 
 			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigidbody
 			{
-				const auto component = Components->GetComponent( EComponentType::RigidBody, i );
+				const auto component = Components->GetComponent( ComponentType::RigidBody, i );
 
 				if ( !component )
 					continue;

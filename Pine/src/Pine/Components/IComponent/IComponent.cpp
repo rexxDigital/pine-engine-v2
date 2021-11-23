@@ -1,6 +1,6 @@
 #include "IComponent.hpp"
 
-Pine::EComponentType Pine::IComponent::GetType( ) const
+Pine::ComponentType Pine::IComponent::GetType( ) const
 {
 	return m_ComponentType;
 }

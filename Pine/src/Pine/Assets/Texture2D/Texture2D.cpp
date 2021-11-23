@@ -8,7 +8,7 @@
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
 Pine::Texture2D::Texture2D( ) {
-	m_Type = EAssetType::Texture2D;
+	m_Type = AssetType::Texture2D;
 }
 
 unsigned int Pine::Texture2D::GetId( ) const {

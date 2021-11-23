@@ -10,7 +10,8 @@ Pine::Entity::Entity( uint64_t id )
 	Log->Debug( "Pine::Entity::Entity( )" );
 
 	m_Id = id;
-	AddComponent( EComponentType::Transform );
+
+	AddComponent( ComponentType::Transform );
 }
 
 Pine::Entity::Entity( uint64_t id, bool empty )
@@ -21,7 +22,7 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 	if ( !empty )
 	{
-		AddComponent( EComponentType::Transform );
+		AddComponent( ComponentType::Transform );
 	}
 }
 
@@ -35,7 +36,7 @@ Pine::Entity::~Entity( )
 	}
 
 	// TODO: How are we going to handle this? Remove children?
-	for ( auto child : m_Children )
+	for ( const auto child : m_Children )
 	{
 		child->SetParent( nullptr );
 	}
@@ -118,12 +119,12 @@ Pine::Entity* Pine::Entity::GetParent( ) const
 
 Pine::Entity* Pine::Entity::CreateChild( bool createEntity )
 {
-	Pine::Entity* entity = nullptr;
+	Entity* entity = nullptr;
 
 	if ( createEntity )
-		entity = Pine::EntityList->CreateEntity( );
+		entity = EntityList->CreateEntity( );
 	else
-		entity = new Pine::Entity( 0, true );
+		entity = new Entity( 0, true );
 
 	entity->SetParent( this );
 
@@ -163,7 +164,7 @@ void Pine::Entity::DeleteChildren( )
 	m_Children.clear( );
 }
 
-void Pine::Entity::AddComponent( EComponentType type )
+void Pine::Entity::AddComponent( ComponentType type )
 {
 	RegisterComponent( Components->CreateComponent( type ) );
 }
@@ -203,7 +204,7 @@ bool Pine::Entity::RemoveComponent( const int index )
 
 	const auto component = m_Components[ index ];
 
-	Pine::Components->DeleteComponent( component );
+	Components->DeleteComponent( component );
 
 	m_Components.erase( m_Components.begin( ) + index );
 
@@ -214,7 +215,7 @@ void Pine::Entity::ClearComponents( )
 {
 	for ( const auto component : m_Components )
 	{
-		Pine::Components->DeleteComponent( component );
+		Components->DeleteComponent( component );
 	}
 
 	m_Components.clear( );

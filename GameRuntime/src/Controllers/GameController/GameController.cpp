@@ -1,8 +1,8 @@
 #include "GameController.hpp"
 
 #include <glm/ext/matrix_projection.hpp>
-#include <Pine/Pine.hpp>
 
+#include "Pine/Pine.hpp"
 #include "Pine/Components/Collider3D/Collider3D.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 #include "Pine/Core/Math/Math.hpp"
@@ -29,7 +29,7 @@ void GameController::CreateChunk( int x, int y )
 	ent->GetTransform( )->Position = m_ChunkSpawnLocation->GetTransform( )->Position - glm::vec3( ChunkSize * y, 0.f, ChunkSize * x );
 
 	// Create the chunk hover model
-	ent->AddComponent( Pine::EComponentType::ModelRenderer );
+	ent->AddComponent( Pine::ComponentType::ModelRenderer );
 
 	ent->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" ) );
 	ent->GetComponent<Pine::ModelRenderer>( )->SetActive( false ); // We'll only render it while it's hovered

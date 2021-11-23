@@ -55,17 +55,17 @@ namespace {
 
 	void RenderMaterial( Pine::Material* mat ) {
 
-		const auto diffuseAssetRet = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::EAssetType::Texture2D );
+		const auto diffuseAssetRet = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::AssetType::Texture2D );
 		if ( diffuseAssetRet.valid ) {
 			mat->SetDiffuse( dynamic_cast< Pine::Texture2D* >( diffuseAssetRet.asset ) );
 		}
 
-		auto specularAssetRet = Editor::Gui::Widgets::AssetPicker( "Specular Map", mat->GetSpecular( ), true, Pine::EAssetType::Texture2D );
+		auto specularAssetRet = Editor::Gui::Widgets::AssetPicker( "Specular Map", mat->GetSpecular( ), true, Pine::AssetType::Texture2D );
 		if ( specularAssetRet.valid ) {
 			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( specularAssetRet.asset ) );
 		}
 
-		auto normalMapAssetRet = Editor::Gui::Widgets::AssetPicker( "Normal Map", mat->GetNormal( ), true, Pine::EAssetType::Texture2D );
+		auto normalMapAssetRet = Editor::Gui::Widgets::AssetPicker( "Normal Map", mat->GetNormal( ), true, Pine::AssetType::Texture2D );
 		if ( specularAssetRet.valid ) {
 			mat->SetSpecular( dynamic_cast< Pine::Texture2D* >( specularAssetRet.asset ) );
 		}
@@ -97,7 +97,7 @@ namespace {
 			mat->SetTextureScale( txScale );
 		}
 
-		const auto shaderRet = Editor::Gui::Widgets::AssetPicker( "Shader", mat->GetShader( ), true, Pine::EAssetType::Shader );
+		const auto shaderRet = Editor::Gui::Widgets::AssetPicker( "Shader", mat->GetShader( ), true, Pine::AssetType::Shader );
 		if ( shaderRet.valid ) {
 			mat->SetShader( dynamic_cast< Pine::Shader* >( shaderRet.asset ) );
 		}
@@ -123,7 +123,7 @@ namespace {
 
 				ImGui::Columns( 1 );
 
-				const auto materialRet = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::EAssetType::Material );
+				const auto materialRet = Editor::Gui::Widgets::AssetPicker( "Material", mesh->GetMaterial( ), true, Pine::AssetType::Material );
 				if ( materialRet.valid )
 				{
 					mesh->SetMaterial( dynamic_cast< Pine::Material* >( materialRet.asset ) );
@@ -196,19 +196,19 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		return;
 
 	switch ( asset->GetType( ) ) {
-	case Pine::EAssetType::Texture2D:
+	case Pine::AssetType::Texture2D:
 		RenderTexture2D( dynamic_cast< Pine::Texture2D* >( asset ) );
 		break;
-	case Pine::EAssetType::Material:
+	case Pine::AssetType::Material:
 		RenderMaterial( dynamic_cast< Pine::Material* >( asset ) );
 		break;
-	case Pine::EAssetType::Model:
+	case Pine::AssetType::Model:
 		RenderModel( dynamic_cast< Pine::Model* >( asset ) );
 		break;
-	case Pine::EAssetType::Level:
+	case Pine::AssetType::Level:
 		RenderLevel( dynamic_cast< Pine::Level* >( asset ) );
 		break;
-	case Pine::EAssetType::Texture3D:
+	case Pine::AssetType::Texture3D:
 		RenderCubemap( dynamic_cast< Pine::Texture3D* >( asset ) );
 		break;
 	default:

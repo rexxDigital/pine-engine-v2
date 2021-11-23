@@ -78,7 +78,7 @@ namespace
 		if ( dummyEntity == nullptr )
 		{
 			dummyEntity = new Pine::Entity( 0 );
-			dummyEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::EComponentType::ModelRenderer, true ) );
+			dummyEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
 			dummyModelRenderer = dummyEntity->GetComponent<Pine::ModelRenderer>( );
 		}
 

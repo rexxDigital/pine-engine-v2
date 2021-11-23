@@ -5,6 +5,7 @@
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 
 #include "Controllers/GameController/GameController.hpp"
+#include "Controllers/RGBExperiment/RGBExperiment.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 
 extern "C" {
@@ -13,6 +14,7 @@ extern "C" {
 		UseInstance( pineInstance );
 
 		handle->RegisterNativeScript( "GameController", sizeof( GameController ), [ ] { return new GameController( ); } );
+		handle->RegisterNativeScript( "RGBExperiment", sizeof( RGBExperiment ), [ ] { return new RGBExperiment( ); } );
 
 		return true;
 	}

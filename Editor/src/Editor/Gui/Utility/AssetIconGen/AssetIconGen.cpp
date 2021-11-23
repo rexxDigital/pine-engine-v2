@@ -41,13 +41,13 @@ namespace {
 	{
 		// Setup fake entities
 		m_FakeCameraEntity = new Pine::Entity( 0 );
-		m_FakeCameraEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::EComponentType::Camera, true ) );
+		m_FakeCameraEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::Camera, true ) );
 
 		m_FakeModelEntity = new Pine::Entity( 0 );
-		m_FakeModelEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::EComponentType::ModelRenderer, true ) );
+		m_FakeModelEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
 
 		m_FakeLightEntity = new Pine::Entity( 0 );
-		m_FakeLightEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::EComponentType::Light, true ) );
+		m_FakeLightEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::Light, true ) );
 		
 		// Setup rendering context
 		m_AssetPreviewContext = new Pine::RenderingContext;
@@ -94,7 +94,7 @@ Pine::Texture2D* Editor::Gui::Utility::AssetIconGen::GenerateAssetThumbnail( con
 
 	m_AssetPreviewContext->m_FrameBuffer = m_AssetPreviewFrameBuffer;
 	
-	if ( assetItem->m_Asset->GetType( ) == Pine::EAssetType::Model )
+	if ( assetItem->m_Asset->GetType( ) == Pine::AssetType::Model )
 	{
 		// Prepare rendering context
 		const auto oldRenderingCtxPtr = Pine::RenderManager->GetRenderingContext( );
@@ -170,31 +170,31 @@ void Editor::Gui::Utility::AssetIconGen::Update( ) {
 
 		// Update the asset icon, depending on it's type:
 		switch ( asset->GetType( ) ) {
-		case Pine::EAssetType::Texture2D:
+		case Pine::AssetType::Texture2D:
 			icon->m_Texture2D = dynamic_cast< Pine::Texture2D* >( asset );
 			break;
-		case Pine::EAssetType::Texture3D:
+		case Pine::AssetType::Texture3D:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\cube_map.png" );
 			break;
-		case Pine::EAssetType::Material:
+		case Pine::AssetType::Material:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\image.png" );
 			break;
-		case Pine::EAssetType::Blueprint:
+		case Pine::AssetType::Blueprint:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\blueprint.png" );
 			break;
-		case Pine::EAssetType::Level:
+		case Pine::AssetType::Level:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\level.png" );
 			break;
-		case Pine::EAssetType::Model:
+		case Pine::AssetType::Model:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\model.png" );
 			break;
-		case Pine::EAssetType::Shader:
+		case Pine::AssetType::Shader:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\shader.png" );
 			break;
-		case Pine::EAssetType::Script:
+		case Pine::AssetType::Script:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\code-file.png" );
 			break;
-		case Pine::EAssetType::Terrain:
+		case Pine::AssetType::Terrain:
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\terrain.png" );
 			break;
 		default:

@@ -134,7 +134,7 @@ void Pine::Collider3D::UpdateShape( )
 
 Pine::Collider3D::Collider3D( )
 {
-	m_ComponentType = EComponentType::Collider3D;
+	m_ComponentType = ComponentType::Collider3D;
 }
 
 void Pine::Collider3D::SetColliderType( ColliderType type )

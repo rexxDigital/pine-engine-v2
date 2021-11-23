@@ -93,7 +93,7 @@ namespace Pine
 
 					component->OnRender( );
 
-					if ( component->GetType( ) == EComponentType::ModelRenderer ) 
+					if ( component->GetType( ) == ComponentType::ModelRenderer ) 
 					{
 						const auto modelRenderer = dynamic_cast< ModelRenderer* >( component );
 						auto model = modelRenderer->GetTargetModel( );
@@ -103,11 +103,11 @@ namespace Pine
 							renderBatch[ model ].push_back( modelRenderer );
 						}
 					}
-					else if ( component->GetType( ) == EComponentType::Light ) 
+					else if ( component->GetType( ) == ComponentType::Light ) 
 					{
 						lights.push_back( dynamic_cast< Light* >( component ) );
 					}
-					else if ( component->GetType( ) == EComponentType::TerrainRenderer ) 
+					else if ( component->GetType( ) == ComponentType::TerrainRenderer ) 
 					{
 						terrainRenderers.push_back( dynamic_cast< TerrainRenderer* >( component ) );
 					}
@@ -131,7 +131,8 @@ namespace Pine
 
 			entitySortTimer.Stop( );
 
-			// Prepare the light data before uploading it to the GPU:
+			// Prepare the light data before uploading it to the GPU
+
 			Renderer3D->ResetLightData( );
 
 			for ( const auto light : lights ) 

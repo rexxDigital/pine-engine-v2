@@ -47,7 +47,7 @@ void Pine::Transform::BuildTransformationMatrix( )
 
 Pine::Transform::Transform( )
 {
-	m_ComponentType = EComponentType::Transform;
+	m_ComponentType = ComponentType::Transform;
 }
 
 void Pine::Transform::OnSetup( )

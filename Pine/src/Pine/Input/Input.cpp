@@ -180,7 +180,12 @@ namespace Pine
 
 		bool IsKeyDown( int key ) override
 		{
-			return false;
+			return glfwGetKey( Window::Internal::GetWindowPointer( ), key ) == GLFW_PRESS;
+		}
+
+		bool IsKeyReleased( int key ) override
+		{
+			return glfwGetKey( Window::Internal::GetWindowPointer( ), key ) == GLFW_RELEASE;
 		}
 
 		glm::ivec2 GetMousePosition( ) override

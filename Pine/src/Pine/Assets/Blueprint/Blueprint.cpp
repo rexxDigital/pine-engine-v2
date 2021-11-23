@@ -15,7 +15,7 @@
 
 namespace
 {
-	Pine::IComponent* CreateComponentFromType( Pine::EComponentType type )
+	Pine::IComponent* CreateComponentFromType( Pine::ComponentType type )
 	{
 		return nullptr;
 	}
@@ -62,7 +62,7 @@ namespace
 		// Load components
 		for ( auto componentJson : j[ "components" ] )
 		{
-			const auto component = Pine::Components->CreateComponent( static_cast< Pine::EComponentType >( componentJson[ "type" ] ), true );
+			const auto component = Pine::Components->CreateComponent( static_cast< Pine::ComponentType >( componentJson[ "type" ] ), true );
 			if ( component == nullptr )
 			{
 				Pine::Log->Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
@@ -112,7 +112,7 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 
 Pine::Blueprint::Blueprint( )
 {
-	m_Type = EAssetType::Blueprint;
+	m_Type = AssetType::Blueprint;
 }
 
 void Pine::Blueprint::CreateFromEntity( const Pine::Entity* entity )

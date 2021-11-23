@@ -4,7 +4,7 @@
 #include <fstream>
 
 Pine::Material::Material( ) {
-	m_Type = EAssetType::Material;
+	m_Type = AssetType::Material;
 	m_Shader = Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
 }
 

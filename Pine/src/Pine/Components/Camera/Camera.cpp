@@ -42,7 +42,7 @@ void Pine::Camera::BuildViewMatrix( )
 
 Pine::Camera::Camera( )
 {
-	m_ComponentType = EComponentType::Camera;
+	m_ComponentType = ComponentType::Camera;
 }
 
 float Pine::Camera::GetNearPlane( ) const

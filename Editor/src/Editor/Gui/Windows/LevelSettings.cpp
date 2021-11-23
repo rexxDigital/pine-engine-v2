@@ -18,7 +18,7 @@ void Windows::RenderLevelSettings( )
 	const auto renderingContext = Pine::RenderManager->GetRenderingContext( );
 
 	const auto level = ProjectManager::GetCurrentLevel( );
-	const auto newLevel = Widgets::AssetPicker( "Level", level, true, Pine::EAssetType::Level );
+	const auto newLevel = Widgets::AssetPicker( "Level", level, true, Pine::AssetType::Level );
 
 	if ( newLevel.valid )
 	{
@@ -54,7 +54,7 @@ void Windows::RenderLevelSettings( )
 		}
 	}
 
-	const auto newSkybox = Widgets::AssetPicker( "Skybox", reinterpret_cast< Pine::IAsset* >( Pine::Skybox->GetSkyboxCubemap( ) ), true, Pine::EAssetType::Texture3D );
+	const auto newSkybox = Widgets::AssetPicker( "Skybox", reinterpret_cast< Pine::IAsset* >( Pine::Skybox->GetSkyboxCubemap( ) ), true, Pine::AssetType::Texture3D );
 	if ( newSkybox.valid )
 	{
 		Pine::Skybox->SetSkyboxCubemap( reinterpret_cast< Pine::Texture3D* >( newSkybox.asset ) );

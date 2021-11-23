@@ -30,12 +30,12 @@ namespace {
 		if ( !renderer )
 			return;
 
-		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetTargetModel( ), true, Pine::EAssetType::Model );
+		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetTargetModel( ), true, Pine::AssetType::Model );
 		if ( modelRet.valid ) {
 			renderer->SetTargetModel( reinterpret_cast< Pine::Model* >( modelRet.asset ) );
 		}
 
-		auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::EAssetType::Material );
+		auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::AssetType::Material );
 		if ( materialRet.valid ) {
 			renderer->SetMaterialOverride( reinterpret_cast< Pine::Material* >( materialRet.asset ) );
 		}
@@ -77,7 +77,7 @@ namespace {
 		int lightType = static_cast< int >( light->GetLightType( ) );
 		if ( Widgets::Combobox( "Type", lightType, "Directional\0Point light" ) )
 		{
-			light->SetLightType( static_cast< Pine::ELightType >( lightType ) );
+			light->SetLightType( static_cast< Pine::LightType >( lightType ) );
 		}
 
 		auto lightColor = light->GetLightColor( );
@@ -105,7 +105,7 @@ namespace {
 			return;
 
 		const auto terrain = terrainRenderer->GetTerrain( );
-		const auto terrainRet = Widgets::AssetPicker( "Terrain", terrain, true, Pine::EAssetType::Terrain );
+		const auto terrainRet = Widgets::AssetPicker( "Terrain", terrain, true, Pine::AssetType::Terrain );
 		if ( terrainRet.valid )
 		{
 			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( terrainRet.asset ) );
@@ -252,21 +252,21 @@ namespace {
 void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
 
 	switch ( component->GetType( ) ) {
-	case Pine::EComponentType::Transform:
+	case Pine::ComponentType::Transform:
 		RenderTransform( dynamic_cast< Pine::Transform* >( component ) ); break;
-	case Pine::EComponentType::ModelRenderer:
+	case Pine::ComponentType::ModelRenderer:
 		RenderModelRenderer( dynamic_cast< Pine::ModelRenderer* >( component ) ); break;
-	case Pine::EComponentType::Camera:
+	case Pine::ComponentType::Camera:
 		RenderCamera( dynamic_cast< Pine::Camera* >( component ) ); break;
-	case Pine::EComponentType::Light:
+	case Pine::ComponentType::Light:
 		RenderLight( dynamic_cast< Pine::Light* >( component ) ); break;
-	case Pine::EComponentType::TerrainRenderer:
+	case Pine::ComponentType::TerrainRenderer:
 		RenderTerrainRenderer( dynamic_cast< Pine::TerrainRenderer* >( component ) ); break;
-	case Pine::EComponentType::RigidBody:
+	case Pine::ComponentType::RigidBody:
 		RenderRigidBody( dynamic_cast< Pine::RigidBody* >( component ) ); break;
-	case Pine::EComponentType::Collider3D:
+	case Pine::ComponentType::Collider3D:
 		RenderCollider3D( dynamic_cast< Pine::Collider3D* >( component ) ); break;
-	case Pine::EComponentType::NativeScript:
+	case Pine::ComponentType::NativeScript:
 		RenderNativeScript( dynamic_cast< Pine::NativeScript* >( component ) ); break;
 	default:
 		break;

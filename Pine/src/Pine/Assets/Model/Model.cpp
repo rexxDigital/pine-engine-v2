@@ -132,7 +132,7 @@ namespace {
 }
 
 Pine::Model::Model( ) {
-	m_Type = EAssetType::Model;
+	m_Type = AssetType::Model;
 }
 
 Pine::Mesh* Pine::Model::CreateMesh( ) {
