@@ -14,9 +14,10 @@ namespace Pine
 	{
 	private:
 		std::vector<std::unique_ptr<InputBinding>> m_InputBindings;
-
 		glm::ivec2 m_MouseDelta;
 
+		int m_KeyStates[ GLFW_KEY_LAST ] = { };
+		int m_KeyStatesOld[ GLFW_KEY_LAST ] = { };
 	public:
 
 		InputBinding* CreateBinding( const std::string& name ) override
@@ -29,8 +30,10 @@ namespace Pine
 		void RemoveBinding( InputBinding* binding ) override
 		{
 			int i = 0;
-			for ( auto& bind : m_InputBindings ) {
-				if ( bind.get( ) == binding ) {
+			for ( auto& bind : m_InputBindings )
+			{
+				if ( bind.get( ) == binding )
+				{
 					m_InputBindings.erase( m_InputBindings.begin( ) + i );
 					return;
 				}
@@ -51,9 +54,9 @@ namespace Pine
 
 		InputBinding* FindBinding( const std::string& name ) override
 		{
-			for ( const auto& bind : m_InputBindings ) 
+			for ( const auto& bind : m_InputBindings )
 			{
-				if ( bind->Name( ) == name ) 
+				if ( bind->Name( ) == name )
 				{
 					return bind.get( );
 				}
@@ -65,6 +68,13 @@ namespace Pine
 		void Update( ) override
 		{
 			const auto window = Pine::Window::Internal::GetWindowPointer( );
+
+			memcpy_s( m_KeyStatesOld, sizeof( m_KeyStatesOld ), m_KeyStates, sizeof( m_KeyStates ) );
+
+			for ( int i = 0; i < GLFW_KEY_LAST; i++ )
+			{
+				m_KeyStates[ i ] = glfwGetKey( window, i );
+			}
 
 			// Update mouse delta
 			double x, y;
@@ -80,27 +90,27 @@ namespace Pine
 
 			m_MouseDelta = glm::ivec2( mouseX, mouseY );
 
-			for ( const auto& bind : m_InputBindings ) 
+			for ( const auto& bind : m_InputBindings )
 			{
 				bind->Value( ) = 0;
 
-				for ( auto& axis : bind->GetAxisBindings( ) ) 
+				for ( auto& axis : bind->GetAxisBindings( ) )
 				{
 					// Mouse Axis
-					if ( axis->Axis == Axis::MouseX ) 
+					if ( axis->Axis == Axis::MouseX )
 					{
 						bind->Value( ) = mouseX * axis->Sensitivity;
 					}
 
-					if ( axis->Axis == Axis::MouseY ) 
+					if ( axis->Axis == Axis::MouseY )
 					{
 						bind->Value( ) = mouseY * axis->Sensitivity;
 					}
 				}
 
-				for ( auto& key : bind->GetKeyboardBindings( ) ) 
+				for ( auto& key : bind->GetKeyboardBindings( ) )
 				{
-					if ( glfwGetKey( window, key->Key ) == GLFW_PRESS ) 
+					if ( glfwGetKey( window, key->Key ) == GLFW_PRESS )
 					{
 						bind->Value( ) += key->ActivationValue;
 					}
@@ -113,14 +123,14 @@ namespace Pine
 			std::ofstream stream( file );
 			nlohmann::json json;
 
-			for ( int i = 0; i < m_InputBindings.size( ); i++ ) 
+			for ( int i = 0; i < m_InputBindings.size( ); i++ )
 			{
 				const auto binding = m_InputBindings[ i ].get( );
 
 				json[ i ][ "Name" ] = binding->Name( );
 
 				// Write keyboard bindings
-				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ ) 
+				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ )
 				{
 					const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
 
@@ -129,7 +139,7 @@ namespace Pine
 				}
 
 				// Write axis bindings
-				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ ) 
+				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ )
 				{
 					const auto axis = binding->GetAxisBindings( )[ j ].get( );
 
@@ -152,7 +162,7 @@ namespace Pine
 			std::string str( ( std::istreambuf_iterator<char>( stream ) ),
 				std::istreambuf_iterator<char>( ) );
 
-			if ( str.empty( ) ) 
+			if ( str.empty( ) )
 			{
 				stream.close( );
 				return false;
@@ -160,16 +170,16 @@ namespace Pine
 
 			nlohmann::json json = nlohmann::json::parse( str );
 
-			for ( const auto& bindingJson : json.items( ) ) 
+			for ( const auto& bindingJson : json.items( ) )
 			{
 				const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
 
-				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) ) 
+				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) )
 				{
 					binding->AddKeyboardBinding( keyboardJson.value( )[ "Key" ], keyboardJson.value( )[ "ActivationValue" ] );
 				}
 
-				for ( const auto& axisJson : bindingJson.value( )[ "Axis" ].items( ) ) 
+				for ( const auto& axisJson : bindingJson.value( )[ "Axis" ].items( ) )
 				{
 					binding->AddAxisBinding( static_cast< Axis >( axisJson.value( )[ "Axis" ].get<int>( ) ), axisJson.value( )[ "Sensitivity" ] );
 				}
@@ -180,12 +190,23 @@ namespace Pine
 
 		bool IsKeyDown( int key ) override
 		{
-			return glfwGetKey( Window::Internal::GetWindowPointer( ), key ) == GLFW_PRESS;
+			assert( key >= 0 && GLFW_KEY_LAST > key );
+
+			return m_KeyStates[ key ] == GLFW_PRESS;
+		}
+
+		bool IsKeyPressed( int key ) override
+		{
+			assert( key >= 0 && GLFW_KEY_LAST > key );
+
+			return m_KeyStates[ key ] == GLFW_PRESS && m_KeyStatesOld[ key ] == GLFW_RELEASE;
 		}
 
 		bool IsKeyReleased( int key ) override
 		{
-			return glfwGetKey( Window::Internal::GetWindowPointer( ), key ) == GLFW_RELEASE;
+			assert( key >= 0 && GLFW_KEY_LAST > key );
+
+			return m_KeyStates[ key ] == GLFW_RELEASE && m_KeyStatesOld[ key ] == GLFW_PRESS;
 		}
 
 		glm::ivec2 GetMousePosition( ) override

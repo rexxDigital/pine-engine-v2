@@ -2,8 +2,10 @@
 #include <Pine/Pine.hpp>
 #include "Editor/Editor.hpp"
 
-int main( ) {
-	if ( !Pine::Setup( ) ) {
+int main( )
+{
+	if ( !Pine::Setup( ) )
+	{
 		return 1;
 	}
 

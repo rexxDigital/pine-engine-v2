@@ -7,14 +7,11 @@ class RGBExperiment : public Pine::NativeScript
 {
 private:
 	bool m_LightMovement = false;
-	bool m_LightColorCycle = false;
+	float m_MovementTime = 0.0f;
 
 	Pine::Entity* m_R;
 	Pine::Entity* m_G;
 	Pine::Entity* m_B;
-
-	float m_MovementTime = 0.0f;
-	float m_CycleTime = 0.0f;
 public:  
 
 	void OnSetup( ) override;
