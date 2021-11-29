@@ -122,7 +122,7 @@ namespace
 
 						entity->AddComponent( Pine::ComponentType::ModelRenderer );
 
-						entity->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( model );
+						entity->GetComponent<Pine::ModelRenderer>( )->SetModel( model );
 
 						entity->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
 					}

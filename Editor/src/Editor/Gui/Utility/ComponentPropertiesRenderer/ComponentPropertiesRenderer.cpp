@@ -30,9 +30,9 @@ namespace {
 		if ( !renderer )
 			return;
 
-		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetTargetModel( ), true, Pine::AssetType::Model );
+		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetModel( ), true, Pine::AssetType::Model );
 		if ( modelRet.valid ) {
-			renderer->SetTargetModel( reinterpret_cast< Pine::Model* >( modelRet.asset ) );
+			renderer->SetModel( reinterpret_cast< Pine::Model* >( modelRet.asset ) );
 		}
 
 		auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::AssetType::Material );

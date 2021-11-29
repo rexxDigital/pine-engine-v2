@@ -13,7 +13,7 @@ nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileNam
 
 	std::ifstream stream( fileName );
 
-	if ( !stream.is_open( ) ) 
+	if ( !stream.is_open( ) )
 	{
 		return nlohmann::json( );
 	}
@@ -27,7 +27,7 @@ nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileNam
 
 glm::vec3 Pine::Serialization::LoadVec3( const nlohmann::json& j, const std::string& name )
 {
-	try 
+	try
 	{
 		glm::vec3 vec;
 
@@ -37,7 +37,7 @@ glm::vec3 Pine::Serialization::LoadVec3( const nlohmann::json& j, const std::str
 
 		return vec;
 	}
-	catch ( ... ) 
+	catch ( ... )
 	{
 		return glm::vec3( 0.f, 0.f, 0.f );
 	}
@@ -65,16 +65,16 @@ void Pine::Serialization::SaveAsset( nlohmann::json& j, IAsset* asset )
 
 Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std::string& name )
 {
-	try 
+	try
 	{
-		if ( j.contains( name ) ) 
+		if ( j.contains( name ) )
 		{
 			if ( j.at( name ) == "null" )
 			{
 				return nullptr;
 			}
 
-			if ( const auto asset = Assets->GetAsset( j.at( name ) ) ) 
+			if ( const auto asset = Assets->GetAsset( j.at( name ) ) )
 			{
 				return asset;
 			}
@@ -84,7 +84,7 @@ Pine::IAsset* Pine::Serialization::LoadAsset( const nlohmann::json& j, const std
 
 		return nullptr;
 	}
-	catch ( ... ) 
+	catch ( ... )
 	{
 		return nullptr;
 	}

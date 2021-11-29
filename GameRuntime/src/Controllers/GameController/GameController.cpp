@@ -31,7 +31,7 @@ void GameController::CreateChunk( int x, int y )
 	// Create the chunk hover model
 	ent->AddComponent( Pine::ComponentType::ModelRenderer );
 
-	ent->GetComponent<Pine::ModelRenderer>( )->SetTargetModel( Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" ) );
+	ent->GetComponent<Pine::ModelRenderer>( )->SetModel( Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" ) );
 	ent->GetComponent<Pine::ModelRenderer>( )->SetActive( false ); // We'll only render it while it's hovered
 
 	// 5 seems to work fine for the current chunk size.

@@ -32,13 +32,13 @@ namespace
 		const auto entity = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
 		const auto modelRenderer = entity->GetComponent<Pine::ModelRenderer>( );
 
-		if ( modelRenderer && modelRenderer->GetTargetModel( ) )
+		if ( modelRenderer && modelRenderer->GetModel( ) )
 		{
 			Pine::Renderer3D->SetStencilFunction( 0x0205, 0xFF );
 			Pine::Renderer3D->SetStencilMask( 0x00 );
 			Pine::Renderer3D->SetDepthTesting( false );
 
-			if ( const auto model = modelRenderer->GetTargetModel( ) )
+			if ( const auto model = modelRenderer->GetModel( ) )
 			{
 				for ( const auto mesh : model->GetMeshList( ) )
 				{

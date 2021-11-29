@@ -96,7 +96,7 @@ namespace Pine
 					if ( component->GetType( ) == ComponentType::ModelRenderer ) 
 					{
 						const auto modelRenderer = dynamic_cast< ModelRenderer* >( component );
-						auto model = modelRenderer->GetTargetModel( );
+						auto model = modelRenderer->GetModel( );
 
 						if ( model != nullptr ) 
 						{

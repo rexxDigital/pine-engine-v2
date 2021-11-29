@@ -8,19 +8,19 @@ namespace Pine
 	class ModelRenderer : public IComponent
 	{
 	private:
-		Pine::Model* m_TargetModel = nullptr;
-		Pine::Material* m_MaterialOverride = nullptr;
+		Model* m_Model = nullptr;
+		Material* m_MaterialOverride = nullptr;
 
 		bool m_OverrideStencilBuffer = false;
 		std::uint8_t m_StencilBufferMask = 0x00;
 	public:
 		ModelRenderer( );
 
-		Pine::Model* GetTargetModel( ) const;
-		void SetTargetModel( Pine::Model* mdl );
+		Model* GetModel( ) const;
+		void SetModel( Model* mdl );
 
-		Pine::Material* GetMaterialOverride( ) const;
-		void SetMaterialOverride( Pine::Material* mat );
+		Material* GetMaterialOverride( ) const;
+		void SetMaterialOverride( Material* mat );
 
 		void OverrideStencilBuffer( bool enabled, std::uint8_t mask );
 

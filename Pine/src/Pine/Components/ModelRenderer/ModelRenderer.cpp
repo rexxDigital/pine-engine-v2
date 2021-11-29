@@ -7,14 +7,14 @@ Pine::ModelRenderer::ModelRenderer( )
 	m_ComponentType = ComponentType::ModelRenderer;
 }
 
-Pine::Model* Pine::ModelRenderer::GetTargetModel( ) const
+Pine::Model* Pine::ModelRenderer::GetModel( ) const
 {
-	return m_TargetModel;
+	return m_Model;
 }
 
-void Pine::ModelRenderer::SetTargetModel( Pine::Model* mdl )
+void Pine::ModelRenderer::SetModel( Pine::Model* mdl )
 {
-	m_TargetModel = mdl;
+	m_Model = mdl;
 }
 
 Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const
@@ -57,10 +57,10 @@ void Pine::ModelRenderer::OnRender( )
 
 void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
 {
-	Serialization::SaveAsset( j[ "model" ], m_TargetModel );
+	Serialization::SaveAsset( j[ "model" ], m_Model );
 }
 
 void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )
 {
-	m_TargetModel = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
+	m_Model = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
 }
