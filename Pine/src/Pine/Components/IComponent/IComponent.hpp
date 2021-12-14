@@ -12,7 +12,6 @@ namespace Pine
 		Camera,
 		Light,
 		NativeScript,
-		Behavior,
 		TerrainRenderer,
 		Collider3D,
 		RigidBody
@@ -25,7 +24,6 @@ namespace Pine
 		"Camera",
 		"Light",
 		"Native Script",
-		"Behavior",
 		"Terrain Renderer",
 		"Collider3D",
 		"Rigid Body"
@@ -40,14 +38,14 @@ namespace Pine
 		bool m_Standalone = true;
 
 		ComponentType m_ComponentType = ComponentType::Invalid;
-		Pine::Entity* m_Parent = nullptr;
+		Entity* m_Parent = nullptr;
 	public:
 		virtual ~IComponent( ) = default;
 
 		ComponentType GetType( ) const;
 
 		void SetParent( Pine::Entity* parent );
-		Pine::Entity* GetParent( ) const;
+		Entity* GetParent( ) const;
 
 		bool GetActive( ) const;
 		void SetActive( bool value );

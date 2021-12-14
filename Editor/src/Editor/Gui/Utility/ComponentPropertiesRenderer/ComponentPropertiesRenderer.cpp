@@ -6,6 +6,7 @@
 #include <Pine/Components/Camera/Camera.hpp>
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 
+#include "Editor/ProjectManager/ProjectManager.hpp"
 #include "ImGui/imgui.h"
 #include "Pine/Components/Light/Light.hpp"
 #include "Pine/Components/RigidBody//RigidBody.hpp"
@@ -15,9 +16,13 @@
 
 using namespace Editor::Gui;
 
-namespace {
+void UpdateAssetCache( );
 
-	void RenderTransform( Pine::Transform* transform ) {
+namespace
+{
+
+	void RenderTransform( Pine::Transform* transform )
+	{
 		if ( !transform )
 			return;
 
@@ -26,17 +31,20 @@ namespace {
 		Widgets::Vector3( "Scale", transform->Scale );
 	}
 
-	void RenderModelRenderer( Pine::ModelRenderer* renderer ) {
+	void RenderModelRenderer( Pine::ModelRenderer* renderer )
+	{
 		if ( !renderer )
 			return;
 
 		const auto modelRet = Widgets::AssetPicker( "Model", renderer->GetModel( ), true, Pine::AssetType::Model );
-		if ( modelRet.valid ) {
+		if ( modelRet.valid )
+		{
 			renderer->SetModel( reinterpret_cast< Pine::Model* >( modelRet.asset ) );
 		}
 
-		auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::AssetType::Material );
-		if ( materialRet.valid ) {
+		const auto materialRet = Widgets::AssetPicker( "Override model material", renderer->GetMaterialOverride( ), true, Pine::AssetType::Material );
+		if ( materialRet.valid )
+		{
 			renderer->SetMaterialOverride( reinterpret_cast< Pine::Material* >( materialRet.asset ) );
 		}
 	}
@@ -105,14 +113,35 @@ namespace {
 			return;
 
 		const auto terrain = terrainRenderer->GetTerrain( );
-		const auto terrainRet = Widgets::AssetPicker( "Terrain", terrain, true, Pine::AssetType::Terrain );
+
+		const auto terrainRet = Widgets::AssetPicker( "Terrain Object", terrain, true, Pine::AssetType::Terrain );
 		if ( terrainRet.valid )
 		{
 			terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( terrainRet.asset ) );
 		}
 
+		ImGui::Spacing( );
+
 		if ( terrain == nullptr )
 		{
+			ImGui::Text( "No terrain object attached." );
+
+			if ( ImGui::Button( "Create new Terrain", ImVec2( 200.f, 30.f ) ) )
+			{
+				const std::string terrainPath = Editor::ProjectManager::GetCurrentProjectDirectory( ) + "\\terrain.ter";
+
+				auto terrain = new Pine::Terrain;
+
+				terrain->SetFilePath( terrainPath );
+				terrain->SaveToFile( );
+
+				delete terrain;
+
+				terrainRenderer->SetTerrain( dynamic_cast< Pine::Terrain* >( Pine::Assets->LoadFromFile( terrainPath ) ) );
+
+				UpdateAssetCache( );
+			}
+
 			return;
 		}
 
@@ -249,9 +278,11 @@ namespace {
 
 }
 
-void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component ) {
+void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component )
+{
 
-	switch ( component->GetType( ) ) {
+	switch ( component->GetType( ) )
+	{
 	case Pine::ComponentType::Transform:
 		RenderTransform( dynamic_cast< Pine::Transform* >( component ) ); break;
 	case Pine::ComponentType::ModelRenderer:

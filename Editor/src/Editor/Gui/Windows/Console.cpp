@@ -37,7 +37,8 @@ namespace
 
 }
 
-void Windows::RenderConsole( ) {
+void Windows::RenderConsole( )
+{
 
 	if ( ImGui::Begin( "Console", &Windows::ShowConsole, 0 ) )
 	{
@@ -52,7 +53,7 @@ void Windows::RenderConsole( ) {
 
 		const auto& msgs = Pine::Log->GetLogMessages( );
 
-		for ( const auto& msg: msgs )
+		for ( const auto& msg : msgs )
 		{
 			RenderMessage( msg.first, msg.second );
 		}

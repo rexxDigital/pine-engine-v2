@@ -166,7 +166,7 @@ namespace Pine
 			return FindAvailableDataSlot( comp );
 		}
 
-		Pine::IComponent* GetComponent( ComponentType type, int index ) override
+		IComponent* GetComponent( ComponentType type, int index ) override
 		{
 			Component_t* comp = nullptr;
 
@@ -196,7 +196,7 @@ namespace Pine
 			return g_Components[ static_cast< int >( type ) ].m_Name;
 		}
 
-		Pine::IComponent* CreateComponent( ComponentType type, bool standalone ) override
+		IComponent* CreateComponent( ComponentType type, bool standalone ) override
 		{
 			Component_t* comp = nullptr;
 
@@ -213,7 +213,11 @@ namespace Pine
 			}
 
 			if ( !comp )
+			{
+				Log->Warning( "Failed to find component type." );
+
 				return nullptr;
+			}
 
 			if ( standalone )
 			{

@@ -10,11 +10,13 @@
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "../../Rendering/Renderer3D/Renderer3D.hpp"
 
-namespace {
+namespace
+{
 
 	std::string currentModelFile = "";
 
-	void ProcessMesh( Pine::Mesh* eMesh, aiMesh* mesh, const aiScene* scene ) {
+	void ProcessMesh( Pine::Mesh* eMesh, aiMesh* mesh, const aiScene* scene )
+	{
 		// Fill all the vectors below with the data imported from ASSIMP
 		std::vector<float> vertices;
 		std::vector<float> normals;
@@ -22,7 +24,8 @@ namespace {
 		std::vector<int> indices;
 
 		// Loop through all ASSIMP vertices, and add them into the vectors
-		for ( unsigned int i = 0; i < mesh->mNumVertices; i++ ) {
+		for ( unsigned int i = 0; i < mesh->mNumVertices; i++ )
+		{
 			vertices.push_back( mesh->mVertices[ i ].x );
 			vertices.push_back( mesh->mVertices[ i ].y );
 			vertices.push_back( mesh->mVertices[ i ].z );
@@ -31,11 +34,13 @@ namespace {
 			normals.push_back( mesh->mNormals[ i ].y );
 			normals.push_back( mesh->mNormals[ i ].z );
 
-			if ( mesh->HasTextureCoords( 0 ) ) {
+			if ( mesh->HasTextureCoords( 0 ) )
+			{
 				uvs.push_back( mesh->mTextureCoords[ 0 ][ i ].x );
 				uvs.push_back( mesh->mTextureCoords[ 0 ][ i ].y );
 			}
-			else {
+			else
+			{
 				// Because we still need to have a UV coordinate within the vector at any vertex position.
 				uvs.push_back( 0.f );
 				uvs.push_back( 0.f );
@@ -43,7 +48,8 @@ namespace {
 		}
 
 		// Fill out the indices vector
-		for ( unsigned int i = 0; i < mesh->mNumFaces; i++ ) {
+		for ( unsigned int i = 0; i < mesh->mNumFaces; i++ )
+		{
 			aiFace face = mesh->mFaces[ i ];
 			for ( unsigned int j = 0; j < face.mNumIndices; j++ )
 				indices.push_back( face.mIndices[ j ] );
@@ -68,7 +74,8 @@ namespace {
 		// Process all the materials loaded by ASSIMP, and then assign them to the engine's mesh material.
 		auto material = scene->mMaterials[ mesh->mMaterialIndex ];
 		// Make sure the material is valid, and that it's not the automatically generated default material.
-		if ( material && strcmp( material->GetName( ).C_Str( ), AI_DEFAULT_MATERIAL_NAME ) != 0 ) {
+		if ( material && strcmp( material->GetName( ).C_Str( ), AI_DEFAULT_MATERIAL_NAME ) != 0 )
+		{
 			eMesh->SetMaterial( new Pine::Material( ) );
 
 			auto eMaterial = eMesh->GetMaterial( );
@@ -94,11 +101,12 @@ namespace {
 			auto parentDir = eMesh->GetParentModel( )->GetPath( ).parent_path( ).string( );
 
 			// process material textures
-			if ( material->GetTextureCount( aiTextureType_DIFFUSE ) > 0 ) {
+			if ( material->GetTextureCount( aiTextureType_DIFFUSE ) > 0 )
+			{
 				aiString file_path;
 				material->GetTexture( aiTextureType_DIFFUSE, 0, &file_path );
 
-				eMaterial->SetDiffuse( reinterpret_cast<Pine::Texture2D*>( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
+				eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
 			}
 
 			//if ( material->GetTextureCount( aiTextureType_SPECULAR ) > 0 ) {
@@ -112,9 +120,11 @@ namespace {
 
 	}
 
-	void ProcessNode( Pine::Model* mdl, aiNode* node, const aiScene* scene ) {
+	void ProcessNode( Pine::Model* mdl, aiNode* node, const aiScene* scene )
+	{
 		// Loop through all the meshes within the model
-		for ( int i = 0; i < node->mNumMeshes; i++ ) {
+		for ( int i = 0; i < node->mNumMeshes; i++ )
+		{
 			const auto mesh = scene->mMeshes[ node->mMeshes[ i ] ]; // Retrieve the ASSIMOP mesh class
 			const auto engineMesh = mdl->CreateMesh( ); // Create a new instance of the Mesh class within the engine
 
@@ -122,20 +132,21 @@ namespace {
 		}
 
 		// Process additional nodes via the magic of recursion
-		for ( int i = 0; i < node->mNumChildren; i++ ) {
+		for ( int i = 0; i < node->mNumChildren; i++ )
+		{
 			ProcessNode( mdl, node->mChildren[ i ], scene );
 		}
 	}
 
-
-
 }
 
-Pine::Model::Model( ) {
+Pine::Model::Model( )
+{
 	m_Type = AssetType::Model;
 }
 
-Pine::Mesh* Pine::Model::CreateMesh( ) {
+Pine::Mesh* Pine::Model::CreateMesh( )
+{
 	auto mesh = new Pine::Mesh( this );
 
 	m_MeshList.push_back( mesh );
@@ -143,17 +154,20 @@ Pine::Mesh* Pine::Model::CreateMesh( ) {
 	return mesh;
 }
 
-const std::vector<Pine::Mesh*>& Pine::Model::GetMeshList( ) const {
+const std::vector<Pine::Mesh*>& Pine::Model::GetMeshList( ) const
+{
 	return m_MeshList;
 }
 
-bool Pine::Model::LoadFromFile( ) {
+bool Pine::Model::LoadFromFile( )
+{
 
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
 	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenBoundingBoxes );
 
-	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode ) {
+	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
+	{
 		Log->Error( "Assimp loading error " + m_FilePath.string( ) + ", " + importer.GetErrorString( ) );
 		return false;
 	}
@@ -186,7 +200,7 @@ bool Pine::Model::LoadFromFile( ) {
 						continue;
 					}
 
-					const auto materialAsset = dynamic_cast<Pine::Material*>( Pine::Assets->LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
+					const auto materialAsset = dynamic_cast< Pine::Material* >( Pine::Assets->LoadFromFile( jsonObject[ meshStr ][ "mat" ] ) );
 
 					if ( materialAsset == nullptr ) // weird but ok
 					{
@@ -208,7 +222,8 @@ bool Pine::Model::LoadFromFile( ) {
 	return true;
 }
 
-bool Pine::Model::SaveToFile( ) {
+bool Pine::Model::SaveToFile( )
+{
 	nlohmann::json j;
 	bool wroteData = false;
 
@@ -245,8 +260,10 @@ bool Pine::Model::SaveToFile( ) {
 	return true;
 }
 
-void Pine::Model::Dispose( ) {
-	for ( auto mesh : m_MeshList ) {
+void Pine::Model::Dispose( )
+{
+	for ( auto mesh : m_MeshList )
+	{
 		mesh->Dispose( );
 		delete mesh;
 	}
