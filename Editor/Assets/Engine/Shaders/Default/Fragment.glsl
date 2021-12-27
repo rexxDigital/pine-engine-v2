@@ -1,5 +1,3 @@
-#version 420 core
-
 layout( location = 0 ) out vec4 out_color;
 
 struct MaterialSamplerData
@@ -76,11 +74,32 @@ vec3 CalculatePointLight( int lightNr ) {
 }
 
 void main( void ) {
+	// calculate transparency
+	#if defined(TRANSPARENCY_DISCARD)
+		if ( texture( materialSamplers.diffuse, uv * material.textureScale ).a < 0.1 )
+			discard;
+	#endif
+
+	#if defined(TRANSPARENCY_TRANSPARENT) 
+		
+	#endif
+
+	// calculate the main directional light's lightning
 	vec4 directionalLight = vec4( CalculateDirectionalLight( 0 ), 1.0f );
 
+	// calculate point light's lightning
+
+	// TODO: change this to a loop depending on the current amount of
+	// dynamic lights.
+
+#if defined(PERFORMACE_FAST)
+	vec4 pointLight1 = vec4( 0.0f );
+	vec4 pointLight2 = vec4( 0.0f );
+#else
 	vec4 pointLight1 = vec4( CalculatePointLight( 1 ), 1.0f );
 	vec4 pointLight2 = vec4( CalculatePointLight( 2 ), 1.0f );
-	vec4 pointLight3 = vec4( CalculatePointLight( 3 ), 1.0f );
+#endif
 
-	out_color = ( directionalLight + pointLight1 + pointLight2 + pointLight3 );
+	// add it all up to the final fragment color
+	out_color = ( directionalLight + pointLight1 + pointLight2 );
 }

@@ -164,12 +164,29 @@ void Pine::Entity::DeleteChildren( )
 	m_Children.clear( );
 }
 
-void Pine::Entity::AddComponent( ComponentType type )
+void Pine::Entity::AddScript( IComponent* script )
 {
-	RegisterComponent( Components->CreateComponent( type ) );
+	AddComponent( ComponentType::NativeScript );
+
+	GetComponent<NativeScript>( )->SetCreateFromFactory( false );
+	GetComponent<NativeScript>( )->SetInternalComponent( script );
 }
 
-void Pine::Entity::RegisterComponent( IComponent* component ) {
+void Pine::Entity::AddScript( const std::string& name )
+{
+	AddComponent( ComponentType::NativeScript );
+
+	GetComponent<NativeScript>( )->SetCreateFromFactory( true );
+	GetComponent<NativeScript>( )->SetFactoryName( name );
+}
+
+void Pine::Entity::AddComponent( ComponentType type )
+{
+	AddComponent( Components->CreateComponent( type ) );
+}
+
+void Pine::Entity::AddComponent( IComponent* component )
+{
 	component->SetParent( this );
 
 	m_Components.push_back( component );

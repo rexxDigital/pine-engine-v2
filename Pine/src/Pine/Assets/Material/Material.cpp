@@ -3,28 +3,34 @@
 
 #include <fstream>
 
-Pine::Material::Material( ) {
+Pine::Material::Material( )
+{
 	m_Type = AssetType::Material;
-	m_Shader = Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
+	m_Shader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
 }
 
-glm::vec3& Pine::Material::DiffuseColor( ) {
+glm::vec3& Pine::Material::DiffuseColor( )
+{
 	return m_DiffuseColor;
 }
 
-glm::vec3& Pine::Material::SpecularColor( ) {
+glm::vec3& Pine::Material::SpecularColor( )
+{
 	return m_SpecularColor;
 }
 
-glm::vec3& Pine::Material::AmbientColor( ) {
+glm::vec3& Pine::Material::AmbientColor( )
+{
 	return m_AmbientColor;
 }
 
-Pine::Texture2D* Pine::Material::GetDiffuse( ) const {
+Pine::Texture2D* Pine::Material::GetDiffuse( ) const
+{
 	return m_Diffuse;
 }
 
-Pine::Texture2D* Pine::Material::GetSpecular( ) const {
+Pine::Texture2D* Pine::Material::GetSpecular( ) const
+{
 	return m_Specular;
 }
 
@@ -33,12 +39,14 @@ Pine::Texture2D* Pine::Material::GetNormal( ) const
 	return m_Normal;
 }
 
-void Pine::Material::SetDiffuse( Texture2D* texture ) {
+void Pine::Material::SetDiffuse( Texture2D* texture )
+{
 	m_Diffuse = texture;
 	m_Updated = true;
 }
 
-void Pine::Material::SetSpecular( Texture2D* texture ) {
+void Pine::Material::SetSpecular( Texture2D* texture )
+{
 	m_Specular = texture;
 	m_Updated = true;
 }
@@ -46,6 +54,7 @@ void Pine::Material::SetSpecular( Texture2D* texture ) {
 void Pine::Material::SetNormal( Texture2D* texture )
 {
 	m_Normal = texture;
+	m_Updated = true;
 }
 
 float Pine::Material::GetTextureScale( ) const
@@ -56,22 +65,27 @@ float Pine::Material::GetTextureScale( ) const
 void Pine::Material::SetTextureScale( float scale )
 {
 	m_TextureScale = scale;
-}
-
-float Pine::Material::GetShininiess( ) const {
-	return m_Shininiess;
-}
-
-void Pine::Material::SetShininiess( float shininiess ) {
-	m_Shininiess = shininiess;
 	m_Updated = true;
 }
 
-Pine::Shader* Pine::Material::GetShader( ) {
+float Pine::Material::GetShininess( ) const
+{
+	return m_Shininess;
+}
+
+void Pine::Material::SetShininess( float Shininess )
+{
+	m_Shininess = Shininess;
+	m_Updated = true;
+}
+
+Pine::Shader* Pine::Material::GetShader( )
+{
 	return m_Shader;
 }
 
-void Pine::Material::SetShader( Shader* shader ) {
+void Pine::Material::SetShader( Shader* shader )
+{
 	m_Shader = shader;
 }
 
@@ -85,10 +99,45 @@ void Pine::Material::SetGenerated( bool generated )
 	m_IsGenerated = generated;
 }
 
-bool Pine::Material::LoadFromFile( ) {
+Pine::MatRenderingMode Pine::Material::GetRenderingMode( ) const
+{
+	return m_RenderingMode;
+}
+
+void Pine::Material::SetRenderingMode( MatRenderingMode mode )
+{
+	m_RenderingMode = mode;
+	m_Updated = true;
+}
+
+std::uint32_t Pine::Material::GetRenderFlags( ) const
+{
+	return m_RenderFlags;
+}
+
+void Pine::Material::SetRenderFlags( std::uint32_t flags )
+{
+	m_RenderFlags = flags;
+	m_Updated = true;
+}
+
+std::uint32_t Pine::Material::GetShaderProperties( ) const
+{
+	return m_ShaderProperties;
+}
+
+void Pine::Material::SetShaderProperties( std::uint32_t flags )
+{
+	m_ShaderProperties = flags;
+	m_Updated = true;
+}
+
+bool Pine::Material::LoadFromFile( )
+{
 	const auto j = Pine::Serialization::LoadJSONFromFile( m_FilePath.string( ) );
 
-	try {
+	try
+	{
 
 		m_Shader = dynamic_cast< Shader* >( Serialization::LoadAsset( j, "shader" ) );
 
@@ -97,10 +146,19 @@ bool Pine::Material::LoadFromFile( ) {
 		m_AmbientColor = Serialization::LoadVec3( j, "AmbientColor" );
 
 		if ( j.contains( "shininess" ) )
-			m_Shininiess = j[ "shininess" ].get<float>( );
+			m_Shininess = j[ "shininess" ].get<float>( );
 
 		if ( j.contains( "textureScale" ) )
 			m_TextureScale = j[ "textureScale" ].get<float>( );
+
+		if ( j.contains( "renderMode" ) )
+			m_RenderingMode = j[ "renderMode" ].get<MatRenderingMode>( );
+
+		if ( j.contains( "shaderProperties" ) )
+			m_ShaderProperties = std::stoul( j[ "shaderProperties" ].get<std::string>(  ) );
+
+		if ( j.contains( "renderFlags" ) )
+			m_RenderFlags = std::stoul( j[ "renderFlags" ].get<std::string>( ) );
 
 		m_Diffuse = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "diffuse" ) );
 		m_Specular = dynamic_cast< Texture2D* >( Serialization::LoadAsset( j, "specularMap" ) );
@@ -113,14 +171,16 @@ bool Pine::Material::LoadFromFile( ) {
 		}
 
 	}
-	catch ( ... ) {
+	catch ( ... )
+	{
 
 	}
 
 	return true;
 }
 
-bool Pine::Material::SaveToFile( ) {
+bool Pine::Material::SaveToFile( )
+{
 	if ( IsGenerated( ) )
 		return false;
 
@@ -130,13 +190,16 @@ bool Pine::Material::SaveToFile( ) {
 	Serialization::SaveVec3( j[ "SpecularColor" ], m_SpecularColor );
 	Serialization::SaveVec3( j[ "AmbientColor" ], m_AmbientColor );
 
-	j[ "shininess" ] = m_Shininiess;
+	j[ "shininess" ] = m_Shininess;
 	j[ "textureScale" ] = m_TextureScale;
+	j[ "renderMode" ] = m_RenderingMode;
+	j[ "renderFlags" ] = m_RenderFlags;
+	j[ "shaderProperties" ] = std::to_string( m_ShaderProperties );
 
 	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );
 	Serialization::SaveAsset( j[ "specularMap" ], m_Specular );
 	Serialization::SaveAsset( j[ "normal" ], m_Specular );
-	
+
 	Serialization::SaveAsset( j[ "shader" ], m_Shader );
 
 	std::ofstream stream( m_FilePath );
@@ -148,6 +211,7 @@ bool Pine::Material::SaveToFile( ) {
 	return true;
 }
 
-void Pine::Material::Dispose( ) {
+void Pine::Material::Dispose( )
+{
 
 }

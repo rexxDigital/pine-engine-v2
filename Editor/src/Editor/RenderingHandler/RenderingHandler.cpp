@@ -78,7 +78,7 @@ namespace
 		if ( dummyEntity == nullptr )
 		{
 			dummyEntity = new Pine::Entity( 0 );
-			dummyEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
+			dummyEntity->AddComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
 			dummyModelRenderer = dummyEntity->GetComponent<Pine::ModelRenderer>( );
 		}
 
@@ -195,13 +195,13 @@ namespace
 		}
 	}
 
-	void OnRenderingPass( int pass )
+	void OnRenderingPass( Pine::RenderStage stage )
 	{
-		if ( pass == 0 )
+		if ( stage == Pine::RenderStage::PreRender )
 			OnPreRender( );
-		if ( pass == 1 )
+		if ( stage == Pine::RenderStage::PostRenderEntities )
 			OnPostEntityRender( );
-		if ( pass == 2 )
+		if ( stage == Pine::RenderStage::PostRender )
 			OnPostRenderFinal( );
 	}
 }

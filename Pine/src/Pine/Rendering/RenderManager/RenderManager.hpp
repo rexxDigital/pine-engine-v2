@@ -6,7 +6,14 @@ namespace Pine
 {
 	class Camera;
 
-	typedef void ( *RenderCallback )( int pass );
+	enum class RenderStage
+	{
+		PreRender,
+		PostRenderEntities,
+		PostRender
+	};
+
+	typedef void ( *RenderCallback )( RenderStage pass );
 
 	class IRenderManager : public IInterface
 	{

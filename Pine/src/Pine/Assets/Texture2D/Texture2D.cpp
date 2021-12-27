@@ -7,27 +7,32 @@
 #include "../../Core/Log/Log.hpp"
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 
-Pine::Texture2D::Texture2D( ) {
+Pine::Texture2D::Texture2D( )
+{
 	m_Type = AssetType::Texture2D;
 }
 
-unsigned int Pine::Texture2D::GetId( ) const {
+unsigned int Pine::Texture2D::GetId( ) const
+{
 	return m_Id;
 }
 
-int Pine::Texture2D::GetWidth( ) const {
+int Pine::Texture2D::GetWidth( ) const
+{
 	return m_Width;
 }
 
-int Pine::Texture2D::GetHeight( ) const {
+int Pine::Texture2D::GetHeight( ) const
+{
 	return m_Height;
 }
 
-int Pine::Texture2D::GetChannels( ) const {
+int Pine::Texture2D::GetChannels( ) const
+{
 	return m_Channels;
 }
 
-void Pine::Texture2D::CreateFromFrameBuffer( Pine::FrameBuffer* frameBuffer )
+void Pine::Texture2D::CreateFromFrameBuffer( const Pine::FrameBuffer* frameBuffer )
 {
 	m_Width = frameBuffer->GetWidth( );
 	m_Height = frameBuffer->GetHeight( );
@@ -39,7 +44,7 @@ void Pine::Texture2D::CreateFromData( int width, int height, int format, void* d
 {
 	glGenTextures( 1, &m_Id );
 	glBindTexture( GL_TEXTURE_2D, m_Id );
-	
+
 	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, format, GL_FLOAT, data );
 
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
@@ -52,12 +57,14 @@ void Pine::Texture2D::CreateFromData( int width, int height, int format, void* d
 	m_Channels = format == GL_RGB ? 3 : 4;
 }
 
-bool Pine::Texture2D::LoadFromFile( ) {
+bool Pine::Texture2D::LoadFromFile( )
+{
 	int width, height, channels;
 
 	const auto data = stbi_load( m_FilePath.string( ).c_str( ), &width, &height, &channels, 0 );
 
-	if ( !data ) {
+	if ( !data )
+	{
 		stbi_image_free( data );
 
 		Log->Error( "Failed to load texture, " + m_FilePath.string( ) );
@@ -87,10 +94,12 @@ bool Pine::Texture2D::LoadFromFile( ) {
 	return true;
 }
 
-bool Pine::Texture2D::SaveToFile( ) {
+bool Pine::Texture2D::SaveToFile( )
+{
 	return false;
 }
 
-void Pine::Texture2D::Dispose( ) {
+void Pine::Texture2D::Dispose( )
+{
 	glDeleteTextures( 1, &m_Id );
 }

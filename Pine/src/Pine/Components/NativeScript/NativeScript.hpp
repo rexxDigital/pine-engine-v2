@@ -13,6 +13,7 @@ namespace Pine
 
 		IComponent* m_InternalComponent = nullptr;
 
+		void SetupInternalComponent( );
 		void CreateInternalComponent( );
 
 	public:
@@ -24,6 +25,9 @@ namespace Pine
 		void SetFactoryName( const std::string& str );
 		const std::string& GetFactoryName( ) const;
 
+		void SetInternalComponent( IComponent* component );
+		IComponent* GetInternalComponent( ) const;
+
 		void OnSetup( ) override;
 		void OnRender( ) override;
 		void OnUpdate( float deltaTime ) override;
@@ -31,6 +35,7 @@ namespace Pine
 		void LoadFromJson( nlohmann::json& j ) override;
 		void SaveToJson( nlohmann::json& j ) override;
 
+		void OnCreated( ) override;
 		void OnDestroyed( ) override;
 	};
 

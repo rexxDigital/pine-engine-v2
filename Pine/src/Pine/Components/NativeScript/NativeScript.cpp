@@ -1,6 +1,15 @@
 #include "NativeScript.hpp"
 #include "../../RuntimeLoader/RuntimeLoader.hpp"
 
+void Pine::NativeScript::SetupInternalComponent( )
+{
+	m_InternalComponent->SetStandalone( true );
+	m_InternalComponent->SetActive( GetActive( ) );
+	m_InternalComponent->SetParent( GetParent( ) );
+
+	m_InternalComponent->OnCreated( );
+}
+
 void Pine::NativeScript::CreateInternalComponent( )
 {
 	if ( !m_CreateFromFactory ) return;
@@ -11,11 +20,7 @@ void Pine::NativeScript::CreateInternalComponent( )
 
 	m_InternalComponent = factory->m_Factory( );
 
-	m_InternalComponent->SetStandalone( true );
-	m_InternalComponent->SetActive( GetActive( ) );
-	m_InternalComponent->SetParent( GetParent( ) );
-
-	m_InternalComponent->OnCreated( );
+	SetupInternalComponent( );
 }
 
 Pine::NativeScript::NativeScript( )
@@ -43,12 +48,24 @@ const std::string& Pine::NativeScript::GetFactoryName( ) const
 	return m_FactoryName;
 }
 
+void Pine::NativeScript::SetInternalComponent( IComponent* component )
+{
+	m_InternalComponent = component;
+
+	SetupInternalComponent( );
+}
+
+Pine::IComponent* Pine::NativeScript::GetInternalComponent( ) const
+{
+	return m_InternalComponent;
+}
+
 void Pine::NativeScript::OnSetup( )
 {
-	if ( !m_CreateFromFactory )
-		return;
-
-	CreateInternalComponent( );
+	if ( m_CreateFromFactory )
+	{
+		CreateInternalComponent( );
+	}
 
 	if ( !m_InternalComponent )
 		return;
@@ -76,6 +93,12 @@ void Pine::NativeScript::LoadFromJson( nlohmann::json& j )
 void Pine::NativeScript::SaveToJson( nlohmann::json& j )
 {
 	j[ "factoryName" ] = m_FactoryName;
+}
+
+void Pine::NativeScript::OnCreated( )
+{
+	if ( m_InternalComponent )
+		m_InternalComponent->OnCreated( );
 }
 
 void Pine::NativeScript::OnDestroyed( )

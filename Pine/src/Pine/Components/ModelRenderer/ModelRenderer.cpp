@@ -12,7 +12,7 @@ Pine::Model* Pine::ModelRenderer::GetModel( ) const
 	return m_Model;
 }
 
-void Pine::ModelRenderer::SetModel( Pine::Model* mdl )
+void Pine::ModelRenderer::SetModel( Model* mdl )
 {
 	m_Model = mdl;
 }
@@ -22,7 +22,7 @@ Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const
 	return m_MaterialOverride;
 }
 
-void Pine::ModelRenderer::SetMaterialOverride( Pine::Material* mat )
+void Pine::ModelRenderer::SetMaterialOverride( Material* mat )
 {
 	m_MaterialOverride = mat;
 }

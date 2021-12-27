@@ -9,6 +9,7 @@
 
 #include "../Gui/Gui.hpp"
 #include "ImGui/imgui.h"
+#include "Pine/Components/Components.hpp"
 
 namespace
 {
@@ -58,7 +59,7 @@ public:
 
 		if ( Globals::IsHoveringLevelView )
 		{
-			if ( ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
+			if ( ImGui::IsMouseDown( ImGuiMouseButton_Right ) )
 			{
 				m_IsMovingCamera = true;
 			}
@@ -66,7 +67,7 @@ public:
 
 		if ( m_IsMovingCamera )
 		{
-			if ( !ImGui::IsMouseDown( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
+			if ( !ImGui::IsMouseDown( ImGuiMouseButton_Right ) )
 				m_IsMovingCamera = false;
 
 			const auto pitch = m_Pitch->Value( );
@@ -96,10 +97,7 @@ void Editor::EditorEntity::Create( )
 	g_EditorEntity->SetName( "Editor Entity" );
 
 	g_EditorEntity->AddComponent( Pine::ComponentType::Camera );
-	g_EditorEntity->RegisterComponent( new EditorEntityScript( ) ); // this sucks.
-
-	// We have to manually call OnCreated for these soon to be unsupported NativeScript
-	g_EditorEntity->GetComponent<EditorEntityScript>( )->OnCreated( );
+	g_EditorEntity->AddScript( new EditorEntityScript );
 
 	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>( );
 }

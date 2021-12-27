@@ -139,6 +139,7 @@ bool Pine::Setup( )
 	PostProcessing->Setup( );
 	Components->Setup( );
 	EntityList->Setup( );
+	Input->Setup( );
 
 	Skybox->SetSkyboxCubemap( Assets->GetAsset<Texture3D>( "Assets\\Engine\\Skyboxes\\DefaultSkybox.cmap" ) );
 

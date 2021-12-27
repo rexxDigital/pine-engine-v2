@@ -41,13 +41,13 @@ namespace {
 	{
 		// Setup fake entities
 		m_FakeCameraEntity = new Pine::Entity( 0 );
-		m_FakeCameraEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::Camera, true ) );
+		m_FakeCameraEntity->AddComponent( Pine::Components->CreateComponent( Pine::ComponentType::Camera, true ) );
 
 		m_FakeModelEntity = new Pine::Entity( 0 );
-		m_FakeModelEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
+		m_FakeModelEntity->AddComponent( Pine::Components->CreateComponent( Pine::ComponentType::ModelRenderer, true ) );
 
 		m_FakeLightEntity = new Pine::Entity( 0 );
-		m_FakeLightEntity->RegisterComponent( Pine::Components->CreateComponent( Pine::ComponentType::Light, true ) );
+		m_FakeLightEntity->AddComponent( Pine::Components->CreateComponent( Pine::ComponentType::Light, true ) );
 		
 		// Setup rendering context
 		m_AssetPreviewContext = new Pine::RenderingContext;

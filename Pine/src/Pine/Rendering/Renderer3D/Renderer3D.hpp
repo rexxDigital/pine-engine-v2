@@ -12,7 +12,7 @@ namespace Pine
 	{
 	public:
 		// Set/Get the shader used for rendering
-		virtual void SetShader( Shader* shader ) = 0;
+		virtual void SetShader( Shader* shader, int version = 0 ) = 0;
 		virtual Shader* GetShader( ) = 0;
 
 		// OpenGL wrappers
@@ -20,6 +20,7 @@ namespace Pine
 		virtual void SetStencilMask( std::uint8_t mask ) = 0;
 		virtual void SetDepthTesting( bool value ) = 0;
 		virtual void SetWireframeMode( bool value ) = 0;
+		virtual void SetBackfaceCulling( bool value ) = 0;
 
 		// Used for very early debugging purposes.
 		virtual void RenderVertexArray( const VertexArray* vao, int renderCount, bool indices ) = 0;

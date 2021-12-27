@@ -96,7 +96,7 @@ namespace
 			eMaterial->AmbientColor( ) = glm::vec3( ambient_color.r, ambient_color.g, ambient_color.b );
 			eMaterial->SpecularColor( ) = glm::vec3( specular_color.r, specular_color.g, specular_color.b );
 
-			eMaterial->SetShininiess( shininess );
+			eMaterial->SetShininess( shininess );
 
 			auto parentDir = eMesh->GetParentModel( )->GetPath( ).parent_path( ).string( );
 

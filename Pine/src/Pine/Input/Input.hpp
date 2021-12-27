@@ -55,6 +55,9 @@ namespace Pine
 	class IInputSystem : public IInterface
 	{
 	public:
+		virtual void SetCursorAutoCenter( bool enabled ) = 0;
+		virtual void SetIgnoreWhenUnfocused( bool enabled ) = 0;
+
 		virtual InputBinding* CreateBinding( const std::string& name ) = 0;
 		virtual void RemoveBinding( InputBinding* binding ) = 0;
 
@@ -66,6 +69,7 @@ namespace Pine
 		virtual InputBinding* FindBinding( const std::string& name ) = 0;
 
 		// Called internally by the engine
+		virtual void Setup( ) = 0;
 		virtual void Update( ) = 0;
 
 		// Saves all input bindings to a file

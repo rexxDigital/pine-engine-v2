@@ -71,7 +71,7 @@ namespace
 
 			component->LoadFromJson( componentJson );
 
-			e->RegisterComponent( component );
+			e->AddComponent( component );
 		}
 
 		// Load children
@@ -96,7 +96,7 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 	// Copy components
 	for ( const auto component : entity->GetComponents( ) )
 	{
-		target->RegisterComponent( Components->CopyComponent( component, !createInstance ) );
+		target->AddComponent( Components->CopyComponent( component, !createInstance ) );
 	}
 
 	// Copy children

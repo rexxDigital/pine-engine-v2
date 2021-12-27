@@ -22,7 +22,7 @@ namespace Pine {
 		int GetHeight( ) const;
 		int GetChannels( ) const;
 
-		void CreateFromFrameBuffer( Pine::FrameBuffer* frameBuffer ); // This should be fucking done the opposite way...
+		void CreateFromFrameBuffer( const FrameBuffer* frameBuffer ); // This should be fucking done the opposite way...
 		void CreateFromData( int width, int height, int format, void* data );
 
 		bool LoadFromFile( ) override;

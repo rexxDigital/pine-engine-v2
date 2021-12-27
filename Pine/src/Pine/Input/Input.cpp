@@ -7,8 +7,22 @@
 #include "../Core/Window/Window.hpp"
 #include "../Rendering/DebugOverlay/DebugOverlay.hpp"
 
+namespace
+{
+	bool g_WindowIsFocused = false;
+
+	void WindowFocusCallback( GLFWwindow* window, int focused )
+	{
+		if ( window != Pine::Window::Internal::GetWindowPointer( ) )
+			return;
+
+		g_WindowIsFocused = focused;
+	}
+}
+
 namespace Pine
 {
+
 
 	class CInputSystem : public IInputSystem
 	{
@@ -18,7 +32,20 @@ namespace Pine
 
 		int m_KeyStates[ GLFW_KEY_LAST ] = { };
 		int m_KeyStatesOld[ GLFW_KEY_LAST ] = { };
+
+		bool m_AutoCenterCursor = false;
+		bool m_IgnoreUnfocused = true;
 	public:
+
+		void SetCursorAutoCenter( bool enabled ) override
+		{
+			m_AutoCenterCursor = enabled;
+		}
+
+		void SetIgnoreWhenUnfocused( bool enabled ) override
+		{
+			m_IgnoreUnfocused = enabled;
+		}
 
 		InputBinding* CreateBinding( const std::string& name ) override
 		{
@@ -65,8 +92,18 @@ namespace Pine
 			return nullptr;
 		}
 
+		void Setup( ) override
+		{
+			glfwSetWindowFocusCallback( Window::Internal::GetWindowPointer( ), WindowFocusCallback );
+		}
+
 		void Update( ) override
 		{
+			if ( m_IgnoreUnfocused && !g_WindowIsFocused )
+			{
+				return;
+			}
+
 			const auto window = Pine::Window::Internal::GetWindowPointer( );
 
 			memcpy_s( m_KeyStatesOld, sizeof( m_KeyStatesOld ), m_KeyStates, sizeof( m_KeyStates ) );
@@ -89,6 +126,16 @@ namespace Pine
 			lastY = y;
 
 			m_MouseDelta = glm::ivec2( mouseX, mouseY );
+
+			if ( m_AutoCenterCursor )
+			{
+				const auto cachedSize = Pine::Window::GetCachedSize( );
+
+				glfwSetCursorPos( window, cachedSize.x / 2, cachedSize.y / 2 );
+
+				lastX = cachedSize.x / 2;
+				lastY = cachedSize.y / 2;
+			}
 
 			for ( const auto& bind : m_InputBindings )
 			{
@@ -160,7 +207,7 @@ namespace Pine
 				return false;
 
 			std::string str( ( std::istreambuf_iterator<char>( stream ) ),
-				std::istreambuf_iterator<char>( ) );
+							 std::istreambuf_iterator<char>( ) );
 
 			if ( str.empty( ) )
 			{

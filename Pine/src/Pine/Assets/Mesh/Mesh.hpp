@@ -3,9 +3,11 @@
 #include "../Material/Material.hpp"
 #include "../../OpenGL/VertexArray/VertexArray.hpp"
 
-namespace Pine {
+namespace Pine
+{
 
-	namespace Internal {
+	namespace Internal
+	{
 		// This is how it's accessed in the shaders, and shall NOT be changed.
 		// Standards for the engine.
 		constexpr int VERTEX_ARRAY_BUFFER = 0;
@@ -15,7 +17,8 @@ namespace Pine {
 
 	class Model;
 
-	class Mesh {
+	class Mesh
+	{
 	private:
 		Material* m_Material = nullptr;
 		Model* m_ParentModel = nullptr;

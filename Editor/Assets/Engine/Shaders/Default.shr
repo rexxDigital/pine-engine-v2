@@ -9,6 +9,13 @@
 	"UniformBuffers": {
 		"Matrices": "Matrices",
 		"Lights": "Lights",
-		"Material":  "Material"
+		"Material": "Material"
+	},
+	"Versions": {
+		"TRANSPARENCY_DISCARD": 1,
+		"TRANSPARENCY_TRANSPARENT": 2,
+		"PERFORMACE_FAST": 4,
+		"PERFORMACE_FAST&&TRANSPARENCY_DISCARD": 5,
+		"PERFORMACE_FAST&&TRANSPARENCY_TRANSPARENT": 6
 	}
 }

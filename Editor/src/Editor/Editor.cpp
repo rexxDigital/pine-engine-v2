@@ -19,7 +19,7 @@ void Editor::Setup( ) {
 	Pine::Log->Message( "Setting up editor..." );
 	
 	ProjectManager::Setup( );
-	ProjectManager::OpenProject( "Projects\\Default" );
+	ProjectManager::OpenProject( "Projects\\Debug" );
 
 	Pine::Log->Message( "Loading editor assets..." );
 	

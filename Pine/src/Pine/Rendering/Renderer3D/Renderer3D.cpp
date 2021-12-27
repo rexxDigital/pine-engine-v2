@@ -26,6 +26,11 @@ namespace Pine
 		Shader* g_TerrainShader = nullptr;
 		UniformVariable* g_ShaderTransformationVariable = nullptr;
 
+		int g_CurrentShaderVersion = 0;
+
+		bool g_BackfaceCullingEnabled = true;
+		bool g_WireframeModeEnabled = false;
+
 		// The texture we use if there is no texture applied, 1x1 white.
 		Texture2D* g_DefaultTexture = nullptr;
 
@@ -40,6 +45,7 @@ namespace Pine
 		}
 
 		int g_CurrentDynamicLightCount = 0;
+
 	public:
 
 		void RenderVertexArray( const VertexArray* vao, int renderCount, bool indices ) override
@@ -67,10 +73,28 @@ namespace Pine
 
 			mesh->GetVertexArray( )->Bind( );
 
-			if ( material->GetShader( ) != g_CurrentShader )
+			// Figure out the correct shader version
+			std::uint32_t shaderVersion = material->GetShaderProperties( );
+
+			// Adjust depending on rendering mode
+			switch ( material->GetRenderingMode( ) )
 			{
-				SetShader( material->GetShader( ) );
+			case MatRenderingMode::Discard:
+				shaderVersion |= TransparencyDiscard;
+				break;
+			case MatRenderingMode::Transparent:
+				shaderVersion |= TransparencyBlend;
+				break;
+			default: break;
 			}
+
+			if ( material->GetShader( ) != g_CurrentShader || g_CurrentShaderVersion != shaderVersion )
+			{
+				SetShader( material->GetShader( ), shaderVersion );
+			}
+
+			SetBackfaceCulling( !( material->GetRenderFlags( ) & Pine::RenderFlags::DisableBackfaceCulling ) );
+			SetWireframeMode( material->GetRenderFlags( ) & Pine::RenderFlags::RenderWireframe );
 
 			if ( !g_CurrentShader )
 				return;
@@ -126,7 +150,7 @@ namespace Pine
 			materialDataBuffer->diffuseColor = material->DiffuseColor( );
 			materialDataBuffer->specularColor = material->SpecularColor( );
 			materialDataBuffer->ambientColor = material->AmbientColor( );
-			materialDataBuffer->shininiess = material->GetShininiess( );
+			materialDataBuffer->shininiess = material->GetShininess( );
 			materialDataBuffer->textureScale = material->GetTextureScale( );
 
 			// Due to the amazing design of this game engine, the material uniform buffer SHOULD already be bound by now,
@@ -142,7 +166,6 @@ namespace Pine
 				g_CurrentStencilMode = overrideStencilBuffer;
 			}
 
-			g_CurrentShader->Use( );
 			g_CurrentRenderMesh = mesh;
 		}
 
@@ -244,6 +267,18 @@ namespace Pine
 			return g_CurrentShader;
 		}
 
+		void SetBackfaceCulling( bool value ) override
+		{
+			if ( g_BackfaceCullingEnabled == value ) return;
+
+			if ( value )
+				glEnable( GL_CULL_FACE );
+			else
+				glDisable( GL_CULL_FACE );
+
+			g_BackfaceCullingEnabled = value;
+		}
+
 		void SetStencilFunction( const int function, const std::uint8_t mask ) override
 		{
 			glStencilFunc( function, 1, mask );
@@ -264,18 +299,28 @@ namespace Pine
 
 		void SetWireframeMode( const bool value ) override
 		{
+			if ( g_WireframeModeEnabled == value ) return;
+
 			if ( value )
 				glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 			else
 				glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+			g_WireframeModeEnabled = value;
 		}
 
-		void SetShader( Pine::Shader* shader ) override
+		void SetShader( Shader* shader, int version ) override
 		{
 			if ( !shader )
+			{
+				g_CurrentShader = nullptr;
+
 				return;
+			}
 
 			g_CurrentShader = shader;
+			g_CurrentShader->Use( version );
+			g_CurrentShaderVersion = version;
 
 			// Set cached uniform variables
 			g_ShaderTransformationVariable = shader->GetUniformVariable( "transform" );
@@ -286,7 +331,7 @@ namespace Pine
 			Log->Debug( "Pine::Renderer3D->Setup( )" );
 
 			//// Create default texture
-			//char whiteData[ 4 ] = { 255, 255, 255, 255 };
+			//float whiteData[ 4 ] = { 255, 255, 255, 255 };
 			//
 			//g_DefaultTexture = new Texture2D( );
 			//g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
@@ -294,10 +339,7 @@ namespace Pine
 			//// Fake a texture being loaded if it's required elsewhere.
 			//Assets->MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture.png" );
 
-			//g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
-
 			g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
-
 			g_TerrainShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
 		}
 

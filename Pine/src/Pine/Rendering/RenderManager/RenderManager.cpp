@@ -15,6 +15,7 @@
 #include "../../../ImGui/imgui_impl_opengl3.h"
 
 #include "../../Assets/Terrain/Terrain.hpp"
+#include "../../Components/Components.hpp"
 #include "../../Entitylist/EntityList.hpp"
 
 #include "../Renderer3D/Renderer3D.hpp"
@@ -48,7 +49,7 @@ namespace Pine
 
 		void Render( ) override
 		{
-			if ( !VerifyRenderingContext( g_RenderingContext ) ) 
+			if ( !VerifyRenderingContext( g_RenderingContext ) )
 			{
 				return;
 			}
@@ -62,10 +63,8 @@ namespace Pine
 			// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
 			// to fix this temporary just update that and set the rendering context's size accordingly.
 
-			if ( g_RenderingCallback ) 
-			{
-				g_RenderingCallback( 0 );
-			}
+			if ( g_RenderingCallback )
+				g_RenderingCallback( RenderStage::PreRender );
 
 			PrepareSceneRendering( );
 
@@ -78,64 +77,85 @@ namespace Pine
 			if ( g_RenderingContext->m_Camera == nullptr )
 				return;
 
+			// Call "OnRender" for each component
+			for ( int i = 0; i < Components->GetComponentTypeCount( ); i++ )
+			{
+				for ( int j = 0; j < Components->GetComponentCount( static_cast< ComponentType >( i ) ); j++ )
+				{
+					if ( const auto component = Components->GetComponent( static_cast< ComponentType >( i ), j ) )
+						component->OnRender( );
+				}
+			}
+
+			// Sort entities with the blend rendering mode in a different map
 			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
+			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
+
 			std::vector<Light*> lights;
 			std::vector<TerrainRenderer*> terrainRenderers;
 
-			auto processEntity = [ & ] ( const Pine::Entity* entity )
+			auto componentSanityCheck = [ ] ( const Pine::IComponent* component )
 			{
-				for ( auto& component : entity->GetComponents( ) ) 
-				{
-					if ( !component->GetActive( ) ) 
-					{
-						continue;
-					}
-
-					component->OnRender( );
-
-					if ( component->GetType( ) == ComponentType::ModelRenderer ) 
-					{
-						const auto modelRenderer = dynamic_cast< ModelRenderer* >( component );
-						auto model = modelRenderer->GetModel( );
-
-						if ( model != nullptr ) 
-						{
-							renderBatch[ model ].push_back( modelRenderer );
-						}
-					}
-					else if ( component->GetType( ) == ComponentType::Light ) 
-					{
-						lights.push_back( dynamic_cast< Light* >( component ) );
-					}
-					else if ( component->GetType( ) == ComponentType::TerrainRenderer ) 
-					{
-						terrainRenderers.push_back( dynamic_cast< TerrainRenderer* >( component ) );
-					}
-				}
+				return component && component->GetActive( ) && component->GetParent( )->GetActive( );
 			};
 
 			Timer entitySortTimer;
 
-			for ( auto& entity : EntityList->GetEntities( ) ) 
+			// Model Renderer
+
+			for ( int i = 0; i < Components->GetComponentCount( ComponentType::ModelRenderer ); i++ )
 			{
-				if ( !entity.GetActive( ) ) 
+				const auto modelRenderer = dynamic_cast< ModelRenderer* >( Components->GetComponent( ComponentType::ModelRenderer, i ) );
+
+				if ( componentSanityCheck( modelRenderer ) && modelRenderer->GetModel( ) )
 				{
-					continue;
+					auto blendRenderingMode = false;
+
+					// Check if any of the material used within this model has a different rendering mode.
+					for ( const auto mesh : modelRenderer->GetModel( )->GetMeshList( ) )
+						if ( mesh->GetMaterial( ) && mesh->GetMaterial( )->GetRenderingMode( ) == MatRenderingMode::Transparent )
+							blendRenderingMode = true;
+					if ( const auto ov = modelRenderer->GetMaterialOverride(  ) )
+						if ( ov->GetRenderingMode(  ) == MatRenderingMode::Transparent )
+							blendRenderingMode = true;
+
+					if ( blendRenderingMode )
+						renderBatchBlend[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
+					else
+						renderBatch[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
 				}
+			}
 
-				for ( const auto child : entity.GetChildren( ) )
-					processEntity( child );
+			// Light
 
-				processEntity( &entity );
+			for ( int i = 0; i < Components->GetComponentCount( ComponentType::Light ); i++ )
+			{
+				const auto light = dynamic_cast< Light* >( Components->GetComponent( ComponentType::Light, i ) );
+
+				if ( componentSanityCheck( light ) )
+				{
+					lights.push_back( light );
+				}
+			}
+
+			// Terrain Renderer
+
+			for ( int i = 0; i < Components->GetComponentCount( ComponentType::TerrainRenderer ); i++ )
+			{
+				const auto terrainRenderer = dynamic_cast< TerrainRenderer* >( Components->GetComponent( ComponentType::TerrainRenderer, i ) );
+
+				if ( componentSanityCheck( terrainRenderer ) )
+				{
+					terrainRenderers.push_back( terrainRenderer );
+				}
 			}
 
 			entitySortTimer.Stop( );
 
 			// Prepare the light data before uploading it to the GPU
-
 			Renderer3D->ResetLightData( );
 
-			for ( const auto light : lights ) 
+			for ( const auto light : lights )
 			{
 				Renderer3D->PrepareLightData( light );
 			}
@@ -148,7 +168,7 @@ namespace Pine
 
 			// Render Terrain Chunks
 
-			for ( const auto terrainRenderer : terrainRenderers ) 
+			for ( const auto terrainRenderer : terrainRenderers )
 			{
 				const auto terrain = terrainRenderer->GetTerrain( );
 
@@ -164,15 +184,14 @@ namespace Pine
 				}
 			}
 
-			// Render Normal Entities
-
-			for ( auto& renderItem : renderBatch ) 
+			// Render opaque & discard entities
+			for ( auto& renderItem : renderBatch )
 			{
-				for ( auto& mesh : renderItem.first->GetMeshList( ) ) 
+				for ( auto& mesh : renderItem.first->GetMeshList( ) )
 				{
 					Renderer3D->PrepareMesh( mesh );
 
-					for ( const auto modelRenderer : renderItem.second ) 
+					for ( const auto modelRenderer : renderItem.second )
 					{
 						const auto entity = modelRenderer->GetParent( );
 
@@ -199,12 +218,17 @@ namespace Pine
 				}
 			}
 
+			// Sort blended entities by distance
+
+
+			// Reset some properties that may have been set.
+			Renderer3D->SetWireframeMode( false );
+			Renderer3D->SetBackfaceCulling( true );
+
 			Skybox->Render( );
 
-			if ( g_RenderingCallback ) 
-			{
-				g_RenderingCallback( 1 );
-			}
+			if ( g_RenderingCallback )
+				g_RenderingCallback( RenderStage::PostRenderEntities );
 
 			entityRenderTime.Stop( );
 
@@ -220,10 +244,8 @@ namespace Pine
 			g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
 			g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
 
-			if ( g_RenderingCallback ) 
-			{
-				g_RenderingCallback( 2 );
-			}
+			if ( g_RenderingCallback )
+				g_RenderingCallback( RenderStage::PostRender );
 		}
 
 		void SetRenderingContext( RenderingContext* renderingContext ) override
@@ -252,7 +274,7 @@ namespace Pine
 			// Reset the viewport size.
 			glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
 
-			// Enable depth test just in case.
+			// Enable depth test and stencil testing
 			glEnable( GL_DEPTH_TEST );
 			glEnable( GL_STENCIL_TEST );
 
@@ -260,6 +282,11 @@ namespace Pine
 
 			if ( g_RenderingContext->m_Camera != nullptr )
 				Renderer3D->UploadCameraData( g_RenderingContext->m_Camera );
+
+			Renderer3D->SetShader( nullptr );
+
+			Renderer3D->SetWireframeMode( false );
+			Renderer3D->SetBackfaceCulling( true );
 		}
 
 		void FinishSceneRendering( ) override
@@ -267,18 +294,18 @@ namespace Pine
 			const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
 			// Setup frame buffer
-			if ( hasFrameBuffer ) 
+			if ( hasFrameBuffer )
 			{
 				g_RenderingContext->m_FrameBuffer->Bind( );
 
 				// Override rendering context's size variables.
-				if ( g_RenderingContext->m_AutoUpdateSize ) 
+				if ( g_RenderingContext->m_AutoUpdateSize )
 				{
 					g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
 					g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
 				}
 			}
-			else 
+			else
 			{
 				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 			}

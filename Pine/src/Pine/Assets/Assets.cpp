@@ -50,7 +50,7 @@ namespace Pine
 			m_AssetFactories.push_back( AssetFactory_t( { { ".lvl" }, Pine::AssetType::Level, [ ] ( ) { return new Pine::Level( ); } } ) );
 			m_AssetFactories.push_back( AssetFactory_t( { { ".ter" }, Pine::AssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } } ) );
 
-			Pine::Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );
+			Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );
 		}
 
 		AssetFactory_t* GetAssetFactoryFromFileName( const std::string& fileName )
@@ -60,7 +60,7 @@ namespace Pine
 			{
 				for ( auto& extension : factory.m_FileExtensions )
 				{
-					if ( Pine::String::EndsWith( fileName, extension ) )
+					if ( String::EndsWith( fileName, extension ) )
 					{
 						return &factory;
 					}
@@ -74,11 +74,11 @@ namespace Pine
 
 	public:
 
-		Pine::IAsset* LoadFromFile( const std::string& filePath, bool readOnly ) override
+		IAsset* LoadFromFile( const std::string& filePath, bool readOnly ) override
 		{
 			// ".asset" files are files that some assets use to store additional data for the asset,
 			// since some asset files have standards, such as model files.
-			if ( Pine::String::EndsWith( filePath, ".asset" ) )
+			if ( String::EndsWith( filePath, ".asset" ) )
 				return nullptr;
 
 			if ( m_Assets.count( filePath ) > 0 )
@@ -91,7 +91,7 @@ namespace Pine
 				// Reload the file if it has been updated, do it a bit differently for shaders though.
 				if ( asset->GetType( ) == AssetType::Shader )
 				{
-					if ( const auto shader = dynamic_cast< Pine::Shader* >( asset ) )
+					if ( const auto shader = dynamic_cast< Shader* >( asset ) )
 					{
 						bool shaderFilesUpdated = false;
 
@@ -204,17 +204,19 @@ namespace Pine
 			return loadedAssets;
 		}
 
-		Pine::IAsset* GetAsset( const std::string& assetPath ) override
+		IAsset* GetAsset( const std::string& assetPath ) override
 		{
 			if ( m_Assets.count( assetPath ) == 0 )
+			{
 				return nullptr;
+			}
 
 			return m_Assets[ assetPath ];
 		}
 
 		void MapAsset( IAsset* asset, const std::string& fakePath ) override
 		{
-			if ( Pine::String::EndsWith( fakePath, ".asset" ) )
+			if ( String::EndsWith( fakePath, ".asset" ) )
 			{
 				Log->Error( "Failed to map '" + fakePath + "', cannot map a '.asset' file." );
 
@@ -276,7 +278,7 @@ namespace Pine
 			return true;
 		}
 
-		bool DisposeAsset( Pine::IAsset* asset ) override
+		bool DisposeAsset( IAsset* asset ) override
 		{
 			if ( !asset )
 				return false;
