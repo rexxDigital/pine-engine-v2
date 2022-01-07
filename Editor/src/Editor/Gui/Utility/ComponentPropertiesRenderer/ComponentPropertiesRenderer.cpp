@@ -83,7 +83,7 @@ namespace
 			return;
 
 		int lightType = static_cast< int >( light->GetLightType( ) );
-		if ( Widgets::Combobox( "Type", lightType, "Directional\0Point light" ) )
+		if ( Widgets::Combobox( "Type", lightType, "Directional\0Point light\0Spot light" ) )
 		{
 			light->SetLightType( static_cast< Pine::LightType >( lightType ) );
 		}
@@ -94,16 +94,35 @@ namespace
 			light->SetLightColor( lightColor );
 		}
 
-		auto attenuation = light->GetAttenuation( );
-
-		if ( Widgets::SliderFloat( "Linear", attenuation.y, 0.0001f, 1.f, "%.5f" ) )
+		if ( light->GetLightType(  ) != Pine::LightType::Directional )
 		{
-			light->SetAttenuation( attenuation );
-		}
+			auto attenuation = light->GetAttenuation( );
 
-		if ( Widgets::SliderFloat( "Quadratic", attenuation.z, 0.0001f, 2.f, "%.5f" ) )
-		{
-			light->SetAttenuation( attenuation );
+			if ( Widgets::SliderFloat( "Linear", attenuation.y, 0.0001f, 1.f, "%.5f" ) )
+			{
+				light->SetAttenuation( attenuation );
+			}
+
+			if ( Widgets::SliderFloat( "Quadratic", attenuation.z, 0.0001f, 2.f, "%.5f" ) )
+			{
+				light->SetAttenuation( attenuation );
+			}
+
+			if ( light->GetLightType(  ) == Pine::LightType::SpotLight )
+			{
+				float spotlightAngle = light->GetSpotlightAngle( );
+				float spotlightSmoothness = light->GetSpotlightSmoothness( );
+
+				if ( Widgets::SliderFloat( "Spotlight angle", spotlightAngle, 0.f, 180.f, "%.1f deg" ) )
+				{
+					light->SetSpotlightAngle( spotlightAngle );
+				}
+
+				if ( Widgets::SliderFloat( "Spotlight smoothness", spotlightSmoothness, 0.f, 180.f, "%.1f deg" ) )
+				{
+					light->SetSpotlightSmoothness( spotlightSmoothness );
+				}
+			}
 		}
 	}
 

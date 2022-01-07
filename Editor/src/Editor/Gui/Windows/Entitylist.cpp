@@ -8,16 +8,22 @@
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Pine/Assets/Blueprint/Blueprint.hpp"
 
-namespace {
+namespace
+{
 
 	// HACK: To fix context menus, since IsWindowHovered is out of control
 	bool g_DidOpenContextMenu = false;
 	bool g_OpenContextMenu = false;
 
+	// HACK: For drag drop
+	bool g_WasDragDroppingEntity = false;
+	bool g_DidDropEntity = false;
+	Pine::Entity* g_DroppedEntity = nullptr;
+
 	// Since we might support selecting multiple entities in the future.
 	bool IsSelectedEntity( Pine::Entity* e )
 	{
-		for ( const auto entity : Editor::Gui::Globals::SelectedEntityPtrs ) 
+		for ( const auto entity : Editor::Gui::Globals::SelectedEntityPtrs )
 		{
 			if ( entity == e )
 			{
@@ -39,14 +45,44 @@ namespace {
 		Editor::Gui::Globals::SelectedItem = Editor::Gui::SelectedItemType::Entity;
 	}
 
-	void RenderEntity( Pine::Entity* e )
+	void RenderEntity( Pine::Entity* e, bool isDragDroppingEntity )
 	{
 		const std::string renderText = e->GetName( ) + "##" + std::to_string( e->GetId( ) );
 		const bool isSelectedEntity = IsSelectedEntity( e );
 
-		if ( e->GetChildren( ).empty( ) ) 
+		auto flags = ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth;
+
+		if ( isSelectedEntity )
+			flags |= ImGuiTreeNodeFlags_Selected;
+		if ( e->GetChildren( ).empty( ) )
+			flags |= ImGuiTreeNodeFlags_Leaf;
+
+		if ( ImGui::TreeNodeEx( renderText.c_str( ), flags ) )
 		{
-			if ( ImGui::Selectable( renderText.c_str( ), isSelectedEntity, 0 ) ) 
+			if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
+			{
+				SelectEntity( e );
+
+				g_OpenContextMenu = true;
+				g_DidOpenContextMenu = true;
+			}
+			if ( ImGui::IsItemClicked( ) )
+			{
+				SelectEntity( e );
+			}
+
+			auto& children = e->GetChildren( );
+
+			for ( auto& child : children )
+			{
+				RenderEntity( child, isDragDroppingEntity );
+			}
+
+			ImGui::TreePop( );
+		}
+		else
+		{
+			if ( ImGui::IsItemClicked( ) )
 			{
 				SelectEntity( e );
 			}
@@ -58,116 +94,65 @@ namespace {
 				g_OpenContextMenu = true;
 				g_DidOpenContextMenu = true;
 			}
-
-			if ( ImGui::BeginDragDropTarget( ) ) 
-			{
-				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) 
-				{
-					const auto entity = *reinterpret_cast<Pine::Entity**>( payload->Data );
-
-					e->AddChild( entity );
-				}
-
-				ImGui::EndDragDropTarget( );
-			}
-
-			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) )
-			{
-				ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
-
-				ImGui::Text( e->GetName( ).c_str( ) );
-
-				ImGui::EndDragDropSource( );
-			}
 		}
-		else 
+
+		if ( ImGui::BeginDragDropTarget( ) )
 		{
-			auto flags = ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanFullWidth;
-
-			if ( isSelectedEntity )
-				flags |= ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected;
-
-			if ( ImGui::TreeNodeEx( renderText.c_str( ), flags ) ) 
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) )
 			{
-				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
-				{
-					SelectEntity( e );
-
-					g_OpenContextMenu = true;
-					g_DidOpenContextMenu = true;
-				}
-
-				if ( ImGui::IsItemClicked( ) ) 
-				{
-					SelectEntity( e );
-				}
-
-				auto& children = e->GetChildren( );
-
-				for ( auto& child : children ) 
-				{
-					RenderEntity( child );
-				}
-
-				ImGui::TreePop( );
-			}
-			else 
-			{
-				if ( ImGui::IsItemClicked( ) ) 
-				{
-					SelectEntity( e );
-				}
-
-				if ( ImGui::IsItemClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) )
-				{
-					SelectEntity( e );
-
-					g_OpenContextMenu = true;
-					g_DidOpenContextMenu = true;
-				}
+				const auto entity = *static_cast< Pine::Entity** >( payload->Data );
+				e->AddChild( entity );
 			}
 
-			if ( ImGui::BeginDragDropTarget( ) ) 
-			{
-				if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) 
-				{
-					const auto entity = *static_cast<Pine::Entity**>( payload->Data );
-
-					e->AddChild( entity );
-				}
-
-				ImGui::EndDragDropTarget( );
-			}
-
-			if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) 
-			{
-				ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
-
-				ImGui::Text( e->GetName( ).c_str( ) );
-
-				ImGui::EndDragDropSource( );
-			}
+			ImGui::EndDragDropTarget( );
 		}
+
+		ImGui::PopStyleVar( 2 );
+
+		if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) )
+		{
+			ImGui::SetDragDropPayload( "Entity", &e, sizeof( Pine::IAsset* ), 0 );
+
+			ImGui::Text( e->GetName( ).c_str( ) );
+
+			ImGui::EndDragDropSource( );
+		}
+
+		ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f, 2.f ) );
+		ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 8.f, 0.f ) );
 	}
 
 	void EntityMoveSeparator( int entityIndex )
 	{
-		ImGui::Separator( );
+		ImGui::PopStyleVar( 2 );
 
-		if ( ImGui::BeginDragDropTarget( ) ) 
+		const auto& mousePos = ImGui::GetMousePos( );
+		const auto& avSize = ImGui::GetWindowSize( );
+		const auto& windowDelta = ImGui::GetWindowPos( );
+
+		// Couldn't use ImGui::GetWindowDrawList( ) for whatever reason.
+		auto cursorPos = ImGui::GetCursorPos( );
+
+		cursorPos.x += windowDelta.x;
+		cursorPos.y += windowDelta.y;
+
+		if ( fabsf( cursorPos.y - mousePos.y ) < 8.f )
 		{
-			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) 
+			ImGui::GetForegroundDrawList( )->AddRect( ImVec2( cursorPos.x, cursorPos.y - 4.f ), ImVec2( cursorPos.x + avSize.x - 1.f, cursorPos.y + 4.f ), ImColor( 255, 255, 0 ) );
+
+			if ( g_DidDropEntity )
 			{
-				const auto entity = *static_cast<Pine::Entity**>( payload->Data );
+				const auto entity = g_DroppedEntity;
 
 				if ( entityIndex >= Pine::EntityList->GetEntities( ).size( ) )
 					entityIndex = Pine::EntityList->GetEntities( ).size( ) - 1;
 
 				Pine::EntityList->MoveEntity( entity, entityIndex );
 			}
-
-			ImGui::EndDragDropTarget( );
 		}
+
+		ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f, 2.f ) );
+		ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 8.f, 0.f ) );
 	}
 
 }
@@ -176,6 +161,9 @@ void Editor::Gui::Windows::RenderEntitylist( )
 {
 	if ( !ShowEntitylist )
 		return;
+
+	ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.f, 2.f ) );
+	ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 8.f, 0.f ) );
 
 	ImGui::Begin( "Entity list", &ShowEntitylist );
 
@@ -191,33 +179,54 @@ void Editor::Gui::Windows::RenderEntitylist( )
 		}
 	}
 
+	// We'll have to hack a bit more since I can't use BeginDragDropTarget, since we're not drag dropping on any ImGui widget.
 	if ( isDragDroppingEntity )
-		EntityMoveSeparator( 0 );
+	{
+		g_WasDragDroppingEntity = true;
+		g_DroppedEntity = *static_cast< Pine::Entity** >( ImGui::GetDragDropPayload( )->Data );
+	}
+	else
+	{
+		if ( g_WasDragDroppingEntity )
+		{
+			isDragDroppingEntity = true;
+
+			g_WasDragDroppingEntity = false;
+			g_DidDropEntity = true;
+		}
+	}
+
+	if ( isDragDroppingEntity )
+		EntityMoveSeparator( 1 ); // since editor entity is always 0, we begin at 1
 
 	int entityRenderIndex = 0;
 
-	for ( auto& entity : entities ) 
+	for ( auto& entity : entities )
 	{
 		entityRenderIndex++;
 
 		// Since we render children for each parent entity instead.
-		if ( entity.GetParent( ) != nullptr ) 
+		if ( entity.GetParent( ) != nullptr )
 		{
 			continue;
 		}
 
-		if ( &entity == EditorEntity::GetEntity( ) ) 
+		if ( &entity == EditorEntity::GetEntity( ) )
 		{
 			continue;
 		}
 
-		RenderEntity( Pine::EntityList->GetEntity( entityRenderIndex - 1 ) );
+		RenderEntity( Pine::EntityList->GetEntity( entityRenderIndex - 1 ), isDragDroppingEntity );
 
 		if ( isDragDroppingEntity )
 			EntityMoveSeparator( entityRenderIndex );
 	}
 
-	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) 
+	g_DidDropEntity = false;
+
+	ImGui::PopStyleVar( 2 );
+
+	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
 	{
 		Globals::SelectedEntityPtrs.clear( );
 		Globals::SelectedAssetPtrs.clear( );
@@ -230,7 +239,7 @@ void Editor::Gui::Windows::RenderEntitylist( )
 		g_OpenContextMenu = false;
 	}
 
-	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu ) 
+	if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu )
 	{
 		Globals::SelectedEntityPtrs.clear( );
 		Globals::SelectedAssetPtrs.clear( );
@@ -238,17 +247,17 @@ void Editor::Gui::Windows::RenderEntitylist( )
 		ImGui::OpenPopup( "EntityContextMenu" );
 	}
 
-	if ( Globals::SelectedEntityPtrs.size( ) == 1 ) 
+	if ( Globals::SelectedEntityPtrs.size( ) == 1 )
 	{
 		Pine::Entity* e = Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RemoveEntityKey ) ) 
+		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RemoveEntityKey ) )
 		{
 			Pine::EntityList->DeleteEntity( e );
 			Globals::SelectedEntityPtrs.clear( );
 		}
 
-		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::DuplicateEntity ) ) 
+		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::DuplicateEntity ) )
 		{
 			Pine::Blueprint blueprint;
 
@@ -259,13 +268,14 @@ void Editor::Gui::Windows::RenderEntitylist( )
 			blueprint.Dispose( );
 
 			// We'll have to manually assign the parent as the blueprint won't be able to do that, as it wouldn't make any sense.
-			if ( e->GetParent( ) != nullptr ) {
+			if ( e->GetParent( ) != nullptr )
+			{
 				e->GetParent( )->AddChild( newEntity );
 			}
 		}
 	}
 
-	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) ) 
+	if ( ImGui::BeginPopup( "EntityContextMenu", 0 ) )
 	{
 		const bool isTargetingEntity = Editor::Gui::Globals::SelectedEntityPtrs.size( ) == 1;
 
@@ -275,7 +285,7 @@ void Editor::Gui::Windows::RenderEntitylist( )
 		if ( isTargetingEntity )
 			e = Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) ) 
+		if ( ImGui::MenuItem( "Remove", nullptr, false, isTargetingEntity ) )
 		{
 			Pine::EntityList->DeleteEntity( e );
 			Globals::SelectedEntityPtrs.clear( );
@@ -283,7 +293,7 @@ void Editor::Gui::Windows::RenderEntitylist( )
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) ) 
+		if ( ImGui::MenuItem( "Duplicate", nullptr, false, isTargetingEntity ) )
 		{
 			Pine::Blueprint blueprint;
 
@@ -295,13 +305,13 @@ void Editor::Gui::Windows::RenderEntitylist( )
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) ) 
+		if ( ImGui::MenuItem( "Create a child", nullptr, false, isTargetingEntity ) )
 		{
 			e->CreateChild( );
 			ImGui::CloseCurrentPopup( );
 		}
 
-		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e != nullptr && e->GetParent( ) != nullptr ) ) 
+		if ( ImGui::MenuItem( "Unlink from parent", nullptr, false, isTargetingEntity && e != nullptr && e->GetParent( ) != nullptr ) )
 		{
 			e->GetParent( )->RemoveChild( e );
 
@@ -310,7 +320,7 @@ void Editor::Gui::Windows::RenderEntitylist( )
 
 		ImGui::Separator( );
 
-		if ( ImGui::MenuItem( "Create entity" ) ) 
+		if ( ImGui::MenuItem( "Create entity" ) )
 		{
 			Pine::EntityList->CreateEntity( );
 			ImGui::CloseCurrentPopup( );

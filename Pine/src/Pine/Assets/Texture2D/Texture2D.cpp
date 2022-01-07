@@ -61,7 +61,7 @@ bool Pine::Texture2D::LoadFromFile( )
 {
 	int width, height, channels;
 
-	const auto data = stbi_load( m_FilePath.string( ).c_str( ), &width, &height, &channels, 0 );
+	const auto data = stbi_load( m_FilePath.string( ).c_str( ), &width, &height, &channels, 4 );
 
 	if ( !data )
 	{
@@ -78,12 +78,14 @@ bool Pine::Texture2D::LoadFromFile( )
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
+	channels = 4;
+
 	// clean readable code :tm:
 	const int format = channels == 1 ? GL_R8 : channels == 4 ? GL_RGBA : GL_RGB;
-
+	
 	glTexImage2D( GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data );
 
-	glGenerateMipmap( GL_TEXTURE_2D );
+//	glGenerateMipmap( GL_TEXTURE_2D );
 
 	m_Width = width;
 	m_Height = height;

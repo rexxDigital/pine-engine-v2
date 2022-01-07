@@ -30,6 +30,10 @@ namespace Editor::Gui::Windows {
 	void RenderLevelSettings( );
 
 	void RenderConsole( );
+
+	void RenderPicPanel( );
+
+	void RenderSettings( );
 	
 }
 

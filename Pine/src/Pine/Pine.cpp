@@ -29,28 +29,40 @@ namespace
 
 	float g_WindowTime = 0.0f;
 
-	double GetTimeAsDouble( )
-	{
-		using namespace std::chrono;
-		using SecondsFP = duration<double>;
-		return duration_cast< SecondsFP >( high_resolution_clock::now( ).time_since_epoch( ) ).count( );
-	}
+	double g_LastFrameWindowTime = 0;
+	double g_LastFrameTime = 0;
+
+	double g_LastUpdateWindowTime = 0;
+	double g_LastUpdateTime = 0;
 
 	void UpdateThread( )
 	{
-		double lastTime = GetTimeAsDouble( );
-
 		while ( !g_StopUpdateThread )
 		{
-			const double currentTime = GetTimeAsDouble( );
-			const float deltaTime = static_cast< float >( currentTime - lastTime );
+			const double currentTime = glfwGetTime( );
+			const float deltaTime = static_cast< float >( currentTime - g_LastUpdateWindowTime );
+
+			g_LastUpdateTime = deltaTime;
 
 			if ( g_AllowUpdates )
 				Pine::EntityList->RunOnUpdate( deltaTime );
 
-			lastTime = currentTime;
+			g_LastUpdateWindowTime = currentTime;
 			std::this_thread::sleep_for( std::chrono::milliseconds( static_cast< int >( 1000.f / TickRate ) ) );
 		}
+	}
+
+	double CalculateFrameTime( )
+	{
+		// Calculate delta time
+		g_WindowTime = glfwGetTime( );
+
+		const double deltaTime = g_WindowTime - g_LastFrameWindowTime;
+
+		g_LastFrameWindowTime = g_WindowTime;
+		g_LastFrameTime = deltaTime;
+
+		return deltaTime;
 	}
 }
 
@@ -67,6 +79,21 @@ bool Pine::IsAllowingUpdates( )
 float Pine::GetTime( )
 {
 	return g_WindowTime;
+}
+
+float Pine::GetFrameTime( )
+{
+	return g_LastFrameTime;
+}
+
+float Pine::GetUpdateTime( )
+{
+	return g_LastUpdateWindowTime;
+}
+
+int Pine::GetFPS( )
+{
+	return 1.f / g_LastFrameTime;
 }
 
 Pine::PineInstance* Pine::GetPineInstance( )
@@ -160,25 +187,22 @@ void Pine::Run( )
 
 	const auto window = Window::Internal::GetWindowPointer( );
 
-	glEnable( GL_CULL_FACE );
-	glCullFace( GL_BACK );
-
-	double lastFrameTime = 0;
-
 	while ( !glfwWindowShouldClose( window ) )
 	{
-		// Calculate delta time
-		g_WindowTime = glfwGetTime( );
-		const double deltaTime = g_WindowTime - lastFrameTime;
-		lastFrameTime = g_WindowTime;
+		const auto deltaTime = CalculateFrameTime( );
 
+		// Update stuff on a per frame basis
 		Input->Update( );
 		PhysicsManager->Update( deltaTime );
 
+		// Render stuff
 		RenderManager->Render( );
 		Gui->Render( );
 
+		// Swap the buffered we just rendered to and present it to the user
 		glfwSwapBuffers( window );
+
+		// Process all events in the message pump for the next frame
 		glfwPollEvents( );
 	}
 

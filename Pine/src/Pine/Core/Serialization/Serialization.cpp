@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "../../Assets/Assets.hpp"
+#include "../Log/Log.hpp"
 
 nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileName )
 {
@@ -19,7 +20,16 @@ nlohmann::json Pine::Serialization::LoadJSONFromFile( const std::string& fileNam
 	}
 
 	nlohmann::json j;
-	stream >> j;
+
+	try
+	{
+		stream >> j;
+	}
+	catch ( std::exception& e )
+	{
+		Log->Warning( "Failure parsing JSON, " + std::string( e.what( ) ) );
+	}
+
 	stream.close( );
 
 	return j;

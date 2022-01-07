@@ -6,7 +6,6 @@
 # Ignore the compiled run time
 *.dll
 wp/
-PicturePanel.cpp
 
 # User-specific files
 *.rsuser

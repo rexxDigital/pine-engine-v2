@@ -11,6 +11,7 @@
 #include "../../Components/Transform/Transform.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/Camera/Camera.hpp"
+#include <glm/trigonometric.hpp>
 
 namespace Pine
 {
@@ -26,10 +27,11 @@ namespace Pine
 		Shader* g_TerrainShader = nullptr;
 		UniformVariable* g_ShaderTransformationVariable = nullptr;
 
-		int g_CurrentShaderVersion = 0;
+		std::uint32_t g_CurrentShaderVersion = 0;
 
 		bool g_BackfaceCullingEnabled = true;
 		bool g_WireframeModeEnabled = false;
+		bool g_BlendingEnabled = false;
 
 		// The texture we use if there is no texture applied, 1x1 white.
 		Texture2D* g_DefaultTexture = nullptr;
@@ -76,25 +78,15 @@ namespace Pine
 			// Figure out the correct shader version
 			std::uint32_t shaderVersion = material->GetShaderProperties( );
 
-			// Adjust depending on rendering mode
-			switch ( material->GetRenderingMode( ) )
-			{
-			case MatRenderingMode::Discard:
+			if ( material->GetRenderingMode( ) == MatRenderingMode::Discard )
 				shaderVersion |= TransparencyDiscard;
-				break;
-			case MatRenderingMode::Transparent:
-				shaderVersion |= TransparencyBlend;
-				break;
-			default: break;
-			}
 
 			if ( material->GetShader( ) != g_CurrentShader || g_CurrentShaderVersion != shaderVersion )
-			{
 				SetShader( material->GetShader( ), shaderVersion );
-			}
 
 			SetBackfaceCulling( !( material->GetRenderFlags( ) & Pine::RenderFlags::DisableBackfaceCulling ) );
 			SetWireframeMode( material->GetRenderFlags( ) & Pine::RenderFlags::RenderWireframe );
+			SetBlending( material->GetRenderingMode( ) == MatRenderingMode::Transparent );
 
 			if ( !g_CurrentShader )
 				return;
@@ -191,6 +183,27 @@ namespace Pine
 			RenderManager->GetRenderingContext( )->m_DrawCalls++;
 		}
 
+		void RenderMeshInstanced( int count, glm::mat4* data ) override
+		{
+			if ( g_CurrentRenderMesh == nullptr )
+				return;
+
+			memcpy_s( UniformBuffers::GetTransformBufferData( )->transform, sizeof( glm::mat4 ) * 32, data, sizeof( glm::mat4 ) * count );
+
+			UniformBuffers::GetTransformDataUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::TransformData_t ), data );
+
+			if ( g_CurrentRenderMesh->HasElementBuffer( ) )
+			{
+				glDrawElementsInstanced( GL_TRIANGLES, g_CurrentRenderMesh->GetRenderCount( ), GL_UNSIGNED_INT, nullptr, count );
+			}
+			else
+			{
+				glDrawArraysInstanced( GL_TRIANGLES, 0, g_CurrentRenderMesh->GetRenderCount( ), count );
+			}
+
+			RenderManager->GetRenderingContext( )->m_DrawCalls++;
+		}
+
 		void PrepareTerrain( Terrain* terrain ) override
 		{
 			g_TerrainShader->Use( );
@@ -242,9 +255,11 @@ namespace Pine
 			const int lightSlot = light->GetLightType( ) == LightType::Directional ? 0 : 1 + g_CurrentDynamicLightCount;
 
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->Position;
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = normalize( light->GetParent( )->GetTransform( )->Rotation );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = normalize( glm::radians( light->GetParent( )->GetTransform( )->Rotation ) );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].color = light->GetLightColor( );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].attenuation = light->GetAttenuation( );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = .5f; // light->GetLightType( ) == LightType::SpotLight ? glm::cos( glm::radians( light->GetSpotlightAngle( ) ) ) : -1.f;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = light->GetSpotlightSmoothness( );
 
 			if ( light->GetLightType( ) != LightType::Directional )
 				g_CurrentDynamicLightCount++;
@@ -257,6 +272,8 @@ namespace Pine
 				light.color = glm::vec3( 0.f, 0.f, 0.f );
 				light.position = glm::vec3( 0.f, 0.f, 0.f );
 				light.attenuation = glm::vec3( 0.f, 0.f, 0.f );
+				light.cutOffAngle = 180.0f;
+				light.cutOffSmoothness = 0.0f;
 			}
 
 			g_CurrentDynamicLightCount = 0;
@@ -309,7 +326,21 @@ namespace Pine
 			g_WireframeModeEnabled = value;
 		}
 
-		void SetShader( Shader* shader, int version ) override
+		void SetBlending( bool value ) override
+		{
+			if ( g_BlendingEnabled == value ) return;
+
+			if ( value )
+				glEnable( GL_BLEND );
+			else
+				glDisable( GL_BLEND );
+
+			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+			g_BlendingEnabled = value;
+		}
+
+		void SetShader( Shader* shader, std::uint32_t version ) override
 		{
 			if ( !shader )
 			{

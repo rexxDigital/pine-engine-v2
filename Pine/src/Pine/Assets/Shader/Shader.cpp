@@ -107,6 +107,11 @@ Pine::ShaderProgram* Pine::Shader::CompileShaderProgram( nlohmann::json& j, cons
 			{
 				shaderProgram->SetupUniformBuffer( UniformBuffers::GetMaterialUniformBuffer( ), item.value( ) );
 			}
+
+			if ( item.key( ) == "TransformData" )
+			{
+				shaderProgram->SetupUniformBuffer( UniformBuffers::GetTransformDataUniformBuffer( ), item.value( ) );
+			}
 		}
 	}
 
@@ -147,6 +152,11 @@ Pine::UniformVariable* Pine::Shader::GetUniformVariable( const std::string& vari
 	return m_SelectedShaderProgram->GetUniformVariable( variableName );
 }
 
+bool Pine::Shader::GetSupportsInstancedRendering( ) const
+{
+	return m_SupportsInstancedRendering;
+}
+
 bool Pine::Shader::LoadFromFile( )
 {
 	auto j = Serialization::LoadJSONFromFile( m_FilePath.string( ) );
@@ -166,6 +176,9 @@ bool Pine::Shader::LoadFromFile( )
 	{
 		shaderFileAsset->SetMapped( true );
 	}
+
+	if ( j.contains( "SupportsInstancedRendering" ) )
+		m_SupportsInstancedRendering = j[ "SupportsInstancedRendering" ].get<bool>( );
 
 	return true;
 }

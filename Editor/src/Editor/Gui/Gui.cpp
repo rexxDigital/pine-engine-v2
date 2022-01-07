@@ -22,19 +22,15 @@ namespace {
 
 		ImGui::PushStyleVar( ImGuiStyleVar_WindowRounding, 0.0f );
 		ImGui::PushStyleVar( ImGuiStyleVar_WindowBorderSize, 0.0f );
-
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
 		ImGui::PushStyleVar( ImGuiStyleVar_WindowPadding, ImVec2( 0.0f, 0.0f ) );
 
-		ImGui::Begin( "PineDockSpaceWindow", nullptr, window_flags );
+		ImGui::Begin( "PineDockSpaceWindow", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus );
 
 		ImGui::PopStyleVar( 3 );
 
 		const ImGuiID dockSpaceID = ImGui::GetID( "DockSpace" );
 
-		ImGui::DockSpace( dockSpaceID, ImVec2( 0.0f, 0.f ), ImGuiDockNodeFlags_None );
+		ImGui::DockSpace( dockSpaceID, ImVec2( 0.0f, 0.f ), 0 );
 
 		ImGui::End( );
 	}
@@ -52,8 +48,9 @@ namespace {
 
 		SetupDockspace( );
 
-		ImGui::ShowDemoWindow( );
+	//	ImGui::ShowDemoWindow( );
 		Editor::Gui::MainMenuBar::Render( );
+
 
 		// Because ImGui selects the last window within a docking space as the selected space,
 		// I'll just call them in a order that makes the window I want to be shown by default to be shown first.
@@ -69,6 +66,10 @@ namespace {
 		Editor::Gui::Windows::RenderProperties( ); // show 'properties' as the selected window.
 		
 		Editor::Gui::Windows::RenderDebugWindows( );
+
+		Editor::Gui::Windows::RenderPicPanel( );
+
+		Editor::Gui::Windows::RenderSettings( );
 	}
 
 }

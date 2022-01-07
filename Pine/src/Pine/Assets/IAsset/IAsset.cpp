@@ -19,7 +19,8 @@ const std::string& Pine::IAsset::GetFileName( ) const
 	return m_FileName;
 }
 
-const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const {
+const std::string& Pine::IAsset::GetAbsoluteFilePath( ) const
+{
 	return m_AbsoluteFilePath;
 }
 
@@ -28,7 +29,8 @@ Pine::AssetType Pine::IAsset::GetType( ) const
 	return m_Type;
 }
 
-void Pine::IAsset::UpdateLastWriteTime( ) {
+void Pine::IAsset::UpdateLastWriteTime( )
+{
 	try
 	{
 		// Apparently only this could break.
@@ -41,16 +43,19 @@ void Pine::IAsset::UpdateLastWriteTime( ) {
 	}
 }
 
-bool Pine::IAsset::HasBeenUpdated( ) const {
+bool Pine::IAsset::HasBeenUpdated( ) const
+{
 	const auto currentWriteTime = std::filesystem::last_write_time( m_FilePath );
 	return currentWriteTime.time_since_epoch( ) != m_LastWriteTime;
 }
 
-bool Pine::IAsset::GetReadOnly( ) const {
+bool Pine::IAsset::GetReadOnly( ) const
+{
 	return m_ReadOnly;
 }
 
-void Pine::IAsset::SetReadOnly( bool value ) {
+void Pine::IAsset::SetReadOnly( bool value )
+{
 	m_ReadOnly = value;
 }
 
@@ -72,4 +77,9 @@ bool Pine::IAsset::IsMapped( ) const
 void Pine::IAsset::SetMapped( bool value )
 {
 	m_IsMapped = value;
+}
+
+Pine::AssetState Pine::IAsset::GetAssetState( ) const
+{
+	return m_AssetState;
 }

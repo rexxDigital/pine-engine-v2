@@ -6,6 +6,7 @@
 
 #include "Controllers/GameController/GameController.hpp"
 #include "Controllers/RGBExperiment/RGBExperiment.hpp"
+#include "Controllers/InstancedRenderingTest/InstancedRenderingTest.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 
 extern "C" {
@@ -15,6 +16,7 @@ extern "C" {
 
 		handle->RegisterNativeScript( "GameController", sizeof( GameController ), [ ] { return new GameController( ); } );
 		handle->RegisterNativeScript( "RGBExperiment", sizeof( RGBExperiment ), [ ] { return new RGBExperiment( ); } );
+		handle->RegisterNativeScript( "InstancedRenderingTest", sizeof( InstancedRenderingTest ), [ ] { return new InstancedRenderingTest( ); } );
 
 		return true;
 	}

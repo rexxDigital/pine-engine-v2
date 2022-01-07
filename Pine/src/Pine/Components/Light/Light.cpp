@@ -38,6 +38,26 @@ const glm::vec3& Pine::Light::GetAttenuation( ) const
 	return m_Attenuation;
 }
 
+void Pine::Light::SetSpotlightAngle( float value )
+{
+	m_SpotLightAngle = value;
+}
+
+float Pine::Light::GetSpotlightAngle( ) const
+{
+	return m_SpotLightAngle;
+}
+
+void Pine::Light::SetSpotlightSmoothness( float value )
+{
+	m_SpotLightSmoothness = value;
+}
+
+float Pine::Light::GetSpotlightSmoothness( ) const
+{
+	return m_SpotLightSmoothness;
+}
+
 void Pine::Light::OnSetup( ) { }
 
 void Pine::Light::OnUpdate( float deltaTime ) { }
@@ -47,6 +67,8 @@ void Pine::Light::SaveToJson( nlohmann::json& j )
 	Serialization::SaveVec3( j[ "light_color" ], m_LightColor );
 	Serialization::SaveVec3( j[ "anno" ], m_Attenuation );
 	j[ "light_type" ] = m_LightType;
+	j[ "angle" ] = m_SpotLightAngle;
+	j[ "smoothness" ] = m_SpotLightSmoothness;
 }
 
 void Pine::Light::LoadFromJson( nlohmann::json& j )
@@ -54,5 +76,10 @@ void Pine::Light::LoadFromJson( nlohmann::json& j )
 	m_LightColor = Serialization::LoadVec3( j, "light_color" );
 	m_Attenuation = Serialization::LoadVec3( j, "anno" );
 	m_LightType = static_cast< Pine::LightType >( j[ "light_type" ].get<int>( ) );
+
+	if ( j.contains( "angle" ) )
+		m_SpotLightAngle = j[ "angle" ].get<float>( );
+	if ( j.contains( "smoothness" ) )
+		m_SpotLightSmoothness = j[ "smoothness" ].get<float>( );
 }
 

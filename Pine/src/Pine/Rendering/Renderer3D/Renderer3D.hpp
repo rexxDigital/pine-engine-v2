@@ -12,7 +12,7 @@ namespace Pine
 	{
 	public:
 		// Set/Get the shader used for rendering
-		virtual void SetShader( Shader* shader, int version = 0 ) = 0;
+		virtual void SetShader( Shader* shader, std::uint32_t version = 0 ) = 0;
 		virtual Shader* GetShader( ) = 0;
 
 		// OpenGL wrappers
@@ -21,6 +21,7 @@ namespace Pine
 		virtual void SetDepthTesting( bool value ) = 0;
 		virtual void SetWireframeMode( bool value ) = 0;
 		virtual void SetBackfaceCulling( bool value ) = 0;
+		virtual void SetBlending( bool value ) = 0;
 
 		// Used for very early debugging purposes.
 		virtual void RenderVertexArray( const VertexArray* vao, int renderCount, bool indices ) = 0;
@@ -31,6 +32,7 @@ namespace Pine
 
 		// Renders the prepared mesh via the transformation matrix.
 		virtual void RenderMesh( const glm::mat4& transformationMatrix ) = 0;
+		virtual void RenderMeshInstanced( int count, glm::mat4* data ) = 0;
 
 		// Terrain stuff
 		virtual void PrepareTerrain( Terrain* terrain ) = 0;
@@ -50,6 +52,4 @@ namespace Pine
 		virtual void PrepareLightData( Light* light ) = 0;
 		virtual void UploadLightData( ) = 0;
 	};
-
-
 }

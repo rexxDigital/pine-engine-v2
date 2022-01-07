@@ -9,8 +9,7 @@ namespace Pine
 	enum ShaderProperties
 	{
 		TransparencyDiscard = ( 1 << 0 ),
-		TransparencyBlend = ( 1 << 1 ),
-		PerformanceFast = ( 1 << 2 )
+		PerformanceFast = ( 1 << 1 )
 	};
 
 	class Shader : public IAsset
@@ -23,6 +22,8 @@ namespace Pine
 
 		std::unordered_map<std::uint32_t, int> m_ShaderPropertiesMap;
 
+		bool m_SupportsInstancedRendering = false;
+
 		ShaderProgram* CompileShaderProgram( nlohmann::json& j, const std::vector<std::string>& versionMacros );
 	public:
 		Shader( );
@@ -31,6 +32,8 @@ namespace Pine
 
 		void Use( int version = 0 );
 		UniformVariable* GetUniformVariable( const std::string& variableName );
+
+		bool GetSupportsInstancedRendering( ) const;
 
 		bool LoadFromFile( ) override;
 		bool SaveToFile( ) override;

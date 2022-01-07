@@ -13,6 +13,7 @@
 #include "Pine/Core/Log/Log.hpp"
 
 void UpdateAssetCache( );
+void InitializePicPanel( );
 
 void Editor::Setup( ) {
 
@@ -27,6 +28,8 @@ void Editor::Setup( ) {
 
 	Gui::Setup( );
 	Gui::Utility::AssetIconGen::Update( );
+
+	InitializePicPanel( );
 
 	EditorEntity::Create( );
 

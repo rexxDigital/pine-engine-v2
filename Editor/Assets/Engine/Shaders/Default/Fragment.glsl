@@ -11,6 +11,8 @@ struct Light_t {
 	vec3 rotation;
 	vec3 color;
 	vec3 attenuation;
+	float cutOffAngle;
+	float cutOffSmoothness;
 };
 
 layout( std140 ) uniform Lights {
@@ -43,7 +45,7 @@ vec3 CalculateBaseLightning( vec3 lightDirection, int lightNr ) {
 	vec3 halfwayDir = normalize( lightDirection + cameraDirection );
 	float dampedFactor = pow( max( dot( normal, halfwayDir ), 0.0 ), material.shininiess );
 
-	vec3 ambient = ( ( lights[ lightNr ].color * ( material.diffuseColor * material.ambientColor ) ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz );
+	vec3 ambient = material.diffuseColor; // ( ( lights[ lightNr ].color * ( material.diffuseColor * material.ambientColor ) ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz );
 	vec3 diffuse = ( ( lights[ lightNr ].color * material.diffuseColor ) * texture( materialSamplers.diffuse, uv * material.textureScale ).xyz ) * brightness;
 	vec3 specular = ( material.specularColor * dampedFactor * lights[ lightNr ].color ) * texture( materialSamplers.specular, uv ).xyz;
 
@@ -51,7 +53,7 @@ vec3 CalculateBaseLightning( vec3 lightDirection, int lightNr ) {
 }
 
 vec3 CalculateDirectionalLight( int lightNr ) {
-	vec3 lightDirection = normalize( lights[ lightNr ].position - worldPos.xyz );
+	vec3 lightDirection = normalize( lights[ lightNr ].rotation );
 
 	return CalculateBaseLightning( lightDirection, lightNr );
 }
@@ -60,13 +62,19 @@ vec3 CalculatePointLight( int lightNr ) {
 	vec3 lightDirection = normalize( lights[ lightNr ].position - worldPos.xyz );
 	vec3 color = CalculateBaseLightning( lightDirection, lightNr );
 
+	return vec3( lights[ lightNr ].rotation.x );
+
 	float distance = length( lights[ lightNr ].position - worldPos );
 	float attenuation = 1.0 / ( lights[ lightNr ].attenuation[ 0 ] + lights[ lightNr ].attenuation[ 1 ] * distance +
 		lights[ lightNr ].attenuation[ 2 ] * ( distance * distance ) );
 
+	float theta = dot( lightDirection, normalize( -lights[ lightNr ].rotation ) );
+	float cutOffAng = lights[ lightNr ].cutOffAngle;
+
 	attenuation = max( attenuation, 0.f );
 	attenuation = min( attenuation, 1.f );
 
+	color *= max(sign(theta - cutOffAng), 0.0);
 	color *= attenuation;
 	color *= lights[ lightNr ].color;
 
@@ -80,10 +88,6 @@ void main( void ) {
 			discard;
 	#endif
 
-	#if defined(TRANSPARENCY_TRANSPARENT) 
-		
-	#endif
-
 	// calculate the main directional light's lightning
 	vec4 directionalLight = vec4( CalculateDirectionalLight( 0 ), 1.0f );
 
@@ -92,7 +96,7 @@ void main( void ) {
 	// TODO: change this to a loop depending on the current amount of
 	// dynamic lights.
 
-#if defined(PERFORMACE_FAST)
+#if defined(PERFORMACE_FAST) // Just avoid point lights all together lol
 	vec4 pointLight1 = vec4( 0.0f );
 	vec4 pointLight2 = vec4( 0.0f );
 #else

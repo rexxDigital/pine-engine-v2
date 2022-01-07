@@ -12,6 +12,7 @@
 #include "Pine/Rendering/RenderManager/RenderManager.hpp"
 #include "Pine\OpenGL\FrameBuffer\FrameBuffer.hpp"
 #include "Pine/Components/Components.hpp"
+#include "Pine/Core/String/String.hpp"
 
 namespace {
 
@@ -168,39 +169,47 @@ void Editor::Gui::Utility::AssetIconGen::Update( ) {
 			icon = m_Icons[ asset->GetPath( ).string( ) ].get( );
 		}
 
-		// Update the asset icon, depending on it's type:
-		switch ( asset->GetType( ) ) {
-		case Pine::AssetType::Texture2D:
-			icon->m_Texture2D = dynamic_cast< Pine::Texture2D* >( asset );
-			break;
-		case Pine::AssetType::Texture3D:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\cube_map.png" );
-			break;
-		case Pine::AssetType::Material:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\image.png" );
-			break;
-		case Pine::AssetType::Blueprint:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\blueprint.png" );
-			break;
-		case Pine::AssetType::Level:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\level.png" );
-			break;
-		case Pine::AssetType::Model:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\model.png" );
-			break;
-		case Pine::AssetType::Shader:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\shader.png" );
-			break;
-		case Pine::AssetType::Script:
+		if ( asset->GetType( ) == Pine::AssetType::Invalid && Pine::String::EndsWith( icon->m_Path, ".dll" ) )
+		{
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\code-file.png" );
-			break;
-		case Pine::AssetType::Terrain:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\terrain.png" );
-			break;
-		default:
-			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
-			break;
 		}
+		else
+		{
 
+			// Update the asset icon, depending on it's type:
+			switch ( asset->GetType( ) )
+			{
+			case Pine::AssetType::Texture2D:
+				icon->m_Texture2D = dynamic_cast< Pine::Texture2D* >( asset );
+				break;
+			case Pine::AssetType::Texture3D:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\cube_map.png" );
+				break;
+			case Pine::AssetType::Material:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\image.png" );
+				break;
+			case Pine::AssetType::Blueprint:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\blueprint.png" );
+				break;
+			case Pine::AssetType::Level:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\level.png" );
+				break;
+			case Pine::AssetType::Model:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\model.png" );
+				break;
+			case Pine::AssetType::Shader:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\shader.png" );
+				break;
+			case Pine::AssetType::Script:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\code-file.png" );
+				break;
+			case Pine::AssetType::Terrain:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\terrain.png" );
+				break;
+			default:
+				icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
+				break;
+			}
+		}
 	}
 }

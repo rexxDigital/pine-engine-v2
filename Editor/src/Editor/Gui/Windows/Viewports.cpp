@@ -21,6 +21,7 @@
 
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
+#include "Pine/Pine.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 #include "Pine/Core/Math/Math.hpp"
 #include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
@@ -29,6 +30,18 @@
 
 namespace
 {
+	// https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+	void DecomposeMatrix( const glm::mat4& m, glm::vec3& pos, glm::quat& rot, glm::vec3& scale )
+	{
+		pos = m[ 3 ];
+		for ( int i = 0; i < 3; i++ )
+			scale[ i ] = glm::length( glm::vec3( m[ i ] ) );
+		const glm::mat3 rotMtx(
+			glm::vec3( m[ 0 ] ) / scale[ 0 ],
+			glm::vec3( m[ 1 ] ) / scale[ 1 ],
+			glm::vec3( m[ 2 ] ) / scale[ 2 ] );
+		rot = glm::quat_cast( rotMtx );
+	}
 
 	bool g_StartedPlaying = false;
 
@@ -199,14 +212,14 @@ void Editor::Gui::Windows::RenderViewports( )
 			g_StartedPlaying = false;
 		}
 
-		if ( ImGui::Begin( "Game", &ShowGameViewport, ImGuiWindowFlags_MenuBar ) )
+		if ( ImGui::Begin( "Game", &ShowGameViewport, 0 ) )
 		{
 			Globals::IsInLevelView = false;
 
-			ShowViewportControls( false );
+//			ShowViewportControls( false );
 
 			const auto avSize = ImGui::GetContentRegionAvail( );
-			const auto cursorScreen = ImGui::GetCursorScreenPos( );
+			const auto cursorScreen = ImGui::GetCursorPos( );
 
 			if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
 			{
@@ -214,7 +227,7 @@ void Editor::Gui::Windows::RenderViewports( )
 			}
 			else
 			{
-				ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorScreen.x + 10.f, cursorScreen.y + 10.f ), ImColor( 255, 255, 255, 255 ), "No active camera, please make at least one is active." );
+				ImGui::TextColored( ImVec4( 1.f, 0.5f, 0.f, 1.f ), "No active camera, please make at least one is active for this level." );
 			}
 
 			Pine::DebugOverlay->SetViewport( cursorScreen.x, cursorScreen.y, avSize.x, avSize.y );
@@ -229,11 +242,11 @@ void Editor::Gui::Windows::RenderViewports( )
 
 	if ( ShowLevelViewport )
 	{
-		if ( ImGui::Begin( "Level", &ShowLevelViewport, ImGuiWindowFlags_MenuBar ) )
+		if ( ImGui::Begin( "Level", &ShowLevelViewport, 0 ) )
 		{
 			Globals::IsInLevelView = true;
 
-			ShowViewportControls( true );
+	//		ShowViewportControls( true );
 
 			const auto avSize = ImGui::GetContentRegionAvail( );
 
@@ -245,12 +258,24 @@ void Editor::Gui::Windows::RenderViewports( )
 
 			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
+			char buff[ 32 ];
+			sprintf_s( buff, "FPS: %d", Pine::GetFPS( ) );
+			ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorPos.x + 5, cursorPos.y + 5 ), ImColor( 255, 255, 255, 130 ), buff );
+
 			Pine::DebugOverlay->SetViewport( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 			Pine::DebugOverlay->Render( );
 
 			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 
 			HandleAssetViewportDrop( );
+
+			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 180, cursorPos.y + 5 ) );
+
+			ImGui::Button( "Transform" );
+			ImGui::SameLine( 0, 0 );
+			ImGui::Button( "Rotate" );
+			ImGui::SameLine( 0, 0 );
+			ImGui::Button( "Scale" );
 
 			const auto cam = EditorEntity::GetCamera( );
 
@@ -279,11 +304,11 @@ void Editor::Gui::Windows::RenderViewports( )
 
 					if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), nullptr, nullptr ) )
 					{
-						float translation[ 3 ];
-						float rotation[ 3 ];
-						float scale[ 3 ];
+						glm::vec3 translation;
+						glm::quat rotation;
+						glm::vec3 scale;
 
-						ImGuizmo::DecomposeMatrixToComponents( glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), translation, rotation, scale );
+						DecomposeMatrix( e->GetTransform( )->GetTransformationMatrix( ), translation, rotation, scale );
 
 						auto base_position = glm::vec3( 0.f );
 
@@ -291,7 +316,7 @@ void Editor::Gui::Windows::RenderViewports( )
 							base_position = e->GetParent( )->GetTransform( )->Position;
 
 						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position;
-						e->GetTransform( )->Rotation = ( glm::vec3( rotation[ 0 ], rotation[ 1 ], rotation[ 2 ] ) );
+						e->GetTransform( )->Rotation = glm::degrees( glm::eulerAngles( rotation ) );
 						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
 					}
 

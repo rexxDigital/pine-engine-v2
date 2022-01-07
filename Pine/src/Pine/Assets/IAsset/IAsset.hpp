@@ -34,6 +34,13 @@ namespace Pine
 		"Terrain"
 	};
 
+	enum class AssetState
+	{
+		Unloaded,
+		Prepared,
+		Loaded
+	};
+
 	class IAsset
 	{
 	protected:
@@ -50,8 +57,10 @@ namespace Pine
 		bool m_Updated = false;
 		bool m_IsMapped = false;
 
-		// If the asset has actually been loaded to memory, for example a texture is actually on the GPU.
 		bool m_InMemory = false;
+		void* m_DataPtr = nullptr;
+
+		AssetState m_AssetState;
 	public:
 		virtual ~IAsset( ) = default;
 
@@ -66,14 +75,16 @@ namespace Pine
 		void UpdateLastWriteTime( );
 		bool HasBeenUpdated( ) const;
 
-		bool GetReadOnly( ) const;
-		void SetReadOnly( bool value );
+		bool GetReadOnly( ) const; 
+		void SetReadOnly( bool value ); 
 
 		bool GetUpdated( ) const;
 		void SetUpdated( bool value );
 
 		bool IsMapped( ) const;
 		void SetMapped( bool value );
+
+		AssetState GetAssetState( ) const;
 
 		virtual bool LoadFromFile( ) = 0;
 		virtual bool SaveToFile( ) = 0;

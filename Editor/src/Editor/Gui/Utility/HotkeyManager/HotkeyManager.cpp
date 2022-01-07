@@ -65,6 +65,7 @@ namespace Editor::Hotkeys {
 
 	PE_DEFINE_HOTKEY( SaveHotkey, GLFW_KEY_S, true, false );
 	PE_DEFINE_HOTKEY( RefreshAssetsHotkey, GLFW_KEY_F5, false, false );
+	PE_DEFINE_HOTKEY( RefreshEngineAssets, GLFW_KEY_F5, true, false );
 
 	PE_DEFINE_HOTKEY( RemoveEntityKey, GLFW_KEY_DELETE, false, false );
 	PE_DEFINE_HOTKEY( DuplicateEntity, GLFW_KEY_D, true, false );

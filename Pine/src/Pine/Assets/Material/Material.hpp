@@ -19,7 +19,7 @@ namespace Pine
 	enum RenderFlags
 	{
 		DisableBackfaceCulling = ( 1 << 0 ),
-		RenderWireframe = ( 1 << 1 ),
+		RenderWireframe = ( 1 << 1 )
 	};
 
 	class Material : public IAsset

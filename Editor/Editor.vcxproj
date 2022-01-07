@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -167,8 +167,10 @@
     <ClCompile Include="src\Editor\Gui\Windows\DebugWindows.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Entitylist.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\LevelSettings.cpp" />
+    <ClCompile Include="src\Editor\Gui\Windows\PicturePanel.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\ProjectWizard.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Properties.cpp" />
+    <ClCompile Include="src\Editor\Gui\Windows\Settings.cpp" />
     <ClCompile Include="src\Editor\Gui\Windows\Viewports.cpp" />
     <ClCompile Include="src\Editor\PlayManager\PlayManager.cpp" />
     <ClCompile Include="src\Editor\ProjectManager\ProjectManager.cpp" />

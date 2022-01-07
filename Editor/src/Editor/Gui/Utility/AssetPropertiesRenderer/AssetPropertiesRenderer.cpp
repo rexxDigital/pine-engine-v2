@@ -242,10 +242,17 @@ namespace
 		if ( !cubeMap )
 			return;
 
+		// Hack to allow the button even it's read only.
+		if ( cubeMap->GetReadOnly( ) )
+			Editor::Gui::Widgets::PopDisabled( );
+
 		if ( ImGui::Button( "Use as sky box" ) )
 		{
 			Pine::Skybox->SetSkyboxCubemap( cubeMap );
 		}
+
+		if ( cubeMap->GetReadOnly( ) )
+			Editor::Gui::Widgets::PushDisabled( );
 	}
 
 }
@@ -255,6 +262,11 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 	if ( !asset )
 		return;
 
+	if ( asset->GetReadOnly(  ) )
+	{
+		Widgets::PushDisabled( );
+	}
+ 
 	switch ( asset->GetType( ) )
 	{
 	case Pine::AssetType::Texture2D:
@@ -276,4 +288,8 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		break;
 	}
 
+	if ( asset->GetReadOnly( ) )
+	{
+		Widgets::PopDisabled( );
+	}
 }

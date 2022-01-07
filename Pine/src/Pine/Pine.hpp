@@ -18,12 +18,20 @@
 
 namespace Pine
 {
+	// Pointers to all interfaces used within the engine
+	PineInstance* GetPineInstance( );
 
+	// Time since application was started
+	float GetTime( );
+
+	// Performance counters
+	float GetFrameTime( );
+	float GetUpdateTime( );
+	int GetFPS( );
+
+	// Allow/disallow OnUpdate being called on components, primarily used by the editor extension.
 	void SetAllowUpdates( bool value );
 	bool IsAllowingUpdates( );
-
-	float GetTime( );
-	PineInstance* GetPineInstance( );
 
 	// Main engine setup
 	bool Setup( );

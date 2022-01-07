@@ -12,12 +12,14 @@
 #include "Pine/Assets/Terrain/Terrain.hpp"
 #include "Pine/Core/String/String.hpp"
 
-namespace {
+namespace
+{
 
 	int g_CreateType = 0;
 
 	// Could be a file or a directory
-	struct PathItem_t {
+	struct PathItem_t
+	{
 		bool m_IsDirectory = false;
 
 		Pine::IAsset* m_Asset = nullptr;
@@ -30,8 +32,10 @@ namespace {
 		std::vector<PathItem_t*> m_Items;
 		PathItem_t* m_Parent = nullptr;
 
-		void Dispose( ) {
-			for ( auto item : m_Items ) {
+		void Dispose( )
+		{
+			for ( auto item : m_Items )
+			{
 				item->Dispose( );
 				delete item;
 			}
@@ -41,9 +45,11 @@ namespace {
 	bool g_DidOpenContextMenu = false;
 	PathItem_t* g_SelectedContextMenuItem = nullptr;
 
-	void ProcessDirectory( const std::string& dir, PathItem_t* item ) {
+	void ProcessDirectory( const std::string& dir, PathItem_t* item )
+	{
 		// Add a "..." go back directory.
-		if ( item->m_Parent != nullptr ) {
+		if ( item->m_Parent != nullptr )
+		{
 			auto entry = new PathItem_t;
 
 			entry->m_IsDirectory = true;
@@ -54,8 +60,10 @@ namespace {
 			item->m_Items.push_back( entry );
 		}
 
-		for ( const auto& dirEntry : std::filesystem::directory_iterator( dir ) ) {
-			if ( dirEntry.is_directory( ) ) { // Process directory:
+		for ( const auto& dirEntry : std::filesystem::directory_iterator( dir ) )
+		{
+			if ( dirEntry.is_directory( ) )
+			{ // Process directory:
 				auto entry = new PathItem_t;
 
 				entry->m_IsDirectory = true;
@@ -67,8 +75,9 @@ namespace {
 
 				item->m_Items.push_back( entry );
 			}
-			else { // Process file:
-				// Ignore ".asset" files
+			else
+			{ // Process file:
+		  // Ignore ".asset" files
 				if ( Pine::String::EndsWith( dirEntry.path( ).string( ), ".asset" ) )
 					continue;
 
@@ -85,7 +94,8 @@ namespace {
 		}
 	}
 
-	void MapDirectory( const std::string& displayDirectory, const std::string& dir, PathItem_t* item ) {
+	void MapDirectory( const std::string& displayDirectory, const std::string& dir, PathItem_t* item )
+	{
 		auto entry = new PathItem_t;
 
 		entry->m_IsDirectory = true;
@@ -103,31 +113,38 @@ namespace {
 
 	int g_IconSize = 64;
 
-	void DisplayItems( PathItem_t* dir ) {
+	void DisplayItems( PathItem_t* dir )
+	{
 		static auto directoryIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
 		static auto unknownFileIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
 
 		Pine::IAsset* selectedAsset = nullptr;
 
-		if ( !Editor::Gui::Globals::SelectedAssetPtrs.empty( ) ) {
+		if ( !Editor::Gui::Globals::SelectedAssetPtrs.empty( ) )
+		{
 			selectedAsset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
 		}
 
 		// Process directories:
-		for ( auto& directory : dir->m_Items ) {
+		for ( auto& directory : dir->m_Items )
+		{
 			if ( !directory->m_IsDirectory )
 				continue;
 
-			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory, directoryIcon, g_IconSize, nullptr ) ) {
-				if ( directory->m_DisplayText == "..." ) {
+			if ( Editor::Gui::Widgets::Icon( directory->m_DisplayText, g_SelectedContextMenuItem == directory, directoryIcon, g_IconSize, nullptr ) )
+			{
+				if ( directory->m_DisplayText == "..." )
+				{
 					g_CurrentDirectory = directory->m_Parent;
 				}
-				else {
+				else
+				{
 					g_CurrentDirectory = directory;
 				}
 			}
 
-			if ( ImGui::IsItemClicked( ImGuiMouseButton_Right ) ) {
+			if ( ImGui::IsItemClicked( ImGuiMouseButton_Right ) )
+			{
 				ImGui::OpenPopup( "AssetContextMenu" );
 
 				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
@@ -141,14 +158,17 @@ namespace {
 		}
 
 		// Process files:
-		for ( auto& file : dir->m_Items ) {
+		for ( auto& file : dir->m_Items )
+		{
 			if ( file->m_IsDirectory )
 				continue;
 
 			auto icon = file->m_DisplayIcon != nullptr ? file->m_DisplayIcon : unknownFileIcon;
 
-			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset ) ) {
-				if ( file->m_Asset != nullptr ) {
+			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset ) )
+			{
+				if ( file->m_Asset != nullptr )
+				{
 					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 
@@ -156,7 +176,8 @@ namespace {
 				}
 			}
 
-			if ( ImGui::IsItemClicked( ImGuiMouseButton_Right ) ) {
+			if ( ImGui::IsItemClicked( ImGuiMouseButton_Right ) )
+			{
 				ImGui::OpenPopup( "AssetContextMenu" );
 
 				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
@@ -173,7 +194,8 @@ namespace {
 
 }
 
-void UpdateAssetCache( ) {
+void UpdateAssetCache( )
+{
 	if ( g_RootDirectory )
 	{
 		g_RootDirectory->Dispose( );
@@ -194,108 +216,137 @@ void UpdateAssetCache( ) {
 	g_CurrentDirectory = g_RootDirectory;
 }
 
-void Editor::Gui::Windows::RenderAssetBrowser( ) {
+void Editor::Gui::Windows::RenderAssetBrowser( )
+{
 
-	if ( !ShowAssetBrowser ) {
+	if ( !ShowAssetBrowser )
+	{
 		return;
 	}
 
-	ImGui::Begin( "Asset Browser", &ShowAssetBrowser, 0 );
+	if ( ImGui::Begin( "Asset Browser", &ShowAssetBrowser, 0 ) )
+	{
+		if ( ImGui::Button( "Import..." ) )
+		{
 
-	if ( ImGui::Button( "Import..." ) ) {
-
-	}
-
-	ImGui::SameLine( );
-
-	if ( ImGui::Button( "Refresh project assets" ) ) {
-		ProjectManager::ReloadProjectAssets( );
-	}
-
-	ImGui::SameLine( );
-
-	ImGui::SetCursorPosX( ImGui::GetWindowWidth( ) - 128.f - 10.f );
-	ImGui::SetNextItemWidth( 128.f );
-	ImGui::InputInt( "##IconSize", &g_IconSize, 4, 16, 0 );
-
-	ImGui::BeginChild( "##Assets", ImVec2( -1.f, -1.f ), true, 0 );
-
-	const int iconSizePadding = g_IconSize + 16;
-
-	const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - ( iconSizePadding * 2 );
-	const int nrColumns = static_cast< int >( spaceAvailable ) / iconSizePadding;
-
-	if ( nrColumns > 0 ) {
-		ImGui::Columns( nrColumns, 0, false );
-
-		DisplayItems( g_CurrentDirectory );
-
-		ImGui::Columns( 1 );
-
-		if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) ) {
-			Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		}
 
-		if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu ) {
-			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
-			Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-			g_SelectedContextMenuItem = nullptr;
+		ImGui::SameLine( );
 
-			ImGui::OpenPopup( "AssetContextMenu" );
-		}
-	}
-
-	// Since you can't open a pop up within another pop up
-	bool openRenamePopup = false;
-	bool openCreatePopup = false;
-
-	if ( ImGui::BeginPopup( "AssetContextMenu", 0 ) ) {
-		const bool isTargetingAsset = Editor::Gui::Globals::SelectedAssetPtrs.size( ) == 1;
-		const bool isTargetingDirectory = g_SelectedContextMenuItem && g_SelectedContextMenuItem->m_IsDirectory;
-
-		g_DidOpenContextMenu = false;
-
-		if ( ImGui::BeginMenu( "Create" ) ) {
-			if ( ImGui::MenuItem( "Directory", nullptr ) ) {
-				g_CreateType = 0;
-				openCreatePopup = true;
-			}
-
-			if ( ImGui::MenuItem( "Material", nullptr ) ) {
-				g_CreateType = 1;
-				openCreatePopup = true;
-			}
-
-			if ( ImGui::MenuItem( "Level", nullptr ) ) {
-				g_CreateType = 2;
-				openCreatePopup = true;
-			}
-
-			if ( ImGui::MenuItem( "Terrain", nullptr ) ) {
-				g_CreateType = 3;
-				openCreatePopup = true;
-			}
-
-			ImGui::EndMenu( );
+		if ( ImGui::Button( "Refresh project assets" ) )
+		{
+			ProjectManager::ReloadProjectAssets( );
 		}
 
-		ImGui::Separator( );
+		ImGui::SameLine( );
 
-		if ( ImGui::MenuItem( "Rename", "F2", false, isTargetingAsset || isTargetingDirectory ) ) {
-			ImGui::CloseCurrentPopup( );
-			openRenamePopup = true;
+		ImGui::SetCursorPosX( ImGui::GetWindowWidth( ) - 128.f - 10.f );
+		ImGui::SetNextItemWidth( 128.f );
+		ImGui::InputInt( "##IconSize", &g_IconSize, 4, 16, 0 );
+
+		ImGui::BeginChild( "##Assets", ImVec2( -1.f, -1.f ), true, 0 );
+
+		const int iconSizePadding = g_IconSize + 16;
+
+		const float spaceAvailable = ImGui::GetContentRegionAvail( ).x - ( iconSizePadding * 2 );
+		const int nrColumns = static_cast< int >( spaceAvailable ) / iconSizePadding;
+
+		if ( nrColumns > 0 && g_CurrentDirectory != nullptr )
+		{
+			ImGui::Columns( nrColumns, 0, false );
+
+			DisplayItems( g_CurrentDirectory );
+
+			ImGui::Columns( 1 );
+
+			if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Left ) && ImGui::IsWindowHovered( ) )
+			{
+				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+			}
+
+			if ( ImGui::IsMouseClicked( ImGuiMouseButton_::ImGuiMouseButton_Right ) && ImGui::IsWindowHovered( ) && !g_DidOpenContextMenu )
+			{
+				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+				g_SelectedContextMenuItem = nullptr;
+
+				ImGui::OpenPopup( "AssetContextMenu" );
+			}
 		}
 
-		if ( ImGui::MenuItem( "Remove", "DEL", false, isTargetingAsset || isTargetingDirectory ) ) {
+		// Since you can't open a pop up within another pop up
+		bool openRenamePopup = false;
+		bool openCreatePopup = false;
 
-			if ( isTargetingAsset ) {
-				auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
+		if ( ImGui::BeginPopup( "AssetContextMenu", 0 ) )
+		{
+			const bool isTargetingAsset = Editor::Gui::Globals::SelectedAssetPtrs.size( ) == 1;
+			const bool isTargetingDirectory = g_SelectedContextMenuItem && g_SelectedContextMenuItem->m_IsDirectory;
 
-				if ( !asset->GetReadOnly( ) ) {
-					std::filesystem::remove( asset->GetPath( ) );
+			g_DidOpenContextMenu = false;
 
-					Pine::Assets->DisposeAsset( asset );
+			if ( ImGui::BeginMenu( "Create" ) )
+			{
+				if ( ImGui::MenuItem( "Directory", nullptr ) )
+				{
+					g_CreateType = 0;
+					openCreatePopup = true;
+				}
+
+				if ( ImGui::MenuItem( "Material", nullptr ) )
+				{
+					g_CreateType = 1;
+					openCreatePopup = true;
+				}
+
+				if ( ImGui::MenuItem( "Level", nullptr ) )
+				{
+					g_CreateType = 2;
+					openCreatePopup = true;
+				}
+
+				if ( ImGui::MenuItem( "Terrain", nullptr ) )
+				{
+					g_CreateType = 3;
+					openCreatePopup = true;
+				}
+
+				ImGui::EndMenu( );
+			}
+
+			ImGui::Separator( );
+
+			if ( ImGui::MenuItem( "Rename", "F2", false, isTargetingAsset || isTargetingDirectory ) )
+			{
+				ImGui::CloseCurrentPopup( );
+				openRenamePopup = true;
+			}
+
+			if ( ImGui::MenuItem( "Remove", "DEL", false, isTargetingAsset || isTargetingDirectory ) )
+			{
+
+				if ( isTargetingAsset )
+				{
+					auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
+
+					if ( !asset->GetReadOnly( ) )
+					{
+						std::filesystem::remove( asset->GetPath( ) );
+
+						Pine::Assets->DisposeAsset( asset );
+
+						ProjectManager::ReloadProjectAssets( );
+
+						Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+
+						g_SelectedContextMenuItem = nullptr;
+					}
+				}
+
+				if ( isTargetingDirectory )
+				{
+					std::filesystem::remove( g_SelectedContextMenuItem->m_Path );
 
 					ProjectManager::ReloadProjectAssets( );
 
@@ -303,159 +354,166 @@ void Editor::Gui::Windows::RenderAssetBrowser( ) {
 
 					g_SelectedContextMenuItem = nullptr;
 				}
-			}
-
-			if ( isTargetingDirectory ) {
-				std::filesystem::remove( g_SelectedContextMenuItem->m_Path );
-
-				ProjectManager::ReloadProjectAssets( );
-
-				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-
-				g_SelectedContextMenuItem = nullptr;
-			}
-
-			Editor::Gui::Globals::SelectedEntityPtrs.clear( );
-			Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-			g_SelectedContextMenuItem = nullptr;
-
-			ImGui::CloseCurrentPopup( );
-		}
-
-		ImGui::EndPopup( );
-	}
-	else {
-		g_SelectedContextMenuItem = nullptr;
-	}
-
-	if ( openRenamePopup ) {
-		ImGui::OpenPopup( "Rename" );
-	}
-
-	if ( openCreatePopup ) {
-		ImGui::OpenPopup( "Create Item" );
-	}
-
-	// Show Rename Popup
-
-	static bool renamePopupOpened = false;
-	if ( ImGui::BeginPopupModal( "Rename", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize ) ) {
-		static char buff[ 128 ];
-
-		if ( renamePopupOpened ) {
-			renamePopupOpened = false;
-
-			strcpy_s( buff, Editor::Gui::Globals::SelectedAssetPtrs[ 0 ]->GetFileName( ).c_str( ) );
-
-			ImGui::SetKeyboardFocusHere( 0 );
-		}
-
-		ImGui::Text( "Name:" );
-		ImGui::InputText( "##NewName", buff, 128 );
-
-		if ( ImGui::Button( "OK" ) ) {
-			auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
-
-			if ( !asset->GetReadOnly( ) ) {
-				std::filesystem::rename( asset->GetPath( ), std::string( asset->GetPath( ).parent_path( ).string( ) + "\\" + buff ) );
-
-				Pine::Assets->DisposeAsset( asset );
-
-				ProjectManager::ReloadProjectAssets( );
 
 				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 				g_SelectedContextMenuItem = nullptr;
+
+				ImGui::CloseCurrentPopup( );
 			}
 
-			ImGui::CloseCurrentPopup( );
+			ImGui::EndPopup( );
+		}
+		else
+		{
+			g_SelectedContextMenuItem = nullptr;
 		}
 
-		ImGui::SameLine( );
-
-		if ( ImGui::Button( "Cancel" ) ) {
-			ImGui::CloseCurrentPopup( );
+		if ( openRenamePopup )
+		{
+			ImGui::OpenPopup( "Rename" );
 		}
 
-		ImGui::EndPopup( );
+		if ( openCreatePopup )
+		{
+			ImGui::OpenPopup( "Create Item" );
+		}
+
+		// Show Rename Popup
+
+		static bool renamePopupOpened = false;
+		if ( ImGui::BeginPopupModal( "Rename", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize ) )
+		{
+			static char buff[ 128 ];
+
+			if ( renamePopupOpened )
+			{
+				renamePopupOpened = false;
+
+				strcpy_s( buff, Editor::Gui::Globals::SelectedAssetPtrs[ 0 ]->GetFileName( ).c_str( ) );
+
+				ImGui::SetKeyboardFocusHere( 0 );
+			}
+
+			ImGui::Text( "Name:" );
+			ImGui::InputText( "##NewName", buff, 128 );
+
+			if ( ImGui::Button( "OK" ) )
+			{
+				auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
+
+				if ( !asset->GetReadOnly( ) )
+				{
+					std::filesystem::rename( asset->GetPath( ), std::string( asset->GetPath( ).parent_path( ).string( ) + "\\" + buff ) );
+
+					Pine::Assets->DisposeAsset( asset );
+
+					ProjectManager::ReloadProjectAssets( );
+
+					Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+					g_SelectedContextMenuItem = nullptr;
+				}
+
+				ImGui::CloseCurrentPopup( );
+			}
+
+			ImGui::SameLine( );
+
+			if ( ImGui::Button( "Cancel" ) )
+			{
+				ImGui::CloseCurrentPopup( );
+			}
+
+			ImGui::EndPopup( );
+		}
+		else
+		{
+			renamePopupOpened = true;
+		}
+
+		// Show create asset pop up
+
+		static bool createPopupOpened = false;
+		if ( ImGui::BeginPopupModal( "Create Item", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize ) )
+		{
+			static char buff[ 128 ];
+
+			if ( createPopupOpened )
+			{
+				createPopupOpened = false;
+
+				strcpy_s( buff, "" );
+
+				ImGui::SetKeyboardFocusHere( 0 );
+			}
+
+			ImGui::Text( "Name:" );
+			ImGui::InputText( "##NewName", buff, 128 );
+
+			if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( 257 /* Enter */ ) )
+			{
+				std::string baseDir = g_CurrentDirectory->m_Path.string( );
+
+				if ( g_CurrentDirectory == g_RootDirectory )
+					baseDir = ProjectManager::GetCurrentProjectDirectory( );
+
+				// Directory
+				if ( g_CreateType == 0 )
+				{
+					std::filesystem::create_directory( std::string( baseDir + "\\" + buff ) );
+
+					ProjectManager::ReloadProjectAssets( );
+				}
+
+				// Material
+				if ( g_CreateType == 1 )
+				{
+					std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", baseDir + "\\" + buff + ".mat" );
+
+					ProjectManager::ReloadProjectAssets( );
+				}
+
+				// Level
+				if ( g_CreateType == 2 )
+				{
+					ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
+					ProjectManager::ReloadProjectAssets( );
+				}
+
+				// Terrain
+				if ( g_CreateType == 3 )
+				{
+					Pine::Terrain* terrain = new Pine::Terrain( );
+
+					terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
+					terrain->SaveToFile( );
+					terrain->Dispose( );
+
+					delete terrain;
+
+					ProjectManager::ReloadProjectAssets( );
+				}
+
+				ImGui::CloseCurrentPopup( );
+			}
+
+			ImGui::SameLine( );
+
+			if ( ImGui::Button( "Cancel" ) )
+			{
+				ImGui::CloseCurrentPopup( );
+			}
+
+			ImGui::EndPopup( );
+		}
+		else
+		{
+			createPopupOpened = true;
+		}
+
+		ImGui::EndChild( );
 	}
-	else {
-		renamePopupOpened = true;
-	}
-
-	// Show create asset pop up
-
-	static bool createPopupOpened = false;
-	if ( ImGui::BeginPopupModal( "Create Item", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize ) ) {
-		static char buff[ 128 ];
-
-		if ( createPopupOpened ) {
-			createPopupOpened = false;
-
-			strcpy_s( buff, "" );
-
-			ImGui::SetKeyboardFocusHere( 0 );
-		}
-
-		ImGui::Text( "Name:" );
-		ImGui::InputText( "##NewName", buff, 128 );
-
-		if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( 257 /* Enter */ ) ) {
-			std::string baseDir = g_CurrentDirectory->m_Path.string( );
-
-			if ( g_CurrentDirectory == g_RootDirectory )
-				baseDir = ProjectManager::GetCurrentProjectDirectory( );
-
-			// Directory
-			if ( g_CreateType == 0 ) {
-				std::filesystem::create_directory( std::string( baseDir + "\\" + buff ) );
-
-				ProjectManager::ReloadProjectAssets( );
-			}
-
-			// Material
-			if ( g_CreateType == 1 ) {
-				std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", baseDir + "\\" + buff + ".mat" );
-
-				ProjectManager::ReloadProjectAssets( );
-			}
-
-			// Level
-			if ( g_CreateType == 2 ) {
-				ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
-				ProjectManager::ReloadProjectAssets( );
-			}
-
-			// Terrain
-			if ( g_CreateType == 3 ) {
-				Pine::Terrain* terrain = new Pine::Terrain( );
-
-				terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
-				terrain->SaveToFile( );
-				terrain->Dispose( );
-
-				delete terrain;
-
-				ProjectManager::ReloadProjectAssets( );
-			}
-
-			ImGui::CloseCurrentPopup( );
-		}
-
-		ImGui::SameLine( );
-
-		if ( ImGui::Button( "Cancel" ) ) {
-			ImGui::CloseCurrentPopup( );
-		}
-
-		ImGui::EndPopup( );
-	}
-	else {
-		createPopupOpened = true;
-	}
-
-	ImGui::EndChild( );
-
 	ImGui::End( );
 
 }

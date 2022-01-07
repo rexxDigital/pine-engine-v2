@@ -21,7 +21,8 @@ namespace Pine::UniformBuffers
 		glm::vec3 color;
 		float padding2;
 		glm::vec3 attenuation;
-		float padding3;
+		float cutOffAngle;
+		float cutOffSmoothness;
 	};
 
 	struct LightBufferData_t
@@ -40,15 +41,22 @@ namespace Pine::UniformBuffers
 		float textureScale;
 	};
 
+	struct TransformData_t
+	{
+		glm::mat4 transform[ 32 ];
+	};
+
 	void Setup( );
 	void Dispose( );
 
 	MatrixBufferData_t* GetMatrixBufferData( );
 	LightBufferData_t* GetLightsBufferData( );
 	MaterialBufferData_t* GetMaterialBufferData( );
+	TransformData_t* GetTransformBufferData( );
 
 	UniformBuffer* GetMatrixUniformBuffer( );
 	UniformBuffer* GetLightsUniformBuffer( );
 	UniformBuffer* GetMaterialUniformBuffer( );
+	UniformBuffer* GetTransformDataUniformBuffer( );
 
 }

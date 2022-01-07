@@ -184,7 +184,8 @@ namespace Pine
 				}
 			}
 
-			// Render opaque & discard entities
+			// Render entities
+			
 			for ( auto& renderItem : renderBatch )
 			{
 				for ( auto& mesh : renderItem.first->GetMeshList( ) )
@@ -218,12 +219,10 @@ namespace Pine
 				}
 			}
 
-			// Sort blended entities by distance
-
-
 			// Reset some properties that may have been set.
 			Renderer3D->SetWireframeMode( false );
 			Renderer3D->SetBackfaceCulling( true );
+			Renderer3D->SetBlending( false );
 
 			Skybox->Render( );
 
@@ -274,17 +273,18 @@ namespace Pine
 			// Reset the viewport size.
 			glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
 
-			// Enable depth test and stencil testing
+			// Enable depth test, stencil testing and face culling
 			glEnable( GL_DEPTH_TEST );
 			glEnable( GL_STENCIL_TEST );
+			glEnable( GL_CULL_FACE );
 
 			glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+			glCullFace( GL_BACK );
 
 			if ( g_RenderingContext->m_Camera != nullptr )
 				Renderer3D->UploadCameraData( g_RenderingContext->m_Camera );
 
 			Renderer3D->SetShader( nullptr );
-
 			Renderer3D->SetWireframeMode( false );
 			Renderer3D->SetBackfaceCulling( true );
 		}

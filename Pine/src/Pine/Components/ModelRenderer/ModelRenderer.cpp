@@ -58,9 +58,11 @@ void Pine::ModelRenderer::OnRender( )
 void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
 {
 	Serialization::SaveAsset( j[ "model" ], m_Model );
+	Serialization::SaveAsset( j[ "matOverride" ], m_MaterialOverride );
 }
 
 void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )
 {
 	m_Model = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
+	m_MaterialOverride = dynamic_cast< Pine::Material* >( Serialization::LoadAsset( j, "matOverride" ) );
 }

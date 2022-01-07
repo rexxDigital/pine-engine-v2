@@ -8,7 +8,8 @@ namespace Pine
 	enum class LightType
 	{
 		Directional,
-		PointLight
+		PointLight,
+		SpotLight
 	};
 
 	class Light : public IComponent
@@ -18,6 +19,9 @@ namespace Pine
 		LightType m_LightType = LightType::Directional;
 
 		glm::vec3 m_Attenuation = glm::vec3( 1.f, 0.045f, 0.0075 );
+
+		float m_SpotLightAngle = 0.0f;
+		float m_SpotLightSmoothness = 0.0f;
 	public:
 		Light( );
 
@@ -29,6 +33,12 @@ namespace Pine
 
 		void SetAttenuation( glm::vec3 vec );
 		const glm::vec3& GetAttenuation( ) const;
+
+		void SetSpotlightAngle( float value );
+		float GetSpotlightAngle( ) const;
+
+		void SetSpotlightSmoothness( float value );
+		float GetSpotlightSmoothness( ) const;
 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;

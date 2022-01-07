@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -134,7 +134,7 @@
       <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;assimp.lib;freetype.lib;reactphysics3d-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy $(OutputPath)GameRuntime.dll $(SolutionDir)Editor\Projects\Default\GameRuntime.dll /Y</Command>
+      <Command>copy $(OutputPath)GameRuntime.dll $(SolutionDir)Editor\Projects\Debug\GameRuntime.dll /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Controllers\GameController\GameController.cpp" />
+    <ClCompile Include="src\Controllers\InstancedRenderingTest\InstancedRenderingTest.cpp" />
     <ClCompile Include="src\Controllers\RGBExperiment\RGBExperiment.cpp" />
     <ClCompile Include="src\DllMain.cpp" />
   </ItemGroup>
@@ -170,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Controllers\GameController\GameController.hpp" />
+    <ClInclude Include="src\Controllers\InstancedRenderingTest\InstancedRenderingTest.hpp" />
     <ClInclude Include="src\Controllers\RGBExperiment\RGBExperiment.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
