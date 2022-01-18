@@ -90,4 +90,5 @@ namespace Pine
 		virtual bool SaveToFile( ) = 0;
 		virtual void Dispose( ) = 0;
 	};
+
 }

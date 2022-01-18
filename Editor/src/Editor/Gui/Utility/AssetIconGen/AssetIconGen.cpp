@@ -148,7 +148,7 @@ void Editor::Gui::Utility::AssetIconGen::Update( ) {
 
 	// Loop through all assets, and add an icon for each of them.
 	for ( auto& assetElement : Pine::Assets->GetAssets( ) ) {
-		auto& asset = assetElement.second;
+		const auto& asset = assetElement.second;
 
 		AssetIcon_t* icon = nullptr;
 

@@ -50,22 +50,27 @@ void Pine::FrameBuffer::Dispose( ) const
 	glDeleteTextures( 1, &m_DepthStencilBuffer );
 }
 
-void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
+void Pine::FrameBuffer::Create( int width, int height, bool createNormal, bool multiSample )
 {
 	glGenFramebuffers( 1, &m_Id );
 	glBindFramebuffer( GL_FRAMEBUFFER, m_Id );
 
+	auto textureType = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
 	// Create texture buffer
 	glGenTextures( 1, &m_TextureBuffer );
-	glBindTexture( GL_TEXTURE_2D, m_TextureBuffer );
+	glBindTexture( textureType, m_TextureBuffer );
 
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr );
+	if ( multiSample )
+		glTexImage2DMultisample( textureType, 16, GL_RGBA, width, height, GL_TRUE );
+	else
+		glTexImage2D( textureType, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr );
 
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
 	// Attach the texture to the frame buffer
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureBuffer, 0 );
+	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureType, m_TextureBuffer, 0 );
 
 	// If we need to create a normal buffer
 	if ( createNormal )
@@ -87,14 +92,17 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
 
 	// Create a depth & stencil buffer
 	glGenTextures( 1, &m_DepthStencilBuffer );
-	glBindTexture( GL_TEXTURE_2D, m_DepthStencilBuffer );
+	glBindTexture( textureType, m_DepthStencilBuffer );
 
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr );
+	if ( multiSample )
+		glTexImage2DMultisample( textureType, 16, GL_DEPTH24_STENCIL8, width, height, GL_TRUE );
+	else
+		glTexImage2D( textureType, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr );
 
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameteri( textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
-	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthStencilBuffer, 0 );
+	glFramebufferTexture2D( GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, textureType, m_DepthStencilBuffer, 0 );
 
 	const auto status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
 
@@ -107,4 +115,18 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal )
 
 	m_Width = width;
 	m_Height = height;
+}
+
+void Pine::FrameBuffer::BlitMultisample( FrameBuffer* target )
+{
+	const auto width = target->GetWidth( );
+	const auto height = target->GetHeight( );
+
+	glBindFramebuffer( GL_READ_FRAMEBUFFER, m_Id );
+	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, target->GetId(  ) );
+
+	glBlitFramebuffer( 0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST );
+
+	glBindFramebuffer( GL_READ_FRAMEBUFFER, 0 );
+	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
 }

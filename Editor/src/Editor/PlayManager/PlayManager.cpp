@@ -39,6 +39,8 @@ void Editor::PlayManager::Start( )
 	Pine::SetAllowUpdates( true );
 
 	Pine::EntityList->RunOnSetup( );
+
+	Pine::Window::SetTitle( "Pine - Running" );
 }
 
 void Editor::PlayManager::Pause( )
@@ -60,6 +62,8 @@ void Editor::PlayManager::Stop( )
 	g_BackupLevel->DisposeBlueprints( );
 
 	g_IsPlaying = false;
+
+	Pine::Window::SetTitle( "Pine" );
 }
 
 Pine::Level* Editor::PlayManager::GetBackupLevel( )

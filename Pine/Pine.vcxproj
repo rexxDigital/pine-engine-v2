@@ -209,6 +209,7 @@
     <ClInclude Include="src\Pine\Pine.hpp" />
     <ClInclude Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.hpp" />
     <ClInclude Include="src\Pine\Rendering\PostProcessing\PostProcessing.hpp" />
+    <ClInclude Include="src\Pine\Rendering\Renderer2D\Renderer2D.hpp" />
     <ClInclude Include="src\Pine\Rendering\Renderer3D\Renderer3D.hpp" />
     <ClInclude Include="src\Pine\Rendering\RenderingContext\RenderingContext.hpp" />
     <ClInclude Include="src\Pine\Rendering\RenderManager\RenderManager.hpp" />
@@ -268,6 +269,7 @@
     <ClCompile Include="src\Pine\Pine.cpp" />
     <ClCompile Include="src\Pine\Rendering\DebugOverlay\DebugOverlay.cpp" />
     <ClCompile Include="src\Pine\Rendering\PostProcessing\PostProcessing.cpp" />
+    <ClCompile Include="src\Pine\Rendering\Renderer2D\Renderer2D.cpp" />
     <ClCompile Include="src\Pine\Rendering\Renderer3D\Renderer3D.cpp" />
     <ClCompile Include="src\Pine\Rendering\RenderingContext\RenderingContext.cpp" />
     <ClCompile Include="src\Pine\Rendering\RenderManager\RenderManager.cpp" />

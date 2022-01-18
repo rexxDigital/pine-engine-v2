@@ -3,14 +3,15 @@
 #include <string>
 #include <memory>
 #include <Pine\Assets\IAsset\IAsset.hpp>
-#include "Pine\Assets\Assets.hpp"
-#include "..\..\ProjectManager\ProjectManager.hpp"
 #include <Pine\Assets\Texture2D\Texture2D.hpp>
+#include "Pine\Assets\Assets.hpp"
+#include "Pine/Assets/Terrain/Terrain.hpp"
+#include "Pine/Core/Log/Log.hpp"
+#include "Pine/Core/String/String.hpp"
+#include "..\..\ProjectManager\ProjectManager.hpp"
 #include "..\Widgets\Widgets.hpp"
 #include "..\Gui.hpp"
 #include "..\Utility\AssetIconGen\AssetIconGen.hpp"
-#include "Pine/Assets/Terrain/Terrain.hpp"
-#include "Pine/Core/String/String.hpp"
 
 namespace
 {
@@ -62,8 +63,8 @@ namespace
 
 		for ( const auto& dirEntry : std::filesystem::directory_iterator( dir ) )
 		{
-			if ( dirEntry.is_directory( ) )
-			{ // Process directory:
+			if ( dirEntry.is_directory( ) ) // Process directory:
+			{ 
 				auto entry = new PathItem_t;
 
 				entry->m_IsDirectory = true;
@@ -75,9 +76,9 @@ namespace
 
 				item->m_Items.push_back( entry );
 			}
-			else
-			{ // Process file:
-		  // Ignore ".asset" files
+			else // Process file:
+			{ 
+				// Ignore ".asset" files
 				if ( Pine::String::EndsWith( dirEntry.path( ).string( ), ".asset" ) )
 					continue;
 
@@ -99,7 +100,7 @@ namespace
 		auto entry = new PathItem_t;
 
 		entry->m_IsDirectory = true;
-		entry->m_Path = displayDirectory;
+		entry->m_Path = dir;
 		entry->m_Parent = item;
 		entry->m_DisplayText = displayDirectory;
 
@@ -154,6 +155,16 @@ namespace
 				g_SelectedContextMenuItem = directory;
 			}
 
+			if ( ImGui::BeginDragDropTarget( ) )
+			{
+				if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
+				{
+					
+				}
+
+				ImGui::EndDragDropTarget( );
+			}
+
 			ImGui::NextColumn( );
 		}
 
@@ -205,7 +216,7 @@ void UpdateAssetCache( )
 	g_RootDirectory = new PathItem_t;
 
 	g_RootDirectory->m_IsDirectory = true;
-	g_RootDirectory->m_Path = "";
+	g_RootDirectory->m_Path = Editor::ProjectManager::GetCurrentProjectDirectory( );
 
 	MapDirectory( "Engine", "Assets\\Engine", g_RootDirectory );
 
@@ -218,7 +229,6 @@ void UpdateAssetCache( )
 
 void Editor::Gui::Windows::RenderAssetBrowser( )
 {
-
 	if ( !ShowAssetBrowser )
 	{
 		return;
@@ -236,6 +246,13 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 		if ( ImGui::Button( "Refresh project assets" ) )
 		{
 			ProjectManager::ReloadProjectAssets( );
+		}
+
+		ImGui::SameLine( );
+
+		if ( ImGui::Button( "Open in Explorer" ) )
+		{
+			system( std::string( "explorer.exe " + std::filesystem::absolute( g_CurrentDirectory->m_Path ).string( ) ).c_str(  ) );
 		}
 
 		ImGui::SameLine( );
@@ -448,8 +465,11 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				ImGui::SetKeyboardFocusHere( 0 );
 			}
 
-			ImGui::Text( "Name:" );
-			ImGui::InputText( "##NewName", buff, 128 );
+			ImGui::InputText( "Name", buff, 128 );
+			 
+			ImGui::Spacing( );
+			ImGui::Spacing( );
+			ImGui::Spacing( );
 
 			if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( 257 /* Enter */ ) )
 			{

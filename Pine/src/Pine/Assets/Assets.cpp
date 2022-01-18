@@ -21,6 +21,9 @@ namespace Pine
 	private:
 		std::unordered_map<std::string, Pine::IAsset*> m_Assets;
 
+		// I kind of dislike this, but whatever.
+		std::vector<Pine::IAsset*> m_DestroyedAssets;
+
 		// This is written to translate file extensions to loaded asset objects in memory.
 
 		struct AssetFactory_t
@@ -274,6 +277,7 @@ namespace Pine
 			delete asset;
 
 			m_Assets.erase( assetPath );
+			m_DestroyedAssets.push_back( asset );
 
 			return true;
 		}
@@ -286,10 +290,11 @@ namespace Pine
 			const std::string path = asset->GetPath( ).string( );
 
 			asset->Dispose( );
-
+			
 			delete asset;
 
 			m_Assets.erase( path );
+			m_DestroyedAssets.push_back( asset );
 
 			return true;
 		}

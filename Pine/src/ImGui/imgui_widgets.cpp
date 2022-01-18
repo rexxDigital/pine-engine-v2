@@ -1022,6 +1022,7 @@ void ImGui::Image(ImTextureID user_texture_id, const ImVec2& size, const ImVec2&
     }
     else
     {
+       // window->DrawList->Flags ImDrawListFlags_AntiAliasedFill;
         window->DrawList->AddImage(user_texture_id, bb.Min, bb.Max, uv0, uv1, GetColorU32(tint_col));
     }
 }

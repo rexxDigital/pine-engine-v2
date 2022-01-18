@@ -320,10 +320,42 @@ void Editor::Gui::Windows::RenderEntitylist( )
 
 		ImGui::Separator( );
 
-		if ( ImGui::MenuItem( "Create entity" ) )
+		if ( ImGui::BeginMenu( "Create entity" ) )
 		{
-			Pine::EntityList->CreateEntity( );
-			ImGui::CloseCurrentPopup( );
+			if ( ImGui::MenuItem( "Empty" ) )
+			{
+				Pine::EntityList->CreateEntity( );
+				ImGui::CloseCurrentPopup( );
+			}
+
+			if ( ImGui::MenuItem( "Model Renderer" ) )
+			{
+				auto e = Pine::EntityList->CreateEntity( );
+
+				e->AddComponent( Pine::ComponentType::ModelRenderer );
+
+				ImGui::CloseCurrentPopup( );
+			}
+
+			if ( ImGui::MenuItem( "Light" ) )
+			{
+				auto e = Pine::EntityList->CreateEntity( );
+
+				e->AddComponent( Pine::ComponentType::Light );
+
+				ImGui::CloseCurrentPopup( );
+			}
+
+			if ( ImGui::MenuItem( "Camera" ) )
+			{
+				auto e = Pine::EntityList->CreateEntity( );
+
+				e->AddComponent( Pine::ComponentType::Camera );
+
+				ImGui::CloseCurrentPopup( );
+			}
+
+			ImGui::EndMenu( );
 		}
 
 		ImGui::EndPopup( );

@@ -54,8 +54,6 @@ namespace
 
 		Pine::Window::SetSize( 1024, 768 );
 		Pine::Window::UpdateCachedSize( );
-
-		Pine::Window::SetTitle( "Pine - " + g_CurrentProject );
 	}
 
 }

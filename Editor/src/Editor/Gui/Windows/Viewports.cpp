@@ -45,12 +45,69 @@ namespace
 
 	bool g_StartedPlaying = false;
 
-	void ShowViewportControls( const bool inLevelViewport )
+	void ShowViewportControls( const bool inLevelViewport, ImVec2 cursorPos, ImVec2 avSize )
 	{
+		static auto transformIcon		= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\transform.png" );
+		static auto rotateIcon		    = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\rotate.png" );
+		static auto scaleIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\scale.png" );
+
+		static auto playIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\play.png" );
+		static auto stopIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\stop.png" );
+
 		using namespace Editor::Gui;
 
-		if ( ImGui::BeginMenuBar( ) )
+		static auto renderIconButton = [ ] ( bool active, Pine::Texture2D* texture )
 		{
+			ImGui::PushStyleColor( ImGuiCol_Button, active ? ImVec4( 0.26f, 0.48f, 0.35f, 1.0f ) : ImVec4( 0.26f, 0.78f, 0.35f, 1.0f ) );
+			bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 16.f, 16.f ) );
+			ImGui::PopStyleColor( );
+			return ret;
+		};
+
+		if ( inLevelViewport )
+		{
+			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 102, cursorPos.y + 5 ) );
+
+			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Move, transformIcon ) )
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
+
+			ImGui::SameLine( 0, 0 );
+
+			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, rotateIcon ) )
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
+
+			ImGui::SameLine( 0, 0 );
+
+			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, scaleIcon ) )
+				Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
+
+			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 142, cursorPos.y + 5 ) );
+		}
+		else
+		{
+			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 38, cursorPos.y + 5 ) );
+		}
+		
+		const bool isPlaying = Editor::PlayManager::IsPlaying( );
+
+		if ( renderIconButton( false, isPlaying ? stopIcon : playIcon ) )
+		{
+			if ( isPlaying )
+			{
+				Editor::PlayManager::Stop( );
+
+				Globals::SelectedEntityPtrs.clear( );
+			}
+			else
+			{
+				Editor::PlayManager::Start( );
+
+				g_StartedPlaying = true;
+			}
+		}
+
+		//if ( ImGui::BeginMenuBar( ) )
+		/*{
 			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) )
 			{
 				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
@@ -105,7 +162,7 @@ namespace
 			}
 
 			ImGui::EndMenuBar( );
-		}
+		}*/
 	}
 
 	void HandleAssetViewportDrop( )
@@ -219,11 +276,13 @@ void Editor::Gui::Windows::RenderViewports( )
 //			ShowViewportControls( false );
 
 			const auto avSize = ImGui::GetContentRegionAvail( );
-			const auto cursorScreen = ImGui::GetCursorPos( );
+			const auto cursorScreen = ImGui::GetCursorScreenPos( );
 
 			if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
 			{
 				ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+
+				ShowViewportControls( false, cursorScreen, avSize );
 			}
 			else
 			{
@@ -246,8 +305,6 @@ void Editor::Gui::Windows::RenderViewports( )
 		{
 			Globals::IsInLevelView = true;
 
-	//		ShowViewportControls( true );
-
 			const auto avSize = ImGui::GetContentRegionAvail( );
 
 			RenderingHandler::SetViewportSize( avSize.x, avSize.y );
@@ -269,13 +326,7 @@ void Editor::Gui::Windows::RenderViewports( )
 
 			HandleAssetViewportDrop( );
 
-			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 180, cursorPos.y + 5 ) );
-
-			ImGui::Button( "Transform" );
-			ImGui::SameLine( 0, 0 );
-			ImGui::Button( "Rotate" );
-			ImGui::SameLine( 0, 0 );
-			ImGui::Button( "Scale" );
+			ShowViewportControls( true, cursorPos, avSize );
 
 			const auto cam = EditorEntity::GetCamera( );
 

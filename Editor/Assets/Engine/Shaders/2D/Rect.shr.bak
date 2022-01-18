@@ -1,0 +1,8 @@
+{
+	"VertexShader": "Rect\\Vertex.glsl",
+	"FragmentShader": "Rect\\Fragment.glsl",
+	"UniformBuffers": {
+		"Matrices": "Matrices",
+		"Material": "Material",
+	}
+}

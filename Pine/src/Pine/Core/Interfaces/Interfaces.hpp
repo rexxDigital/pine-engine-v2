@@ -21,6 +21,7 @@ namespace Pine
 	class IPhysicsManager;
 	class IRenderManager;
 	class IRenderer3D;
+	class IRenderer2D;
 	class ISkybox;
 	class IGui;
 	class IPostProcessing;
@@ -37,6 +38,7 @@ namespace Pine
 	inline IPhysicsManager* PhysicsManager;
 	inline IRenderManager* RenderManager;
 	inline IRenderer3D* Renderer3D;
+	inline IRenderer2D* Renderer2D;
 	inline ISkybox* Skybox;
 	inline IGui* Gui;
 	inline IPostProcessing* PostProcessing;
@@ -55,6 +57,7 @@ namespace Pine
 		IPhysicsManager* PhysicsManager;
 		IRenderManager* RenderManager;
 		IRenderer3D* Renderer3D;
+		IRenderer2D* Renderer2D;
 		ISkybox* Skybox;
 		IGui* Gui;
 		IPostProcessing* PostProcessing;

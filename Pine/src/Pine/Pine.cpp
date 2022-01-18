@@ -7,6 +7,7 @@
 #include "Core/Interfaces/Interfaces.hpp"
 
 #include "Rendering/RenderManager/RenderManager.hpp"
+#include "Rendering/Renderer2D/Renderer2D.hpp"
 #include "Rendering/UniformBuffers/UniformBuffers.hpp"
 #include "Entitylist/EntityList.hpp"
 #include "Gui/Gui.hpp"
@@ -160,6 +161,7 @@ bool Pine::Setup( )
 
 	PhysicsManager->Setup( );
 	Renderer3D->Setup( );
+	Renderer2D->Setup( );
 	Skybox->Setup( );
 	Gui->Setup( );
 	RenderManager->Setup( );
@@ -213,9 +215,11 @@ void Pine::Run( )
 
 void Pine::Terminate( )
 {
-	Assets->Dispose( );
 	UniformBuffers::Dispose( );
+
+	Assets->Dispose( );
 	Renderer3D->Dispose( );
+	Renderer2D->Dispose( );
 	Gui->Dispose( );
 	Skybox->Dispose( );
 	PostProcessing->Dispose( );

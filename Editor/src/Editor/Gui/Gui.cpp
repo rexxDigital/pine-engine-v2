@@ -48,9 +48,8 @@ namespace {
 
 		SetupDockspace( );
 
-	//	ImGui::ShowDemoWindow( );
+		ImGui::ShowDemoWindow( );
 		Editor::Gui::MainMenuBar::Render( );
-
 
 		// Because ImGui selects the last window within a docking space as the selected space,
 		// I'll just call them in a order that makes the window I want to be shown by default to be shown first.

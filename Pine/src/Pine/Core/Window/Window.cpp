@@ -16,10 +16,11 @@ namespace {
 
 bool Pine::Window::Internal::Create( ) {
 	glfwDefaultWindowHints( );
+
 	glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
 
 	m_Window = glfwCreateWindow( 1024, 768, "Pine", nullptr, nullptr );
-	if ( m_Window == nullptr ) 	{
+	if ( m_Window == nullptr ) {
 		Log->Fatal( "Failed to create window." );
 		return false;
 	}

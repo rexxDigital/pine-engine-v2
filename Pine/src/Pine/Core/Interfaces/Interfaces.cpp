@@ -10,6 +10,7 @@ namespace Pine
 	IPhysicsManager* CreatePhysicsManagerInterface( );
 	IRenderManager* CreateRenderManagerInterface( );
 	IRenderer3D* CreateRenderer3DInterface( );
+	IRenderer2D* CreateRenderer2DInterface( );
 	ISkybox* CreateSkyboxInterface( );
 	IGui* CreateGuiInterface( );
 	IPostProcessing* CreatePostProcessingInterface( );
@@ -38,6 +39,7 @@ Pine::PineInstance Pine::CreateInstance( )
 	in.PhysicsManager = CreatePhysicsManagerInterface( );
 	in.RenderManager = CreateRenderManagerInterface( );
 	in.Renderer3D = CreateRenderer3DInterface( );
+	in.Renderer2D = CreateRenderer2DInterface( );
 	in.Skybox = CreateSkyboxInterface( );
 	in.Gui = CreateGuiInterface( );
 	in.PostProcessing = CreatePostProcessingInterface( );
@@ -58,6 +60,7 @@ void Pine::UseInstance( const PineInstance* instance )
 	PhysicsManager = instance->PhysicsManager;
 	RenderManager = instance->RenderManager;
 	Renderer3D = instance->Renderer3D;
+	Renderer2D = instance->Renderer2D;
 	Skybox = instance->Skybox;
 	Gui = instance->Gui;
 	PostProcessing = instance->PostProcessing;

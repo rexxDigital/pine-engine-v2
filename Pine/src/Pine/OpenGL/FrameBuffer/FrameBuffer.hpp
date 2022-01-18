@@ -30,7 +30,9 @@ namespace Pine
 
 		void Dispose( ) const;
 
-		void Create( int width, int height, bool normalColorBuffer = false );
+		void Create( int width, int height, bool createNormal = false, bool multiSample = false );
+
+		void BlitMultisample( FrameBuffer* target );
 	};
 
 }

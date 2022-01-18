@@ -14,6 +14,8 @@
 #include "Pine/Components/Collider3D/Collider3D.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
 
+void RenderPicPanelTexture( );
+
 namespace
 {
 	Pine::FrameBuffer* g_RenderingFrameBuffer = nullptr;
@@ -193,6 +195,8 @@ namespace
 		{
 			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_BackupCamera;
 		}
+
+		RenderPicPanelTexture(  );
 	}
 
 	void OnRenderingPass( Pine::RenderStage stage )
