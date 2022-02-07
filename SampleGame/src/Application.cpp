@@ -48,8 +48,8 @@ int main( )
 
 //	Pine::Input->SetCursorAutoCenter( true );
 
-	CreatePlayer( );
-	CreateWorld( );
+	//CreatePlayer( );
+	//CreateWorld( );
 
 	Pine::Run( );
 

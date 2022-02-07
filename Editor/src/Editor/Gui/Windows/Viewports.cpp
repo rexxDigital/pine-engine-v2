@@ -212,7 +212,7 @@ namespace
 
 	void RenderEntityIcon( const Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition )
 	{
-		constexpr float IconSize = 24.f;
+		constexpr float IconSize = 32.f;
 
 		static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
 		static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\light-bulb.png" );
@@ -353,13 +353,15 @@ void Editor::Gui::Windows::RenderViewports( )
 					// Because ImGuizmo has problems respecting the max view port width and height for whatever reason.
 					ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
 
-					if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( e->GetTransform( )->GetTransformationMatrix( ) ), nullptr, nullptr ) )
+					glm::mat4 temp = e->GetTransform(  )->GetTransformationMatrix(  );
+
+					if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( temp ), nullptr, nullptr ) )
 					{
 						glm::vec3 translation;
 						glm::quat rotation;
 						glm::vec3 scale;
 
-						DecomposeMatrix( e->GetTransform( )->GetTransformationMatrix( ), translation, rotation, scale );
+						DecomposeMatrix( temp, translation, rotation, scale );
 
 						auto base_position = glm::vec3( 0.f );
 

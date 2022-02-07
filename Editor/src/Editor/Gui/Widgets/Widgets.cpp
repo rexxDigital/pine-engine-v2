@@ -12,8 +12,10 @@
 #include "Pine/Entity/Entity.hpp"
 
 
-namespace {
-	std::optional<std::string> OpenFile( const char* filter ) {
+namespace
+{
+	std::optional<std::string> OpenFile( const char* filter )
+	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[ 260 ] = { 0 };
 		ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
@@ -31,9 +33,12 @@ namespace {
 		return std::nullopt;
 	}
 
-	Pine::IAsset* FindAssetFromAbsolutePath( const std::string& path ) {
-		for ( auto& a : Pine::Assets->GetAssets( ) ) {
-			if ( a.second->GetAbsoluteFilePath( ) == path ) {
+	Pine::IAsset* FindAssetFromAbsolutePath( const std::string& path )
+	{
+		for ( auto& a : Pine::Assets->GetAssets( ) )
+		{
+			if ( a.second->GetAbsoluteFilePath( ) == path )
+			{
 				return a.second;
 			}
 		}
@@ -42,8 +47,8 @@ namespace {
 	}
 }
 
-bool Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
-
+bool Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec )
+{
 	const float size = 50.f;
 
 	ImGui::Columns( 2, nullptr, false );
@@ -57,17 +62,17 @@ bool Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 	ImGui::Columns( 3, nullptr, false );
 
 	ImGui::SetNextItemWidth( size );
-	const bool xChanged = ImGui::DragFloat( std::string( "X##" + str ).c_str( ), &vec.x, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool xChanged = ImGui::DragFloat( std::string( "X##" + str ).c_str( ), &vec.x, 0.1f, -FLT_MAX, FLT_MAX );
 
 	ImGui::NextColumn( );
 
 	ImGui::SetNextItemWidth( size );
-	const bool yChanged = ImGui::DragFloat( std::string( "Y##" + str ).c_str( ), &vec.y, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool yChanged = ImGui::DragFloat( std::string( "Y##" + str ).c_str( ), &vec.y, 0.1f, -FLT_MAX, FLT_MAX );
 
 	ImGui::NextColumn( );
 
 	ImGui::SetNextItemWidth( size );
-	const bool zChanged = ImGui::DragFloat( std::string( "Z##" + str ).c_str( ), &vec.z, 0.01f, -FLT_MAX, FLT_MAX );
+	const bool zChanged = ImGui::DragFloat( std::string( "Z##" + str ).c_str( ), &vec.z, 0.1f, -FLT_MAX, FLT_MAX );
 
 	ImGui::Columns( 1 );
 
@@ -78,7 +83,8 @@ bool Editor::Gui::Widgets::Vector3( const std::string& str, glm::vec3& vec ) {
 	return xChanged || yChanged || zChanged;
 }
 
-bool Editor::Gui::Widgets::SliderFloat( const std::string& str, float& value, float min, float max, const std::string& format ) {
+bool Editor::Gui::Widgets::SliderFloat( const std::string& str, float& value, float min, float max, const std::string& format )
+{
 	ImGui::Columns( 2, nullptr, false );
 
 	ImGui::Text( "%s", str.c_str( ) );
@@ -94,7 +100,8 @@ bool Editor::Gui::Widgets::SliderFloat( const std::string& str, float& value, fl
 	return retValue;
 }
 
-bool Editor::Gui::Widgets::Combobox( const std::string& str, int& value, const char* items ) {
+bool Editor::Gui::Widgets::Combobox( const std::string& str, int& value, const char* items )
+{
 	ImGui::Columns( 2, nullptr, false );
 
 	ImGui::Text( "%s", str.c_str( ) );
@@ -110,21 +117,24 @@ bool Editor::Gui::Widgets::Combobox( const std::string& str, int& value, const c
 	return retValue;
 }
 
-void Editor::Gui::Widgets::PushDisabled( ) {
+void Editor::Gui::Widgets::PushDisabled( )
+{
 
 	ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
 	ImGui::PushStyleVar( ImGuiStyleVar_Alpha, ImGui::GetStyle( ).Alpha * 0.3f );
 
 }
 
-void Editor::Gui::Widgets::PopDisabled( ) {
+void Editor::Gui::Widgets::PopDisabled( )
+{
 
 	ImGui::PopItemFlag( );
 	ImGui::PopStyleVar( );
 
 }
 
-PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::AssetType type /*= Pine::AssetType::Invalid */ ) {
+PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IAsset* currentAsset /*= nullptr*/, bool shouldRestrictType /*= false*/, Pine::AssetType type /*= Pine::AssetType::Invalid */ )
+{
 	PickerReturn returnValue;
 
 	ImGui::Columns( 2, nullptr, false );
@@ -135,10 +145,12 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	char buff[ 255 ];
 
-	if ( currentAsset != nullptr ) {
+	if ( currentAsset != nullptr )
+	{
 		strcpy_s( buff, currentAsset->GetPath( ).string( ).c_str( ) );
 	}
-	else {
+	else
+	{
 		strcpy_s( buff, "\0" );
 	}
 
@@ -147,11 +159,14 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly );
 
-	if ( ImGui::BeginDragDropTarget( ) ) {
-		if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) ) {
+	if ( ImGui::BeginDragDropTarget( ) )
+	{
+		if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
+		{
 			const auto asset = *reinterpret_cast< Pine::IAsset** >( payload->Data );
 
-			if ( !shouldRestrictType || ( shouldRestrictType && asset->GetType( ) == type ) ) {
+			if ( !shouldRestrictType || ( shouldRestrictType && asset->GetType( ) == type ) )
+			{
 				returnValue.asset = asset;
 				returnValue.valid = true;
 			}
@@ -160,7 +175,8 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 		ImGui::EndDragDropTarget( );
 	}
 
-	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::AssetType::Texture2D ) {
+	if ( ImGui::IsItemHovered( ) && currentAsset != nullptr && currentAsset->GetType( ) == Pine::AssetType::Texture2D )
+	{
 		const auto texture = dynamic_cast< Pine::Texture2D* >( currentAsset );
 
 		ImGui::BeginTooltip( );
@@ -180,7 +196,8 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 		ImGui::EndTooltip( );
 	}
 
-	if ( ImGui::IsItemClicked( ) && currentAsset != nullptr ) {
+	if ( ImGui::IsItemClicked( ) && currentAsset != nullptr )
+	{
 		Editor::Gui::Globals::SelectedAssetPtrs.clear( );
 		Editor::Gui::Globals::SelectedEntityPtrs.clear( );
 		Editor::Gui::Globals::SelectedAssetPtrs.push_back( currentAsset );
@@ -188,16 +205,21 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	ImGui::SameLine( );
 
-	if ( ImGui::Button( std::string( "...##" + str ).c_str( ) ) ) {
+	if ( ImGui::Button( std::string( "...##" + str ).c_str( ) ) )
+	{
 		auto file = OpenFile( "Asset File (*.*)\0*.*\0" );
-		if ( file ) {
-			if ( auto a = FindAssetFromAbsolutePath( *file ) ) {
-				if ( shouldRestrictType && a->GetType( ) == type ) {
+		if ( file )
+		{
+			if ( auto a = FindAssetFromAbsolutePath( *file ) )
+			{
+				if ( shouldRestrictType && a->GetType( ) == type )
+				{
 					returnValue.asset = a;
 					returnValue.valid = true;
 				}
 			}
-			else {
+			else
+			{
 				MessageBoxA( reinterpret_cast< HWND >( Pine::Window::Internal::GetWindowHWND( ) ), "Asset is not loaded.", 0, 0 );
 			}
 		}
@@ -211,7 +233,8 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 	if ( currentAsset == nullptr )
 		PushDisabled( );
 
-	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
+	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) )
+	{
 		// This will cause it to update the asset as a nullptr for us later.
 
 		returnValue.valid = true;
@@ -242,10 +265,12 @@ PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::E
 
 	char buff[ 64 ];
 
-	if ( currentEntity != nullptr ) {
+	if ( currentEntity != nullptr )
+	{
 		strcpy_s( buff, currentEntity->GetName( ).c_str( ) );
 	}
-	else {
+	else
+	{
 		strcpy_s( buff, "\0" );
 	}
 
@@ -254,8 +279,10 @@ PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::E
 	ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 31 );
 	ImGui::InputText( std::string( "##" + str ).c_str( ), buff, 64, ImGuiInputTextFlags_ReadOnly );
 
-	if ( ImGui::BeginDragDropTarget( ) ) {
-		if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) ) {
+	if ( ImGui::BeginDragDropTarget( ) )
+	{
+		if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) )
+		{
 			const auto entity = *reinterpret_cast< Pine::Entity** >( payload->Data );
 
 			returnValue.valid = true;
@@ -267,7 +294,8 @@ PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::E
 
 	ImGui::SameLine( );
 
-	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) ) {
+	if ( ImGui::Button( std::string( "X##" + str ).c_str( ) ) )
+	{
 		returnValue.valid = true;
 	}
 
@@ -278,7 +306,8 @@ PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::E
 	return returnValue;
 }
 
-bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value ) {
+bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value )
+{
 	ImGui::Columns( 2, nullptr, false );
 
 	ImGui::Text( "%s", str.c_str( ) );
@@ -292,22 +321,27 @@ bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value ) {
 	return ret;
 }
 
-bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset ) {
+bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset )
+{
 	bool ret = false;
 
 	ImGui::PushID( text.c_str( ) );
 	ImGui::BeginGroup( );
 
-	if ( !showBackground ) {
+	if ( !showBackground )
+	{
 		ImGui::PushStyleColor( ImGuiCol_Button, ImVec4( 0.f, 0.f, 0.f, 0.f ) );
 	}
 
-	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) ) {
+	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) )
+	{
 		ret = true;
 	}
 
-	if ( asset != nullptr ) {
-		if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) ) {
+	if ( asset != nullptr )
+	{
+		if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) )
+		{
 			ImGui::SetDragDropPayload( "Asset", &asset, sizeof( Pine::IAsset* ), 0 );
 
 			ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 64.f, 64.f ) );
@@ -322,7 +356,7 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 
 			ImGui::PopFont( );
 
-			ImGui::TextColored(  ImVec4( 0.6f, 0.6f, 0.6f, 1.f ), "%s", Pine::SAssetType[ static_cast< int >( asset->GetType( ) ) ] );
+			ImGui::TextColored( ImVec4( 0.6f, 0.6f, 0.6f, 1.f ), "%s", Pine::SAssetType[ static_cast< int >( asset->GetType( ) ) ] );
 
 			ImGui::EndChild( );
 
@@ -342,7 +376,8 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 	return ret;
 }
 
-bool Editor::Gui::Widgets::ColorPicker( const std::string& str, glm::vec3& vec ) {
+bool Editor::Gui::Widgets::ColorPicker( const std::string& str, glm::vec3& vec )
+{
 	ImGui::Columns( 2, nullptr, false );
 
 	ImGui::Text( "%s", str.c_str( ) );

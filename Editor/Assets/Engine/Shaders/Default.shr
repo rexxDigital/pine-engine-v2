@@ -1,7 +1,7 @@
 {
 	"VertexShader": "Default\\Vertex.glsl",
 	"FragmentShader": "Default\\Fragment.glsl",
-	"SupportsInstancedRendering": true,
+	"SupportsInstancedRendering": false,
 	"Samplers": {
 		"Diffuse": "materialSamplers.diffuse",
 		"Specular": "materialSamplers.specular",

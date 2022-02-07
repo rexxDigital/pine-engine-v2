@@ -23,6 +23,9 @@ namespace Pine::UniformBuffers
 		glm::vec3 attenuation;
 		float cutOffAngle;
 		float cutOffSmoothness;
+		float padding3;
+		float padding4;
+		float padding5;
 	};
 
 	struct LightBufferData_t

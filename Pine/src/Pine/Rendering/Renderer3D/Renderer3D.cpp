@@ -241,7 +241,7 @@ namespace Pine
 
 		void PrepareLightData( Light* light ) override
 		{
-			// Make sure we're not overflowing the light(s) buffer
+			// Make sure we're not overflowing the lights buffer
 			if ( g_CurrentDynamicLightCount == 3 )
 			{
 				// This will spam the living fuck out of the console.
@@ -255,11 +255,11 @@ namespace Pine
 			const int lightSlot = light->GetLightType( ) == LightType::Directional ? 0 : 1 + g_CurrentDynamicLightCount;
 
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->Position;
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = normalize( glm::radians( light->GetParent( )->GetTransform( )->Rotation ) );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );// glm::radians(  );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].color = light->GetLightColor( );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].attenuation = light->GetAttenuation( );
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = .5f; // light->GetLightType( ) == LightType::SpotLight ? glm::cos( glm::radians( light->GetSpotlightAngle( ) ) ) : -1.f;
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = light->GetSpotlightSmoothness( );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = light->GetLightType( ) == LightType::SpotLight ? glm::cos( glm::radians( light->GetSpotlightAngle( ) ) ) : -1.f;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = 0.0f;
 
 			if ( light->GetLightType( ) != LightType::Directional )
 				g_CurrentDynamicLightCount++;
@@ -272,7 +272,7 @@ namespace Pine
 				light.color = glm::vec3( 0.f, 0.f, 0.f );
 				light.position = glm::vec3( 0.f, 0.f, 0.f );
 				light.attenuation = glm::vec3( 0.f, 0.f, 0.f );
-				light.cutOffAngle = 180.0f;
+				light.cutOffAngle = 0.0f;
 				light.cutOffSmoothness = 0.0f;
 			}
 
