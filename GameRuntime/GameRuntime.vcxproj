@@ -160,8 +160,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Controllers\GameController\GameController.cpp" />
-    <ClCompile Include="src\Controllers\InstancedRenderingTest\InstancedRenderingTest.cpp" />
-    <ClCompile Include="src\Controllers\RGBExperiment\RGBExperiment.cpp" />
     <ClCompile Include="src\DllMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,8 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Controllers\GameController\GameController.hpp" />
-    <ClInclude Include="src\Controllers\InstancedRenderingTest\InstancedRenderingTest.hpp" />
-    <ClInclude Include="src\Controllers\RGBExperiment\RGBExperiment.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

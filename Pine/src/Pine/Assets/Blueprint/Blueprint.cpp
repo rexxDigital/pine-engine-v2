@@ -145,6 +145,11 @@ bool Pine::Blueprint::HasValidEntity( ) const
 	return m_Entity != nullptr;
 }
 
+Pine::Entity* Pine::Blueprint::GetInternalEntity( ) const
+{
+	return m_Entity;
+}
+
 nlohmann::json Pine::Blueprint::ToJson( ) const
 {
 	nlohmann::json j;
@@ -169,7 +174,8 @@ bool Pine::Blueprint::LoadFromFile( )
 {
 	const auto j = Pine::Serialization::LoadJSONFromFile( m_FilePath.string( ) );
 
-	try {
+	try
+	{
 
 		delete m_Entity;
 
@@ -178,7 +184,8 @@ bool Pine::Blueprint::LoadFromFile( )
 		LoadEntityJson( m_Entity, j );
 
 	}
-	catch ( std::exception& e ) {
+	catch ( std::exception& e )
+	{
 		Pine::Log->Error( "JSON parsing error: " + std::string( e.what( ) ) );
 		return false;
 	}

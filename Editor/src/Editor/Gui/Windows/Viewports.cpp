@@ -56,10 +56,10 @@ namespace
 
 		using namespace Editor::Gui;
 
-		static auto renderIconButton = [ ] ( bool active, Pine::Texture2D* texture )
+		static auto renderIconButton = [ ] ( bool active, const Pine::Texture2D* texture )
 		{
 			ImGui::PushStyleColor( ImGuiCol_Button, active ? ImVec4( 0.26f, 0.48f, 0.35f, 1.0f ) : ImVec4( 0.26f, 0.78f, 0.35f, 1.0f ) );
-			bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 16.f, 16.f ) );
+			const bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 16.f, 16.f ) );
 			ImGui::PopStyleColor( );
 			return ret;
 		};
@@ -105,64 +105,6 @@ namespace
 				g_StartedPlaying = true;
 			}
 		}
-
-		//if ( ImGui::BeginMenuBar( ) )
-		/*{
-			if ( ImGui::MenuItem( "Transform", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport ) )
-			{
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
-			}
-
-			if ( ImGui::MenuItem( "Rotate", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, inLevelViewport ) )
-			{
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
-			}
-
-			if ( ImGui::MenuItem( "Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport ) )
-			{
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
-			}
-
-			if ( inLevelViewport && Globals::IsHoveringLevelView )
-			{
-				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::TransformGizmo ) )
-				{
-					Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
-				}
-
-				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::RotateGizmo ) )
-				{
-					Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
-				}
-
-				if ( HotkeyManager::GetHotkeyPressed( Editor::Hotkeys::ScaleGizmo ) )
-				{
-					Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
-				}
-			}
-
-			ImGui::Spacing( );
-			ImGui::Separator( );
-			ImGui::Spacing( );
-
-			const bool isPlaying = Editor::PlayManager::IsPlaying( );
-			if ( ImGui::MenuItem( isPlaying ? "Stop" : "Start", nullptr ) )
-			{
-				if ( isPlaying )
-				{
-					Editor::PlayManager::Stop( );
-					Globals::SelectedEntityPtrs.clear( );
-				}
-				else
-				{
-					Editor::PlayManager::Start( );
-
-					g_StartedPlaying = true;
-				}
-			}
-
-			ImGui::EndMenuBar( );
-		}*/
 	}
 
 	void HandleAssetViewportDrop( )
@@ -202,6 +144,16 @@ namespace
 					if ( const auto texture3D = dynamic_cast< Pine::Texture3D* >( asset ) )
 					{
 						Pine::Skybox->SetSkyboxCubemap( texture3D );
+					}
+				}
+				else if ( asset->GetType( ) == Pine::AssetType::Blueprint )
+				{
+					if ( const auto blueprint = dynamic_cast< Pine::Blueprint* >( asset ) )
+					{
+						auto e = blueprint->SpawnEntity( );
+						const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
+
+						e->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
 					}
 				}
 			}

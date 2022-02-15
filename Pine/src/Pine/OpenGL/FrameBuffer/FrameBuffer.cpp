@@ -24,11 +24,13 @@ unsigned int Pine::FrameBuffer::GetDepthId( ) const
 	return m_DepthStencilBuffer;
 }
 
-int Pine::FrameBuffer::GetWidth( ) const {
+int Pine::FrameBuffer::GetWidth( ) const
+{
 	return m_Width;
 }
 
-int Pine::FrameBuffer::GetHeight( ) const {
+int Pine::FrameBuffer::GetHeight( ) const
+{
 	return m_Height;
 }
 
@@ -55,7 +57,7 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal, bool m
 	glGenFramebuffers( 1, &m_Id );
 	glBindFramebuffer( GL_FRAMEBUFFER, m_Id );
 
-	auto textureType = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+	const auto textureType = multiSample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 
 	// Create texture buffer
 	glGenTextures( 1, &m_TextureBuffer );
@@ -85,7 +87,7 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal, bool m
 
 		glFramebufferTexture2D( GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_NormalBuffer, 0 );
 
-		unsigned int attachments[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		constexpr unsigned int attachments[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 
 		glDrawBuffers( 2, attachments );
 	}
@@ -117,13 +119,13 @@ void Pine::FrameBuffer::Create( int width, int height, bool createNormal, bool m
 	m_Height = height;
 }
 
-void Pine::FrameBuffer::BlitMultisample( FrameBuffer* target )
+void Pine::FrameBuffer::BlitMultisample( const FrameBuffer * target ) const
 {
 	const auto width = target->GetWidth( );
 	const auto height = target->GetHeight( );
 
 	glBindFramebuffer( GL_READ_FRAMEBUFFER, m_Id );
-	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, target->GetId(  ) );
+	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, target->GetId( ) );
 
 	glBlitFramebuffer( 0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST );
 

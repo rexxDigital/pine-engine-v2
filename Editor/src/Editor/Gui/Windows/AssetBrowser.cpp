@@ -12,6 +12,7 @@
 #include "..\Widgets\Widgets.hpp"
 #include "..\Gui.hpp"
 #include "..\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "Pine/Entity/Entity.hpp"
 
 namespace
 {
@@ -33,7 +34,7 @@ namespace
 		std::vector<PathItem_t*> m_Items;
 		PathItem_t* m_Parent = nullptr;
 
-		void Dispose( )
+		void Dispose( ) const
 		{
 			for ( auto item : m_Items )
 			{
@@ -533,6 +534,30 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 		}
 
 		ImGui::EndChild( );
+
+		if ( ImGui::BeginDragDropTarget( ) )
+		{
+			if ( const auto payload = ImGui::AcceptDragDropPayload( "Entity", 0 ) )
+			{
+				const auto entity = *static_cast< Pine::Entity** >( payload->Data );
+
+				// Create a prefab of the entity
+
+				Pine::Blueprint blueprint;
+
+				blueprint.CreateFromEntity( entity );
+
+				// I don't feel so good about saving it with the entity's file name but whatever.
+				blueprint.SetFilePath( g_CurrentDirectory->m_Path.string( ) + "\\" + entity->GetName( ) + ".bpt" );
+
+				blueprint.SaveToFile( );
+
+				ProjectManager::ReloadProjectAssets( );
+			}
+
+			ImGui::EndDragDropTarget( );
+		}
+
 	}
 	ImGui::End( );
 

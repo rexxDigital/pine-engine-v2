@@ -32,7 +32,7 @@ namespace Pine
 
 		void Create( int width, int height, bool createNormal = false, bool multiSample = false );
 
-		void BlitMultisample( FrameBuffer* target );
+		void BlitMultisample( const FrameBuffer* target ) const;
 	};
 
 }

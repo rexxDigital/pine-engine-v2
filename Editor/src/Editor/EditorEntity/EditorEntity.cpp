@@ -100,6 +100,8 @@ void Editor::EditorEntity::Create( )
 	g_EditorEntity->AddScript( new EditorEntityScript );
 
 	g_Camera = g_EditorEntity->GetComponent<Pine::Camera>( );
+
+	g_Camera->SetFarPlane( 2000.f );
 }
 
 Pine::Entity* Editor::EditorEntity::GetEntity( )

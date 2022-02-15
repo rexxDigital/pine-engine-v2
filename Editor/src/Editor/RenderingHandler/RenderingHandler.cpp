@@ -184,7 +184,7 @@ namespace
 	{
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{
-			RenderHighlightedEntity( );
+			//RenderHighlightedEntity( );
 			RenderSelectedColliderAABB( );
 		}
 	}

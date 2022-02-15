@@ -257,7 +257,7 @@ namespace Pine
 			return g_RenderingContext;
 		}
 
-		void SetRenderingCallback( RenderCallback fn ) override
+		void SetRenderingCallback( const RenderCallback fn ) override
 		{
 			g_RenderingCallback = fn;
 		}

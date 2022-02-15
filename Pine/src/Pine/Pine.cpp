@@ -143,7 +143,7 @@ bool Pine::Setup( )
 	// We want to load engine shaders first because some other engine assets needs the shaders to be ready first.
 	Log->Message( "Loading engine shaders..." );
 
-	if ( Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 ) 
+	if ( Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true ) == 0 )
 	{
 		Log->Fatal( "Failed to load engine shaders, required engine files are missing from the executable directory." );
 		return false;
@@ -151,7 +151,7 @@ bool Pine::Setup( )
 
 	Log->Message( "Loading engine assets..." );
 
-	if ( Assets->LoadFromDirectory( "Assets\\Engine", true ) == 0 ) 
+	if ( Assets->LoadFromDirectory( "Assets\\Engine", true ) == 0 )
 	{
 		Log->Fatal( "Failed to load engine assets, required engine files are missing from the executable directory." );
 		return false;

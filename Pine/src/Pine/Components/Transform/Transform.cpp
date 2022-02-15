@@ -60,6 +60,9 @@ void Pine::Transform::OnUpdate( float deltaTime )
 
 void Pine::Transform::OnRender( )
 {
+	// UPDATE 2022: Wouldn't this like break if we moved from (2, 0, 0) to (0, 2, 0) ???
+	// This seems really stupid.
+	
 	// FIXME: This is really ugly code...
 	const float posLength = Position.x + Position.y + Position.z;
 	const float rotLength = Rotation.x + Rotation.y + Rotation.z;

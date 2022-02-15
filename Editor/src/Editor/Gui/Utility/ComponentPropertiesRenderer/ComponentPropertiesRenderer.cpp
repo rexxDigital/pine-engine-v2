@@ -297,7 +297,7 @@ namespace
 
 }
 
-void Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component )
+void Utility::ComponentPropertiesRenderer::RenderComponentProperties( Pine::IComponent* component )
 {
 
 	switch ( component->GetType( ) )

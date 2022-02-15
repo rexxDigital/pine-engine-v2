@@ -7,12 +7,14 @@
 #include "../../../ProjectManager/ProjectManager.hpp"
 #include "..\..\Widgets\Widgets.hpp"
 #include "Editor/Gui/Gui.hpp"
+#include "Editor/Gui/Utility/AssetIconGen/AssetIconGen.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Rendering/Skybox/Skybox.hpp"
 
 void UpdateAssetCache( );
+void DisplayEntityProperties( Pine::Entity* e );
 
 namespace
 {
@@ -58,6 +60,11 @@ namespace
 
 	void RenderMaterial( Pine::Material* mat )
 	{
+		if ( const auto icon = Editor::Gui::Utility::AssetIconGen::GenerateAssetThumbnail( mat->GetPath(  ).string( ) ) )
+		{
+		//	ImGui::Image( reinterpret_cast< ImTextureID >( icon ), ImVec2( 64.f, 64.f ) );
+		}
+
 		const auto diffuseAssetRet = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::AssetType::Texture2D );
 		if ( diffuseAssetRet.valid )
 		{
@@ -255,6 +262,20 @@ namespace
 			Editor::Gui::Widgets::PushDisabled( );
 	}
 
+	void RenderBlueprint( Pine::Blueprint* blueprint )
+	{
+		if ( !blueprint )
+			return;
+
+		if ( !blueprint->HasValidEntity(  ) )
+		{
+			ImGui::Text( "No stored entity within the blueprint." );
+			return;
+		}
+
+		DisplayEntityProperties( blueprint->GetInternalEntity( ) );
+	}
+
 }
 
 void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine::IAsset* asset )
@@ -283,6 +304,9 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 		break;
 	case Pine::AssetType::Texture3D:
 		RenderCubemap( dynamic_cast< Pine::Texture3D* >( asset ) );
+		break;
+	case Pine::AssetType::Blueprint:
+		RenderBlueprint( dynamic_cast< Pine::Blueprint* >( asset ) );
 		break;
 	default:
 		break;

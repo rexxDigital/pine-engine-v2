@@ -13,4 +13,6 @@ namespace Editor::Gui::Utility::AssetIconGen {
 
 	void Update( );
 
+	void Render( );
+
 }

@@ -4,207 +4,232 @@
 
 #include <Pine\Entity\Entity.hpp>
 #include <Pine\Assets\IAsset\IAsset.hpp>
+#include <Pine/Components/Components.hpp>
+
 #include "../Utility/ComponentPropertiesRenderer/ComponentPropertiesRenderer.hpp"
 #include "../Widgets/Widgets.hpp"
-#include <Pine/Components/Components.hpp>
 #include "../Utility/AssetIconGen/AssetIconGen.hpp"
 #include "../Utility/AssetPropertiesRenderer/AssetPropertiesRenderer.hpp"
 
-namespace {
+void DisplayEntityProperties( Pine::Entity* e )
+{
+	static char nameBuffer[ 64 ];
+	bool enabled = e->GetActive( );
 
-	void DisplayEntityProperties( Pine::Entity* e ) {
-		static char nameBuffer[ 64 ];
-		bool enabled = e->GetActive( );
-
-		if ( ImGui::Checkbox( std::string( "##Active" + std::to_string( e->GetId( ) ) ).c_str( ), &enabled ) ) {
-			e->SetActive( enabled );
-		}
-
-		ImGui::SameLine( );
-
-		strcpy_s( nameBuffer, e->GetName( ).c_str( ) );
-
-		if ( ImGui::InputText( std::string( "##Name" + std::to_string( e->GetId( ) ) ).c_str( ), nameBuffer, 64 ) ) {
-			e->SetName( nameBuffer );
-		}
-
-		ImGui::Spacing( );
-		ImGui::Separator( );
-		ImGui::Spacing( );
-
-		int index = 0;
-		for ( auto component : e->GetComponents( ) ) {
-			if ( ImGui::CollapsingHeader( std::string( std::string( Pine::SComponentNames[ static_cast< int >( component->GetType( ) ) ] ) + "##" + std::to_string( index ) ).c_str( ), ImGuiTreeNodeFlags_DefaultOpen ) ) {
-				bool active = component->GetActive( );
-
-				ImGui::Spacing( );
-
-				if ( index == 0 ) {
-					Editor::Gui::Widgets::PushDisabled( );
-				}
-
-				if ( ImGui::Checkbox( std::string( "Active##" + std::to_string( index ) ).c_str( ), &active ) ) {
-					component->SetActive( active );
-				}
-
-				ImGui::SameLine( );
-
-				if ( ImGui::Button( std::string( "Remove##" + std::to_string( index ) ).c_str( ) ) ) {
-					e->RemoveComponent( index );
-					break;
-				}
-
-				if ( index == 0 ) {
-					Editor::Gui::Widgets::PopDisabled( );
-				}
-
-				ImGui::Spacing( );
-				ImGui::Separator( );
-				ImGui::Spacing( );
-
-				Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( component );
-			}
-
-			index++;
-		}
-
-		ImGui::Spacing( );
-		ImGui::Separator( );
-		ImGui::Spacing( );
-
-		if ( ImGui::Button( "Add new component...", ImVec2( -1.f, 35.f ) ) ) {
-			ImGui::OpenPopup( "AddNewComponent" );
-		}
-
+	if ( ImGui::Checkbox( std::string( "##Active" + std::to_string( e->GetId( ) ) ).c_str( ), &enabled ) )
+	{
+		e->SetActive( enabled );
 	}
 
-	void DisplayAssetProperties( Pine::IAsset* a ) {
-		auto icon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) );
-		if ( icon )	
-			ImGui::Image( reinterpret_cast< ImTextureID >( icon->GetId( ) ), ImVec2( 64.f, 64.f ) );
+	ImGui::SameLine( );
 
-		ImGui::SameLine( );
+	strcpy_s( nameBuffer, e->GetName( ).c_str( ) );
 
-		ImGui::BeginChild( "##AssetPropertiesChild", ImVec2( -1.f, 65.f ), false, 0 );
-
-		ImGui::Text( "%s", a->GetFileName( ).c_str( ) );
-		ImGui::Text( "%s", a->GetPath( ).string( ).c_str( ) );
-		ImGui::Text( "%s", Pine::SAssetType[ static_cast< int >( a->GetType( ) ) ] );
-
-		ImGui::EndChild( );
-
-		ImGui::Spacing( );
-		ImGui::Separator( );
-		ImGui::Spacing( );
-
-		Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( a );
-
+	if ( ImGui::InputText( std::string( "##Name" + std::to_string( e->GetId( ) ) ).c_str( ), nameBuffer, 64 ) )
+	{
+		e->SetName( nameBuffer );
 	}
 
-	void DisplayAddComponentPopup( ) {
-		static char buff[ 64 ];
-		static bool initialize = true;
-		static int selectedItem = 0;
+	ImGui::Spacing( );
+	ImGui::Separator( );
+	ImGui::Spacing( );
 
-		static std::vector<Pine::ComponentType> components;
+	int index = 0;
+	for ( const auto component : e->GetComponents( ) )
+	{
+		if ( ImGui::CollapsingHeader( std::string( std::string( Pine::SComponentNames[ static_cast< int >( component->GetType( ) ) ] ) + "##" + std::to_string( index ) ).c_str( ), ImGuiTreeNodeFlags_DefaultOpen ) )
+		{
+			bool active = component->GetActive( );
 
-		static std::vector<const char*> displayComponents;
-		static std::vector<Pine::ComponentType> displayComponentsType;
+			ImGui::Spacing( );
 
-		if ( ImGui::BeginPopup( "AddNewComponent", 0 ) ) {
-			if ( initialize ) {
-				strcpy_s( buff, "\0" );
-
-				components.clear( );
-				displayComponents.clear( );
-				displayComponentsType.clear( );
-
-				for ( int i = 0; i < Pine::Components->GetComponentTypeCount( ); i++ ) {
-					components.push_back( static_cast< Pine::ComponentType >( i ) );
-
-					if ( i > 1 ) {
-						displayComponents.push_back( Pine::Components->GetComponentTypeName( components[ i ] ) );
-						displayComponentsType.push_back( static_cast< Pine::ComponentType >( i ) );
-					}
-				}
-
-				ImGui::SetKeyboardFocusHere( );
-
-				selectedItem = 0;
-
-				initialize = false;
+			if ( index == 0 )
+			{
+				Editor::Gui::Widgets::PushDisabled( );
 			}
 
-			ImGui::SetNextItemWidth( -1.f );
-
-			if ( ImGui::InputText( "##SearchBuffer", buff, 64 ) ) {
-				displayComponents.clear( );
-				displayComponentsType.clear( );
-
-				for ( int i = 2; i < components.size( ); i++ ) {
-					// To search case insensitive I have to this retarded stuff.
-					char componentNameLowercase[ 64 ];
-					char searchBufferLowercase[ 64 ];
-
-					auto componentName = Pine::Components->GetComponentTypeName( components[ i ] );
-
-					for ( int j = 0; j < strlen( componentName ) + 1; j++ ) {
-						componentNameLowercase[ j ] = tolower( componentName[ j ] );
-					}
-
-					for ( int j = 0; j < strlen( buff ) + 1; j++ ) {
-						searchBufferLowercase[ j ] = tolower( buff[ j ] );
-					}
-
-					if ( strstr( componentNameLowercase, searchBufferLowercase ) != 0 ) {
-						displayComponents.push_back( Pine::Components->GetComponentTypeName( components[ i ] ) );
-						displayComponentsType.push_back( components[ i ] );
-					}
-				}
-
-				selectedItem = 0;
-			}
-
-			ImGui::ListBox( "##Components", &selectedItem, displayComponents.data( ), displayComponents.size( ) );
-
-			if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_::ImGuiKey_Enter ) ) ) {
-				if ( Editor::Gui::Globals::SelectedItem == Editor::Gui::SelectedItemType::Entity && !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) ) {
-					const auto comp = Pine::Components->CreateComponent( displayComponentsType[ selectedItem ] );
-					if ( comp != nullptr )
-						Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->AddComponent( comp );
-				}
-
-				ImGui::CloseCurrentPopup( );
+			if ( ImGui::Checkbox( std::string( "Active##" + std::to_string( index ) ).c_str( ), &active ) )
+			{
+				component->SetActive( active );
 			}
 
 			ImGui::SameLine( );
 
-			if ( ImGui::Button( "Cancel" ) || ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_::ImGuiKey_Escape ) ) ) {
-				ImGui::CloseCurrentPopup( );
+			if ( ImGui::Button( std::string( "Remove##" + std::to_string( index ) ).c_str( ) ) )
+			{
+				e->RemoveComponent( index );
+				break;
 			}
 
-			ImGui::EndPopup( );
+			if ( index == 0 )
+			{
+				Editor::Gui::Widgets::PopDisabled( );
+			}
+
+			ImGui::Spacing( );
+			ImGui::Separator( );
+			ImGui::Spacing( );
+
+			Editor::Gui::Utility::ComponentPropertiesRenderer::RenderComponentProperties( component );
 		}
-		else {
-			initialize = true;
-		}
+
+		index++;
+	}
+
+	ImGui::Spacing( );
+	ImGui::Separator( );
+	ImGui::Spacing( );
+
+	if ( ImGui::Button( "Add new component...", ImVec2( -1.f, 35.f ) ) )
+	{
+		ImGui::OpenPopup( "AddNewComponent" );
 	}
 
 }
 
-void Editor::Gui::Windows::RenderProperties( ) {
+void DisplayAssetProperties( Pine::IAsset* a )
+{
+	if ( const auto icon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) ) )
+		ImGui::Image( reinterpret_cast< ImTextureID >( icon->GetId( ) ), ImVec2( 64.f, 64.f ) );
 
-	if ( !ShowProperties ) {
+	ImGui::SameLine( );
+
+	ImGui::BeginChild( "##AssetPropertiesChild", ImVec2( -1.f, 65.f ), false, 0 );
+
+	ImGui::Text( "%s", a->GetFileName( ).c_str( ) );
+	ImGui::Text( "%s", a->GetPath( ).string( ).c_str( ) );
+	ImGui::Text( "%s", Pine::SAssetType[ static_cast< int >( a->GetType( ) ) ] );
+
+	ImGui::EndChild( );
+
+	ImGui::Spacing( );
+	ImGui::Separator( );
+	ImGui::Spacing( );
+
+	Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( a );
+
+}
+
+void DisplayAddComponentPopup( )
+{
+	static bool initialize = true;
+	static int selectedItem = 0;
+
+	static std::vector<const char*> displayComponents;
+
+	if ( ImGui::BeginPopup( "AddNewComponent", 0 ) )
+	{
+		static std::vector<Pine::ComponentType> displayComponentsType;
+		static std::vector<Pine::ComponentType> components;
+		static char buff[ 64 ];
+
+		if ( initialize )
+		{
+			strcpy_s( buff, "\0" );
+
+			components.clear( );
+			displayComponents.clear( );
+			displayComponentsType.clear( );
+
+			for ( int i = 0; i < Pine::Components->GetComponentTypeCount( ); i++ )
+			{
+				components.push_back( static_cast< Pine::ComponentType >( i ) );
+
+				if ( i > 1 )
+				{
+					displayComponents.push_back( Pine::Components->GetComponentTypeName( components[ i ] ) );
+					displayComponentsType.push_back( static_cast< Pine::ComponentType >( i ) );
+				}
+			}
+
+			ImGui::SetKeyboardFocusHere( );
+
+			selectedItem = 0;
+
+			initialize = false;
+		}
+
+		ImGui::SetNextItemWidth( -1.f );
+
+		if ( ImGui::InputText( "##SearchBuffer", buff, 64 ) )
+		{
+			displayComponents.clear( );
+			displayComponentsType.clear( );
+
+			for ( int i = 2; i < components.size( ); i++ )
+			{
+				// To search case insensitive I have to this retarded stuff.
+				char componentNameLowercase[ 64 ];
+				char searchBufferLowercase[ 64 ];
+
+				const auto componentName = Pine::Components->GetComponentTypeName( components[ i ] );
+
+				for ( int j = 0; j < strlen( componentName ) + 1; j++ )
+				{
+					componentNameLowercase[ j ] = tolower( componentName[ j ] );
+				}
+
+				for ( int j = 0; j < strlen( buff ) + 1; j++ )
+				{
+					searchBufferLowercase[ j ] = tolower( buff[ j ] );
+				}
+
+				if ( strstr( componentNameLowercase, searchBufferLowercase ) != 0 )
+				{
+					displayComponents.push_back( Pine::Components->GetComponentTypeName( components[ i ] ) );
+					displayComponentsType.push_back( components[ i ] );
+				}
+			}
+
+			selectedItem = 0;
+		}
+
+		ImGui::ListBox( "##Components", &selectedItem, displayComponents.data( ), displayComponents.size( ) );
+
+		if ( ImGui::Button( "OK" ) || ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_::ImGuiKey_Enter ) ) )
+		{
+			if ( Editor::Gui::Globals::SelectedItem == Editor::Gui::SelectedItemType::Entity && !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
+			{
+				const auto comp = Pine::Components->CreateComponent( displayComponentsType[ selectedItem ] );
+				if ( comp != nullptr )
+					Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->AddComponent( comp );
+			}
+
+			ImGui::CloseCurrentPopup( );
+		}
+
+		ImGui::SameLine( );
+
+		if ( ImGui::Button( "Cancel" ) || ImGui::IsKeyPressed( ImGui::GetKeyIndex( ImGuiKey_::ImGuiKey_Escape ) ) )
+		{
+			ImGui::CloseCurrentPopup( );
+		}
+
+		ImGui::EndPopup( );
+	}
+	else
+	{
+		initialize = true;
+	}
+}
+
+void Editor::Gui::Windows::RenderProperties( )
+{
+
+	if ( !ShowProperties )
+	{
 		return;
 	}
 
 	ImGui::Begin( "Properties", &ShowProperties, 0 );
 
-	if ( !Gui::Globals::SelectedEntityPtrs.empty( ) ) {
+	if ( !Gui::Globals::SelectedEntityPtrs.empty( ) )
+	{
 		DisplayEntityProperties( Gui::Globals::SelectedEntityPtrs[ 0 ] );
 	}
 
-	if ( !Gui::Globals::SelectedAssetPtrs.empty( ) ) {
+	if ( !Gui::Globals::SelectedAssetPtrs.empty( ) )
+	{
 		DisplayAssetProperties( Gui::Globals::SelectedAssetPtrs[ 0 ] );
 	}
 

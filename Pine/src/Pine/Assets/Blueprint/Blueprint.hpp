@@ -24,6 +24,8 @@ namespace Pine
 		Pine::Entity* SpawnEntity( ) const;
 		bool HasValidEntity( ) const;
 
+		Pine::Entity* GetInternalEntity( ) const;
+
 		nlohmann::json ToJson( ) const;
 		bool FromJson( nlohmann::json& j );
 		
