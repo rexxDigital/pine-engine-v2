@@ -43,6 +43,9 @@ namespace Pine
 		// TODO: When and if this engine gets a little bit more advanced, we should get the nearest cube map
 		int GetBestEnvironmentMap( )
 		{
+			if ( !Skybox->GetSkyboxCubemap( ) )
+				return 0;
+
 			return Skybox->GetSkyboxCubemap( )->GetId( );
 		}
 
@@ -75,6 +78,7 @@ namespace Pine
 
 			mesh->GetVertexArray( )->Bind( );
 
+
 			// Figure out the correct shader version
 			std::uint32_t shaderVersion = material->GetShaderProperties( );
 
@@ -87,6 +91,7 @@ namespace Pine
 			SetBackfaceCulling( !( material->GetRenderFlags( ) & Pine::RenderFlags::DisableBackfaceCulling ) );
 			SetWireframeMode( material->GetRenderFlags( ) & Pine::RenderFlags::RenderWireframe );
 			SetBlending( material->GetRenderingMode( ) == MatRenderingMode::Transparent );
+
 
 			if ( !g_CurrentShader )
 				return;

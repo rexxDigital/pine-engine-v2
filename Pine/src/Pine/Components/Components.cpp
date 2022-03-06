@@ -163,7 +163,15 @@ namespace Pine
 			if ( !comp )
 				return 0;
 
-			return FindAvailableDataSlot( comp );
+			int currentCount = 0;
+
+			for ( int i = 0; i < comp->m_DataValidSize; i++ )
+			{
+				if ( comp->m_DataValid[ i ] )
+					currentCount = 1 + i;
+			}
+
+			return currentCount;
 		}
 
 		IComponent* GetComponent( ComponentType type, int index ) override

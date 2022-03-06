@@ -164,6 +164,11 @@ void Pine::Entity::DeleteChildren( )
 	m_Children.clear( );
 }
 
+void Pine::Entity::Dispose( )
+{
+
+}
+
 void Pine::Entity::AddScript( IComponent* script )
 {
 	AddComponent( ComponentType::NativeScript );

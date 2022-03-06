@@ -9,6 +9,7 @@
 
 #include "Editor/EditorEntity/EditorEntity.hpp"
 #include "Editor/Gui/Gui.hpp"
+#include "Editor/Gui/Utility/AssetIcon/AssetIcon.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Components/Components.hpp"
 #include "Pine/Components/Collider3D/Collider3D.hpp"
@@ -196,6 +197,7 @@ namespace
 			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_BackupCamera;
 		}
 
+		Editor::Gui::Utility::AssetIcon::Render( );
 		RenderPicPanelTexture(  );
 	}
 

@@ -367,8 +367,8 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 	if ( !showBackground )
 		ImGui::PopStyleColor( );
 
-	ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + ( size / 2.f - ( ImGui::CalcTextSize( text.c_str( ) ).x / 2.f ) ) + 2.f );
-	ImGui::Text( text.c_str( ) );
+	ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + ( size / 2.f - ( min( ImGui::CalcTextSize( text.c_str( ) ).x, 64.f ) / 2.f ) ) + 2.f );
+	ImGui::TextWrapped( text.c_str( ) );
 
 	ImGui::EndGroup( );
 	ImGui::PopID( );

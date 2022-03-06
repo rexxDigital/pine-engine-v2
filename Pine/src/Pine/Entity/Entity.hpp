@@ -109,6 +109,8 @@ namespace Pine
 		// And it will remove them in the entity list as well!
 		void DeleteChildren( );
 
+		void Dispose( );
+
 	};
 
 }

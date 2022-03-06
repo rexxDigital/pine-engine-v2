@@ -53,7 +53,7 @@ namespace Pine
 			m_AssetFactories.push_back( AssetFactory_t( { { ".lvl" }, Pine::AssetType::Level, [ ] ( ) { return new Pine::Level( ); } } ) );
 			m_AssetFactories.push_back( AssetFactory_t( { { ".ter" }, Pine::AssetType::Terrain, [ ] ( ) { return new Pine::Terrain( ); } } ) );
 
-			Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );
+			Log->Message( "Loaded " + std::to_string( m_AssetFactories.size( ) ) + " asset factories." );	
 		}
 
 		AssetFactory_t* GetAssetFactoryFromFileName( const std::string& fileName )

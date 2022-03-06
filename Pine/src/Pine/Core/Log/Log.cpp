@@ -43,7 +43,6 @@ namespace Pine
 		void Debug( const std::string& msg ) override
 		{
 
-			return;
 
 #ifdef _DEBUG
 			SetConsoleColor( 8 );

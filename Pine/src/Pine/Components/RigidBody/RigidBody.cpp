@@ -42,7 +42,7 @@ void Pine::RigidBody::UpdateColliders( )
 
 	if ( m_Collider && collider )
 	{
-		auto transform = m_Parent->GetTransform( );
+		const auto transform = m_Parent->GetTransform( );
 
 		reactphysics3d::Transform tr;
 
@@ -98,17 +98,18 @@ Pine::RigidBodyType Pine::RigidBody::GetRigidBodyType( ) const
 	return m_RigidBodyType;
 }
 
-void Pine::RigidBody::AttachCollider( Collider3D* collider )
+void Pine::RigidBody::DetachCollider( )
 {
+	if ( m_Collider )
+		m_RigidBody->removeCollider( m_Collider );
+
+	m_Collider3D = nullptr;
+	m_Collider = nullptr;
 }
 
-void Pine::RigidBody::DetachCollider( Collider3D* collider )
+bool Pine::RigidBody::IsColliderAttatched( Collider3D* collider ) const
 {
-}
-
-bool Pine::RigidBody::HasColliderAttached( Collider3D* collider ) const
-{
-	return false;
+	return m_Collider3D == collider;
 }
 
 void Pine::RigidBody::OnPrePhysicsUpdate( )
@@ -167,8 +168,12 @@ void Pine::RigidBody::OnCopied( const IComponent* old )
 
 void Pine::RigidBody::OnDestroyed( )
 {
+	Log->Warning( "RigidBody::OnDestroyed( ) -> (" + m_Parent->GetName( ) + ")" );
+
 	if ( m_RigidBody )
+	{
 		PhysicsManager->DestroyRigidBody( m_RigidBody );
+	}
 
 	m_RigidBody = nullptr;
 }
@@ -179,7 +184,6 @@ void Pine::RigidBody::OnSetup( )
 
 void Pine::RigidBody::OnUpdate( float deltaTime )
 {
-
 }
 
 void Pine::RigidBody::SaveToJson( nlohmann::json& j )

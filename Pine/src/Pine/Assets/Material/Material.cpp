@@ -193,7 +193,7 @@ bool Pine::Material::SaveToFile( )
 	j[ "shininess" ] = m_Shininess;
 	j[ "textureScale" ] = m_TextureScale;
 	j[ "renderMode" ] = m_RenderingMode;
-	j[ "renderFlags" ] = m_RenderFlags;
+	j[ "renderFlags" ] = std::to_string( m_RenderFlags );
 	j[ "shaderProperties" ] = std::to_string( m_ShaderProperties );
 
 	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );

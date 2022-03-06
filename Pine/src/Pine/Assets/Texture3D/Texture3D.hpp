@@ -1,21 +1,53 @@
 #pragma once
 #include "../IAsset/IAsset.hpp"
 
-namespace Pine {
+namespace Pine
+{
+	class Texture2D;
 
-	class Texture3D : public IAsset {
+	enum class Texture3DType
+	{
+		SingleTexture,
+		MultiTexture
+	};
+
+	enum Texture3DSide
+	{
+		Right,
+		Left,
+		Top,
+		Bottom,
+		Front,
+		Back
+	};
+
+	class Texture3D : public IAsset
+	{
 	private:
 		unsigned int m_Id = 0;
+
+		// Mutli texture
+		Pine::Texture2D* m_MultiTextures[ 6 ] = { nullptr };
+
+		Texture3DType m_Texture3DType = Texture3DType::MultiTexture;
+
+		void Rebuild( );
 	public:
-		Texture3D();
+		Texture3D( );
 
-		unsigned int GetId() const;
+		unsigned int GetId( ) const;
 
-		void Bind() const;
+		void SetTexture3DType( Texture3DType type );
+		Texture3DType GetTexture3DType( ) const;
 
-		bool LoadFromFile() override;
-		bool SaveToFile() override;
-		void Dispose() override;
+		void SetMultiTexture( Texture3DSide side, Texture2D* texture );
+		Pine::Texture2D* GetMultiTexture( Texture3DSide side ) const;
+
+		void Bind( ) const;
+
+		bool LoadFromFile( ) override;
+		bool SaveToFile( ) override;
+		void Dispose( ) override;
 
 	};
 

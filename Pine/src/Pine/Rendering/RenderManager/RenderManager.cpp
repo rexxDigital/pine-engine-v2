@@ -267,7 +267,7 @@ namespace Pine
 			PostProcessing->GetRenderBuffer( )->Bind( );
 
 			// Clear the buffers
-			glClearColor( 0.f, 0.f, 0.f, 1.f );
+			glClearColor( g_RenderingContext->m_ClearColor.r, g_RenderingContext->m_ClearColor.g, g_RenderingContext->m_ClearColor.b, 1.f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
 			// Reset the viewport size.

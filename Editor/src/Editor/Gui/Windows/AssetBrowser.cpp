@@ -11,7 +11,8 @@
 #include "..\..\ProjectManager\ProjectManager.hpp"
 #include "..\Widgets\Widgets.hpp"
 #include "..\Gui.hpp"
-#include "..\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "..\Utility\AssetIcon\AssetIcon.hpp"
+#include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Entity/Entity.hpp"
 
 namespace
@@ -29,7 +30,7 @@ namespace
 		std::filesystem::path m_Path;
 
 		std::string m_DisplayText = "";
-		Pine::Texture2D* m_DisplayIcon = nullptr;
+		Editor::Gui::Utility::AssetIcon::AssetIcon_t* m_DisplayIcon = nullptr;
 
 		std::vector<PathItem_t*> m_Items;
 		PathItem_t* m_Parent = nullptr;
@@ -88,7 +89,7 @@ namespace
 				entry->m_Path = dirEntry.path( );
 				entry->m_Parent = item;
 				entry->m_Asset = Pine::Assets->GetAsset( entry->m_Path.string( ) );
-				entry->m_DisplayIcon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( entry->m_Path.string( ) );
+				entry->m_DisplayIcon = Editor::Gui::Utility::AssetIcon::GetAssetIcon( entry->m_Path.string( ) );
 				entry->m_DisplayText = dirEntry.path( ).filename( ).string( );
 
 				item->m_Items.push_back( entry );
@@ -175,7 +176,23 @@ namespace
 			if ( file->m_IsDirectory )
 				continue;
 
-			auto icon = file->m_DisplayIcon != nullptr ? file->m_DisplayIcon : unknownFileIcon;
+			Pine::Texture2D* icon;
+
+			if ( file->m_DisplayIcon != nullptr )
+			{
+				if ( file->m_DisplayIcon->m_LiveIconReady && !file->m_DisplayIcon->m_LiveIconDirty )
+				{
+					icon = file->m_DisplayIcon->m_FrameBufferTexture;
+				}
+				else
+				{
+					icon = file->m_DisplayIcon->m_Texture2D;
+				}
+			}
+			else
+			{
+				icon = unknownFileIcon;
+			}
 
 			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset ) )
 			{
@@ -204,12 +221,41 @@ namespace
 		}
 	}
 
+	PathItem_t* FindDirectory( PathItem_t* root, const std::string& path )
+	{
+		if ( !root->m_IsDirectory )
+			return nullptr;
+
+		if ( root->m_Path.string( ) == path )
+		{
+			return root;
+		}
+
+		for ( const auto& item : root->m_Items )
+		{
+			if ( !item->m_IsDirectory )
+				continue;
+			if ( item->m_DisplayText == "..." ) // lol
+				continue;
+
+			if ( const auto ret = FindDirectory( item, path ) )
+				return ret;
+		}
+
+		return nullptr;
+	}
+
 }
 
 void UpdateAssetCache( )
 {
+	std::string prevOpenDirectory = "";
+
 	if ( g_RootDirectory )
 	{
+		if ( g_CurrentDirectory )
+			prevOpenDirectory = g_CurrentDirectory->m_Path.string( );
+
 		g_RootDirectory->Dispose( );
 		delete g_RootDirectory;
 	}
@@ -221,11 +267,23 @@ void UpdateAssetCache( )
 
 	MapDirectory( "Engine", "Assets\\Engine", g_RootDirectory );
 
-	Editor::Gui::Utility::AssetIconGen::Update( );
+	Editor::Gui::Utility::AssetIcon::Update( );
 
 	ProcessDirectory( Editor::ProjectManager::GetCurrentProjectDirectory( ), g_RootDirectory );
 
-	g_CurrentDirectory = g_RootDirectory;
+	if ( !prevOpenDirectory.empty(  ) )
+	{
+		g_CurrentDirectory = FindDirectory( g_RootDirectory, prevOpenDirectory );
+
+		if ( !g_CurrentDirectory )
+		{
+			g_CurrentDirectory = g_RootDirectory;
+		}
+	}
+	else
+	{
+		g_CurrentDirectory = g_RootDirectory;
+	}
 }
 
 void Editor::Gui::Windows::RenderAssetBrowser( )
@@ -327,6 +385,12 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				if ( ImGui::MenuItem( "Terrain", nullptr ) )
 				{
 					g_CreateType = 3;
+					openCreatePopup = true;
+				}
+
+				if ( ImGui::MenuItem( "Texture3D", nullptr ) )
+				{
+					g_CreateType = 4;
 					openCreatePopup = true;
 				}
 
@@ -505,13 +569,28 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				// Terrain
 				if ( g_CreateType == 3 )
 				{
-					Pine::Terrain* terrain = new Pine::Terrain( );
+					const auto terrain = new Pine::Terrain( );
 
 					terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
 					terrain->SaveToFile( );
 					terrain->Dispose( );
 
 					delete terrain;
+
+					ProjectManager::ReloadProjectAssets( );
+				}
+
+				// Texture3D
+				if ( g_CreateType == 4 )
+				{
+					const auto texture3D = new Pine::Texture3D( );
+
+					texture3D->SetFilePath( baseDir + "\\" + buff + ".cmap" );
+					texture3D->SetUpdated( true );
+					texture3D->SaveToFile( );
+					texture3D->Dispose( );
+
+					delete texture3D;
 
 					ProjectManager::ReloadProjectAssets( );
 				}

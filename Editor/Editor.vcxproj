@@ -157,7 +157,7 @@
     <ClCompile Include="src\Editor\EditorEntity\EditorEntity.cpp" />
     <ClCompile Include="src\Editor\Gui\Gui.cpp" />
     <ClCompile Include="src\Editor\Gui\MainMenuBar\MainMenuBar.cpp" />
-    <ClCompile Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.cpp" />
+    <ClCompile Include="src\Editor\Gui\Utility\AssetIcon\AssetIcon.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.cpp" />
     <ClCompile Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.cpp" />
@@ -190,7 +190,7 @@
     <ClInclude Include="src\Editor\EditorEntity\EditorEntity.hpp" />
     <ClInclude Include="src\Editor\Gui\Gui.hpp" />
     <ClInclude Include="src\Editor\Gui\MainMenuBar\MainMenuBar.hpp" />
-    <ClInclude Include="src\Editor\Gui\Utility\AssetIconGen\AssetIconGen.hpp" />
+    <ClInclude Include="src\Editor\Gui\Utility\AssetIcon\AssetIcon.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\AssetPropertiesRenderer\AssetPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\ComponentPropertiesRenderer\ComponentPropertiesRenderer.hpp" />
     <ClInclude Include="src\Editor\Gui\Utility\HotkeyManager\HotkeyManager.hpp" />

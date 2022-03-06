@@ -46,10 +46,10 @@ namespace Pine
 		void SetRigidBodyType( RigidBodyType type );
 		RigidBodyType GetRigidBodyType( ) const;
 
-		void AttachCollider( Collider3D* collider );
-		void DetachCollider( Collider3D* collider );
+		// This will detach the collider3d from this rigidbody for 1 physics update only.
+		void DetachCollider( );
 
-		bool HasColliderAttached( Collider3D* collider ) const;
+		bool IsColliderAttatched( Collider3D* collider ) const;
 
 		void OnPrePhysicsUpdate( );
 		void OnPostPhysicsUpdate( );

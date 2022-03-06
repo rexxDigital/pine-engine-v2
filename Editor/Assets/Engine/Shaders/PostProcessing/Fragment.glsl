@@ -7,6 +7,8 @@ uniform sampler2D fragColor;
 
 uniform vec3 samples[64];
 
+uniform vec2 viewport;
+
 layout( std140 ) uniform Matrices
 {
 	mat4 projection;
@@ -15,5 +17,5 @@ layout( std140 ) uniform Matrices
 
 void main()
 {
-    outputColor = texture(fragColor, uvCoords);
+    outputColor = texture(fragColor, uvCoords * viewport);
 }

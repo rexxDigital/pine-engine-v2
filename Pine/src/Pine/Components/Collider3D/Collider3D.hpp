@@ -35,6 +35,8 @@ namespace Pine
 		reactphysics3d::Collider* m_Collider = nullptr;
 		reactphysics3d::CollisionBody* m_CollisionBody = nullptr;
 
+		std::vector<reactphysics3d::Collider*> m_RigidbodyColliders;
+
 		bool m_ShapeUpdated = false;
 
 		void UpdateBody( );
@@ -66,7 +68,9 @@ namespace Pine
 
 		reactphysics3d::CollisionShape* GetCollisionShape( ) const;
 		reactphysics3d::Collider* GetCollider( ) const; // WARNING: This object will only be present if no RigidBody(s) are attached to the parent.
-		 
+
+		void RegisterRigidbodyCollider( reactphysics3d::Collider* collider );
+
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;
 

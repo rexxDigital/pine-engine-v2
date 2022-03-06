@@ -7,7 +7,7 @@
 #include "../../../ProjectManager/ProjectManager.hpp"
 #include "..\..\Widgets\Widgets.hpp"
 #include "Editor/Gui/Gui.hpp"
-#include "Editor/Gui/Utility/AssetIconGen/AssetIconGen.hpp"
+#include "Editor/Gui/Utility/AssetIcon/AssetIcon.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 #include "Pine/Assets/Model/Model.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
@@ -60,10 +60,9 @@ namespace
 
 	void RenderMaterial( Pine::Material* mat )
 	{
-		if ( const auto icon = Editor::Gui::Utility::AssetIconGen::GenerateAssetThumbnail( mat->GetPath(  ).string( ) ) )
-		{
-		//	ImGui::Image( reinterpret_cast< ImTextureID >( icon ), ImVec2( 64.f, 64.f ) );
-		}
+		const auto avSize = ImGui::GetContentRegionAvail( );
+
+		ImGui::BeginChild( "##MaterialProperties", ImVec2( -1.f, avSize.y - 138.f ) );
 
 		const auto diffuseAssetRet = Editor::Gui::Widgets::AssetPicker( "Diffuse", mat->GetDiffuse( ), true, Pine::AssetType::Texture2D );
 		if ( diffuseAssetRet.valid )
@@ -151,9 +150,9 @@ namespace
 		bool shaderPerformanceMode = shaderProperties & Pine::ShaderProperties::PerformanceFast;
 		if ( Editor::Gui::Widgets::Checkbox( "Shader Performance Mode", shaderPerformanceMode ) )
 		{
-			if ( shaderPerformanceMode ) 
+			if ( shaderPerformanceMode )
 				shaderProperties |= Pine::ShaderProperties::PerformanceFast;
-			else 
+			else
 				shaderProperties &= ~Pine::ShaderProperties::PerformanceFast;
 
 			mat->SetShaderProperties( shaderProperties );
@@ -164,7 +163,11 @@ namespace
 			ImGui::SetTooltip( "Requests an optimized version of the shader, may not always be avaliable." );
 		}
 
+		ImGui::EndChild( );
 
+		ImGui::Separator( );
+
+		ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::AssetIcon::GetThumbnailTexture( )->GetId( ) ), ImVec2( 128.f, 128.f ) );
 
 	}
 
@@ -249,6 +252,65 @@ namespace
 		if ( !cubeMap )
 			return;
 
+		int type = static_cast< int >( cubeMap->GetTexture3DType( ) );
+
+		if ( Editor::Gui::Widgets::Combobox( "Type", type, "Single Texture\0Multi Texture" ) )
+		{
+			cubeMap->SetTexture3DType( static_cast< Pine::Texture3DType >( type ) );
+		}
+
+		if ( type == 0 )
+		{
+
+		}
+		else
+		{
+			const auto right = cubeMap->GetMultiTexture( Pine::Texture3DSide::Right );
+			const auto left = cubeMap->GetMultiTexture( Pine::Texture3DSide::Left );
+			const auto top = cubeMap->GetMultiTexture( Pine::Texture3DSide::Top );
+			const auto bottom = cubeMap->GetMultiTexture( Pine::Texture3DSide::Bottom );
+			const auto front = cubeMap->GetMultiTexture( Pine::Texture3DSide::Front );
+			const auto back = cubeMap->GetMultiTexture( Pine::Texture3DSide::Back );
+
+			PickerReturn ret;
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Right", right, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Right, dynamic_cast<Pine::Texture2D*>( ret.asset ) );
+			}
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Left", left, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Left, dynamic_cast< Pine::Texture2D* >( ret.asset ) );
+			}
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Top", top, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Top, dynamic_cast< Pine::Texture2D* >( ret.asset ) );
+			}
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Bottom", bottom, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Bottom, dynamic_cast< Pine::Texture2D* >( ret.asset ) );
+			}
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Front", front, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Front, dynamic_cast< Pine::Texture2D* >( ret.asset ) );
+			}
+
+			ret = Editor::Gui::Widgets::AssetPicker( "Back", back, true, Pine::AssetType::Texture2D );
+			if ( ret.valid )
+			{
+				cubeMap->SetMultiTexture( Pine::Texture3DSide::Back, dynamic_cast< Pine::Texture2D* >( ret.asset ) );
+			}
+		}
+
 		// Hack to allow the button even it's read only.
 		if ( cubeMap->GetReadOnly( ) )
 			Editor::Gui::Widgets::PopDisabled( );
@@ -267,7 +329,7 @@ namespace
 		if ( !blueprint )
 			return;
 
-		if ( !blueprint->HasValidEntity(  ) )
+		if ( !blueprint->HasValidEntity( ) )
 		{
 			ImGui::Text( "No stored entity within the blueprint." );
 			return;
@@ -283,11 +345,11 @@ void Editor::Gui::Utility::AssetPropertiesRenderer::RenderAssetProperties( Pine:
 	if ( !asset )
 		return;
 
-	if ( asset->GetReadOnly(  ) )
+	if ( asset->GetReadOnly( ) )
 	{
 		Widgets::PushDisabled( );
 	}
- 
+
 	switch ( asset->GetType( ) )
 	{
 	case Pine::AssetType::Texture2D:

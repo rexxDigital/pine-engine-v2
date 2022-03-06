@@ -5,7 +5,7 @@
 
 #include "EditorEntity/EditorEntity.hpp"
 #include "ProjectManager\ProjectManager.hpp"
-#include "Gui\Utility\AssetIconGen\AssetIconGen.hpp"
+#include "Gui\Utility\AssetIcon\AssetIcon.hpp"
 #include "Pine/Rendering/Skybox/Skybox.hpp"
 #include "RenderingHandler/RenderingHandler.hpp"
 
@@ -27,7 +27,7 @@ void Editor::Setup( ) {
 	Pine::Assets->LoadFromDirectory( "Assets\\Editor" );
 
 	Gui::Setup( );
-	Gui::Utility::AssetIconGen::Update( );
+	Gui::Utility::AssetIcon::Update( );
 
 	InitializePicPanel( );
 

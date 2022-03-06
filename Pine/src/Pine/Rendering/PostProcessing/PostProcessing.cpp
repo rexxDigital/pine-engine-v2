@@ -32,7 +32,7 @@ namespace Pine
 
 			// Setup rendering frame buffer
 			g_PostProcessingBuffer = new Pine::FrameBuffer;
-			g_PostProcessingBuffer->Create( 1600, 900, false );
+			g_PostProcessingBuffer->Create( 1920, 1080, false );
 
 			// Setup the quad vertex array
 			g_ScreenQuad = new Pine::VertexArray;
@@ -66,7 +66,7 @@ namespace Pine
 			g_ScreenQuad->StoreIntBuffer( indices );
 
 			// Prepare post processing shader
-			g_PostProcessingShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\PostProcessing.shr" );
+			g_PostProcessingShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\PostProcessing.shr" );
 		}
 
 		void Dispose( ) override
@@ -80,7 +80,7 @@ namespace Pine
 
 		void Render( ) override
 		{
-			const auto renderingContext = Pine::RenderManager->GetRenderingContext( );
+			const auto renderingContext = RenderManager->GetRenderingContext( );
 
 			// At this point, the target frame buffer is already bound, so we don't need to worry about that.
 
@@ -102,6 +102,8 @@ namespace Pine
 
 			if ( !cam )
 				return;
+
+			g_PostProcessingShader->GetUniformVariable( "viewport" )->LoadVector2( glm::vec2( renderingContext->m_Width / 1920.f, renderingContext->m_Height / 1080.f ) );
 
 			// Bind frame buffer
 			glActiveTexture( GL_TEXTURE0 );

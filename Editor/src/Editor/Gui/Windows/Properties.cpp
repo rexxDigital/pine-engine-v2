@@ -8,7 +8,7 @@
 
 #include "../Utility/ComponentPropertiesRenderer/ComponentPropertiesRenderer.hpp"
 #include "../Widgets/Widgets.hpp"
-#include "../Utility/AssetIconGen/AssetIconGen.hpp"
+#include "../Utility/AssetIcon/AssetIcon.hpp"
 #include "../Utility/AssetPropertiesRenderer/AssetPropertiesRenderer.hpp"
 
 void DisplayEntityProperties( Pine::Entity* e )
@@ -89,8 +89,8 @@ void DisplayEntityProperties( Pine::Entity* e )
 
 void DisplayAssetProperties( Pine::IAsset* a )
 {
-	if ( const auto icon = Editor::Gui::Utility::AssetIconGen::GetAssetIcon( a->GetPath( ).string( ) ) )
-		ImGui::Image( reinterpret_cast< ImTextureID >( icon->GetId( ) ), ImVec2( 64.f, 64.f ) );
+	if ( const auto icon = Editor::Gui::Utility::AssetIcon::GetAssetIcon( a->GetPath( ).string( ) ) )
+		ImGui::Image( reinterpret_cast< ImTextureID >( icon->m_Texture2D->GetId(  ) ), ImVec2( 64.f, 64.f ) );
 
 	ImGui::SameLine( );
 

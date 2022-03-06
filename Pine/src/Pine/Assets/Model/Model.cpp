@@ -164,7 +164,7 @@ bool Pine::Model::LoadFromFile( )
 
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
-	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenBoundingBoxes );
+	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
 	{

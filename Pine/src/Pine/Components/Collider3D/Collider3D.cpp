@@ -209,9 +209,14 @@ reactphysics3d::CollisionShape* Pine::Collider3D::GetCollisionShape( ) const
 	return m_Shape;
 }
 
-reactphysics3d::Collider* Pine::Collider3D::GetCollider() const
+reactphysics3d::Collider* Pine::Collider3D::GetCollider( ) const
 {
 	return m_Collider;
+}
+
+void Pine::Collider3D::RegisterRigidbodyCollider( reactphysics3d::Collider* collider )
+{
+	m_RigidbodyColliders.push_back( collider );
 }
 
 void Pine::Collider3D::OnCreated( )
@@ -223,11 +228,22 @@ void Pine::Collider3D::OnCreated( )
 void Pine::Collider3D::OnCopied( const IComponent* old )
 {
 	m_CollisionBody = nullptr;
-	m_Shape = nullptr; 
+	m_Shape = nullptr;
 }
 
 void Pine::Collider3D::OnDestroyed( )
 {
+	Log->Warning( "Collider3D::OnDestroyed( ) -> (" + m_Parent->GetName(  ) + ")" );
+
+	//const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
+	//if ( rigidBody )
+	//{
+	//	if ( rigidBody->IsColliderAttatched( this ) )
+	//	{
+	//		rigidBody->DetachCollider( );
+	//	}
+	//}
+
 	if ( m_CollisionBody )
 	{
 		PhysicsManager->GetPhysicsWorld( )->destroyCollisionBody( m_CollisionBody );
@@ -247,7 +263,7 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 
 	if ( !m_Shape )
 	{
-		Pine::Log->Warning( "Pine::Collider3D::OnPrePhysicsUpdate( ): No collision shape?" );
+		Log->Warning( "Pine::Collider3D::OnPrePhysicsUpdate( ): No collision shape?" );
 		return;
 	}
 
@@ -279,7 +295,7 @@ void Pine::Collider3D::OnUpdate( float deltaTime )
 
 void Pine::Collider3D::SaveToJson( nlohmann::json& j )
 {
-	j[ "colliderType" ] = static_cast< int >( m_Type );
+	j[ "colliderType" ] = m_Type;
 
 	Serialization::SaveVec3( j[ "position" ], m_Position );
 	Serialization::SaveVec3( j[ "size" ], m_Size );
@@ -287,7 +303,7 @@ void Pine::Collider3D::SaveToJson( nlohmann::json& j )
 
 void Pine::Collider3D::LoadFromJson( nlohmann::json& j )
 {
-	SetColliderType( static_cast< ColliderType >( j[ "colliderType" ] ) );
+	SetColliderType( j[ "colliderType" ] );
 
 	m_Position = Serialization::LoadVec3( j, "position" );
 	m_Size = Serialization::LoadVec3( j, "size" );
