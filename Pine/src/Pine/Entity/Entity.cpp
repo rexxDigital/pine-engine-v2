@@ -28,7 +28,7 @@ Pine::Entity::Entity( uint64_t id, bool empty )
 
 Pine::Entity::~Entity( )
 {
-	Log->Debug( "Pine::Entity::~Entity( )" );
+	Log->Debug( "Pine::Entity::~Entity( ): Removing entity " + m_Name );
 
 	for ( const auto component : m_Components )
 	{

@@ -6,7 +6,10 @@
 # Ignore the compiled run time
 *.dll
 wp/
+build/
 PicturePanel.cpp
+build_run.bat
+build.bat
 
 # User-specific files
 *.rsuser

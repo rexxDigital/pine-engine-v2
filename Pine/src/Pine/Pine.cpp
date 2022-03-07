@@ -112,6 +112,7 @@ bool Pine::Setup( )
 
 	Log->Message( "Setting up Pine..." );
 
+	// Setup GLFW and a window
 	if ( !glfwInit( ) )
 	{
 		Log->Fatal( "Failed to initialize GLFW." );
@@ -124,6 +125,7 @@ bool Pine::Setup( )
 		return false;
 	}
 
+	// Setup GLEW
 	glewExperimental = true;
 
 	if ( glewInit( ) != GLEW_OK )
