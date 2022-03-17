@@ -29,21 +29,24 @@ void PlayerController::OnSetup( )
     Pine::Input->SetCursorAutoCenter( true );
     Pine::Input->SetCursorVisible( false );
 
+
     m_CameraEntity = m_Parent->GetChildren()[0];
 }
 
 void PlayerController::OnRender( )
 {
+    const float speed = 0.05f;
+
     auto transform = m_Parent->GetTransform();
     auto camTransform = m_CameraEntity->GetTransform();
 
+    // Handle rotation, however rotate only the camera for the pitch axis
     camTransform->Rotation.x += m_Pitch->Value();
-    camTransform->Rotation.y += m_Yaw->Value();
+    transform->Rotation.y += m_Yaw->Value();
 
-    transform->Position += transform->GetForward() * 0.05f * m_Forward->Value();
-    transform->Position += transform->GetRight() * 0.05f * m_Sideways->Value();
-
-    transform->Rotation.y = camTransform->Rotation.y;
+    // Handle movement
+    transform->Position += transform->GetForward() * speed * m_Forward->Value();
+    transform->Position += transform->GetRight() * speed * m_Sideways->Value();
 }
 
 void PlayerController::OnUpdate( float deltaTime )
