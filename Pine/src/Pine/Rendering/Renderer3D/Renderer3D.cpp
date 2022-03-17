@@ -259,7 +259,7 @@ namespace Pine
 			// The other types of lights we put at (1 + g_CurrentDynamicLightCount), up till the max dynamic light count
 			const int lightSlot = light->GetLightType( ) == LightType::Directional ? 0 : 1 + g_CurrentDynamicLightCount;
 
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->Position;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->GetPositionSum( );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = glm::normalize( light->GetParent( )->GetTransform( )->Rotation );// glm::radians(  );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].color = light->GetLightColor( );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].attenuation = light->GetAttenuation( );

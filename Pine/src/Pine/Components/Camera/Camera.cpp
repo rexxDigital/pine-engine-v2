@@ -37,7 +37,9 @@ void Pine::Camera::BuildViewMatrix( )
 
 	const glm::vec3 up = glm::cross( right, direction );
 
-	m_ViewMatrix = glm::lookAt( transform->Position, transform->Position + direction, up );
+    const auto position = transform->GetPositionSum( );
+
+	m_ViewMatrix = glm::lookAt( position, position + direction, up );
 }
 
 Pine::Camera::Camera( )

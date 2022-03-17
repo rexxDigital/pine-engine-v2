@@ -104,6 +104,10 @@ void main( void ) {
 	vec4 pointLight2 = vec4( CalculatePointLight( 2 ), 1.0f );
 #endif
 
+    vec4 color = ( directionalLight + pointLight1 + pointLight2 );
+
+    float distance = min(length(worldPos - cameraPos), 100);
+
 	// add it all up to the final fragment color
-	out_color = ( directionalLight + pointLight1 + pointLight2 );
+	out_color = mix(color, vec4(0.11, 0.11, 0.12, 1), 0);
 }

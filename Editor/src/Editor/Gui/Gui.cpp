@@ -1,13 +1,19 @@
 #include "Gui.hpp"
 
+#include <Pine/Core/Log/Log.hpp>
 #include <Pine\Gui\Gui.hpp>
 #include <ImGui\imgui.h>
 
 #include "Windows/Windows.hpp"
 #include "MainMenuBar/MainMenuBar.hpp"
 #include "..\ProjectManager\ProjectManager.hpp"
+#include "GLFW/glfw3.h"
+#include "Pine/Core/Window/Window.hpp"
+#include "Editor/RuntimeManager/RuntimeManager.hpp"
+#include "ImGui/imgui_impl_glfw.h"
 
 #include <ImGuizmo/ImGuizmo.h>
+
 
 namespace {
 
@@ -46,13 +52,15 @@ namespace {
 			return;
 		}
 
+        Editor::RuntimeManager::Update( );
+
 		SetupDockspace( );
 
 		ImGui::ShowDemoWindow( );
 		Editor::Gui::MainMenuBar::Render( );
 
 		// Because ImGui selects the last window within a docking space as the selected space,
-		// I'll just call them in a order that makes the window I want to be shown by default to be shown first.
+		// I'll just call them in an order that makes the window I want to be shown by default to be shown first.
 		// There might be some smart workaround for this, but I'll just do this for now.
 
 		Editor::Gui::Windows::RenderEntitylist( );
@@ -75,7 +83,6 @@ namespace {
 
 void Editor::Gui::Setup( )
 {
-
 	const ImGuiIO& io = ImGui::GetIO( );
 
 	Fonts::TitleFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 34.f );
@@ -84,5 +91,4 @@ void Editor::Gui::Setup( )
 	Fonts::CodeFont = io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\Consolas.ttf", 13.f );
 
 	Pine::Gui->SetGuiRenderCallback( OnRenderGui );
-
 }

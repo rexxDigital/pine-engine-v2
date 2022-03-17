@@ -4,95 +4,112 @@
 namespace Pine
 {
 
+    // The initial amount of entity slots available.
+    constexpr int NrEntitySlots = 512;
+
 	class CEntityList : public IEntityList
 	{
 	private:
-		// https://stackoverflow.com/questions/45447361/how-to-move-certain-elements-of-stdvector-to-a-new-index-within-the-vector
-		template <typename t> void move( std::vector<t>& v, size_t oldIndex, size_t newIndex ) {
-			if ( oldIndex > newIndex )
-				std::rotate( v.rend( ) - oldIndex - 1, v.rend( ) - oldIndex, v.rend( ) - newIndex );
-			else
-				std::rotate( v.begin( ) + oldIndex, v.begin( ) + oldIndex + 1, v.begin( ) + newIndex + 1 );
-		}
+        // Incremental number throughout the entire application, so each entity will always have a unique
+        // identifier.
+        uint64_t m_CurrentId = 0;
 
-		std::vector<Entity> m_Entities;
-		uint64_t m_CurrentId = 0;
+        // Array of entities with the size of NrEntitySlots
+        Entity* m_Entities = nullptr;
+
+        // Array of booleans to determine if an element within the array is used or not
+        bool* m_EntitySlots = nullptr;
+
+        // Will always have the highest entity index, so enumerate through this instead.
+        int m_CurrentHighestEntityIndex = 0;
+
+        // A read-only mirror of the entities
+        std::vector<Entity*> m_EntitiesVec;
+
+        int FindAvailableEntitySlot()
+        {
+            for (int i = 0; i < NrEntitySlots;i++)
+            {
+                if (!m_EntitySlots[i])
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
 	public:
 
 		void Setup( ) override
 		{
-			m_Entities.reserve( 512 );
-		}
+            m_Entities = static_cast< Entity* >( malloc( sizeof( Entity ) * NrEntitySlots ) );
+		    m_EntitySlots = new bool[NrEntitySlots];
+
+            memset(m_Entities, 0, sizeof( Entity ) * NrEntitySlots);
+            memset(m_EntitySlots, 0, sizeof(bool) * NrEntitySlots);
+        }
 
 		Entity* CreateEntity( ) override
 		{
-			m_Entities.emplace_back( m_CurrentId++ );
+            int entitySlot = FindAvailableEntitySlot();
 
-			const auto ptr = &m_Entities[ m_Entities.size( ) - 1 ];
+            if (entitySlot == -1)
+            {
+                return nullptr;
+            }
 
-			ptr->SetEntityIndex( m_Entities.size( ) - 1 );
-			ptr->GetTransform( )->SetParent( ptr );
+            void* entityPtr = &m_Entities[entitySlot];
 
-			return ptr;
+            memset(entityPtr, 0, sizeof(Entity));
+
+            Entity* entity = new(entityPtr)Entity(m_CurrentId++);
+
+            entity->SetEntityIndex( entitySlot );
+            entity->GetTransform( )->SetParent( entity );
+
+            m_EntitySlots[entitySlot] = true;
+
+            m_EntitiesVec.push_back(entity);
+
+			return entity;
 		}
 
 		Entity* CreateEntity( const std::string& str ) override
 		{
-			auto entity = Pine::Entity( m_CurrentId++ );
+			auto entity = CreateEntity();
 
-			entity.SetEntityIndex( m_Entities.size( ) );
-			entity.SetName( str );
+            entity->SetName(str);
 
-			m_Entities.push_back( entity );
-
-			const auto ptr = &m_Entities[ m_Entities.size( ) - 1 ];
-
-			ptr->GetTransform( )->SetParent( ptr );
-
-			return ptr;
+			return entity;
 		}
 
 		bool DeleteEntity( Entity* entity ) override
 		{
-			for ( int i = 0; i < m_Entities.size( ); i++ ) 
-			{
-				if ( &m_Entities[ i ] == entity ) 
-				{
-					m_Entities.erase( m_Entities.begin( ) + i );
+            const int slot = entity->GetEntityIndex();
 
-					return true;
-				}
-			}
+            entity->~Entity();
 
-			return false;
-		}
+            // No need to clear the memory at m_Entities, since CreateEntity() already does that.
+            // We'll simply just mark the slot as available instead.
 
-		// This should be changed soon, moving entities is not efficient and is only done for the GUI.
-		void MoveEntity( Entity* entity, int newPosition ) override
-		{
-			int entityVectorIndex = -1;
+            m_EntitySlots[slot] = false;
 
-			for ( int i = 0; i < m_Entities.size( ); i++ )
-			{
-				if ( &m_Entities[ i ] == entity )
-				{
-					entityVectorIndex = i;
-					break;
-				}
-			}
+            for (int i = 0; i < m_EntitiesVec.size();i++)
+            {
+                if (m_EntitiesVec[i] == entity)
+                {
+                    m_EntitiesVec.erase(m_EntitiesVec.begin() + i);
+                    break;
+                }
+            }
 
-			if ( entityVectorIndex == -1 )
-			{
-				return;
-			}
+            return true;
+        }
 
-			move( m_Entities, entityVectorIndex, newPosition );
-		}
-
-		const std::vector<Pine::Entity>& GetEntities( ) override
-		{
-			return m_Entities;
-		}
+        int GetEntityCount() override
+        {
+            return m_CurrentHighestEntityIndex;
+        }
 
 		Entity* GetEntity( const int index ) override
 		{
@@ -101,11 +118,11 @@ namespace Pine
 
 		Entity* FindEntity( const std::string& name ) override
 		{
-			for ( auto& entity : m_Entities )
+			for ( auto entity : m_EntitiesVec )
 			{
-				if ( entity.GetName( ) == name )
+				if ( entity->GetName( ) == name )
 				{
-					return &entity;
+					return entity;
 				}
 			}
 
@@ -114,24 +131,24 @@ namespace Pine
 
 		void ClearEntities( bool temp ) override
 		{
-			for ( int i = 0; i < m_Entities.size( ); i++ )
+			for ( int i = 0; i < m_EntitiesVec.size( ); i++ )
 			{
-				if ( m_Entities[ i ].IsTemporary( ) )
+				if ( m_EntitiesVec[ i ]->IsTemporary( ) )
 					continue;
 
-				auto entityPtr = m_Entities[ i ];
+				auto entityPtr = m_EntitiesVec[ i ];
 
-				m_Entities.erase( m_Entities.begin( ) + i );
+                DeleteEntity(entityPtr);
 
-				i--;
+                i--;
 			}
 		}
 
 		void RunOnSetup( ) override
 		{
-			for ( auto& entity : m_Entities ) 
+			for ( auto entity : m_EntitiesVec )
 			{
-				for ( const auto comp : entity.GetComponents( ) ) 
+				for ( const auto comp : entity->GetComponents( ) )
 				{
 					comp->OnSetup( );
 				}
@@ -140,14 +157,34 @@ namespace Pine
 
 		void RunOnUpdate( float deltaTime ) override
 		{
-			for ( auto& entity : m_Entities ) 
+			for ( auto entity : m_EntitiesVec )
 			{
-				for ( const auto comp : entity.GetComponents( ) ) 
+				for ( const auto comp : entity->GetComponents( ) )
 				{
 					comp->OnUpdate( deltaTime );
 				}
 			}
 		}
+
+        const std::vector<Entity*>& GetEntities( ) override
+        {
+            return m_EntitiesVec;
+        }
+
+        void Update( ) override
+        {
+            int highestIndex = 0;
+
+            for (int i = 0; i < NrEntitySlots;i++)
+            {
+                if (m_EntitySlots[i])
+                {
+                    highestIndex = i;
+                }
+            }
+
+            m_CurrentHighestEntityIndex = highestIndex;
+        }
 
 	};
 

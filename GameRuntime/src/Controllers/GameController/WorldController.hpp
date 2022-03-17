@@ -4,7 +4,7 @@
 #include "Pine/Assets/Blueprint/Blueprint.hpp"
 #include <glm/vec2.hpp>
 
-class GameController : public Pine::NativeScript
+class WorldController : public Pine::NativeScript
 {
 private:
 public:

@@ -195,7 +195,8 @@ void Pine::Run( )
 	{
 		const auto deltaTime = CalculateFrameTime( );
 
-		// Update stuff on a per frame basis
+		// Update stuff on a per-frame basis
+        EntityList->Update( );
 		Input->Update( );
 		PhysicsManager->Update( deltaTime );
 

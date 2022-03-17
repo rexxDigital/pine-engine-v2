@@ -9,6 +9,7 @@
 #include "../../Core/Serialization/Serialization.hpp"
 #include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include "../../Rendering/Renderer3D/Renderer3D.hpp"
+#include "../../Core/String/String.hpp"
 
 namespace
 {
@@ -106,8 +107,13 @@ namespace
 				aiString file_path;
 				material->GetTexture( aiTextureType_DIFFUSE, 0, &file_path );
 
-				eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
-			}
+                std::string filePathStr = file_path.C_Str();
+
+                if ( !Pine::String::StartsWith( filePathStr, "C:\\" ) ) // Quick dirty fix for a "bug"
+                {
+                    eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + filePathStr ) ) );
+                }
+            }
 
 			//if ( material->GetTextureCount( aiTextureType_SPECULAR ) > 0 ) {
 			//	aiString file_path;

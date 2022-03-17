@@ -132,3 +132,15 @@ const glm::vec3& Pine::Transform::GetUp( ) const
 {
 	return m_Up;
 }
+
+glm::vec3 Pine::Transform::GetPositionSum() const
+{
+    glm::vec3 pos = Position;
+
+    if (m_Parent->GetParent() != nullptr)
+    {
+        pos += m_Parent->GetParent()->GetTransform()->GetPositionSum();
+    }
+
+    return pos;
+}

@@ -1,5 +1,5 @@
-#project(PineEngine)
 #cmake_minimum_required(VERSION 3.0)
+#project(PineEngine)
 
 include_directories(${CMAKE_SOURCE_DIR}/Libraries/include "src/ImGui")
 

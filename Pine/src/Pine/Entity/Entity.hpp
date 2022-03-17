@@ -19,7 +19,7 @@ namespace Pine
 		bool m_IsTemporary = false;
 
 		uint64_t m_Id = 0;
-		uint64_t m_EntityIndex = 0;
+		int m_EntityIndex = 0;
 
 		std::string m_Name = "Entity";
 
@@ -37,8 +37,8 @@ namespace Pine
 		bool GetActive( ) const;
 		void SetActive( bool value );
 
-		void SetEntityIndex( uint64_t indx );
-		uint64_t GetEntityIndex( ) const;
+		void SetEntityIndex( int indx );
+        int GetEntityIndex( ) const;
 
 		bool IsTemporary( ) const;
 		void SetTemporary( bool value );

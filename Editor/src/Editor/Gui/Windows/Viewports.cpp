@@ -26,329 +26,361 @@
 #include "Pine/Core/Math/Math.hpp"
 #include "Pine/Rendering/DebugOverlay/DebugOverlay.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
+#include "Pine/Input/Input.hpp"
 #include "Pine/Rendering/Skybox/Skybox.hpp"
 
 namespace
 {
-	// https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
-	void DecomposeMatrix( const glm::mat4& m, glm::vec3& pos, glm::quat& rot, glm::vec3& scale )
-	{
-		pos = m[ 3 ];
-		for ( int i = 0; i < 3; i++ )
-			scale[ i ] = glm::length( glm::vec3( m[ i ] ) );
-		const glm::mat3 rotMtx(
-			glm::vec3( m[ 0 ] ) / scale[ 0 ],
-			glm::vec3( m[ 1 ] ) / scale[ 1 ],
-			glm::vec3( m[ 2 ] ) / scale[ 2 ] );
-		rot = glm::quat_cast( rotMtx );
-	}
+    // https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+    void DecomposeMatrix( const glm::mat4& m, glm::vec3& pos, glm::quat& rot, glm::vec3& scale )
+    {
+        pos = m[ 3 ];
+        for ( int i = 0; i < 3; i++ )
+            scale[ i ] = glm::length( glm::vec3( m[ i ] ) );
+        const glm::mat3 rotMtx(
+                glm::vec3( m[ 0 ] ) / scale[ 0 ],
+                glm::vec3( m[ 1 ] ) / scale[ 1 ],
+                glm::vec3( m[ 2 ] ) / scale[ 2 ] );
+        rot = glm::quat_cast( rotMtx );
+    }
 
-	bool g_StartedPlaying = false;
+    bool g_StartedPlaying = false;
+    bool g_StoppedPlaying = false;
 
-	void ShowViewportControls( const bool inLevelViewport, ImVec2 cursorPos, ImVec2 avSize )
-	{
-		static auto transformIcon		= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\transform.png" );
-		static auto rotateIcon		    = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\rotate.png" );
-		static auto scaleIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\scale.png" );
+    void ShowViewportControls( const bool inLevelViewport, ImVec2 cursorPos, ImVec2 avSize )
+    {
+        static auto transformIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\transform.png" );
+        static auto rotateIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\rotate.png" );
+        static auto scaleIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\scale.png" );
 
-		static auto playIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\play.png" );
-		static auto stopIcon			= Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\stop.png" );
+        static auto playIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\play.png" );
+        static auto stopIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\stop.png" );
 
-		using namespace Editor::Gui;
+        using namespace Editor::Gui;
 
-		static auto renderIconButton = [ ] ( bool active, const Pine::Texture2D* texture )
-		{
-			ImGui::PushStyleColor( ImGuiCol_Button, active ? ImVec4( 0.26f, 0.48f, 0.35f, 1.0f ) : ImVec4( 0.26f, 0.78f, 0.35f, 1.0f ) );
-			const bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 16.f, 16.f ) );
-			ImGui::PopStyleColor( );
-			return ret;
-		};
+        static auto renderIconButton = [ ]( bool active, const Pine::Texture2D* texture ) {
+            ImGui::PushStyleColor( ImGuiCol_Button,
+                                   active ? ImVec4( 0.26f, 0.48f, 0.35f, 1.0f ) : ImVec4( 0.26f, 0.78f, 0.35f, 1.0f ) );
+            const bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ),
+                                                 ImVec2( 16.f, 16.f ) );
+            ImGui::PopStyleColor( );
+            return ret;
+        };
 
-		if ( inLevelViewport )
-		{
-			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 102, cursorPos.y + 5 ) );
+        if ( inLevelViewport )
+        {
+            ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 102, cursorPos.y + 5 ) );
 
-			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Move, transformIcon ) )
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
+            if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Move, transformIcon ) )
+                Globals::SelectedGizmoMovementType = GizmoMovementType::Move;
 
-			ImGui::SameLine( 0, 0 );
+            ImGui::SameLine( 0, 0 );
 
-			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, rotateIcon ) )
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
+            if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, rotateIcon ) )
+                Globals::SelectedGizmoMovementType = GizmoMovementType::Rotate;
 
-			ImGui::SameLine( 0, 0 );
+            ImGui::SameLine( 0, 0 );
 
-			if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, scaleIcon ) )
-				Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
+            if ( renderIconButton( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, scaleIcon ) )
+                Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
 
-			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 142, cursorPos.y + 5 ) );
-		}
-		else
-		{
-			ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 38, cursorPos.y + 5 ) );
-		}
-		
-		const bool isPlaying = Editor::PlayManager::IsPlaying( );
+            ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 142, cursorPos.y + 5 ) );
+        } else
+        {
+            ImGui::SetCursorScreenPos( ImVec2( cursorPos.x + avSize.x - 38, cursorPos.y + 5 ) );
+        }
 
-		if ( renderIconButton( false, isPlaying ? stopIcon : playIcon ) )
-		{
-			if ( isPlaying )
-			{
-				Editor::PlayManager::Stop( );
+        const bool isPlaying = Editor::PlayManager::IsPlaying( );
 
-				Globals::SelectedEntityPtrs.clear( );
-			}
-			else
-			{
-				Editor::PlayManager::Start( );
+        if ( renderIconButton( false, isPlaying ? stopIcon : playIcon ) )
+        {
+            if ( isPlaying )
+            {
+                Editor::PlayManager::Stop( );
 
-				g_StartedPlaying = true;
-			}
-		}
-	}
+                g_StoppedPlaying = true;
 
-	void HandleAssetViewportDrop( )
-	{
-		if ( ImGui::BeginDragDropTarget( ) )
-		{
-			if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
-			{
-				const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
+                Globals::SelectedEntityPtrs.clear( );
+            } else
+            {
+                Editor::PlayManager::Start( );
 
-				if ( asset->GetType( ) == Pine::AssetType::Level )
-				{
-					if ( const auto level = dynamic_cast< Pine::Level* >( asset ) )
-					{
-						level->Load( );
+                g_StartedPlaying = true;
+            }
+        }
+    }
 
-						Editor::ProjectManager::OpenLevel( level );
-					}
-				}
-				else if ( asset->GetType( ) == Pine::AssetType::Model )
-				{
-					// Create the model in front of the camera.
-					if ( const auto model = dynamic_cast< Pine::Model* >( asset ) )
-					{
-						const auto entity = Pine::EntityList->CreateEntity( );
-						const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
+    void HandleAssetViewportDrop( )
+    {
+        if ( ImGui::BeginDragDropTarget( ) )
+        {
+            if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
+            {
+                const auto asset = *static_cast< Pine::IAsset** >( payload->Data );
 
-						entity->AddComponent( Pine::ComponentType::ModelRenderer );
+                if ( asset->GetType( ) == Pine::AssetType::Level )
+                {
+                    if ( const auto level = dynamic_cast< Pine::Level* >( asset ) )
+                    {
+                        level->Load( );
 
-						entity->GetComponent<Pine::ModelRenderer>( )->SetModel( model );
+                        Editor::ProjectManager::OpenLevel( level );
+                    }
+                } else if ( asset->GetType( ) == Pine::AssetType::Model )
+                {
+                    // Create the model in front of the camera.
+                    if ( const auto model = dynamic_cast< Pine::Model* >( asset ) )
+                    {
+                        const auto entity = Pine::EntityList->CreateEntity( );
+                        const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
 
-						entity->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
-					}
-				}
-				else if ( asset->GetType( ) == Pine::AssetType::Texture3D )
-				{
-					if ( const auto texture3D = dynamic_cast< Pine::Texture3D* >( asset ) )
-					{
-						Pine::Skybox->SetSkyboxCubemap( texture3D );
-					}
-				}
-				else if ( asset->GetType( ) == Pine::AssetType::Blueprint )
-				{
-					if ( const auto blueprint = dynamic_cast< Pine::Blueprint* >( asset ) )
-					{
-						auto e = blueprint->SpawnEntity( );
-						const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
+                        entity->AddComponent( Pine::ComponentType::ModelRenderer );
 
-						e->GetTransform( )->Position = camTransform->Position + ( camTransform->GetForward( ) * 20.f );
-					}
-				}
-			}
+                        entity->GetComponent<Pine::ModelRenderer>( )->SetModel( model );
 
-			ImGui::EndDragDropTarget( );
-		}
-	}
+                        entity->GetTransform( )->Position =
+                                camTransform->Position + (camTransform->GetForward( ) * 20.f);
+                    }
+                } else if ( asset->GetType( ) == Pine::AssetType::Texture3D )
+                {
+                    if ( const auto texture3D = dynamic_cast< Pine::Texture3D* >( asset ) )
+                    {
+                        Pine::Skybox->SetSkyboxCubemap( texture3D );
+                    }
+                } else if ( asset->GetType( ) == Pine::AssetType::Blueprint )
+                {
+                    if ( const auto blueprint = dynamic_cast< Pine::Blueprint* >( asset ) )
+                    {
+                        auto e = blueprint->SpawnEntity( );
+                        const auto camTransform = Editor::EditorEntity::GetEntity( )->GetTransform( );
 
-	void RenderEntityIcon( const Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition )
-	{
-		constexpr float IconSize = 32.f;
+                        e->GetTransform( )->Position = camTransform->Position + (camTransform->GetForward( ) * 20.f);
+                    }
+                }
+            }
 
-		static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
-		static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\light-bulb.png" );
+            ImGui::EndDragDropTarget( );
+        }
+    }
 
-		// Find the correct icon
+    void RenderEntityIcon( const Pine::Entity* entity, Pine::Camera* camera, ImVec2 screenPosition )
+    {
+        constexpr float IconSize = 32.f;
 
-		Pine::Texture2D* renderIcon = nullptr;
+        static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
+        static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\light-bulb.png" );
 
-		for ( const auto component : entity->GetComponents( ) )
-		{
-			switch ( component->GetType( ) )
-			{
-			case Pine::ComponentType::Camera:
-				renderIcon = cameraIcon;
-				break;
-			case Pine::ComponentType::Light:
-				renderIcon = lightIcon;
-				break;
-			default:
-				break;
-			}
-		}
+        // Find the correct icon
 
-		if ( !renderIcon )
-			return;
+        Pine::Texture2D* renderIcon = nullptr;
 
-		// Calculate the screen coordinates
-		auto res = Pine::Math->WorldToScreen( entity->GetTransform( )->Position, camera );
+        for ( const auto component: entity->GetComponents( ) )
+        {
+            switch ( component->GetType( ) )
+            {
+                case Pine::ComponentType::Camera:
+                    renderIcon = cameraIcon;
+                    break;
+                case Pine::ComponentType::Light:
+                    renderIcon = lightIcon;
+                    break;
+                default:
+                    break;
+            }
+        }
 
-		if ( res.z > 1.f ) // z > 1.f == Out of bounds 
-			return;
+        if ( !renderIcon )
+            return;
 
-		// To keep the icon centered
-		res -= IconSize * 0.5f;
+        // Calculate the screen coordinates
+        auto res = Pine::Math->WorldToScreen( entity->GetTransform( )->GetPositionSum( ), camera );
 
-		ImGui::GetWindowDrawList( )->AddImage( reinterpret_cast< ImTextureID >( renderIcon->GetId( ) ), ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ), ImVec2( screenPosition.x + res.x + IconSize, screenPosition.y + res.y + IconSize ) );
-	}
+        if ( res.z > 1.f ) // z > 1.f == Out of bounds
+            return;
+
+        // To keep the icon centered
+        res -= IconSize * 0.5f;
+
+        ImGui::GetWindowDrawList( )->AddImage( reinterpret_cast< ImTextureID >( renderIcon->GetId( ) ),
+                                               ImVec2( screenPosition.x + res.x, screenPosition.y + res.y ),
+                                               ImVec2( screenPosition.x + res.x + IconSize,
+                                                       screenPosition.y + res.y + IconSize ) );
+    }
 
 }
 
 void Editor::Gui::Windows::RenderViewports( )
 {
-	// --- Game viewport ---
+    bool gameWindowOpen = false;
 
-	if ( ShowGameViewport )
-	{
-		if ( g_StartedPlaying )
-		{
-			const auto& io = ImGui::GetIO( );
+    // --- Game viewport ---
 
-			if ( !io.KeyAlt )
-				ImGui::SetNextWindowFocus( );
+    if ( ShowGameViewport )
+    {
+        if ( g_StartedPlaying )
+        {
+            const auto& io = ImGui::GetIO( );
 
-			g_StartedPlaying = false;
-		}
+            if ( !io.KeyAlt )
+                ImGui::SetNextWindowFocus( );
 
-		if ( ImGui::Begin( "Game", &ShowGameViewport, 0 ) )
-		{
-			Globals::IsInLevelView = false;
+            g_StartedPlaying = false;
+        }
 
-//			ShowViewportControls( false );
+        if ( ImGui::Begin( "Game", &ShowGameViewport, 0 ) )
+        {
+            gameWindowOpen = true;
+            Globals::IsInLevelView = false;
 
-			const auto avSize = ImGui::GetContentRegionAvail( );
-			const auto cursorScreen = ImGui::GetCursorScreenPos( );
+            //ShowViewportControls( false );
 
-			if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
-			{
-				ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+            const auto avSize = ImGui::GetContentRegionAvail( );
+            const auto cursorScreen = ImGui::GetCursorScreenPos( );
 
-				ShowViewportControls( false, cursorScreen, avSize );
-			}
-			else
-			{
-				ImGui::TextColored( ImVec4( 1.f, 0.5f, 0.f, 1.f ), "No active camera, please make at least one is active for this level." );
-			}
+            if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
+            {
+                ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
+                              avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
-			Pine::DebugOverlay->SetViewport( cursorScreen.x, cursorScreen.y, avSize.x, avSize.y );
-			Pine::DebugOverlay->Render( );
-		}
+                ShowViewportControls( false, cursorScreen, avSize );
+            } else
+            {
+                ImGui::TextColored( ImVec4( 1.f, 0.5f, 0.f, 1.f ),
+                                    "No active camera, please make at least one is active for this level." );
+            }
 
-		ImGui::End( );
-	}
+            if ( Pine::Input->IsKeyPressed( 256 ) ) // Escape key
+            {
+                Pine::Input->SetCursorAutoCenter( false );
+                Pine::Input->SetCursorVisible( true );
+            }
+
+            Pine::DebugOverlay->SetViewport( cursorScreen.x, cursorScreen.y, avSize.x, avSize.y );
+            Pine::DebugOverlay->Render( );
+        }
+
+        ImGui::End( );
+    }
 
 
-	// --- Level viewport ---
+    // --- Level viewport ---
 
-	if ( ShowLevelViewport )
-	{
-		if ( ImGui::Begin( "Level", &ShowLevelViewport, 0 ) )
-		{
-			Globals::IsInLevelView = true;
+    if ( g_StoppedPlaying )
+    {
+        const auto& io = ImGui::GetIO( );
 
-			const auto avSize = ImGui::GetContentRegionAvail( );
+        if ( !io.KeyAlt )
+            ImGui::SetNextWindowFocus( );
 
-			RenderingHandler::SetViewportSize( avSize.x, avSize.y );
+        g_StoppedPlaying = false;
+    }
 
-			const ImVec2 cursorPos = ImGui::GetCursorScreenPos( );
+    if ( ShowLevelViewport )
+    {
+        if ( ImGui::Begin( "Level", &ShowLevelViewport, 0 ) )
+        {
+            Globals::IsInLevelView = true;
 
-			ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
+            const auto avSize = ImGui::GetContentRegionAvail( );
 
-			ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ), avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+            RenderingHandler::SetViewportSize( avSize.x, avSize.y );
 
-			char buff[ 32 ];
-			sprintf_s( buff, "FPS: %d", Pine::GetFPS( ) );
-			ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorPos.x + 5, cursorPos.y + 5 ), ImColor( 255, 255, 255, 130 ), buff );
+            const ImVec2 cursorPos = ImGui::GetCursorScreenPos( );
 
-			Pine::DebugOverlay->SetViewport( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
-			Pine::DebugOverlay->Render( );
+            ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
-			Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
+            ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
+                          avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
-			HandleAssetViewportDrop( );
+            char buff[32];
+            sprintf_s( buff, "FPS: %d", Pine::GetFPS( ) );
+            ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorPos.x + 5, cursorPos.y + 5 ),
+                                                      ImColor( 255, 255, 255, 130 ), buff );
 
-			ShowViewportControls( true, cursorPos, avSize );
+            Pine::DebugOverlay->SetViewport( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
+            Pine::DebugOverlay->Render( );
 
-			const auto cam = EditorEntity::GetCamera( );
+            Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
 
-			// Render ImGuizmo
+            HandleAssetViewportDrop( );
 
-			if ( !Globals::SelectedEntityPtrs.empty( ) )
-			{
-				const auto e = Globals::SelectedEntityPtrs[ 0 ];
+            ShowViewportControls( true, cursorPos, avSize );
 
-				if ( cam != nullptr )
-				{
-					ImGuizmo::OPERATION op;
+            const auto cam = EditorEntity::GetCamera( );
 
-					if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Move )
-						op = ImGuizmo::OPERATION::TRANSLATE;
-					if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate )
-						op = ImGuizmo::OPERATION::ROTATE;
-					if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale )
-						op = ImGuizmo::OPERATION::SCALE;
+            // Render ImGuizmo
 
-					ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
-					ImGuizmo::SetDrawlist( ImGui::GetWindowDrawList( ) );
+            if ( !Globals::SelectedEntityPtrs.empty( ) )
+            {
+                const auto e = Globals::SelectedEntityPtrs[ 0 ];
 
-					// Because ImGuizmo has problems respecting the max view port width and height for whatever reason.
-					ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
+                if ( cam != nullptr )
+                {
+                    ImGuizmo::OPERATION op;
 
-					glm::mat4 temp = e->GetTransform(  )->GetTransformationMatrix(  );
+                    if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Move )
+                        op = ImGuizmo::OPERATION::TRANSLATE;
+                    if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate )
+                        op = ImGuizmo::OPERATION::ROTATE;
+                    if ( Globals::SelectedGizmoMovementType == GizmoMovementType::Scale )
+                        op = ImGuizmo::OPERATION::SCALE;
 
-					if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ), glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD, glm::value_ptr( temp ), nullptr, nullptr ) )
-					{
-						glm::vec3 translation;
-						glm::quat rotation;
-						glm::vec3 scale;
+                    ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
+                    ImGuizmo::SetDrawlist( ImGui::GetWindowDrawList( ) );
 
-						DecomposeMatrix( temp, translation, rotation, scale );
+                    // Because ImGuizmo has problems respecting the max view port width and height for whatever reason.
+                    ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ),
+                                                               ImVec2( cursorPos.x + avSize.x,
+                                                                       cursorPos.y + avSize.y ) );
 
-						auto base_position = glm::vec3( 0.f );
+                    glm::mat4 temp = e->GetTransform( )->GetTransformationMatrix( );
 
-						if ( e->GetParent( ) != nullptr )
-							base_position = e->GetParent( )->GetTransform( )->Position;
+                    if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ),
+                                     glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD,
+                                     glm::value_ptr( temp ), nullptr, nullptr ) )
+                    {
+                        glm::vec3 translation;
+                        glm::quat rotation;
+                        glm::vec3 scale;
 
-						e->GetTransform( )->Position = glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position;
-						e->GetTransform( )->Rotation = glm::degrees( glm::eulerAngles( rotation ) );
-						e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
-					}
+                        DecomposeMatrix( temp, translation, rotation, scale );
 
-					ImGui::GetWindowDrawList( )->PopClipRect( );
-				}
-			}
+                        auto base_position = glm::vec3( 0.f );
 
-			ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ), ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
+                        if ( e->GetParent( ) != nullptr )
+                            base_position = e->GetParent( )->GetTransform( )->Position;
 
-			for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ )
-			{
-				const auto entity = Pine::EntityList->GetEntity( i );
+                        e->GetTransform( )->Position =
+                                glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position;
+                        e->GetTransform( )->Rotation = glm::degrees( glm::eulerAngles( rotation ) );
+                        e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
+                    }
 
-				if ( !entity->GetActive( ) )
-					continue;
-				if ( entity == EditorEntity::GetEntity( ) )
-					continue;
-				if ( !Globals::SelectedEntityPtrs.empty( ) && Globals::SelectedEntityPtrs[ 0 ] == entity )
-					continue;
+                    ImGui::GetWindowDrawList( )->PopClipRect( );
+                }
+            }
 
-				RenderEntityIcon( entity, cam, cursorPos );
-			}
+            ImGui::GetWindowDrawList( )->PushClipRect( ImVec2( cursorPos.x, cursorPos.y ),
+                                                       ImVec2( cursorPos.x + avSize.x, cursorPos.y + avSize.y ) );
 
-			ImGui::GetWindowDrawList( )->PopClipRect( );
-		}
+            for ( int i = 0; i < Pine::EntityList->GetEntities( ).size( ); i++ )
+            {
+                const auto entity = Pine::EntityList->GetEntities( )[ i ];
 
-		ImGui::End( );
-	}
+                if ( !entity->GetActive( ) )
+                    continue;
+                if ( entity == EditorEntity::GetEntity( ) )
+                    continue;
+                if ( !Globals::SelectedEntityPtrs.empty( ) && Globals::SelectedEntityPtrs[ 0 ] == entity )
+                    continue;
+
+                RenderEntityIcon( entity, cam, cursorPos );
+            }
+
+            ImGui::GetWindowDrawList( )->PopClipRect( );
+        }
+
+        ImGui::End( );
+    }
 
 }

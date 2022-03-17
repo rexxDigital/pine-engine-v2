@@ -3,3 +3,4 @@ project(Pine)
 
 add_subdirectory(Pine)
 add_subdirectory(Editor)
+add_subdirectory(GameRuntime)

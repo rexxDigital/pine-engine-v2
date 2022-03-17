@@ -147,7 +147,7 @@ namespace
 				if ( entityIndex >= Pine::EntityList->GetEntities( ).size( ) )
 					entityIndex = Pine::EntityList->GetEntities( ).size( ) - 1;
 
-				Pine::EntityList->MoveEntity( entity, entityIndex );
+				//Pine::EntityList->MoveEntity( entity, entityIndex );
 			}
 		}
 
@@ -201,22 +201,22 @@ void Editor::Gui::Windows::RenderEntitylist( )
 
 	int entityRenderIndex = 0;
 
-	for ( auto& entity : entities )
+	for ( auto entity : entities )
 	{
 		entityRenderIndex++;
 
 		// Since we render children for each parent entity instead.
-		if ( entity.GetParent( ) != nullptr )
+		if ( entity->GetParent( ) != nullptr )
 		{
 			continue;
 		}
 
-		if ( &entity == EditorEntity::GetEntity( ) )
+		if ( entity == EditorEntity::GetEntity( ) )
 		{
 			continue;
 		}
 
-		RenderEntity( Pine::EntityList->GetEntity( entityRenderIndex - 1 ), isDragDroppingEntity );
+		RenderEntity( entity, isDragDroppingEntity );
 
 		if ( isDragDroppingEntity )
 			EntityMoveSeparator( entityRenderIndex );

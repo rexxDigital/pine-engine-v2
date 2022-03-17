@@ -8,6 +8,7 @@
 #include "Pine/PhysicsManager/PhysicsManager.hpp"
 
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
+#include "Editor/RuntimeManager/RuntimeManager.hpp"
 
 using namespace Editor::Gui;
 
@@ -29,23 +30,35 @@ void Windows::RenderSettings( )
 		{
 			if ( ImGui::BeginTabItem( "Engine Settings" ) )
 			{
-				static bool autoReload = false;
-
 				ImGui::PushFont( Gui::Fonts::BoldFont );
 				ImGui::Text( "Runtime Library" );
 				ImGui::PopFont( );
 
-				ImGui::Text( "Runtime library target file: %s%s", Editor::ProjectManager::GetCurrentProjectDirectory( ).c_str( ), "\\GameRuntime.dll" );
-				ImGui::Text( "Runtime library loaded: %s", Editor::ProjectManager::GetProjectRuntimeLibrary( ) != nullptr ? "Yes" : "No" );
+				ImGui::Text( "Runtime library target file: %s", "GameRuntime.dll" );
+				ImGui::Text( "Runtime library loaded: %s", Editor::RuntimeManager::GetProjectRuntimeLibrary( ) != nullptr ? "Yes" : "No" );
+                ImGui::Text( "Runtime library source path: %s", Editor::RuntimeManager::GetRuntimeSourcePath( ).c_str( ) );
+                ImGui::Text( "Runtime library compile available: %s", Editor::RuntimeManager::GetRuntimeCompileAvailable( ) ? "Yes" : "No" );
 
-				ImGui::Checkbox( "Auto Reload", &autoReload );
+                bool autoCompile = Editor::RuntimeManager::GetRuntimeAutoCompile( );
 
-				if ( ImGui::Button( Editor::ProjectManager::GetProjectRuntimeLibrary( ) == nullptr ? "Load" : "Unload", ImVec2( 130.f, 30.f ) ) )
+                if ( ImGui::Checkbox( "Auto Compile", &autoCompile ) )
+                {
+                    Editor::RuntimeManager::SetRuntimeAutoCompile( autoCompile );
+                }
+
+                if ( ImGui::Button( "Compile", ImVec2( 130.f, 30.f ) ) )
+                {
+                    Editor::RuntimeManager::CompileRuntime( );
+                }
+
+                ImGui::SameLine( );
+
+				if ( ImGui::Button( Editor::RuntimeManager::GetProjectRuntimeLibrary( ) == nullptr ? "Load binary" : "Unload binary", ImVec2( 130.f, 30.f ) ) )
 				{
-					if ( Editor::ProjectManager::GetProjectRuntimeLibrary( ) == nullptr )
-						Editor::ProjectManager::LoadRuntimeLibrary( );
+					if ( Editor::RuntimeManager::GetProjectRuntimeLibrary( ) == nullptr )
+						Editor::RuntimeManager::LoadRuntimeLibrary( );
 					else
-						Editor::ProjectManager::UnloadRuntimeLibrary( );
+						Editor::RuntimeManager::UnloadRuntimeLibrary( );
 				}
 
 				ImGui::Spacing( );

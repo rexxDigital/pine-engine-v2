@@ -82,12 +82,12 @@ uint64_t Pine::Entity::GetId( ) const
 	return m_Id;
 }
 
-uint64_t Pine::Entity::GetEntityIndex( ) const
+int Pine::Entity::GetEntityIndex( ) const
 {
 	return m_EntityIndex;
 }
 
-void Pine::Entity::SetEntityIndex( const uint64_t indx )
+void Pine::Entity::SetEntityIndex( const int indx )
 {
 	m_EntityIndex = indx;
 }

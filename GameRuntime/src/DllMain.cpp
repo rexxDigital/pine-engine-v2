@@ -4,7 +4,8 @@
 #include "Pine/Entitylist/EntityList.hpp"
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 
-#include "Controllers/GameController/GameController.hpp"
+#include "Controllers/GameController/WorldController.hpp"
+#include "Controllers/PlayerController/PlayerController.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 
 extern "C" {
@@ -12,7 +13,8 @@ extern "C" {
 	bool __declspec( dllexport ) __stdcall ModuleInitialize( Pine::ModuleHandle* handle, const Pine::PineInstance* pineInstance ) {
 		UseInstance( pineInstance );
 
-		handle->RegisterNativeScript( "GameController", sizeof( GameController ), [ ] { return new GameController( ); } );
+		handle->RegisterNativeScript("WorldController", sizeof( WorldController ), [ ] { return new WorldController( ); } );
+		handle->RegisterNativeScript( "PlayerController", sizeof( PlayerController ), [ ] { return new PlayerController( ); } );
 
 		return true;
 	}

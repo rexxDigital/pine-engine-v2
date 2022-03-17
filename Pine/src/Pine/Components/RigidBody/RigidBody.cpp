@@ -55,6 +55,7 @@ void Pine::RigidBody::UpdateColliders( )
 		//	tr.setOrientation(  );
 
 		m_Collider->setLocalToBodyTransform( tr );
+        m_Collider->getMaterial().setBounciness(0);
 	}
 }
 
@@ -141,7 +142,7 @@ void Pine::RigidBody::OnPrePhysicsUpdate( )
 		break;
 	}
 
-	UpdateColliders( );
+    UpdateColliders( );
 }
 
 void Pine::RigidBody::OnPostPhysicsUpdate( )
@@ -149,7 +150,7 @@ void Pine::RigidBody::OnPostPhysicsUpdate( )
 	const auto transform = GetParent( )->GetTransform( );
 	const auto& physTransform = m_RigidBody->getTransform( );
 
-	transform->Rotation = glm::degrees( glm::eulerAngles( glm::quat( physTransform.getOrientation( ).w, physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z ) ) );
+//	transform->Rotation = glm::degrees( glm::eulerAngles( glm::quat( physTransform.getOrientation( ).w, physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z ) ) );
 	transform->Position = glm::vec3( physTransform.getPosition( ).x, physTransform.getPosition( ).y, physTransform.getPosition( ).z );
 }
 
@@ -159,6 +160,7 @@ void Pine::RigidBody::OnCreated( )
 		return;
 
 	m_RigidBody = PhysicsManager->CreateRigidBody( m_RigidBodyTransform );
+    m_RigidBody->setType( reactphysics3d::BodyType::DYNAMIC );
 }
 
 void Pine::RigidBody::OnCopied( const IComponent* old )
@@ -168,7 +170,7 @@ void Pine::RigidBody::OnCopied( const IComponent* old )
 
 void Pine::RigidBody::OnDestroyed( )
 {
-	Log->Warning( "RigidBody::OnDestroyed( ) -> (" + m_Parent->GetName( ) + ")" );
+	//Log->Warning( "RigidBody::OnDestroyed( ) -> (" + m_Parent->GetName( ) + ")" );
 
 	if ( m_RigidBody )
 	{

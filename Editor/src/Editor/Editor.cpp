@@ -11,34 +11,38 @@
 
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Core/Log/Log.hpp"
+#include "Editor/RuntimeManager/RuntimeManager.hpp"
 
 void UpdateAssetCache( );
+
 void InitializePicPanel( );
 
-void Editor::Setup( ) {
+void Editor::Setup( )
+{
 
-	Pine::Log->Message( "Setting up editor..." );
-	
-	ProjectManager::Setup( );
-	ProjectManager::OpenProject( "Projects\\Debug" );
+    Pine::Log->Message( "Setting up editor..." );
 
-	Pine::Log->Message( "Loading editor assets..." );
-	
-	Pine::Assets->LoadFromDirectory( "Assets\\Editor" );
+    ProjectManager::Setup( );
+    ProjectManager::OpenProject( "Projects\\Debug" );
+    RuntimeManager::Setup( );
 
-	Gui::Setup( );
-	Gui::Utility::AssetIcon::Update( );
+    Pine::Log->Message( "Loading editor assets..." );
 
-	InitializePicPanel( );
+    Pine::Assets->LoadFromDirectory( "Assets\\Editor" );
 
-	EditorEntity::Create( );
+    Gui::Setup( );
+    Gui::Utility::AssetIcon::Update( );
 
-	UpdateAssetCache( );
+    InitializePicPanel( );
 
-	RenderingHandler::Setup( );
+    EditorEntity::Create( );
 
-	Pine::SetAllowUpdates( false );
+    UpdateAssetCache( );
 
-	Pine::Log->Message( "Ready." );
-	
+    RenderingHandler::Setup( );
+
+    Pine::SetAllowUpdates( false );
+
+    Pine::Log->Message( "Ready." );
+
 }

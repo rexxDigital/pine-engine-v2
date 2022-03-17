@@ -11,8 +11,6 @@
 #include "Pine/Assets/Assets.hpp"
 #include "Pine/Core/Log/Log.hpp"
 
-
-
 void Editor::Gui::MainMenuBar::Render( )
 {
 	bool openAboutPage = false;
@@ -113,6 +111,7 @@ void Editor::Gui::MainMenuBar::Render( )
 			if ( ImGui::BeginMenu( "Debug" ) )
 			{
 				ImGui::MenuItem( "Rendering Context", nullptr, &Windows::ShowRenderingContext );
+				ImGui::MenuItem( "Components System", nullptr, &Windows::ShowComponentsSys );
 
 				ImGui::EndMenu( );
 			}

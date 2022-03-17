@@ -233,7 +233,7 @@ void Pine::Collider3D::OnCopied( const IComponent* old )
 
 void Pine::Collider3D::OnDestroyed( )
 {
-	Log->Warning( "Collider3D::OnDestroyed( ) -> (" + m_Parent->GetName(  ) + ")" );
+//	Log->Warning( "Collider3D::OnDestroyed( ) -> (" + m_Parent->GetName(  ) + ")" );
 
 	//const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
 	//if ( rigidBody )

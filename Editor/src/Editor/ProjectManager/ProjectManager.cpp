@@ -17,198 +17,164 @@ void UpdateAssetCache( );
 namespace
 {
 
-	bool g_LevelOpen = false;
-	Pine::Level* g_CurrentLevel = nullptr;
+    bool g_LevelOpen = false;
+    Pine::Level* g_CurrentLevel = nullptr;
 
-	bool g_ProjectOpen = false;
-	std::string g_CurrentProject = "";
+    bool g_ProjectOpen = false;
+    std::string g_CurrentProject = "";
 
-	std::vector<std::string> g_AvailableProjects;
+    std::vector<std::string> g_AvailableProjects;
 
-	std::chrono::system_clock::duration g_LastProjectRuntimeWriteTime;
-	Pine::ModuleHandle* g_ProjectRuntime = nullptr;
+    std::chrono::system_clock::duration g_LastProjectRuntimeWriteTime;
 
-	void ReloadRuntimeLibrary( const std::filesystem::path& path )
-	{
-		Pine::Log->Message( "Reloading game runtime library..." );
+    void LoadProject( const std::string& directory )
+    {
+        g_CurrentProject = directory;
+        g_ProjectOpen = true;
 
-		if ( g_ProjectRuntime )
-		{
-			Pine::RuntimeLoader->UnloadModule( g_ProjectRuntime );
-			g_ProjectRuntime = nullptr;
-		}
+        Pine::Log->Message( "Loading project '" + g_CurrentProject + "' assets..." );
 
-		g_ProjectRuntime = Pine::RuntimeLoader->LoadModule( path );
-		g_LastProjectRuntimeWriteTime = std::filesystem::last_write_time( path ).time_since_epoch( );
-	}
+        Pine::Assets->LoadFromDirectory( directory );
 
-	void LoadProject( const std::string& directory )
-	{
-		g_CurrentProject = directory;
-		g_ProjectOpen = true;
-		g_ProjectRuntime = nullptr;
-
-		Pine::Log->Message( "Loading project '" + g_CurrentProject + "' assets..." );
-
-		Pine::Assets->LoadFromDirectory( directory );
-
-		Pine::Window::SetSize( 1024, 768 );
-		Pine::Window::UpdateCachedSize( );
-	}
+        Pine::Window::SetSize( 1024, 768 );
+        Pine::Window::UpdateCachedSize( );
+    }
 
 }
 
 void Editor::ProjectManager::Setup( )
 {
-	for ( const auto& dirEntry : std::filesystem::directory_iterator( "Projects" ) )
-	{
-		if ( !dirEntry.is_directory( ) )
-			continue;
+    for ( const auto& dirEntry: std::filesystem::directory_iterator( "Projects" ))
+    {
+        if ( !dirEntry.is_directory( ))
+            continue;
 
-		g_AvailableProjects.push_back( dirEntry.path( ).string( ) );
-	}
+        g_AvailableProjects.push_back( dirEntry.path( ).string( ));
+    }
 }
 
 void Editor::ProjectManager::Save( )
 {
-	Pine::Log->Message( "Saving all assets..." );
+    Pine::Log->Message( "Saving all assets..." );
 
-	if ( g_CurrentLevel )
-	{
-		g_CurrentLevel->CreateFromCurrentLevel( );
-		g_CurrentLevel->SetUpdated( true );
-	}
+    if ( g_CurrentLevel )
+    {
+        g_CurrentLevel->CreateFromCurrentLevel( );
+        g_CurrentLevel->SetUpdated( true );
+    }
 
-	Pine::Assets->SaveAssets( );
+    Pine::Assets->SaveAssets( );
 }
 
 bool Editor::ProjectManager::HasProjectOpen( )
 {
-	return g_ProjectOpen;
+    return g_ProjectOpen;
 }
 
 std::string Editor::ProjectManager::GetCurrentProjectDirectory( )
 {
-	return g_CurrentProject;
+    return g_CurrentProject;
 }
 
 Pine::Level* Editor::ProjectManager::GetCurrentLevel( )
 {
-	return g_CurrentLevel;
+    return g_CurrentLevel;
 }
 
 void Editor::ProjectManager::OpenLevel( const std::string& path )
 {
-	const auto level = Pine::Assets->GetAsset<Pine::Level>( path );
-	if ( !level )
-		return;
+    const auto level = Pine::Assets->GetAsset<Pine::Level>( path );
+    if ( !level )
+        return;
 
-	level->Load( );
+    level->Load( );
 
-	g_CurrentLevel = level;
+    g_CurrentLevel = level;
 }
 
 void Editor::ProjectManager::OpenLevel( Pine::Level* level )
 {
-	g_CurrentLevel = level;
+    g_CurrentLevel = level;
 }
 
 void Editor::ProjectManager::SaveLevel( const std::string& path )
 {
-	g_CurrentLevel = new Pine::Level( );
+    g_CurrentLevel = new Pine::Level( );
 
-	g_CurrentLevel->CreateFromCurrentLevel( );
-	g_CurrentLevel->SetFilePath( path );
+    g_CurrentLevel->CreateFromCurrentLevel( );
+    g_CurrentLevel->SetFilePath( path );
 
-	g_CurrentLevel->SaveToFile( );
+    g_CurrentLevel->SaveToFile( );
 }
 
-void Editor::ProjectManager::OpenProject( const std::string& directory ) {
-	if ( !std::filesystem::exists( directory ) )
-		return;
+void Editor::ProjectManager::OpenProject( const std::string& directory )
+{
+    if ( !std::filesystem::exists( directory ))
+        return;
 
-	LoadProject( directory );
+    LoadProject( directory );
 }
 
 void Editor::ProjectManager::Update( )
 {
-	static float lastExecTime = 0.0;
+    static float lastExecTime = 0.0;
 
-	if ( Pine::GetTime( ) - lastExecTime > 2.f )
-	{
-		lastExecTime = Pine::GetTime( );
-	}
-	else
-	{
-		return;
-	}
+    if ( Pine::GetTime( ) - lastExecTime > 2.f )
+    {
+        lastExecTime = Pine::GetTime( );
+    } else
+    {
+        return;
+    }
 
-	// Auto reload assets
+    // Auto reload assets
 
 
-	//// Auto reload project runtime
-	//const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
+    //// Auto reload project runtime
+    //const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
 
-	//if ( !g_ProjectRuntime )
-	//{
-	//	ReloadRuntimeLibrary( runtimePath );
-	//	return;
-	//}
+    //if ( !g_ProjectRuntime )
+    //{
+    //	ReloadRuntimeLibrary( runtimePath );
+    //	return;
+    //}
 
-	//if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
-	//{
-	//	ReloadRuntimeLibrary( runtimePath );
-	//}
+    //if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
+    //{
+    //	ReloadRuntimeLibrary( runtimePath );
+    //}
 }
 
 void Editor::ProjectManager::CreateProject( const std::string& directory )
 {
-	if ( std::filesystem::exists( directory ) )
-		return;
+    if ( std::filesystem::exists( directory ))
+        return;
 
-	std::filesystem::create_directory( directory );
+    std::filesystem::create_directory( directory );
 
-	LoadProject( directory );
+    LoadProject( directory );
 }
 
 const std::vector<std::string>& Editor::ProjectManager::GetAvailableProjects( )
 {
-	return g_AvailableProjects;
+    return g_AvailableProjects;
 }
 
-void Editor::ProjectManager::LoadRuntimeLibrary( )
+void Editor::ProjectManager::ReloadProjectAssets( )
 {
-	ReloadRuntimeLibrary( g_CurrentProject + "\\GameRuntime.dll" );
-}
+    if ( !g_ProjectOpen )
+        return;
 
-void Editor::ProjectManager::UnloadRuntimeLibrary( )
-{
-	if ( g_ProjectRuntime )
-	{
-		Pine::RuntimeLoader->UnloadModule( g_ProjectRuntime );
-		g_ProjectRuntime = nullptr;
-	}
-}
+    const auto level = new Pine::Level;
 
-Pine::ModuleHandle* Editor::ProjectManager::GetProjectRuntimeLibrary( )
-{
-	return g_ProjectRuntime;
-}
+    level->CreateFromCurrentLevel( );
 
-void Editor::ProjectManager::ReloadProjectAssets( ) {
-	if ( !g_ProjectOpen )
-		return;
+    Pine::Assets->LoadFromDirectory( GetCurrentProjectDirectory( ));
 
-	const auto level = new Pine::Level;
+    level->Load( );
+    level->Dispose( );
 
-	level->CreateFromCurrentLevel( );
+    delete level;
 
-	Pine::Assets->LoadFromDirectory( GetCurrentProjectDirectory( ) );
-
-	level->Load( );
-	level->Dispose( );
-
-	delete level;
-
-	UpdateAssetCache( );
+    UpdateAssetCache( );
 }

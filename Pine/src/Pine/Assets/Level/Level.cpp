@@ -52,57 +52,74 @@ void Pine::Level::CreateFromCurrentLevel( )
 {
 	auto& entities = Pine::EntityList->GetEntities( );
 
-	uint64_t currentId = 1;
-	Entity* currentCameraEntity = nullptr;
-
+    // Write camera index
 	if ( RenderManager->GetRenderingContext( )->m_Camera != nullptr )
-		currentCameraEntity = RenderManager->GetRenderingContext( )->m_Camera->GetParent( );
+    {
+        auto camEntity = RenderManager->GetRenderingContext( )->m_Camera->GetParent( );
+
+        int id = 1;
+        for (auto entity : EntityList->GetEntities())
+        {
+            if (entity->IsTemporary())
+                continue;
+
+            if (entity == camEntity)
+            {
+                m_LevelSettings->m_CameraEntity = id;
+                break;
+            }
+
+            id++;
+        }
+    }
 
 	// Clear current list if we have one
 	DisposeBlueprints( );
 
 	// Create a blueprint for each entity
-	for ( auto& entity : entities )
+	for ( auto entity : entities )
 	{
 		// Ignore temporary entities such as editor entities.
-		if ( entity.IsTemporary( ) )
+		if ( entity->IsTemporary( ) )
 			continue;
 
 		// Ignore children as we write them separately later.
-		if ( entity.GetParent( ) != nullptr )
-			continue;
+		if ( entity->GetParent( ) != nullptr )
+            continue;
 
-		if ( currentCameraEntity == &entity )
-			m_LevelSettings->m_CameraEntity = currentId;
-
-		m_Blueprints.push_back( CreateBlueprintOfEntity( &entity ) );
-
-		currentId++;
-	}
+        m_Blueprints.push_back( CreateBlueprintOfEntity( entity ) );
+    }
 
 	m_LevelSettings->m_Skybox = Pine::Skybox->GetSkyboxCubemap( );
 }
 
 void Pine::Level::Load( )
 {
-	uint64_t currentId = 1;
-
-	// Clear current non temporaries entities
+    // Clear current non temporaries entities
 	Pine::EntityList->ClearEntities( );
+
+    const int levelEntityOffset = Pine::EntityList->GetEntities().size();
 
 	// Add our blueprint entities
 	for ( auto bp : m_Blueprints )
 	{
-		const auto entity = bp->SpawnEntity( );
-
-		// This fucking sucks and I hate it
-		if ( m_LevelSettings->m_CameraEntity != 0 && m_LevelSettings->m_CameraEntity == currentId )
-		{
-			RenderManager->GetRenderingContext( )->m_Camera = entity->GetComponent<Camera>( );
-		}
-
-		currentId++;
+		bp->SpawnEntity( );
 	}
+
+    // Apply camera
+    if (m_LevelSettings->m_CameraEntity != 0)
+    {
+        int entityIndex = (m_LevelSettings->m_CameraEntity - 1) + levelEntityOffset;
+
+        auto entity = Pine::EntityList->GetEntities()[entityIndex];
+        if (entity)
+        {
+            auto camera = entity->GetComponent<Camera>();
+
+            if (camera)
+                RenderManager->GetRenderingContext()->m_Camera = camera;
+        }
+    }
 
 	if ( m_LevelSettings->m_Skybox != nullptr )
 		Pine::Skybox->SetSkyboxCubemap( m_LevelSettings->m_Skybox );

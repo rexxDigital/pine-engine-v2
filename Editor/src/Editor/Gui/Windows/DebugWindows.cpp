@@ -1,6 +1,7 @@
 #include "Windows.hpp"
 #include <Pine\Rendering\RenderManager\RenderManager.hpp>
 #include <Pine\Entity\Entity.hpp>
+#include <Pine/Components/Components.hpp>
 
 #include "../Widgets/Widgets.hpp"
 
@@ -41,6 +42,16 @@ namespace {
 		ImGui::End( );
 	}
 
+    void RenderComponentsSystem( )
+    {
+        if ( ImGui::Begin( "Rendering Context", &Windows::ShowRenderingContext, 0 ) ) {
+
+
+
+        }
+        ImGui::End();
+    }
+
 }
 
 void Windows::RenderDebugWindows( ) {
@@ -48,5 +59,9 @@ void Windows::RenderDebugWindows( ) {
 	if ( Windows::ShowRenderingContext ) {
 		RenderRenderingContext( );
 	}
+
+    if ( Windows::ShowComponentsSys ) {
+        RenderComponentsSystem( );
+    }
 
 }

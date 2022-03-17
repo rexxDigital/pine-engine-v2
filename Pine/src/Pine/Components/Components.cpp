@@ -382,7 +382,7 @@ namespace Pine
 			{
 				component->SetStandalone( false );
 
-				ResizeData( &comp, componentSize, 256 ); // By default make space for 256 components
+				ResizeData( &comp, componentSize, 512 ); // By default make space for 256 components
 			}
 
 			g_Components.push_back( comp );

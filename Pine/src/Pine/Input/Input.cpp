@@ -6,337 +6,370 @@
 
 #include "../Core/Window/Window.hpp"
 #include "../Rendering/DebugOverlay/DebugOverlay.hpp"
+#include "imgui_impl_glfw.h"
 
 namespace
 {
-	bool g_WindowIsFocused = false;
+    bool g_WindowIsFocused = false;
 
-	void WindowFocusCallback( GLFWwindow* window, int focused )
-	{
-		if ( window != Pine::Window::Internal::GetWindowPointer( ) )
-			return;
+    void WindowFocusCallback( GLFWwindow* window, int focused )
+    {
+        // Since we'll "hijack" ImGui's focus callback
+        ImGui_ImplGlfw_WindowFocusCallback( window, focused );
 
-		g_WindowIsFocused = focused;
-	}
+        if ( window != Pine::Window::Internal::GetWindowPointer( ) )
+            return;
+
+        g_WindowIsFocused = focused;
+    }
 }
 
 namespace Pine
 {
 
 
-	class CInputSystem : public IInputSystem
-	{
-	private:
-		std::vector<std::unique_ptr<InputBinding>> m_InputBindings;
-		glm::ivec2 m_MouseDelta;
+    class CInputSystem : public IInputSystem
+    {
+    private:
+        std::vector<std::unique_ptr<InputBinding>> m_InputBindings;
+        glm::ivec2 m_MouseDelta;
 
-		int m_KeyStates[ GLFW_KEY_LAST ] = { };
-		int m_KeyStatesOld[ GLFW_KEY_LAST ] = { };
+        int m_KeyStates[GLFW_KEY_LAST] = {};
+        int m_KeyStatesOld[GLFW_KEY_LAST] = {};
 
-		bool m_AutoCenterCursor = false;
-		bool m_IgnoreUnfocused = true;
-	public:
+        bool m_AutoCenterCursor = false;
+        bool m_CursorVisible = true;
 
-		void SetCursorAutoCenter( bool enabled ) override
-		{
-			m_AutoCenterCursor = enabled;
-		}
+        bool m_IgnoreUnfocused = true;
+    public:
 
-		void SetIgnoreWhenUnfocused( bool enabled ) override
-		{
-			m_IgnoreUnfocused = enabled;
-		}
+        void SetCursorAutoCenter( bool enabled ) override
+        {
+            m_AutoCenterCursor = enabled;
+        }
 
-		InputBinding* CreateBinding( const std::string& name ) override
-		{
-			m_InputBindings.push_back( std::make_unique<InputBinding>( name ) );
+        void SetCursorVisible( bool enabled ) override
+        {
+            m_CursorVisible = enabled;
+        }
 
-			return m_InputBindings[ m_InputBindings.size( ) - 1 ].get( );
-		}
+        bool GetCursorAutoCenter( ) const override
+        {
+            return m_AutoCenterCursor;
+        }
 
-		void RemoveBinding( InputBinding* binding ) override
-		{
-			int i = 0;
-			for ( auto& bind : m_InputBindings )
-			{
-				if ( bind.get( ) == binding )
-				{
-					m_InputBindings.erase( m_InputBindings.begin( ) + i );
-					return;
-				}
+        bool GetCursorVisible( ) const override
+        {
+            return m_CursorVisible;
+        }
 
-				i++;
-			}
-		}
+        void SetIgnoreWhenUnfocused( bool enabled ) override
+        {
+            m_IgnoreUnfocused = enabled;
+        }
 
-		int BindingCount( ) override
-		{
-			return m_InputBindings.size( );
-		}
+        InputBinding* CreateBinding( const std::string& name ) override
+        {
+            m_InputBindings.push_back( std::make_unique<InputBinding>( name ) );
 
-		InputBinding* GetBindingById( const int i ) override
-		{
-			return m_InputBindings[ i ].get( );
-		}
+            return m_InputBindings[ m_InputBindings.size( ) - 1 ].get( );
+        }
 
-		InputBinding* FindBinding( const std::string& name ) override
-		{
-			for ( const auto& bind : m_InputBindings )
-			{
-				if ( bind->Name( ) == name )
-				{
-					return bind.get( );
-				}
-			}
+        void RemoveBinding( InputBinding* binding ) override
+        {
+            int i = 0;
+            for ( auto& bind: m_InputBindings )
+            {
+                if ( bind.get( ) == binding )
+                {
+                    m_InputBindings.erase( m_InputBindings.begin( ) + i );
+                    return;
+                }
 
-			return nullptr;
-		}
+                i++;
+            }
+        }
 
-		void Setup( ) override
-		{
-			glfwSetWindowFocusCallback( Window::Internal::GetWindowPointer( ), WindowFocusCallback );
-		}
+        int BindingCount( ) override
+        {
+            return m_InputBindings.size( );
+        }
 
-		void Update( ) override
-		{
-			if ( m_IgnoreUnfocused && !g_WindowIsFocused )
-			{
-				return;
-			}
+        InputBinding* GetBindingById( const int i ) override
+        {
+            return m_InputBindings[ i ].get( );
+        }
 
-			const auto window = Pine::Window::Internal::GetWindowPointer( );
+        InputBinding* FindBinding( const std::string& name ) override
+        {
+            for ( const auto& bind: m_InputBindings )
+            {
+                if ( bind->Name( ) == name )
+                {
+                    return bind.get( );
+                }
+            }
 
-			memcpy_s( m_KeyStatesOld, sizeof( m_KeyStatesOld ), m_KeyStates, sizeof( m_KeyStates ) );
+            return nullptr;
+        }
 
-			for ( int i = 0; i < GLFW_KEY_LAST; i++ )
-			{
-				m_KeyStates[ i ] = glfwGetKey( window, i );
-			}
+        void Setup( ) override
+        {
+            glfwSetWindowFocusCallback( Window::Internal::GetWindowPointer( ), WindowFocusCallback );
+        }
 
-			// Update mouse delta
-			double x, y;
-			static double lastX, lastY;
+        void Update( ) override
+        {
+            static bool lastCursorVisibleState = true;
 
-			glfwGetCursorPos( window, &x, &y );
+            if ( m_IgnoreUnfocused && !g_WindowIsFocused )
+            {
+                return;
+            }
 
-			const double mouseX = lastX - x;
-			const double mouseY = lastY - y;
+            const auto window = Pine::Window::Internal::GetWindowPointer( );
 
-			lastX = x;
-			lastY = y;
+            memcpy_s( m_KeyStatesOld, sizeof( m_KeyStatesOld ), m_KeyStates, sizeof( m_KeyStates ) );
 
-			m_MouseDelta = glm::ivec2( mouseX, mouseY );
+            for ( int i = 0; i < GLFW_KEY_LAST; i++ )
+            {
+                m_KeyStates[ i ] = glfwGetKey( window, i );
+            }
 
-			if ( m_AutoCenterCursor )
-			{
-				const auto cachedSize = Pine::Window::GetCachedSize( );
+            // Update mouse delta
+            double x, y;
+            static double lastX, lastY;
 
-				glfwSetCursorPos( window, cachedSize.x / 2, cachedSize.y / 2 );
+            glfwGetCursorPos( window, &x, &y );
 
-				lastX = cachedSize.x / 2;
-				lastY = cachedSize.y / 2;
-			}
+            const double mouseX = lastX - x;
+            const double mouseY = lastY - y;
 
-			for ( const auto& bind : m_InputBindings )
-			{
-				bind->Value( ) = 0;
+            lastX = x;
+            lastY = y;
 
-				for ( auto& axis : bind->GetAxisBindings( ) )
-				{
-					// Mouse Axis
-					if ( axis->Axis == Axis::MouseX )
-					{
-						bind->Value( ) = mouseX * axis->Sensitivity;
-					}
+            m_MouseDelta = glm::ivec2( mouseX, mouseY );
 
-					if ( axis->Axis == Axis::MouseY )
-					{
-						bind->Value( ) = mouseY * axis->Sensitivity;
-					}
-				}
+            if ( m_AutoCenterCursor )
+            {
+                const auto cachedSize = Pine::Window::GetCachedSize( );
 
-				for ( auto& key : bind->GetKeyboardBindings( ) )
-				{
-					if ( glfwGetKey( window, key->Key ) == GLFW_PRESS )
-					{
-						bind->Value( ) += key->ActivationValue;
-					}
-				}
-			}
-		}
+                glfwSetCursorPos( window, cachedSize.x / 2, cachedSize.y / 2 );
 
-		void Save( const std::string& file ) override
-		{
-			std::ofstream stream( file );
-			nlohmann::json json;
+                lastX = cachedSize.x / 2;
+                lastY = cachedSize.y / 2;
+            }
 
-			for ( int i = 0; i < m_InputBindings.size( ); i++ )
-			{
-				const auto binding = m_InputBindings[ i ].get( );
+            if ( !m_CursorVisible )
+                ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 
-				json[ i ][ "Name" ] = binding->Name( );
+            for ( const auto& bind: m_InputBindings )
+            {
+                bind->Value( ) = 0;
 
-				// Write keyboard bindings
-				for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ )
-				{
-					const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
+                for ( auto& axis: bind->GetAxisBindings( ) )
+                {
+                    // Mouse Axis
+                    if ( axis->Axis == Axis::MouseX )
+                    {
+                        bind->Value( ) = mouseX * axis->Sensitivity;
+                    }
 
-					json[ i ][ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
-					json[ i ][ "Keyboard" ][ j ][ "Key" ] = keyboard->Key;
-				}
+                    if ( axis->Axis == Axis::MouseY )
+                    {
+                        bind->Value( ) = mouseY * axis->Sensitivity;
+                    }
+                }
 
-				// Write axis bindings
-				for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ )
-				{
-					const auto axis = binding->GetAxisBindings( )[ j ].get( );
+                for ( auto& key: bind->GetKeyboardBindings( ) )
+                {
+                    if ( glfwGetKey( window, key->Key ) == GLFW_PRESS )
+                    {
+                        bind->Value( ) += key->ActivationValue;
+                    }
+                }
+            }
+        }
 
-					json[ i ][ "Axis" ][ j ][ "Axis" ] = axis->Axis;
-					json[ i ][ "Axis" ][ j ][ "Sensitivity" ] = axis->Sensitivity;
-				}
-			}
+        void Save( const std::string& file ) override
+        {
+            std::ofstream stream( file );
+            nlohmann::json json;
 
-			stream << json.dump( );
-			stream.close( );
-		}
+            for ( int i = 0; i < m_InputBindings.size( ); i++ )
+            {
+                const auto binding = m_InputBindings[ i ].get( );
 
-		bool Load( const std::string& file ) override
-		{
-			std::ifstream stream( file );
+                json[ i ][ "Name" ] = binding->Name( );
 
-			if ( !stream.is_open( ) )
-				return false;
+                // Write keyboard bindings
+                for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ )
+                {
+                    const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
 
-			std::string str( ( std::istreambuf_iterator<char>( stream ) ),
-							 std::istreambuf_iterator<char>( ) );
+                    json[ i ][ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
+                    json[ i ][ "Keyboard" ][ j ][ "Key" ] = keyboard->Key;
+                }
 
-			if ( str.empty( ) )
-			{
-				stream.close( );
-				return false;
-			}
+                // Write axis bindings
+                for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ )
+                {
+                    const auto axis = binding->GetAxisBindings( )[ j ].get( );
 
-			nlohmann::json json = nlohmann::json::parse( str );
+                    json[ i ][ "Axis" ][ j ][ "Axis" ] = axis->Axis;
+                    json[ i ][ "Axis" ][ j ][ "Sensitivity" ] = axis->Sensitivity;
+                }
+            }
 
-			for ( const auto& bindingJson : json.items( ) )
-			{
-				const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
+            stream << json.dump( );
+            stream.close( );
+        }
 
-				for ( const auto& keyboardJson : bindingJson.value( )[ "Keyboard" ].items( ) )
-				{
-					binding->AddKeyboardBinding( keyboardJson.value( )[ "Key" ], keyboardJson.value( )[ "ActivationValue" ] );
-				}
+        bool Load( const std::string& file ) override
+        {
+            std::ifstream stream( file );
 
-				for ( const auto& axisJson : bindingJson.value( )[ "Axis" ].items( ) )
-				{
-					binding->AddAxisBinding( static_cast< Axis >( axisJson.value( )[ "Axis" ].get<int>( ) ), axisJson.value( )[ "Sensitivity" ] );
-				}
-			}
+            if ( !stream.is_open( ) )
+                return false;
 
-			return true;
-		}
+            std::string str( (std::istreambuf_iterator<char>( stream )),
+                             std::istreambuf_iterator<char>( ) );
 
-		bool IsKeyDown( int key ) override
-		{
-			assert( key >= 0 && GLFW_KEY_LAST > key );
+            if ( str.empty( ) )
+            {
+                stream.close( );
+                return false;
+            }
 
-			return m_KeyStates[ key ] == GLFW_PRESS;
-		}
+            nlohmann::json json = nlohmann::json::parse( str );
 
-		bool IsKeyPressed( int key ) override
-		{
-			assert( key >= 0 && GLFW_KEY_LAST > key );
+            for ( const auto& bindingJson: json.items( ) )
+            {
+                const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
 
-			return m_KeyStates[ key ] == GLFW_PRESS && m_KeyStatesOld[ key ] == GLFW_RELEASE;
-		}
+                for ( const auto& keyboardJson: bindingJson.value( )[ "Keyboard" ].items( ) )
+                {
+                    binding->AddKeyboardBinding( keyboardJson.value( )[ "Key" ],
+                                                 keyboardJson.value( )[ "ActivationValue" ] );
+                }
 
-		bool IsKeyReleased( int key ) override
-		{
-			assert( key >= 0 && GLFW_KEY_LAST > key );
+                for ( const auto& axisJson: bindingJson.value( )[ "Axis" ].items( ) )
+                {
+                    binding->AddAxisBinding( static_cast< Axis >( axisJson.value( )[ "Axis" ].get<int>( ) ),
+                                             axisJson.value( )[ "Sensitivity" ] );
+                }
+            }
 
-			return m_KeyStates[ key ] == GLFW_RELEASE && m_KeyStatesOld[ key ] == GLFW_PRESS;
-		}
+            return true;
+        }
 
-		glm::ivec2 GetMousePosition( ) override
-		{
-			double x, y;
+        bool IsKeyDown( int key ) override
+        {
+            assert( key >= 0 && GLFW_KEY_LAST > key );
 
-			glfwGetCursorPos( Window::Internal::GetWindowPointer( ), &x, &y );
+            return m_KeyStates[ key ] == GLFW_PRESS;
+        }
 
-			// The returned cursor position should always be relative to the game output, so if the viewport position
-			// has been changed, like for instance in the editor, we'll have to account for that.
-			const auto viewport = Pine::DebugOverlay->GetViewport( );
+        bool IsKeyPressed( int key ) override
+        {
+            assert( key >= 0 && GLFW_KEY_LAST > key );
 
-			x -= viewport.x;
-			y -= viewport.y;
+            return m_KeyStates[ key ] == GLFW_PRESS && m_KeyStatesOld[ key ] == GLFW_RELEASE;
+        }
 
-			return glm::ivec2( x, y );
-		}
+        bool IsKeyReleased( int key ) override
+        {
+            assert( key >= 0 && GLFW_KEY_LAST > key );
 
-		glm::ivec2 GetMouseDelta( ) override
-		{
-			return m_MouseDelta;
-		}
+            return m_KeyStates[ key ] == GLFW_RELEASE && m_KeyStatesOld[ key ] == GLFW_PRESS;
+        }
 
-	};
+        bool IsWindowFocused( ) override
+        {
+            return g_WindowIsFocused;
+        }
 
-	IInputSystem* CreateInputSystemInterface( )
-	{
-		return new CInputSystem( );
-	}
+        glm::ivec2 GetMousePosition( ) override
+        {
+            double x, y;
+
+            glfwGetCursorPos( Window::Internal::GetWindowPointer( ), &x, &y );
+
+            // The returned cursor position should always be relative to the game output, so if the viewport position
+            // has been changed, like for instance in the editor, we'll have to account for that.
+            const auto viewport = Pine::DebugOverlay->GetViewport( );
+
+            x -= viewport.x;
+            y -= viewport.y;
+
+            return glm::ivec2( x, y );
+        }
+
+        glm::ivec2 GetMouseDelta( ) override
+        {
+            return m_MouseDelta;
+        }
+
+    };
+
+    IInputSystem* CreateInputSystemInterface( )
+    {
+        return new CInputSystem( );
+    }
 
 }
 
 Pine::InputBinding::InputBinding( const std::string& name )
 {
-	m_Name = name;
+    m_Name = name;
 }
 
 void Pine::InputBinding::AddKeyboardBinding( const int key, const float value )
 {
-	auto binding = std::make_unique< KeyboardBinding_t >( );
+    auto binding = std::make_unique<KeyboardBinding_t>( );
 
-	binding->Key = key;
-	binding->ActivationValue = value;
+    binding->Key = key;
+    binding->ActivationValue = value;
 
-	m_KeyboardBindings.push_back( std::move( binding ) );
+    m_KeyboardBindings.push_back( std::move( binding ) );
 }
 
 void Pine::InputBinding::AddAxisBinding( const Axis axis, const float sensitivity )
 {
-	auto binding = std::make_unique< AxisBinding_t >( );
+    auto binding = std::make_unique<AxisBinding_t>( );
 
-	binding->Axis = axis;
-	binding->Sensitivity = sensitivity;
+    binding->Axis = axis;
+    binding->Sensitivity = sensitivity;
 
-	m_AxisBindings.push_back( std::move( binding ) );
+    m_AxisBindings.push_back( std::move( binding ) );
 }
 
 void Pine::InputBinding::DeleteKeyboardBinding( const int i )
 {
-	m_KeyboardBindings.erase( m_KeyboardBindings.begin( ) + i );
+    m_KeyboardBindings.erase( m_KeyboardBindings.begin( ) + i );
 }
 
 void Pine::InputBinding::DeleteAxisBinding( const int i )
 {
-	m_AxisBindings.erase( m_AxisBindings.begin( ) + i );
+    m_AxisBindings.erase( m_AxisBindings.begin( ) + i );
 }
 
 std::string& Pine::InputBinding::Name( )
 {
-	return m_Name;
+    return m_Name;
 }
 
 float& Pine::InputBinding::Value( )
 {
-	return m_Value;
+    return m_Value;
 }
 
 const std::vector<std::unique_ptr<Pine::KeyboardBinding_t>>& Pine::InputBinding::GetKeyboardBindings( )
 {
-	return m_KeyboardBindings;
+    return m_KeyboardBindings;
 }
 
 const std::vector<std::unique_ptr<Pine::AxisBinding_t>>& Pine::InputBinding::GetAxisBindings( )
 {
-	return m_AxisBindings;
+    return m_AxisBindings;
 }

@@ -11,6 +11,11 @@ PicturePanel.cpp
 build_run.bat
 build.bat
 
+cmake-build-debug/
+.idea/
+.vscode/
+
+
 # User-specific files
 *.rsuser
 *.suo

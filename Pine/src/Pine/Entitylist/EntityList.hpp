@@ -13,20 +13,21 @@ namespace Pine
 		virtual Entity* CreateEntity( ) = 0;
 		virtual Entity* CreateEntity( const std::string& name ) = 0;
 
-		virtual void ClearEntities( bool temp = false ) = 0;
-		virtual	bool DeleteEntity( Entity* entity ) = 0;
+        virtual int GetEntityCount() = 0;
+        virtual Entity* GetEntity( const int index ) = 0;
 
-		virtual void MoveEntity( Entity* entity, int newPosition ) = 0;
+        virtual Entity* FindEntity( const std::string& name ) = 0;
 
-		virtual void RunOnSetup( ) = 0;
-		virtual void RunOnUpdate( float deltaTime ) = 0;
+        virtual void ClearEntities( bool temp = false ) = 0;
+        virtual	bool DeleteEntity( Entity* entity ) = 0;
 
-		virtual const std::vector<Entity>& GetEntities( ) = 0;
+        virtual const std::vector<Entity*>& GetEntities( ) = 0;
 
-		virtual Entity* FindEntity( const std::string& name ) = 0;
+        virtual void RunOnSetup( ) = 0;
+        virtual void RunOnUpdate( float deltaTime ) = 0;
 
-		virtual Entity* GetEntity( const int index ) = 0;
+        virtual void Update( ) = 0;
 
-	};
+    };
 
 }
