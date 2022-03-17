@@ -39,6 +39,7 @@ namespace Pine
 		const glm::vec3& GetUp( ) const;
 
         glm::vec3 GetPositionSum( ) const;
+        glm::vec3 GetRotationSum( ) const;
 
 		glm::vec3 Position = glm::vec3( 0.f, 0.f, 0.f );
 		glm::vec3 Rotation = glm::vec3( 0.f, 0.f, 0.f );

@@ -144,3 +144,15 @@ glm::vec3 Pine::Transform::GetPositionSum() const
 
     return pos;
 }
+
+glm::vec3 Pine::Transform::GetRotationSum( ) const
+{
+    glm::vec3 rot = Rotation;
+
+    if (m_Parent->GetParent() != nullptr)
+    {
+        rot += m_Parent->GetParent()->GetTransform()->GetRotationSum();
+    }
+
+    return rot;
+}

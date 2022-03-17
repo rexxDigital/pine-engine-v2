@@ -19,9 +19,10 @@ void Pine::Camera::BuildProjectionMatrix( )
 void Pine::Camera::BuildViewMatrix( )
 {
 	const auto transform = m_Parent->GetTransform( );
+    const auto rotation = transform->GetRotationSum( );
 
-	const float verticalAngle = glm::radians( transform->Rotation.x );
-	const float horizontalAngle = glm::radians( transform->Rotation.y );
+	const float verticalAngle = glm::radians( rotation.x );
+	const float horizontalAngle = glm::radians( rotation.y );
 
 	const glm::vec3 direction(
 		std::cos( verticalAngle ) * std::sin( horizontalAngle ),
