@@ -35,10 +35,20 @@ void Pine::Collider3D::UpdateBody( )
 		if ( !m_CollisionBody )
 		{
 			m_CollisionBody = PhysicsManager->GetPhysicsWorld( )->createCollisionBody( m_CollisionBodyTransform );
-		}
+
+            const auto transform = GetParent( )->GetTransform( );
+            const auto rotQuat = glm::quat( transform->Rotation );
+
+            m_CollisionBodyTransform.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
+            m_CollisionBodyTransform.setOrientation( reactphysics3d::Quaternion( rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w ) );
+
+            m_CollisionBody->setTransform( m_CollisionBodyTransform );
+        }
 
 		if ( !m_Collider && m_Shape )
 		{
+            m_CollisionTransform.setToIdentity();
+
 			m_Collider = m_CollisionBody->addCollider( m_Shape, m_CollisionTransform );
 		}
 	}
@@ -235,14 +245,14 @@ void Pine::Collider3D::OnDestroyed( )
 {
 //	Log->Warning( "Collider3D::OnDestroyed( ) -> (" + m_Parent->GetName(  ) + ")" );
 
-	//const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
-	//if ( rigidBody )
-	//{
-	//	if ( rigidBody->IsColliderAttatched( this ) )
-	//	{
-	//		rigidBody->DetachCollider( );
-	//	}
-	//}
+	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
+	if ( rigidBody )
+	{
+		if ( rigidBody->IsColliderAttatched( this ) )
+		{
+	    	rigidBody->DetachCollider( );
+		}
+	}
 
 	if ( m_CollisionBody )
 	{
@@ -267,20 +277,16 @@ void Pine::Collider3D::OnPrePhysicsUpdate( )
 		return;
 	}
 
-	if ( m_CollisionBody )
+	if ( m_CollisionBody && !m_Parent->GetStatic( ) )
 	{
-		const auto transform = GetParent( )->GetTransform( );
-		const auto rotQuat = glm::quat( transform->Rotation );
+        const auto transform = GetParent( )->GetTransform( );
+        const auto rotQuat = glm::quat( transform->Rotation );
 
-		reactphysics3d::Transform tr;
+        m_CollisionBodyTransform.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
+        m_CollisionBodyTransform.setOrientation( reactphysics3d::Quaternion( rotQuat.x, rotQuat.y, rotQuat.z, rotQuat.w ) );
 
-		const auto rotRadians = glm::radians( transform->Rotation );
-
-		tr.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
-		tr.setOrientation( reactphysics3d::Quaternion::fromEulerAngles( reactphysics3d::Vector3( rotRadians.x, rotRadians.y, rotRadians.z ) ) );
-
-		m_CollisionBody->setTransform( tr );
-	}
+        m_CollisionBody->setTransform( m_CollisionBodyTransform );
+    }
 }
 
 void Pine::Collider3D::OnSetup( )

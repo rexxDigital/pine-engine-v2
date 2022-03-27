@@ -14,7 +14,7 @@ void WorldController::OnSetup( )
     auto treeBlueprint = Pine::Assets->GetAsset<Pine::Blueprint>( "Projects\\Debug\\Blueprints\\Tree.bpt" );
     if ( treeBlueprint )
     {
-        constexpr int treeAmount = 64;
+        constexpr int treeAmount = 256;
 
         srand( time( NULL ) );
 

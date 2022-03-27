@@ -103,9 +103,9 @@ namespace Pine
 			RegisterComponent( new Light( ), sizeof( Light ), "Light" );
 			RegisterComponent( new NativeScript( ), sizeof( NativeScript ), "Native Script" );
 			RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
-            RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 			RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
-		}
+            RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
+        }
 
 	public:
 
@@ -314,7 +314,7 @@ namespace Pine
 			return false;
 		}
 
-		IComponent* CopyComponent( const Pine::IComponent* inputComponent, bool standalone ) override
+		IComponent* CopyComponent( const Pine::IComponent* inputComponent, Pine::Entity* newParent, bool standalone ) override
 		{
 			Log->Debug( "Pine::Components->CopyComponent( ): standalone -> " + std::to_string( standalone ) );
 
@@ -362,6 +362,7 @@ namespace Pine
 
 			memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
 
+            component->SetParent( newParent );
 			component->SetStandalone( standalone );
 
 			component->OnCopied( inputComponent );

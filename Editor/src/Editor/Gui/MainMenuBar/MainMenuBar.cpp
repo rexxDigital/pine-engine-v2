@@ -112,6 +112,7 @@ void Editor::Gui::MainMenuBar::Render( )
 			{
 				ImGui::MenuItem( "Rendering Context", nullptr, &Windows::ShowRenderingContext );
 				ImGui::MenuItem( "Components System", nullptr, &Windows::ShowComponentsSys );
+				ImGui::MenuItem( "Physics Profiler", nullptr, &Windows::ShowPhysicsProfiler );
 
 				ImGui::EndMenu( );
 			}

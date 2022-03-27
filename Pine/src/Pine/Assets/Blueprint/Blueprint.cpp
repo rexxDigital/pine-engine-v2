@@ -24,6 +24,7 @@ namespace
 	{
 		j[ "name" ] = e->GetName( );
 		j[ "active" ] = e->GetActive( );
+		j[ "static" ] = e->GetStatic( );
 
 		// Save components
 		int componentId = 0;
@@ -59,6 +60,9 @@ namespace
 		e->SetName( j[ "name" ] );
 		e->SetActive( j[ "active" ] );
 
+        if ( j.contains( "static" ) )
+		    e->SetStatic( j[ "static" ] );
+
 		// Load components
 		for ( auto componentJson : j[ "components" ] )
 		{
@@ -92,11 +96,12 @@ void Pine::Blueprint::CopyEntity( Pine::Entity* target, const Pine::Entity* enti
 {
 	target->SetName( entity->GetName( ) );
 	target->SetActive( entity->GetActive( ) );
+	target->SetStatic( entity->GetStatic( ) );
 
 	// Copy components
 	for ( const auto component : entity->GetComponents( ) )
 	{
-		target->AddComponent( Components->CopyComponent( component, !createInstance ) );
+		target->AddComponent( Components->CopyComponent( component, target, !createInstance ) );
 	}
 
 	// Copy children

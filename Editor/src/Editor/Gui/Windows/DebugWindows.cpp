@@ -2,6 +2,7 @@
 #include <Pine\Rendering\RenderManager\RenderManager.hpp>
 #include <Pine\Entity\Entity.hpp>
 #include <Pine/Components/Components.hpp>
+#include <Pine/PhysicsManager/PhysicsManager.hpp>
 
 #include "../Widgets/Widgets.hpp"
 
@@ -52,6 +53,23 @@ namespace {
         ImGui::End();
     }
 
+    void RenderPhysicsProfiler( )
+    {
+        if ( ImGui::Begin( "Physics Profiler", &Windows::ShowPhysicsProfiler, 0 ) ) {
+
+            ImGui::Text("Pre physics update: %f", Pine::PhysicsManager->GetPrePhysicsTime());
+            ImGui::Text("Physics update: %f", Pine::PhysicsManager->GetPhysicsProcessTime());
+            ImGui::Text("Post physics update: %f", Pine::PhysicsManager->GetPostPhysicsTime());
+
+            const auto world = Pine::PhysicsManager->GetPhysicsWorld();
+
+            ImGui::Text("Rigid bodies: %d", world->getNbRigidBodies());
+            ImGui::Text("Collision bodies: %d", world->getNbCollisionBodies());
+            ImGui::Text("Debug rendering: %d", world->getIsDebugRenderingEnabled());
+        }
+        ImGui::End();
+    }
+
 }
 
 void Windows::RenderDebugWindows( ) {
@@ -62,6 +80,10 @@ void Windows::RenderDebugWindows( ) {
 
     if ( Windows::ShowComponentsSys ) {
         RenderComponentsSystem( );
+    }
+
+    if ( Windows::ShowPhysicsProfiler ) {
+        RenderPhysicsProfiler( );
     }
 
 }

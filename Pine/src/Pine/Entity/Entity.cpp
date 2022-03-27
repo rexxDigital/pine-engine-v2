@@ -30,9 +30,11 @@ Pine::Entity::~Entity( )
 {
 	Log->Debug( "Pine::Entity::~Entity( ): Removing entity " + m_Name );
 
-	for ( const auto component : m_Components )
+	for ( auto& component : m_Components )
 	{
 		Components->DeleteComponent( component );
+
+        component = nullptr;
 	}
 
 	// TODO: How are we going to handle this? Remove children?
@@ -241,4 +243,14 @@ void Pine::Entity::ClearComponents( )
 	}
 
 	m_Components.clear( );
+}
+
+bool Pine::Entity::GetStatic( ) const
+{
+    return m_Static;
+}
+
+void Pine::Entity::SetStatic( bool value )
+{
+    m_Static = value;
 }

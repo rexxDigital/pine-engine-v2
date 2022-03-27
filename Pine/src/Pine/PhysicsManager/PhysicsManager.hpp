@@ -16,6 +16,11 @@ namespace Pine
 		// This is the main physics world used by all the entities.
 		virtual reactphysics3d::PhysicsWorld* GetPhysicsWorld( ) = 0;
 
+        // Performance wrappers
+        virtual double GetPrePhysicsTime( ) = 0;
+        virtual double GetPhysicsProcessTime( ) = 0;
+        virtual double GetPostPhysicsTime( ) = 0;
+
 		// These are quick wrappers for creating and destroying stuff within the physics library,
 		// they are used so we can more easily keep track of allocations.
 

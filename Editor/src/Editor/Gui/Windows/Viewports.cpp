@@ -274,7 +274,7 @@ void Editor::Gui::Windows::RenderViewports( )
             if ( Pine::RenderManager->GetRenderingContext( )->m_Camera != nullptr )
             {
                 ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
-                              avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+                              avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
 
                 bool viewportClicked = false;
 
@@ -345,7 +345,7 @@ void Editor::Gui::Windows::RenderViewports( )
             ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
             ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
-                          avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
+                          avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
 
             char buff[32];
             sprintf_s( buff, "FPS: %d", Pine::GetFPS( ) );

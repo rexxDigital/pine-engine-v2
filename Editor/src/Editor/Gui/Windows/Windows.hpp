@@ -15,6 +15,7 @@ namespace Editor::Gui::Windows {
 	// Debug
 	inline bool ShowRenderingContext = false;
     inline bool ShowComponentsSys = false;
+    inline bool ShowPhysicsProfiler = false;
 
 	void RenderEntitylist( );
 

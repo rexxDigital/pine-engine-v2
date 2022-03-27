@@ -13,6 +13,7 @@ namespace Pine
 	{
 	private:
 		bool m_Active = true;
+        bool m_Static = false;
 
 		// Temporary might be a bad name, used for example editor entities.
 		// So stuff that won't get saved by levels etc.
@@ -37,6 +38,9 @@ namespace Pine
 		bool GetActive( ) const;
 		void SetActive( bool value );
 
+        bool GetStatic( ) const;
+        void SetStatic( bool value );
+
 		void SetEntityIndex( int indx );
         int GetEntityIndex( ) const;
 
@@ -53,7 +57,7 @@ namespace Pine
 		{
 			for ( auto component : m_Components )
 			{
-				if ( typeid( T ) == typeid( *component ) ) // god bless RTTI
+				if ( component && typeid( T ) == typeid( *component ) ) // god bless RTTI
 				{
 					return reinterpret_cast< T* >( component );
 				}

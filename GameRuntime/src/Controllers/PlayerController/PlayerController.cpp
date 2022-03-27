@@ -31,7 +31,6 @@ void PlayerController::OnSetup( )
     Pine::Input->SetCursorAutoCenter( true );
     Pine::Input->SetCursorVisible( false );
 
-
     // "Cache" the camera entity
     m_CameraEntity = m_Parent->GetChildren()[0];
 }

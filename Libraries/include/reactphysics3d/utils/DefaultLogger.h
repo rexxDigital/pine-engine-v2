@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2020 Daniel Chappuis                                       *
+* Copyright (c) 2010-2022 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -28,7 +28,7 @@
 
 // Libraries
 #include <reactphysics3d/utils/Logger.h>
-#include <reactphysics3d/containers/List.h>
+#include <reactphysics3d/containers/Array.h>
 #include <reactphysics3d/containers/Map.h>
 #include <string>
 #include <iostream>
@@ -106,7 +106,7 @@ class DefaultLogger : public Logger {
                     std::stringstream ss;
                     ss << "ReactPhysics3D Logs" << std::endl;
                     ss << "ReactPhysics3D Version: " << RP3D_VERSION << std::endl;
-                    ss << "Date: " << "yep" << std::endl;
+                    ss << "Date: " << std::put_time(std::localtime(&time), "%Y-%m-%d") << std::endl;
                     ss << "---------------------------------------------------------" << std::endl;
 
                     return ss.str();
@@ -118,7 +118,7 @@ class DefaultLogger : public Logger {
                     std::stringstream ss;
 
                     // Time
-                    ss << "yep" << " ";
+                    ss << std::put_time(std::localtime(&time), "%X") << " ";
 
                     // World
                     ss << "World:" << physicsWorldName << std::endl;
@@ -164,7 +164,7 @@ class DefaultLogger : public Logger {
                     ss << "<h1>ReactPhysics3D Logs</h1>" << std::endl;
                     ss << "<div class='general_info'>" << std::endl;
                     ss << "<p>ReactPhysics3D version: " << RP3D_VERSION << "</p>" << std::endl;
-                    ss << "<p>Date: " << "yep" << "</p>" << std::endl;
+                    ss << "<p>Date: " << std::put_time(std::localtime(&time), "%Y-%m-%d") << "</p>" << std::endl;
                     ss << "</div>" << std::endl;
                     ss << "<hr>";
 
@@ -279,7 +279,7 @@ class DefaultLogger : public Logger {
 
                     // Time
                     ss << "<div class='time'>";
-                    ss << "yep";
+                    ss << std::put_time(std::localtime(&time), "%X");
                     ss << "</div>";
 
                     // Message
@@ -364,14 +364,14 @@ class DefaultLogger : public Logger {
                         throw(std::runtime_error("ReactPhysics3D Logger: Unable to open an output stream to file " + mFilePath));
                     }
 
-                    // Writer the head
+                    // Write the header
                     mFileStream << formatter->getHeader() << std::endl;
                 }
 
                 /// Destructor
                 virtual ~FileDestination() override {
 
-                    // Writer the tail
+                    // Write the tail
                     mFileStream << formatter->getTail() << std::endl;
 
                     if (mFileStream.is_open()) {
@@ -386,7 +386,7 @@ class DefaultLogger : public Logger {
                                    const char* filename, int lineNumber) override {
 
                     if (static_cast<int>(level) <= static_cast<int>(maxLevelFlag)) {
-                        mFileStream << formatter->format(time, physicsWorldName, message, level, category, filename, lineNumber) << std::endl << std::flush;
+                        mFileStream << formatter->format(time, physicsWorldName, message, level, category, filename, lineNumber) << std::endl;
                     }
                 }
 
@@ -445,7 +445,7 @@ class DefaultLogger : public Logger {
         MemoryAllocator& mAllocator;
 
         /// All the log destinations
-        List<Destination*> mDestinations;
+        Array<Destination*> mDestinations;
 
         /// Map a log format to the given formatter object
         Map<Format, Formatter*> mFormatters;

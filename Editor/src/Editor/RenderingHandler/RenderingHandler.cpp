@@ -216,7 +216,7 @@ namespace
 void Editor::RenderingHandler::Setup( )
 {
 	g_RenderingFrameBuffer = new Pine::FrameBuffer( );
-	g_RenderingFrameBuffer->Create( 1600, 900 );
+	g_RenderingFrameBuffer->Create( 1920, 1080 );
 
 	Pine::RenderManager->GetRenderingContext( )->m_FrameBuffer = g_RenderingFrameBuffer;
 
@@ -238,6 +238,6 @@ Pine::FrameBuffer* Editor::RenderingHandler::GetFrameBuffer( )
 
 void Editor::RenderingHandler::SetViewportSize( const int w, const int h )
 {
-	Pine::RenderManager->GetRenderingContext( )->m_Width = w;
-	Pine::RenderManager->GetRenderingContext( )->m_Height = h;
+	//Pine::RenderManager->GetRenderingContext( )->m_Width = w;
+	//Pine::RenderManager->GetRenderingContext( )->m_Height = h;
 }

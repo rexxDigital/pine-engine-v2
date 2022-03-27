@@ -20,7 +20,7 @@ namespace Pine
 
 		// Manage components
 		virtual IComponent* CreateComponent( ComponentType type, bool standalone = false ) = 0;
-		virtual IComponent* CopyComponent( const IComponent* component, bool standalone ) = 0;
+		virtual IComponent* CopyComponent( const IComponent* component, Pine::Entity* newParent, bool standalone ) = 0;
 		virtual bool DeleteComponent( IComponent* component ) = 0;
 
 		// If you would like to register your own component, that's (NOT RIGHT NOW SORRY!) possible.

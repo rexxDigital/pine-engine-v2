@@ -15,7 +15,7 @@ int main()
     Pine::RuntimeLoader->LoadModule("Debug\\GameRuntime.dll");
     Pine::GameManager::Load( "Projects\\Debug\\game.asset" );
 
-    Pine::Window::SetSize(1920, 1080);
+   // Pine::Window::SetSize(1920, 1080);
     Pine::Window::SetPosition(0, 0);
 
     Pine::Run();

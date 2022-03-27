@@ -32,6 +32,8 @@ namespace Pine
 		Pine::Collider3D* m_Collider3D = nullptr;
 
 		void UpdateColliders( );
+
+        void UpdateRigidbodyProperties( );
 	public:
 		RigidBody( );
 

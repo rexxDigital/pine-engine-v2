@@ -30,7 +30,16 @@ void DisplayEntityProperties( Pine::Entity* e )
 		e->SetName( nameBuffer );
 	}
 
-	ImGui::Spacing( );
+    ImGui::SameLine( );
+
+    bool isStatic = e->GetStatic( );
+
+    if ( ImGui::Checkbox( std::string( "Static##" + std::to_string( e->GetId( ) ) ).c_str( ), &isStatic ) )
+    {
+        e->SetStatic( isStatic );
+    }
+
+    ImGui::Spacing( );
 	ImGui::Separator( );
 	ImGui::Spacing( );
 
@@ -190,9 +199,7 @@ void DisplayAddComponentPopup( )
 		{
 			if ( Editor::Gui::Globals::SelectedItem == Editor::Gui::SelectedItemType::Entity && !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
 			{
-				const auto comp = Pine::Components->CreateComponent( displayComponentsType[ selectedItem ] );
-				if ( comp != nullptr )
-					Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->AddComponent( comp );
+                Editor::Gui::Globals::SelectedEntityPtrs[ 0 ]->AddComponent( displayComponentsType[ selectedItem ] );
 			}
 
 			ImGui::CloseCurrentPopup( );
