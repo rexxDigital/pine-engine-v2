@@ -30,7 +30,7 @@ namespace Pine
 	class IAssets : public IInterface
 	{
 	public:
-		// Loads a asset file from the disk
+		// Loads an asset file from the disk
 		// Uses the file extension to determine asset type
 		// Returns nullptr on failure.
 		virtual IAsset* LoadFromFile( const std::string& filePath, bool readOnly = false ) = 0;

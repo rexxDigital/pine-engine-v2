@@ -5,7 +5,7 @@ namespace Pine
 {
 
     // The initial amount of entity slots available.
-    constexpr int NrEntitySlots = 512;
+    constexpr int NrEntitySlots = 1024;
 
 	class CEntityList : public IEntityList
 	{

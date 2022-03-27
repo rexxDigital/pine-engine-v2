@@ -46,10 +46,10 @@ void Editor::ProjectManager::Setup( )
 {
     for ( const auto& dirEntry: std::filesystem::directory_iterator( "Projects" ))
     {
-        if ( !dirEntry.is_directory( ))
+        if ( !dirEntry.is_directory( ) )
             continue;
 
-        g_AvailableProjects.push_back( dirEntry.path( ).string( ));
+        g_AvailableProjects.push_back( dirEntry.path( ).string( ) );
     }
 }
 
@@ -126,23 +126,6 @@ void Editor::ProjectManager::Update( )
     {
         return;
     }
-
-    // Auto reload assets
-
-
-    //// Auto reload project runtime
-    //const auto runtimePath = g_CurrentProject + "\\GameRuntime.dll";
-
-    //if ( !g_ProjectRuntime )
-    //{
-    //	ReloadRuntimeLibrary( runtimePath );
-    //	return;
-    //}
-
-    //if ( std::filesystem::last_write_time( runtimePath ).time_since_epoch( ) != g_LastProjectRuntimeWriteTime )
-    //{
-    //	ReloadRuntimeLibrary( runtimePath );
-    //}
 }
 
 void Editor::ProjectManager::CreateProject( const std::string& directory )

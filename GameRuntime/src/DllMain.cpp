@@ -10,11 +10,12 @@
 
 extern "C" {
 
-	bool __declspec( dllexport ) __stdcall ModuleInitialize( Pine::ModuleHandle* handle, const Pine::PineInstance* pineInstance ) {
+	bool __declspec( dllexport ) __stdcall ModuleInitialize( Pine::ModuleHandle* handle, const Pine::PineInstance* pineInstance )
+    {
 		UseInstance( pineInstance );
 
 		handle->RegisterNativeScript("WorldController", sizeof( WorldController ), [ ] { return new WorldController( ); } );
-		handle->RegisterNativeScript( "PlayerController", sizeof( PlayerController ), [ ] { return new PlayerController( ); } );
+		handle->RegisterNativeScript("PlayerController", sizeof( PlayerController ), [ ] { return new PlayerController( ); } );
 
 		return true;
 	}

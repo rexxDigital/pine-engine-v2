@@ -9,7 +9,7 @@ Pine::ModelRenderer::ModelRenderer( )
 
 Pine::Model* Pine::ModelRenderer::GetModel( ) const
 {
-	return m_Model;
+	return m_Model.Get( );
 }
 
 void Pine::ModelRenderer::SetModel( Model* mdl )
@@ -19,7 +19,7 @@ void Pine::ModelRenderer::SetModel( Model* mdl )
 
 Pine::Material* Pine::ModelRenderer::GetMaterialOverride( ) const
 {
-	return m_MaterialOverride;
+	return m_MaterialOverride.Get( );
 }
 
 void Pine::ModelRenderer::SetMaterialOverride( Material* mat )
@@ -57,8 +57,8 @@ void Pine::ModelRenderer::OnRender( )
 
 void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
 {
-	Serialization::SaveAsset( j[ "model" ], m_Model );
-	Serialization::SaveAsset( j[ "matOverride" ], m_MaterialOverride );
+	Serialization::SaveAsset( j[ "model" ], m_Model.Get( ) );
+	Serialization::SaveAsset( j[ "matOverride" ], m_MaterialOverride.Get( ) );
 }
 
 void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )

@@ -9,6 +9,7 @@
 
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
 #include "Editor/RuntimeManager/RuntimeManager.hpp"
+#include "Pine/GameManager/GameManager.hpp"
 
 using namespace Editor::Gui;
 
@@ -80,6 +81,53 @@ void Windows::RenderSettings( )
 
 				ImGui::EndTabItem( );
 			}
+
+            if ( ImGui::BeginTabItem( "Game Settings" ) )
+            {
+                const auto properties = Pine::GameManager::GetProperties( );
+
+                char gameName[128];
+                char startupLevel[128];
+
+                strcpy_s(gameName, properties->Name.c_str());
+                strcpy_s(startupLevel, properties->StartupLevel.c_str());
+
+                ImGui::Text("Name");
+
+                if ( ImGui::InputText( "##GameName", gameName, 128 ) )
+                {
+                    properties->Name = gameName;
+                }
+
+                ImGui::Text("Version");
+
+                ImGui::InputInt("##Version", &properties->Version);
+
+                ImGui::Text("Startup level");
+                if ( ImGui::InputText( "##StartupLevel", startupLevel, 128 ) )
+                {
+                    properties->StartupLevel = startupLevel;
+                }
+
+                ImGui::SameLine();
+
+                if (ImGui::Button("Set Current"))
+                {
+                    if (Editor::ProjectManager::GetCurrentLevel())
+                        properties->StartupLevel = Editor::ProjectManager::GetCurrentLevel()->GetPath().string();
+                }
+
+                ImGui::Spacing();
+                ImGui::Spacing();
+                ImGui::Spacing();
+
+                if (ImGui::Button("Save"))
+                {
+                    Pine::GameManager::Save(Editor::ProjectManager::GetCurrentProjectDirectory() + "\\game.asset");
+                }
+
+                ImGui::EndTabItem( );
+            }
 
 
 			ImGui::EndTabBar( );

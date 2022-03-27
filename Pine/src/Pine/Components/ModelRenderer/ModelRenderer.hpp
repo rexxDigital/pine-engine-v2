@@ -8,8 +8,8 @@ namespace Pine
 	class ModelRenderer : public IComponent
 	{
 	private:
-		Model* m_Model = nullptr;
-		Material* m_MaterialOverride = nullptr;
+		AssetContainer<Model*> m_Model;
+		AssetContainer<Material*> m_MaterialOverride;
 
 		bool m_OverrideStencilBuffer = false;
 		std::uint8_t m_StencilBufferMask = 0x00;

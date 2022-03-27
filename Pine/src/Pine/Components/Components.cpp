@@ -103,8 +103,8 @@ namespace Pine
 			RegisterComponent( new Light( ), sizeof( Light ), "Light" );
 			RegisterComponent( new NativeScript( ), sizeof( NativeScript ), "Native Script" );
 			RegisterComponent( new TerrainRenderer( ), sizeof( TerrainRenderer ), "Terrain Renderer" );
+            RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 			RegisterComponent( new Collider3D( ), sizeof( Collider3D ), "Collider3D" );
-			RegisterComponent( new RigidBody( ), sizeof( RigidBody ), "Rigid Body" );
 		}
 
 	public:
@@ -304,7 +304,7 @@ namespace Pine
 
 				if ( componentPtr == inputComponent )
 				{
-					// Just mark it as invalid and it will probably get overwritten sooner or later.
+					// Just mark it as invalid, and it will probably get overwritten sooner or later.
 					comp->m_DataValid[ i ] = false;
 
 					return true;
@@ -357,7 +357,7 @@ namespace Pine
 			}
 
 			// By doing a simple memory copy we'll obviously only copy all the data within the component object itself only, including
-			// pointers and such to other objects, but this means it won't copy the the data within the pointers, and will probably cause issues
+			// pointers and such to other objects, but this means it won't copy the data within the pointers, and will probably cause issues
 			// for example the physics library.
 
 			memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
@@ -382,7 +382,7 @@ namespace Pine
 			{
 				component->SetStandalone( false );
 
-				ResizeData( &comp, componentSize, 512 ); // By default make space for 256 components
+				ResizeData( &comp, componentSize, 1024 ); // By default make space for 256 components
 			}
 
 			g_Components.push_back( comp );

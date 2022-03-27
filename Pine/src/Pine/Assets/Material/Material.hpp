@@ -29,11 +29,11 @@ namespace Pine
 		glm::vec3 m_SpecularColor = glm::vec3( 0.f, 0.f, 0.f );
 		glm::vec3 m_AmbientColor = glm::vec3( 0.5f, 0.5f, 0.5f );
 
-		Texture2D* m_Diffuse = nullptr;
-		Texture2D* m_Specular = nullptr;
-		Texture2D* m_Normal = nullptr;
+        AssetContainer<Texture2D*> m_Diffuse;
+        AssetContainer<Texture2D*> m_Specular;
+        AssetContainer<Texture2D*> m_Normal;
 
-		Shader* m_Shader = nullptr;
+		AssetContainer<Shader*> m_Shader;
 
 		MatRenderingMode m_RenderingMode = MatRenderingMode::Opaque;
 

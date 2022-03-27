@@ -12,6 +12,7 @@
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Core/Log/Log.hpp"
 #include "Editor/RuntimeManager/RuntimeManager.hpp"
+#include "Pine/GameManager/GameManager.hpp"
 
 void UpdateAssetCache( );
 
@@ -42,6 +43,14 @@ void Editor::Setup( )
     RenderingHandler::Setup( );
 
     Pine::SetAllowUpdates( false );
+
+    if (ProjectManager::HasProjectOpen())
+    {
+        if (std::filesystem::exists(Editor::ProjectManager::GetCurrentProjectDirectory() + "\\game.asset"))
+        {
+            Pine::GameManager::Load(Editor::ProjectManager::GetCurrentProjectDirectory() + "\\game.asset");
+        }
+    }
 
     Pine::Log->Message( "Ready." );
 

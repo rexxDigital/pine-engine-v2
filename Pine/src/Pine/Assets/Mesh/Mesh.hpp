@@ -20,7 +20,7 @@ namespace Pine
 	class Mesh
 	{
 	private:
-		Material* m_Material = nullptr;
+		AssetContainer<Material*> m_Material;
 		Model* m_ParentModel = nullptr;
 
 		std::unique_ptr<VertexArray> m_VertexArray = nullptr;

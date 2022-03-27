@@ -21,8 +21,8 @@ namespace Pine
 	private:
 		std::unordered_map<std::string, Pine::IAsset*> m_Assets;
 
-		// I kind of dislike this, but whatever.
-		std::vector<Pine::IAsset*> m_DestroyedAssets;
+        // This is the asset object we point each deleted asset to, allowing the asset container to invalidate itself next retrieval
+        IAsset* m_DeletedAsset = nullptr;
 
 		// This is written to translate file extensions to loaded asset objects in memory.
 
@@ -236,6 +236,9 @@ namespace Pine
 		void Setup( ) override
 		{
 			CreateAssetFactories( );
+
+            m_DeletedAsset = new InvalidAsset( );
+            m_DeletedAsset->SetDeleted( true );
 		}
 
 		void Dispose( ) override
@@ -265,23 +268,6 @@ namespace Pine
 			}
 		}
 
-		bool DisposeAsset( const std::string& assetPath ) override
-		{
-			if ( m_Assets.count( assetPath ) == 0 )
-				return false;
-
-			const auto asset = m_Assets[ assetPath ];
-
-			asset->Dispose( );
-
-			delete asset;
-
-			m_Assets.erase( assetPath );
-			m_DestroyedAssets.push_back( asset );
-
-			return true;
-		}
-
 		bool DisposeAsset( IAsset* asset ) override
 		{
 			if ( !asset )
@@ -291,13 +277,17 @@ namespace Pine
 
 			asset->Dispose( );
 			
-			delete asset;
+			asset->SetDeleted( true );
 
-			m_Assets.erase( path );
-			m_DestroyedAssets.push_back( asset );
+            m_Assets.erase( path );
 
 			return true;
 		}
+
+        bool DisposeAsset( const std::string& assetPath ) override
+        {
+            return DisposeAsset( GetAsset( assetPath ) );
+        }
 
 		const std::unordered_map<std::string, IAsset*>& GetAssets( ) override
 		{

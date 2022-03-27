@@ -19,16 +19,10 @@ namespace
 
 using namespace Editor::Gui;
 
-class EditorEntityScript final : public Pine::IComponent
+class EditorEntityScript : public Pine::IComponent
 {
 private:
 	bool m_IsMovingCamera = false;
-
-	Pine::InputBinding* m_Pitch = nullptr;
-	Pine::InputBinding* m_Yaw = nullptr;
-
-	Pine::InputBinding* m_Forward = nullptr;
-	Pine::InputBinding* m_Sideways = nullptr;
 public:
 
 	void OnSetup( ) override
@@ -37,19 +31,6 @@ public:
 
 	void OnCreated( ) override
 	{
-		m_Pitch = Pine::Input->CreateBinding( "Pitch" );
-		m_Pitch->AddAxisBinding( Pine::Axis::MouseY, 0.15f );
-
-		m_Yaw = Pine::Input->CreateBinding( "Yaw" );
-		m_Yaw->AddAxisBinding( Pine::Axis::MouseX, 0.15f );
-
-		m_Forward = Pine::Input->CreateBinding( "Forward" );
-		m_Forward->AddKeyboardBinding( GLFW_KEY_W, 1.f );
-		m_Forward->AddKeyboardBinding( GLFW_KEY_S, -1.f );
-
-		m_Sideways = Pine::Input->CreateBinding( "Sideways" );
-		m_Sideways->AddKeyboardBinding( GLFW_KEY_D, 1.f );
-		m_Sideways->AddKeyboardBinding( GLFW_KEY_A, -1.f );
 	}
 
 	void OnRender( ) override
@@ -70,13 +51,25 @@ public:
 			if ( !ImGui::IsMouseDown( ImGuiMouseButton_Right ) )
 				m_IsMovingCamera = false;
 
-			const auto pitch = m_Pitch->Value( );
-			const auto yaw = m_Yaw->Value( );
+            const auto mouseDelta = Pine::Input->GetMouseDelta( );
+
+			const auto pitch = mouseDelta.y * 0.15f;
+			const auto yaw = mouseDelta.x * 0.15f;
 
 			GetParent( )->GetTransform( )->Rotation += glm::vec3( pitch, yaw, 0.f );
 
-			const auto forwardMove = m_Forward->Value( );
-			const auto sideMove = m_Sideways->Value( );
+            auto forwardMove = 0.f;
+            auto sideMove = 0.f;
+
+            if ( Pine::Input->IsKeyDown( GLFW_KEY_W ) )
+                forwardMove += 1.f;
+            if ( Pine::Input->IsKeyDown( GLFW_KEY_S ) )
+                forwardMove -= 1.f;
+            if ( Pine::Input->IsKeyDown( GLFW_KEY_D ) )
+                sideMove += 1.f;
+            if ( Pine::Input->IsKeyDown( GLFW_KEY_A ) )
+                sideMove -= 1.f;
+
 
 			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetForward( ) * .15f * forwardMove;
 			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetRight( ) * .15f * sideMove;

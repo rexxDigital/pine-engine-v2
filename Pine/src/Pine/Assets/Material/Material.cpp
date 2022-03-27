@@ -26,17 +26,17 @@ glm::vec3& Pine::Material::AmbientColor( )
 
 Pine::Texture2D* Pine::Material::GetDiffuse( ) const
 {
-	return m_Diffuse;
+	return m_Diffuse.Get( );
 }
 
 Pine::Texture2D* Pine::Material::GetSpecular( ) const
 {
-	return m_Specular;
+	return m_Specular.Get( );
 }
 
 Pine::Texture2D* Pine::Material::GetNormal( ) const
 {
-	return m_Normal;
+	return m_Normal.Get( );
 }
 
 void Pine::Material::SetDiffuse( Texture2D* texture )
@@ -81,7 +81,7 @@ void Pine::Material::SetShininess( float Shininess )
 
 Pine::Shader* Pine::Material::GetShader( )
 {
-	return m_Shader;
+	return m_Shader.Get( );
 }
 
 void Pine::Material::SetShader( Shader* shader )
@@ -196,11 +196,11 @@ bool Pine::Material::SaveToFile( )
 	j[ "renderFlags" ] = std::to_string( m_RenderFlags );
 	j[ "shaderProperties" ] = std::to_string( m_ShaderProperties );
 
-	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse );
-	Serialization::SaveAsset( j[ "specularMap" ], m_Specular );
-	Serialization::SaveAsset( j[ "normal" ], m_Specular );
+	Serialization::SaveAsset( j[ "diffuse" ], m_Diffuse.Get( ) );
+	Serialization::SaveAsset( j[ "specularMap" ], m_Specular.Get( ) );
+	Serialization::SaveAsset( j[ "normal" ], m_Specular.Get( ) );
 
-	Serialization::SaveAsset( j[ "shader" ], m_Shader );
+	Serialization::SaveAsset( j[ "shader" ], m_Shader.Get( ) );
 
 	std::ofstream stream( m_FilePath );
 

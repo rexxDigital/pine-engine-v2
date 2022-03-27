@@ -83,3 +83,23 @@ Pine::AssetState Pine::IAsset::GetAssetState( ) const
 {
 	return m_AssetState;
 }
+
+bool Pine::IAsset::IsDeleted( ) const
+{
+    return m_Deleted;
+}
+
+void Pine::IAsset::SetDeleted( bool value )
+{
+    m_Deleted = value;
+}
+
+void Pine::IAsset::IncreaseReference( )
+{
+    m_ReferenceCount++;
+}
+
+void Pine::IAsset::DecreaseReference( )
+{
+    m_ReferenceCount--;
+}

@@ -321,7 +321,7 @@ bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value )
 	return ret;
 }
 
-bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset )
+bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset, PathItem_t* directory )
 {
 	bool ret = false;
 
@@ -363,6 +363,29 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 			ImGui::EndDragDropSource( );
 		}
 	}
+    else
+    {
+        if ( ImGui::BeginDragDropSource( ImGuiDragDropFlags_::ImGuiDragDropFlags_None ) )
+        {
+            ImGui::SetDragDropPayload( "Directory", &directory, sizeof( PathItem_t* ), 0 );
+
+            ImGui::Image( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( 64.f, 64.f ) );
+
+            ImGui::SameLine( );
+
+            ImGui::BeginChild( "DirectoryInfo", ImVec2( Fonts::BoldFont->CalcTextSizeA( 24.f, FLT_MAX, -1.f, text.c_str( ), nullptr, nullptr ).x + 2.f, -1.f ) );
+
+            ImGui::PushFont( Fonts::BoldFont );
+
+            ImGui::Text( text.c_str( ) );
+
+            ImGui::PopFont( );
+
+            ImGui::EndChild( );
+
+            ImGui::EndDragDropSource( );
+        }
+    }
 
 	if ( !showBackground )
 		ImGui::PopStyleColor( );

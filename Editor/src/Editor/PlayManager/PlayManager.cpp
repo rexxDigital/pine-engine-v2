@@ -40,7 +40,8 @@ void Editor::PlayManager::Start( )
 
 	Pine::EntityList->RunOnSetup( );
 
-	Pine::Window::SetTitle( "Pine - Running" );
+    Pine::Window::UpdateCachedSize( );
+    Pine::Window::SetTitle( "Pine - Running" );
 }
 
 void Editor::PlayManager::Pause( )

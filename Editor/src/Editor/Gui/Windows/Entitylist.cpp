@@ -251,7 +251,7 @@ void Editor::Gui::Windows::RenderEntitylist( )
 	{
 		Pine::Entity* e = Globals::SelectedEntityPtrs[ 0 ];
 
-		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RemoveEntityKey ) )
+		if ( HotkeyManager::GetHotkeyPressed( Hotkeys::DeleteKey ) )
 		{
 			Pine::EntityList->DeleteEntity( e );
 			Globals::SelectedEntityPtrs.clear( );

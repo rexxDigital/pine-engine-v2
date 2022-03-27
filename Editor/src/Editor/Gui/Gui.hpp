@@ -27,7 +27,9 @@ namespace Editor::Gui {
 
 		inline bool IsInLevelView = false;
 		inline bool IsHoveringLevelView = false;
-		
+
+        inline bool IsGameFocused = false;
+
 		// Manage selected entity/asset
 
 		inline SelectedItemType SelectedItem = SelectedItemType::None;

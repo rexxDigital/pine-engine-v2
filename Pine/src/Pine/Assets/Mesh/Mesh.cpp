@@ -18,7 +18,7 @@ Pine::Model* Pine::Mesh::GetParentModel( ) const
 
 Pine::Material* Pine::Mesh::GetMaterial( ) const
 {
-	return m_Material;
+	return m_Material.Get( );
 }
 
 void Pine::Mesh::SetMaterial( Material* material )

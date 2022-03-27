@@ -47,6 +47,11 @@ namespace
     bool g_StartedPlaying = false;
     bool g_StoppedPlaying = false;
 
+    // Used to restore focus mode for play window
+    bool g_CapturedCursorMode = false;
+    bool g_OldAutoCenterMode = false;
+    bool g_OldCursorVisibleMode = false;
+
     void ShowViewportControls( const bool inLevelViewport, ImVec2 cursorPos, ImVec2 avSize )
     {
         static auto transformIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\transform.png" );
@@ -101,10 +106,11 @@ namespace
                 g_StoppedPlaying = true;
 
                 Globals::SelectedEntityPtrs.clear( );
-            } else
+            }
+            else
             {
+                g_CapturedCursorMode = false;
                 Editor::PlayManager::Start( );
-
                 g_StartedPlaying = true;
             }
         }
@@ -207,12 +213,41 @@ namespace
                                                        screenPosition.y + res.y + IconSize ) );
     }
 
+    void HandleFocusing( )
+    {
+        static bool oldIsGameFocused = false;
+
+        Pine::Input->SetIgnoreInput( !Editor::Gui::Globals::IsGameFocused );
+
+        if (!Editor::PlayManager::IsPlaying())
+        {
+            Editor::Gui::Globals::IsGameFocused = false;
+        }
+
+        if ( oldIsGameFocused != Editor::Gui::Globals::IsGameFocused )
+        {
+            oldIsGameFocused = Editor::Gui::Globals::IsGameFocused;
+
+            if ( Editor::Gui::Globals::IsGameFocused )
+            {
+                if (g_CapturedCursorMode)
+                {
+                    Pine::Input->SetCursorAutoCenter(   g_OldAutoCenterMode);
+                    Pine::Input->SetCursorVisible(g_OldCursorVisibleMode);
+                }
+            }
+            else
+            {
+                Pine::Input->SetCursorAutoCenter(false);
+                Pine::Input->SetCursorVisible(true);
+            }
+        }
+    }
+
 }
 
 void Editor::Gui::Windows::RenderViewports( )
 {
-    bool gameWindowOpen = false;
-
     // --- Game viewport ---
 
     if ( ShowGameViewport )
@@ -224,15 +259,14 @@ void Editor::Gui::Windows::RenderViewports( )
             if ( !io.KeyAlt )
                 ImGui::SetNextWindowFocus( );
 
+            Globals::IsGameFocused = true;
+
             g_StartedPlaying = false;
         }
 
         if ( ImGui::Begin( "Game", &ShowGameViewport, 0 ) )
         {
-            gameWindowOpen = true;
             Globals::IsInLevelView = false;
-
-            //ShowViewportControls( false );
 
             const auto avSize = ImGui::GetContentRegionAvail( );
             const auto cursorScreen = ImGui::GetCursorScreenPos( );
@@ -242,21 +276,42 @@ void Editor::Gui::Windows::RenderViewports( )
                 ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
                               avSize, ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ) );
 
+                bool viewportClicked = false;
+
+                // To avoid overlap with the play/stop button
+                if ( ImGui::IsItemClicked( ) )
+                {
+                    viewportClicked = true;
+                }
+
                 ShowViewportControls( false, cursorScreen, avSize );
-            } else
+
+                if ( ImGui::IsItemClicked( ) )
+                {
+                    viewportClicked = false;
+                }
+
+                if (viewportClicked)
+                    Globals::IsGameFocused = true;
+            }
+            else
             {
                 ImGui::TextColored( ImVec4( 1.f, 0.5f, 0.f, 1.f ),
                                     "No active camera, please make at least one is active for this level." );
             }
 
-            if ( Pine::Input->IsKeyPressed( 256 ) ) // Escape key
-            {
-                Pine::Input->SetCursorAutoCenter( false );
-                Pine::Input->SetCursorVisible( true );
-            }
-
             Pine::DebugOverlay->SetViewport( cursorScreen.x, cursorScreen.y, avSize.x, avSize.y );
             Pine::DebugOverlay->Render( );
+        }
+
+        if ( Pine::Input->IsKeyPressed( 256 ) ) // Escape key
+        {
+            Globals::IsGameFocused = false;
+
+            g_OldAutoCenterMode = Pine::Input->GetCursorAutoCenter( );
+            g_OldCursorVisibleMode = Pine::Input->GetCursorVisible( );
+            g_CapturedCursorMode = true;
+
         }
 
         ImGui::End( );
@@ -383,4 +438,5 @@ void Editor::Gui::Windows::RenderViewports( )
         ImGui::End( );
     }
 
+    HandleFocusing( );
 }

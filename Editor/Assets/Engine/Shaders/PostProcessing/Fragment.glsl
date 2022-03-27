@@ -17,5 +17,5 @@ layout( std140 ) uniform Matrices
 
 void main()
 {
-    outputColor = texture(fragColor, uvCoords * viewport);
+    outputColor = texture(fragColor, vec2(uvCoords.x, 1 - uvCoords.y) * viewport);
 }

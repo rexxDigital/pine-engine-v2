@@ -74,7 +74,7 @@ namespace {
 		
 		Editor::Gui::Windows::RenderDebugWindows( );
 
-		//Editor::Gui::Windows::RenderPicPanel( );
+		Editor::Gui::Windows::RenderPicPanel( );
 
 		Editor::Gui::Windows::RenderSettings( );
 	}

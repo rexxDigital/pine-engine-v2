@@ -10,7 +10,7 @@
 
 namespace
 {
-    bool g_WindowIsFocused = false;
+    bool g_WindowIsFocused = true;
 
     void WindowFocusCallback( GLFWwindow* window, int focused )
     {
@@ -39,6 +39,7 @@ namespace Pine
 
         bool m_AutoCenterCursor = false;
         bool m_CursorVisible = true;
+        bool m_OverrideIgnoreInput = false;
 
         bool m_IgnoreUnfocused = true;
     public:
@@ -53,6 +54,11 @@ namespace Pine
             m_CursorVisible = enabled;
         }
 
+        void SetIgnoreInput( bool enabled ) override
+        {
+            m_OverrideIgnoreInput = enabled;
+        }
+
         bool GetCursorAutoCenter( ) const override
         {
             return m_AutoCenterCursor;
@@ -63,9 +69,9 @@ namespace Pine
             return m_CursorVisible;
         }
 
-        void SetIgnoreWhenUnfocused( bool enabled ) override
+        bool GetIgnoreInput( ) const override
         {
-            m_IgnoreUnfocused = enabled;
+            return m_OverrideIgnoreInput;
         }
 
         InputBinding* CreateBinding( const std::string& name ) override
@@ -161,11 +167,16 @@ namespace Pine
             }
 
             if ( !m_CursorVisible )
-                ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+                ImGui::SetMouseCursor( ImGuiMouseCursor_None );
 
             for ( const auto& bind: m_InputBindings )
             {
                 bind->Value( ) = 0;
+
+                if ( m_OverrideIgnoreInput )
+                {
+                    continue;
+                }
 
                 for ( auto& axis: bind->GetAxisBindings( ) )
                 {

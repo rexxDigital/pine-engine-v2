@@ -12,6 +12,8 @@ void PlayerController::OnSetup( )
 {
     Pine::Log->Message( "PlayerController::OnSetup( )" );
 
+    // This would eventually be configured within the editor, instead of being created through code.
+
     m_Pitch = Pine::Input->CreateBinding("Player Pitch");
     m_Pitch->AddAxisBinding(Pine::Axis::MouseY, 0.1);
 
@@ -30,6 +32,7 @@ void PlayerController::OnSetup( )
     Pine::Input->SetCursorVisible( false );
 
 
+    // "Cache" the camera entity
     m_CameraEntity = m_Parent->GetChildren()[0];
 }
 
@@ -43,6 +46,14 @@ void PlayerController::OnRender( )
     // Handle rotation, however rotate only the camera for the pitch axis
     camTransform->Rotation.x += m_Pitch->Value();
     transform->Rotation.y += m_Yaw->Value();
+
+    // Clamp and normalize angles
+    camTransform->Rotation.x = std::clamp(camTransform->Rotation.x, -90.f, 90.f);
+
+    while ( transform->Rotation.y >= 180.f )
+        transform->Rotation.y -= 360.f;
+    while ( transform->Rotation.y <= -180.f )
+        transform->Rotation.y += 360.f;
 
     // Handle movement
     transform->Position += transform->GetForward() * speed * m_Forward->Value();

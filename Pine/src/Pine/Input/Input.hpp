@@ -55,13 +55,6 @@ namespace Pine
 	class IInputSystem : public IInterface
 	{
 	public:
-		virtual void SetCursorAutoCenter( bool enabled ) = 0;
-		virtual void SetCursorVisible( bool enabled ) = 0;
-		virtual void SetIgnoreWhenUnfocused( bool enabled ) = 0;
-
-        virtual bool GetCursorAutoCenter( ) const = 0;
-        virtual bool GetCursorVisible( ) const = 0;
-
 		virtual InputBinding* CreateBinding( const std::string& name ) = 0;
 		virtual void RemoveBinding( InputBinding* binding ) = 0;
 
@@ -85,9 +78,19 @@ namespace Pine
 		virtual bool IsKeyPressed( int key ) = 0;
 		virtual bool IsKeyReleased( int key ) = 0;
 
+        // If the window is focused within the OS
         virtual bool IsWindowFocused( ) = 0;
 
-		virtual glm::ivec2 GetMousePosition( ) = 0;
+        virtual void SetCursorAutoCenter( bool enabled ) = 0;
+        virtual void SetCursorVisible( bool enabled ) = 0;
+        virtual void SetIgnoreInput( bool enabled ) = 0;
+//      virtual void SetIgnoreWhenUnfocused( bool enabled ) = 0;
+
+        virtual bool GetCursorAutoCenter( ) const = 0;
+        virtual bool GetCursorVisible( ) const = 0;
+        virtual bool GetIgnoreInput( ) const = 0;
+
+        virtual glm::ivec2 GetMousePosition( ) = 0;
 		virtual glm::ivec2 GetMouseDelta( ) = 0;
 	};
 

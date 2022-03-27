@@ -14,36 +14,37 @@
 #include "..\Utility\AssetIcon\AssetIcon.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Entity/Entity.hpp"
+#include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
+
+// Could be a file or a directory
+struct PathItem_t
+{
+    bool m_IsDirectory = false;
+
+    Pine::IAsset* m_Asset = nullptr;
+
+    std::filesystem::path m_Path;
+
+    std::string m_DisplayText = "";
+    Editor::Gui::Utility::AssetIcon::AssetIcon_t* m_DisplayIcon = nullptr;
+
+    std::vector<PathItem_t*> m_Items;
+    PathItem_t* m_Parent = nullptr;
+
+    void Dispose( ) const
+    {
+        for ( auto item : m_Items )
+        {
+            item->Dispose( );
+            delete item;
+        }
+    }
+};
 
 namespace
 {
 
 	int g_CreateType = 0;
-
-	// Could be a file or a directory
-	struct PathItem_t
-	{
-		bool m_IsDirectory = false;
-
-		Pine::IAsset* m_Asset = nullptr;
-
-		std::filesystem::path m_Path;
-
-		std::string m_DisplayText = "";
-		Editor::Gui::Utility::AssetIcon::AssetIcon_t* m_DisplayIcon = nullptr;
-
-		std::vector<PathItem_t*> m_Items;
-		PathItem_t* m_Parent = nullptr;
-
-		void Dispose( ) const
-		{
-			for ( auto item : m_Items )
-			{
-				item->Dispose( );
-				delete item;
-			}
-		}
-	};
 
 	bool g_DidOpenContextMenu = false;
 	PathItem_t* g_SelectedContextMenuItem = nullptr;
@@ -157,15 +158,38 @@ namespace
 				g_SelectedContextMenuItem = directory;
 			}
 
+            bool exitLoop = false;
+
 			if ( ImGui::BeginDragDropTarget( ) )
 			{
 				if ( const auto payload = ImGui::AcceptDragDropPayload( "Asset", 0 ) )
 				{
-					
+                    Pine::IAsset* asset = *reinterpret_cast<Pine::IAsset**>(payload->Data);
+
+                    // Copy old asset and then remove it.
+                    std::filesystem::copy( asset->GetPath( ), directory->m_Path.string( ) + "\\" + asset->GetFileName( ) );
+
+                    std::filesystem::remove( asset->GetPath( ) );
+
+                    Pine::Assets->DisposeAsset( asset );
+
+                    Editor::ProjectManager::ReloadProjectAssets( );
+
+                    exitLoop = true;
 				}
 
-				ImGui::EndDragDropTarget( );
+                if ( const auto payload = ImGui::AcceptDragDropPayload( "Directory", 0 ) )
+                {
+                    // TODO: Add this feature.
+                }
+
+                ImGui::EndDragDropTarget( );
 			}
+
+            if ( exitLoop )
+            {
+                return;
+            }
 
 			ImGui::NextColumn( );
 		}
@@ -245,6 +269,45 @@ namespace
 		return nullptr;
 	}
 
+    void DeleteSelectedItem( )
+    {
+        const bool isTargetingAsset = Editor::Gui::Globals::SelectedAssetPtrs.size( ) == 1;
+        const bool isTargetingDirectory = g_SelectedContextMenuItem && g_SelectedContextMenuItem->m_IsDirectory;
+
+        if ( isTargetingAsset )
+        {
+            auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
+
+            if ( !asset->GetReadOnly( ) )
+            {
+                std::filesystem::remove( asset->GetPath( ) );
+
+                Pine::Assets->DisposeAsset( asset );
+
+                Editor::ProjectManager::ReloadProjectAssets( );
+
+                Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+
+                g_SelectedContextMenuItem = nullptr;
+            }
+        }
+
+        if ( isTargetingDirectory )
+        {
+            std::filesystem::remove( g_SelectedContextMenuItem->m_Path );
+
+            Editor::ProjectManager::ReloadProjectAssets( );
+
+            Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+
+            g_SelectedContextMenuItem = nullptr;
+        }
+
+        Editor::Gui::Globals::SelectedEntityPtrs.clear( );
+        Editor::Gui::Globals::SelectedAssetPtrs.clear( );
+        g_SelectedContextMenuItem = nullptr;
+    }
+
 }
 
 void UpdateAssetCache( )
@@ -311,6 +374,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 
 		if ( ImGui::Button( "Open in Explorer" ) )
 		{
+            // This is secure and safe, and good.
 			system( std::string( "explorer.exe " + std::filesystem::absolute( g_CurrentDirectory->m_Path ).string( ) ).c_str(  ) );
 		}
 
@@ -407,39 +471,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 
 			if ( ImGui::MenuItem( "Remove", "DEL", false, isTargetingAsset || isTargetingDirectory ) )
 			{
-
-				if ( isTargetingAsset )
-				{
-					auto asset = Editor::Gui::Globals::SelectedAssetPtrs[ 0 ];
-
-					if ( !asset->GetReadOnly( ) )
-					{
-						std::filesystem::remove( asset->GetPath( ) );
-
-						Pine::Assets->DisposeAsset( asset );
-
-						ProjectManager::ReloadProjectAssets( );
-
-						Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-
-						g_SelectedContextMenuItem = nullptr;
-					}
-				}
-
-				if ( isTargetingDirectory )
-				{
-					std::filesystem::remove( g_SelectedContextMenuItem->m_Path );
-
-					ProjectManager::ReloadProjectAssets( );
-
-					Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-
-					g_SelectedContextMenuItem = nullptr;
-				}
-
-				Editor::Gui::Globals::SelectedEntityPtrs.clear( );
-				Editor::Gui::Globals::SelectedAssetPtrs.clear( );
-				g_SelectedContextMenuItem = nullptr;
+                DeleteSelectedItem( );
 
 				ImGui::CloseCurrentPopup( );
 			}
@@ -450,6 +482,16 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 		{
 			g_SelectedContextMenuItem = nullptr;
 		}
+
+        if ( HotkeyManager::GetHotkeyPressed( Hotkeys::DeleteKey ) )
+        {
+            DeleteSelectedItem( );
+        }
+
+        if ( HotkeyManager::GetHotkeyPressed( Hotkeys::RenameKey ) )
+        {
+            openRenamePopup = true;
+        }
 
 		if ( openRenamePopup )
 		{

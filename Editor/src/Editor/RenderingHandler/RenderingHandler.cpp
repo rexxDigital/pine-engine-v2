@@ -50,17 +50,18 @@ namespace
 
 					g_OutlineShader->Use( );
 
-					glm::mat4 mat = entity->GetTransform( )->GetTransformationMatrix( );
+					glm::mat4 mat = glm::mat4( 1.f );
 
-					// I did some testing around and found a nice size for the border.
+					const glm::vec3 scaleSize = entity->GetTransform()->Scale + 0.04f;
+                    const glm::vec3 rotate = entity->GetTransform()->GetRotationSum();
 
-					const auto camPosition = Editor::EditorEntity::GetEntity( )->GetTransform( )->Position;
-					const auto entPosition = entity->GetTransform( )->Position;
+                    mat = glm::translate( mat, entity->GetTransform()->GetPositionSum() );
 
-					const float distance = glm::length( camPosition - entPosition );
-					const float scaleSize = 1.02f + ( 0.0031105f * distance );
+                    mat = glm::rotate( mat, glm::radians( rotate.x ), glm::vec3( 1.f, 0.f, 0.f ) );
+                    mat = glm::rotate( mat, glm::radians( rotate.y ), glm::vec3( 0.f, 1.f, 0.f ) );
+                    mat = glm::rotate( mat, glm::radians( rotate.z ), glm::vec3( 0.f, 0.f, 1.f ) );
 
-					mat = glm::scale( mat, glm::vec3( scaleSize, scaleSize, scaleSize ) );
+                    mat = glm::scale( mat, scaleSize );
 
 					Pine::Renderer3D->RenderMesh( mat );
 				}
@@ -185,7 +186,7 @@ namespace
 	{
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{
-			//RenderHighlightedEntity( );
+			RenderHighlightedEntity( );
 			RenderSelectedColliderAABB( );
 		}
 	}

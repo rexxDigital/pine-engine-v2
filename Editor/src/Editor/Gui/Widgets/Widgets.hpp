@@ -13,6 +13,8 @@ struct PickerReturn
 	Pine::Entity* entity = nullptr;
 };
 
+struct PathItem_t;
+
 namespace Editor::Gui::Widgets {
 
 	bool Checkbox( const std::string& str, bool& value );
@@ -26,7 +28,7 @@ namespace Editor::Gui::Widgets {
 	PickerReturn AssetPicker( const std::string& str, Pine::IAsset* currentAsset = nullptr, bool shouldRestrictType = false, Pine::AssetType type = Pine::AssetType::Invalid );
 	PickerReturn EntityPicker( const std::string& str, Pine::Entity* currentEntity = nullptr );
 
-	bool Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size = 48, Pine::IAsset* asset = nullptr );
+	bool Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size = 48, Pine::IAsset* asset = nullptr, PathItem_t* directory = nullptr );
 
 	void PushDisabled( );
 	void PopDisabled( );

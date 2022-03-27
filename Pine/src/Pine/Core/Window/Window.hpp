@@ -21,6 +21,7 @@ namespace Pine::Window
 
 	void Close( );
 
+    void SetFullscreenMode( bool value );
 	void SetPosition( int x, int y );
 	void SetSize( int w, int h );
 	void SetTitle( const std::string& str );
@@ -30,4 +31,5 @@ namespace Pine::Window
 	glm::ivec2 GetCachedSize( );
 
 	glm::ivec2 GetSize( );
+    bool GetFullscreenMode( );
 }
