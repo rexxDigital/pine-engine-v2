@@ -20,6 +20,7 @@ namespace Pine
         virtual double GetPrePhysicsTime( ) = 0;
         virtual double GetPhysicsProcessTime( ) = 0;
         virtual double GetPostPhysicsTime( ) = 0;
+        virtual double GetPhysicsTotalProcessTime( ) = 0;
 
 		// These are quick wrappers for creating and destroying stuff within the physics library,
 		// they are used so we can more easily keep track of allocations.

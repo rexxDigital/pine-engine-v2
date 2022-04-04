@@ -11,7 +11,8 @@ namespace Editor::Gui::Windows {
 	inline bool ShowProperties = true;
 	inline bool ShowLevelSettings = true;
 	inline bool ShowConsole = true;
-	
+	inline bool ShowProfiler = true;
+
 	// Debug
 	inline bool ShowRenderingContext = false;
     inline bool ShowComponentsSys = false;
@@ -36,6 +37,8 @@ namespace Editor::Gui::Windows {
 	void RenderPicPanel( );
 
 	void RenderSettings( );
-	
+
+	void RenderProfiler( );
+
 }
 

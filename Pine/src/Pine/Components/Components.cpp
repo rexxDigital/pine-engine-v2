@@ -13,6 +13,7 @@
 #include "NativeScript/NativeScript.hpp"
 #include "Collider3D/Collider3D.hpp"
 #include "RigidBody/RigidBody.hpp"
+#include "../Entity/Entity.hpp"
 
 namespace
 {

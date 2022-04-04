@@ -66,7 +66,8 @@ namespace {
 		Editor::Gui::Windows::RenderEntitylist( );
 		Editor::Gui::Windows::RenderViewports( );
 
-		Editor::Gui::Windows::RenderConsole( );
+        Editor::Gui::Windows::RenderProfiler( );
+        Editor::Gui::Windows::RenderConsole( );
 		Editor::Gui::Windows::RenderAssetBrowser( ); // show 'asset browser' as the selected window.
 
 		Editor::Gui::Windows::RenderLevelSettings( );
@@ -77,7 +78,7 @@ namespace {
 		Editor::Gui::Windows::RenderPicPanel( );
 
 		Editor::Gui::Windows::RenderSettings( );
-	}
+    }
 
 }
 

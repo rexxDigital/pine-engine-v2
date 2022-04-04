@@ -107,6 +107,7 @@ void Editor::Gui::MainMenuBar::Render( )
 			ImGui::MenuItem( "Level Viewport", nullptr, &Windows::ShowLevelViewport );
 			ImGui::MenuItem( "Level Settings", nullptr, &Windows::ShowLevelSettings );
 			ImGui::MenuItem( "Console", nullptr, &Windows::ShowConsole );
+			ImGui::MenuItem( "Profiler", nullptr, &Windows::ShowProfiler );
 
 			if ( ImGui::BeginMenu( "Debug" ) )
 			{

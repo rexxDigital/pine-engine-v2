@@ -15,10 +15,10 @@ void PlayerController::OnSetup( )
     // This would eventually be configured within the editor, instead of being created through code.
 
     m_Pitch = Pine::Input->CreateBinding("Player Pitch");
-    m_Pitch->AddAxisBinding(Pine::Axis::MouseY, 0.1);
+    m_Pitch->AddAxisBinding(Pine::Axis::MouseY, 0.1f );
 
     m_Yaw = Pine::Input->CreateBinding("Player Yaw");
-    m_Yaw->AddAxisBinding(Pine::Axis::MouseX, 0.1);
+    m_Yaw->AddAxisBinding(Pine::Axis::MouseX, 0.1f );
 
     m_Forward = Pine::Input->CreateBinding( "Player Forward" );
     m_Forward->AddKeyboardBinding( GLFW_KEY_W, 1.f );

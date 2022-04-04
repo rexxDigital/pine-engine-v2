@@ -201,12 +201,14 @@ namespace
 				continue;
 
 			Pine::Texture2D* icon;
+            bool isDynamic = false;
 
 			if ( file->m_DisplayIcon != nullptr )
 			{
 				if ( file->m_DisplayIcon->m_LiveIconReady && !file->m_DisplayIcon->m_LiveIconDirty )
 				{
 					icon = file->m_DisplayIcon->m_FrameBufferTexture;
+                    isDynamic = true;
 				}
 				else
 				{
@@ -218,7 +220,7 @@ namespace
 				icon = unknownFileIcon;
 			}
 
-			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset ) )
+			if ( Editor::Gui::Widgets::Icon( file->m_DisplayText, selectedAsset != nullptr && selectedAsset == file->m_Asset, icon, g_IconSize, file->m_Asset, nullptr, isDynamic ) )
 			{
 				if ( file->m_Asset != nullptr )
 				{

@@ -21,6 +21,7 @@ namespace Pine
         double m_PrePhysicsTime = 0.0f;
         double m_PhysicsTime = 0.0f;
         double m_PostPhysicsTime = 0.0f;
+        double m_PhysicsTotalTime = 0.0f;
 	public:
 
 		void Setup( ) override
@@ -45,6 +46,8 @@ namespace Pine
                 accumulator = 0;
                 return;
             }
+
+            Timer physTotalTime;
 
 			constexpr float timeStep = 1.0 / 60.0; // we'll target 60 for now
 
@@ -101,7 +104,10 @@ namespace Pine
 			}
 
             postPhys.Stop();
+            physTotalTime.Stop();
+
             m_PostPhysicsTime = postPhys.GetElapsedTimeInMs();
+            m_PhysicsTotalTime = physTotalTime.GetElapsedTimeInMs();
 		}
 
 		reactphysics3d::PhysicsCommon* GetPhysicsCommon( ) override
@@ -137,6 +143,11 @@ namespace Pine
         double GetPostPhysicsTime( ) override
         {
             return m_PostPhysicsTime;
+        }
+
+        double GetPhysicsTotalProcessTime( ) override
+        {
+            return m_PhysicsTotalTime;
         }
 
 	};

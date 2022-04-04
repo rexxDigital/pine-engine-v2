@@ -49,6 +49,8 @@ namespace Pine
 
 		void Render( ) override
 		{
+            Timer totalRenderTime;
+
 			if ( !VerifyRenderingContext( g_RenderingContext ) )
 			{
 				return;
@@ -58,8 +60,8 @@ namespace Pine
 			// Everything beyond this point should also respect the render context's
 			// target size, but it won't so keep that in mind.
 
-            //g_RenderingContext->m_Width = 1920;
-			//g_RenderingContext->m_Height = 1080;
+            g_RenderingContext->m_Width = 1920;
+			g_RenderingContext->m_Height = 1080;
 
 			// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
 			// to fix this temporary just update that and set the rendering context's size accordingly.
@@ -74,21 +76,33 @@ namespace Pine
 			g_RenderingContext->m_EntitySortTime = 0;
 			g_RenderingContext->m_EntityRenderTime = 0;
 			g_RenderingContext->m_PostProcessingTime = 0;
+            g_RenderingContext->m_ComponentUpdateTime.fill(0);
 
 			if ( g_RenderingContext->m_Camera == nullptr )
 				return;
 
+            Timer entityUpdateTime;
+
 			// Call "OnRender" for each component
 			for ( int i = 0; i < Components->GetComponentTypeCount( ); i++ )
 			{
+                Timer componentUpdateTime;
+
 				for ( int j = 0; j < Components->GetComponentCount( static_cast< ComponentType >( i ) ); j++ )
 				{
 					if ( const auto component = Components->GetComponent( static_cast< ComponentType >( i ), j ) )
-						component->OnRender( );
+                    {
+                        component->OnRender( );
+                    }
 				}
+
+                componentUpdateTime.Stop();
+                g_RenderingContext->m_ComponentUpdateTime[i] = componentUpdateTime.GetElapsedTimeInMs();
 			}
 
-			// Sort entities with the blend rendering mode in a different map
+            entityUpdateTime.Stop();
+
+            // Sort entities with the blend rendering mode in a different map
 			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
 			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
 
@@ -151,7 +165,6 @@ namespace Pine
 				}
 			}
 
-			entitySortTimer.Stop( );
 
 			// Prepare the light data before uploading it to the GPU
 			Renderer3D->ResetLightData( );
@@ -164,6 +177,8 @@ namespace Pine
 			Renderer3D->UploadLightData( );
 
 			Renderer3D->PrepareMeshRendering( );
+
+            entitySortTimer.Stop( );
 
 			Timer entityRenderTime;
 
@@ -239,14 +254,17 @@ namespace Pine
 			g_RenderingContext->m_DrawCalls++;
 
 			postProcessingTime.Stop( );
+            totalRenderTime.Stop( );
 
-			g_RenderingContext->m_EntitySortTime = entitySortTimer.GetElapsedTimeInMs( );
+            g_RenderingContext->m_EntityUpdateTime = entityUpdateTime.GetElapsedTimeInMs( );
+            g_RenderingContext->m_EntitySortTime = entitySortTimer.GetElapsedTimeInMs( );
 			g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
 			g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
+            g_RenderingContext->m_TotalRenderTime = totalRenderTime.GetElapsedTimeInMs();
 
 			if ( g_RenderingCallback )
 				g_RenderingCallback( RenderStage::PostRender );
-		}
+        }
 
 		void SetRenderingContext( RenderingContext* renderingContext ) override
 		{

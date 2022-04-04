@@ -16,6 +16,11 @@ namespace Pine {
 		// Statistics from previous frame
 		int m_DrawCalls = 0;
 
+        double m_TotalRenderTime = 0;
+
+        double m_EntityUpdateTime = 0;
+        std::array<double, 32> m_ComponentUpdateTime;
+
 		double m_EntitySortTime = 0;
 		double m_EntityRenderTime = 0;
 		double m_PostProcessingTime = 0;

@@ -13,7 +13,7 @@ namespace Pine {
 		int m_Height = 0;
 	
 		int m_Channels = 0;
-	public:
+    public:
 		Texture2D( );
 
 		unsigned int GetId( ) const;

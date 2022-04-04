@@ -28,6 +28,7 @@ namespace Pine
 	// Performance counters
 	float GetFrameTime( );
 	float GetUpdateTime( );
+    float GetFrameProcessTimeInMs( );
 	int GetFPS( );
 
 	// Allow/disallow OnUpdate being called on components, primarily used by the editor extension.

@@ -160,14 +160,14 @@ namespace
 
 		if ( ImGui::IsItemHovered( ) )
 		{
-			ImGui::SetTooltip( "Requests an optimized version of the shader, may not always be avaliable." );
+			ImGui::SetTooltip( "Requests an optimized version of the shader, may not always be available." );
 		}
 
 		ImGui::EndChild( );
 
 		ImGui::Separator( );
 
-		ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::AssetIcon::GetThumbnailTexture( )->GetId( ) ), ImVec2( 128.f, 128.f ) );
+		ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::AssetIcon::GetThumbnailTexture( )->GetId( ) ), ImVec2( 128.f, 128.f ), ImVec2(0, 1), ImVec2(1, 0) );
 
 	}
 

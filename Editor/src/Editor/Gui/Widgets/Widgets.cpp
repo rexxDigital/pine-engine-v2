@@ -321,7 +321,7 @@ bool Editor::Gui::Widgets::Checkbox( const std::string& str, bool& value )
 	return ret;
 }
 
-bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset, PathItem_t* directory )
+bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, Pine::Texture2D* texture, int size, Pine::IAsset* asset, PathItem_t* directory, bool flipImage )
 {
 	bool ret = false;
 
@@ -333,7 +333,7 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 		ImGui::PushStyleColor( ImGuiCol_Button, ImVec4( 0.f, 0.f, 0.f, 0.f ) );
 	}
 
-	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, 0.f ), ImVec2( 1.f, 1.f ), 3 ) )
+	if ( ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ), ImVec2( size, size ), ImVec2( 0.f, flipImage ? 1.f : 0.f ), ImVec2( 1.f, flipImage ? 0.f : 1.f ), 3 ) )
 	{
 		ret = true;
 	}

@@ -18,12 +18,13 @@
 #include "Input/Input.hpp"
 #include "PhysicsManager/PhysicsManager.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
+#include "Core/Timer/Timer.hpp"
 
 namespace
 {
 	Pine::PineInstance g_PineInstance;
 
-	constexpr int TickRate = 144;
+	constexpr int TickRate = 300;
 
 	bool g_StopUpdateThread = false;
 	bool g_AllowUpdates = true;
@@ -35,6 +36,8 @@ namespace
 
 	double g_LastUpdateWindowTime = 0;
 	double g_LastUpdateTime = 0;
+
+    double g_FrameProcessTime = 0;
 
 	void UpdateThread( )
 	{
@@ -49,6 +52,7 @@ namespace
 				Pine::EntityList->RunOnUpdate( deltaTime );
 
 			g_LastUpdateWindowTime = currentTime;
+
 			std::this_thread::sleep_for( std::chrono::milliseconds( static_cast< int >( 1000.f / TickRate ) ) );
 		}
 	}
@@ -89,7 +93,12 @@ float Pine::GetFrameTime( )
 
 float Pine::GetUpdateTime( )
 {
-	return g_LastUpdateWindowTime;
+	return g_LastUpdateTime;
+}
+
+float Pine::GetFrameProcessTimeInMs( )
+{
+    return g_FrameProcessTime;
 }
 
 int Pine::GetFPS( )
@@ -191,18 +200,26 @@ void Pine::Run( )
 
 	const auto window = Window::Internal::GetWindowPointer( );
 
+    // To prevent a huge frame time spike, since we use the time since the window opened.
+    CalculateFrameTime( );
+
 	while ( !glfwWindowShouldClose( window ) )
 	{
-		const auto deltaTime = CalculateFrameTime( );
+		const auto deltaTime = std::max( CalculateFrameTime( ), 0.0 );
+
+        Timer frameProcessTimer;
 
 		// Update stuff on a per-frame basis
+        PhysicsManager->Update( deltaTime );
         EntityList->Update( );
 		Input->Update( );
-		PhysicsManager->Update( deltaTime );
 
 		// Render stuff
 		RenderManager->Render( );
 		Gui->Render( );
+
+        frameProcessTimer.Stop();
+        g_FrameProcessTime = frameProcessTimer.GetElapsedTimeInMs();
 
 		// Swap the buffered we just rendered to and present it to the user
 		glfwSwapBuffers( window );
@@ -226,9 +243,9 @@ void Pine::Terminate( )
 	Gui->Dispose( );
 	Skybox->Dispose( );
 	PostProcessing->Dispose( );
+    EntityList->Dispose( );
 	Components->Dispose( );
 	PhysicsManager->Dispose( );
 
 	Window::Internal::Destroy( );
 }
-

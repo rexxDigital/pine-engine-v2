@@ -49,6 +49,11 @@ namespace Pine
             memset(m_EntitySlots, 0, sizeof(bool) * NrEntitySlots);
         }
 
+        void Dispose( ) override
+        {
+            ClearEntities( true );
+        }
+
 		Entity* CreateEntity( ) override
 		{
             int entitySlot = FindAvailableEntitySlot();
@@ -106,7 +111,7 @@ namespace Pine
             return true;
         }
 
-        int GetEntityCount() override
+        int GetEntityCount( ) override
         {
             return m_CurrentHighestEntityIndex;
         }
