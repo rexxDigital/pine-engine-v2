@@ -25,325 +25,340 @@
 namespace Pine
 {
 
-	class CRenderManager : public IRenderManager
-	{
-	private:
+    class CRenderManager : public IRenderManager
+    {
+    private:
 
-		RenderingContext* g_RenderingContext = nullptr;
-		RenderCallback g_RenderingCallback = nullptr;
+        RenderingContext* g_RenderingContext = nullptr;
+        RenderCallback g_RenderingCallback = nullptr;
 
-		bool VerifyRenderingContext( RenderingContext* context )
-		{
-			if ( !context )
-				return false;
+        bool VerifyRenderingContext( RenderingContext* context )
+        {
+            if ( !context )
+                return false;
 
-			// I would check for a camera being available, but right now I want the PreRender callback to be called
-			// so this function looks very silly.
+            // I would check for a camera being available, but right now I want the PreRender callback to be called
+            // so this function looks very silly.
 
-			return true;
-		}
+            return true;
+        }
 
-		ImGuiContext* g_RenderingImGuiContext = nullptr;
+        ImGuiContext* g_RenderingImGuiContext = nullptr;
 
-	public:
+    public:
 
-		void Render( ) override
-		{
+        void Render( ) override
+        {
             Timer totalRenderTime;
 
-			if ( !VerifyRenderingContext( g_RenderingContext ) )
-			{
-				return;
-			}
+            if ( !VerifyRenderingContext( g_RenderingContext ) )
+            {
+                return;
+            }
 
-			// This is fucking retarded, please write a proper solution.
-			// Everything beyond this point should also respect the render context's
-			// target size, but it won't so keep that in mind.
+            // This is fucking retarded, please write a proper solution.
+            // Everything beyond this point should also respect the render context's
+            // target size, but it won't so keep that in mind.
 
             g_RenderingContext->m_Width = 1920;
-			g_RenderingContext->m_Height = 1080;
+            g_RenderingContext->m_Height = 1080;
 
-			// NOTE: The reason why this is annoying is because of the post processing frame buffer's size, something the engine won't dynamically update at this moment.
-			// to fix this temporary just update that and set the rendering context's size accordingly.
+            // NOTE: The reason why this is annoying is because of the post-processing frame buffer's size, something the engine won't dynamically update at this moment.
+            // to fix this temporary just update that and set the rendering context's size accordingly.
 
-			if ( g_RenderingCallback )
-				g_RenderingCallback( RenderStage::PreRender );
+            if ( g_RenderingCallback )
+                g_RenderingCallback( RenderStage::PreRender );
 
-			PrepareSceneRendering( );
+            PrepareSceneRendering( );
 
-			// Reset stats
-			g_RenderingContext->m_DrawCalls = 0;
-			g_RenderingContext->m_EntitySortTime = 0;
-			g_RenderingContext->m_EntityRenderTime = 0;
-			g_RenderingContext->m_PostProcessingTime = 0;
-            g_RenderingContext->m_ComponentUpdateTime.fill(0);
+            // Reset stats
+            g_RenderingContext->m_DrawCalls = 0;
+            g_RenderingContext->m_EntitySortTime = 0;
+            g_RenderingContext->m_EntityRenderTime = 0;
+            g_RenderingContext->m_PostProcessingTime = 0;
+            g_RenderingContext->m_ComponentUpdateTime.fill( 0 );
 
-			if ( g_RenderingContext->m_Camera == nullptr )
-				return;
+            if ( g_RenderingContext->m_Camera == nullptr )
+                return;
 
             Timer entityUpdateTime;
 
-			// Call "OnRender" for each component
-			for ( int i = 0; i < Components->GetComponentTypeCount( ); i++ )
-			{
+            // Call "OnRender" for each component
+            for ( int i = 0; i < Components->GetComponentTypeCount( ); i++ )
+            {
                 Timer componentUpdateTime;
 
-				for ( int j = 0; j < Components->GetComponentCount( static_cast< ComponentType >( i ) ); j++ )
-				{
-					if ( const auto component = Components->GetComponent( static_cast< ComponentType >( i ), j ) )
+                auto data = Components->GetComponentData( static_cast< ComponentType >( i ) );
+
+                if ( data )
+                {
+                    for ( int j = 0; j < data->m_DataValidSize; j++ )
                     {
-                        component->OnRender( );
+                        if ( !data->m_DataValid[ j ] ) continue;
+
+                        const auto component = data->GetComponent( j );
+
+                        if ( component )
+                            component->OnRender( );
                     }
-				}
+                }
 
-                componentUpdateTime.Stop();
-                g_RenderingContext->m_ComponentUpdateTime[i] = componentUpdateTime.GetElapsedTimeInMs();
-			}
+                componentUpdateTime.Stop( );
 
-            entityUpdateTime.Stop();
+                g_RenderingContext->m_ComponentUpdateTime[ i ] = componentUpdateTime.GetElapsedTimeInMs( );
+            }
+
+            entityUpdateTime.Stop( );
 
             // Sort entities with the blend rendering mode in a different map
-			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
-			std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
+            // This is kind of in efficient due to re-allocations
+            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
+            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
 
-			std::vector<Light*> lights;
-			std::vector<TerrainRenderer*> terrainRenderers;
+            std::vector<Light*> lights;
+            std::vector<TerrainRenderer*> terrainRenderers;
 
-			auto componentSanityCheck = [ ] ( const Pine::IComponent* component )
-			{
-				return component && component->GetActive( ) && component->GetParent( )->GetActive( );
-			};
+            auto componentSanityCheck = [ ]( const Pine::IComponent* component ) {
+                return component && component->GetActive( ) && component->GetParent( )->GetActive( );
+            };
 
-			Timer entitySortTimer;
+            Timer entitySortTimer;
 
-			// Model Renderer
+            // Model Renderer
 
-			for ( int i = 0; i < Components->GetComponentCount( ComponentType::ModelRenderer ); i++ )
-			{
-				const auto modelRenderer = dynamic_cast< ModelRenderer* >( Components->GetComponent( ComponentType::ModelRenderer, i ) );
+            auto modelRendererData = Components->GetComponentData( ComponentType::ModelRenderer );
+            for ( int i = 0; i < modelRendererData->m_DataValidSize; i++ )
+            {
+                if (!modelRendererData->m_DataValid[i]) continue;
 
-				if ( componentSanityCheck( modelRenderer ) && modelRenderer->GetModel( ) )
-				{
-					auto blendRenderingMode = false;
+                const auto modelRenderer = dynamic_cast< ModelRenderer* >( modelRendererData->GetComponent( i ) );
 
-					// Check if any of the material used within this model has a different rendering mode.
-					for ( const auto mesh : modelRenderer->GetModel( )->GetMeshList( ) )
-						if ( mesh->GetMaterial( ) && mesh->GetMaterial( )->GetRenderingMode( ) == MatRenderingMode::Transparent )
-							blendRenderingMode = true;
-					if ( const auto ov = modelRenderer->GetMaterialOverride(  ) )
-						if ( ov->GetRenderingMode(  ) == MatRenderingMode::Transparent )
-							blendRenderingMode = true;
+                if ( componentSanityCheck( modelRenderer ) && modelRenderer->GetModel( ) )
+                {
+                    auto blendRenderingMode = false;
 
-					if ( blendRenderingMode )
-						renderBatchBlend[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
-					else
-						renderBatch[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
-				}
-			}
+                    // Check if any of the material used within this model has a different rendering mode.
+                    for ( const auto mesh: modelRenderer->GetModel( )->GetMeshList( ) )
+                        if ( mesh->GetMaterial( ) &&
+                             mesh->GetMaterial( )->GetRenderingMode( ) == MatRenderingMode::Transparent )
+                            blendRenderingMode = true;
+                    if ( const auto ov = modelRenderer->GetMaterialOverride( ) )
+                        if ( ov->GetRenderingMode( ) == MatRenderingMode::Transparent )
+                            blendRenderingMode = true;
 
-			// Light
+                    if ( blendRenderingMode )
+                        renderBatchBlend[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
+                    else
+                        renderBatch[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
+                }
+            }
 
-			for ( int i = 0; i < Components->GetComponentCount( ComponentType::Light ); i++ )
-			{
-				const auto light = dynamic_cast< Light* >( Components->GetComponent( ComponentType::Light, i ) );
+            // Light
 
-				if ( componentSanityCheck( light ) )
-				{
-					lights.push_back( light );
-				}
-			}
+            for ( int i = 0; i < Components->GetComponentCount( ComponentType::Light ); i++ )
+            {
+                const auto light = dynamic_cast< Light* >( Components->GetComponent( ComponentType::Light, i ) );
 
-			// Terrain Renderer
+                if ( componentSanityCheck( light ) )
+                {
+                    lights.push_back( light );
+                }
+            }
 
-			for ( int i = 0; i < Components->GetComponentCount( ComponentType::TerrainRenderer ); i++ )
-			{
-				const auto terrainRenderer = dynamic_cast< TerrainRenderer* >( Components->GetComponent( ComponentType::TerrainRenderer, i ) );
+            // Terrain Renderer
 
-				if ( componentSanityCheck( terrainRenderer ) )
-				{
-					terrainRenderers.push_back( terrainRenderer );
-				}
-			}
+            for ( int i = 0; i < Components->GetComponentCount( ComponentType::TerrainRenderer ); i++ )
+            {
+                const auto terrainRenderer = dynamic_cast< TerrainRenderer* >( Components->GetComponent(
+                        ComponentType::TerrainRenderer, i ) );
+
+                if ( componentSanityCheck( terrainRenderer ) )
+                {
+                    terrainRenderers.push_back( terrainRenderer );
+                }
+            }
 
 
-			// Prepare the light data before uploading it to the GPU
-			Renderer3D->ResetLightData( );
+            // Prepare the light data before uploading it to the GPU
+            Renderer3D->ResetLightData( );
 
-			for ( const auto light : lights )
-			{
-				Renderer3D->PrepareLightData( light );
-			}
+            for ( const auto light: lights )
+            {
+                Renderer3D->PrepareLightData( light );
+            }
 
-			Renderer3D->UploadLightData( );
+            Renderer3D->UploadLightData( );
 
-			Renderer3D->PrepareMeshRendering( );
+            Renderer3D->PrepareMeshRendering( );
 
             entitySortTimer.Stop( );
 
-			Timer entityRenderTime;
+            Timer entityRenderTime;
 
-			// Render Terrain Chunks
+            // Render Terrain Chunks
 
-			for ( const auto terrainRenderer : terrainRenderers )
-			{
-				const auto terrain = terrainRenderer->GetTerrain( );
+            for ( const auto terrainRenderer: terrainRenderers )
+            {
+                const auto terrain = terrainRenderer->GetTerrain( );
 
-				if ( !terrain )
-					continue;
+                if ( !terrain )
+                    continue;
 
-				Renderer3D->PrepareTerrain( terrain );
+                Renderer3D->PrepareTerrain( terrain );
 
-				for ( auto& chunk : terrain->GetChunks( ) )
-				{
-					Renderer3D->RenderTerrainChunk( chunk );
-					g_RenderingContext->m_DrawCalls++;
-				}
-			}
+                for ( auto& chunk: terrain->GetChunks( ) )
+                {
+                    Renderer3D->RenderTerrainChunk( chunk );
+                    g_RenderingContext->m_DrawCalls++;
+                }
+            }
 
-			// Render entities
-			
-			for ( auto& renderItem : renderBatch )
-			{
-				for ( auto& mesh : renderItem.first->GetMeshList( ) )
-				{
-					Renderer3D->PrepareMesh( mesh );
+            // Render entities
 
-					for ( const auto modelRenderer : renderItem.second )
-					{
-						const auto entity = modelRenderer->GetParent( );
+            for ( auto& renderItem: renderBatch )
+            {
+                for ( auto& mesh: renderItem.first->GetMeshList( ) )
+                {
+                    Renderer3D->PrepareMesh( mesh );
 
-						bool restoreMesh = false;
+                    for ( const auto modelRenderer: renderItem.second )
+                    {
+                        const auto entity = modelRenderer->GetParent( );
 
-						// Doing shit like this will slow down all rendering but whatever,
-						// it's the user's fault rendering stuff like this :-)
-						if ( modelRenderer->GetMaterialOverride( ) != nullptr || modelRenderer->GetOverridingStencilBuffer( ) )
-						{
-							Renderer3D->PrepareMesh( mesh, modelRenderer->GetMaterialOverride( ), modelRenderer->GetOverridedStencilBufferMask( ) );
+                        bool restoreMesh = false;
 
-							modelRenderer->OverrideStencilBuffer( false, 0x00 );
+                        // Doing shit like this will slow down all rendering but whatever,
+                        // it's the user's fault rendering stuff like this :-)
+                        if ( modelRenderer->GetMaterialOverride( ) != nullptr ||
+                             modelRenderer->GetOverridingStencilBuffer( ) )
+                        {
+                            Renderer3D->PrepareMesh( mesh, modelRenderer->GetMaterialOverride( ),
+                                                     modelRenderer->GetOverridedStencilBufferMask( ) );
 
-							restoreMesh = true;
-						}
+                            modelRenderer->OverrideStencilBuffer( false, 0x00 );
 
-						Renderer3D->RenderMesh( entity->GetTransform( )->GetTransformationMatrix( ) );
+                            restoreMesh = true;
+                        }
 
-						if ( restoreMesh )
-						{
-							Renderer3D->PrepareMesh( mesh );
-						}
-					}
-				}
-			}
+                        Renderer3D->RenderMesh( entity->GetTransform( )->GetTransformationMatrix( ) );
 
-			// Reset some properties that may have been set.
-			Renderer3D->SetWireframeMode( false );
-			Renderer3D->SetBackfaceCulling( true );
-			Renderer3D->SetBlending( false );
+                        if ( restoreMesh )
+                        {
+                            Renderer3D->PrepareMesh( mesh );
+                        }
+                    }
+                }
+            }
 
-			Skybox->Render( );
+            // Reset some properties that may have been set.
+            Renderer3D->SetWireframeMode( false );
+            Renderer3D->SetBackfaceCulling( true );
+            Renderer3D->SetBlending( false );
 
-			if ( g_RenderingCallback )
-				g_RenderingCallback( RenderStage::PostRenderEntities );
+            Skybox->Render( );
 
-			entityRenderTime.Stop( );
+            if ( g_RenderingCallback )
+                g_RenderingCallback( RenderStage::PostRenderEntities );
 
-			Timer postProcessingTime;
+            entityRenderTime.Stop( );
 
-			FinishSceneRendering( );
+            Timer postProcessingTime;
 
-			g_RenderingContext->m_DrawCalls++;
+            FinishSceneRendering( );
 
-			postProcessingTime.Stop( );
+            g_RenderingContext->m_DrawCalls++;
+
+            postProcessingTime.Stop( );
             totalRenderTime.Stop( );
 
             g_RenderingContext->m_EntityUpdateTime = entityUpdateTime.GetElapsedTimeInMs( );
             g_RenderingContext->m_EntitySortTime = entitySortTimer.GetElapsedTimeInMs( );
-			g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
-			g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
-            g_RenderingContext->m_TotalRenderTime = totalRenderTime.GetElapsedTimeInMs();
+            g_RenderingContext->m_EntityRenderTime = entityRenderTime.GetElapsedTimeInMs( );
+            g_RenderingContext->m_PostProcessingTime = postProcessingTime.GetElapsedTimeInMs( );
+            g_RenderingContext->m_TotalRenderTime = totalRenderTime.GetElapsedTimeInMs( );
 
-			if ( g_RenderingCallback )
-				g_RenderingCallback( RenderStage::PostRender );
+            if ( g_RenderingCallback )
+                g_RenderingCallback( RenderStage::PostRender );
         }
 
-		void SetRenderingContext( RenderingContext* renderingContext ) override
-		{
-			g_RenderingContext = renderingContext;
-		}
+        void SetRenderingContext( RenderingContext* renderingContext ) override
+        {
+            g_RenderingContext = renderingContext;
+        }
 
-		RenderingContext* GetRenderingContext( ) override
-		{
-			return g_RenderingContext;
-		}
+        RenderingContext* GetRenderingContext( ) override
+        {
+            return g_RenderingContext;
+        }
 
-		void SetRenderingCallback( const RenderCallback fn ) override
-		{
-			g_RenderingCallback = fn;
-		}
+        void SetRenderingCallback( const RenderCallback fn ) override
+        {
+            g_RenderingCallback = fn;
+        }
 
-		void PrepareSceneRendering( ) override
-		{
-			PostProcessing->GetRenderBuffer( )->Bind( );
+        void PrepareSceneRendering( ) override
+        {
+            PostProcessing->GetRenderBuffer( )->Bind( );
 
-			// Clear the buffers
-			glClearColor( g_RenderingContext->m_ClearColor.r, g_RenderingContext->m_ClearColor.g, g_RenderingContext->m_ClearColor.b, 1.f );
-			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+            // Clear the buffers
+            glClearColor( g_RenderingContext->m_ClearColor.r, g_RenderingContext->m_ClearColor.g,
+                          g_RenderingContext->m_ClearColor.b, 1.f );
+            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
-			// Reset the viewport size.
-			glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
+            // Reset the viewport size.
+            glViewport( 0, 0, g_RenderingContext->m_Width, g_RenderingContext->m_Height );
 
-			// Enable depth test, stencil testing and face culling
-			glEnable( GL_DEPTH_TEST );
-			glEnable( GL_STENCIL_TEST );
-			glEnable( GL_CULL_FACE );
+            // Enable depth test, stencil testing and face culling
+            glEnable( GL_DEPTH_TEST );
+            glEnable( GL_STENCIL_TEST );
+            glEnable( GL_CULL_FACE );
 
-			glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
-			glCullFace( GL_BACK );
+            glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
+            glCullFace( GL_BACK );
 
-			if ( g_RenderingContext->m_Camera != nullptr )
-				Renderer3D->UploadCameraData( g_RenderingContext->m_Camera );
+            if ( g_RenderingContext->m_Camera != nullptr )
+                Renderer3D->UploadCameraData( g_RenderingContext->m_Camera );
 
-			Renderer3D->SetShader( nullptr );
-			Renderer3D->SetWireframeMode( false );
-			Renderer3D->SetBackfaceCulling( true );
-		}
+            Renderer3D->SetShader( nullptr );
+            Renderer3D->SetWireframeMode( false );
+            Renderer3D->SetBackfaceCulling( true );
+        }
 
-		void FinishSceneRendering( ) override
-		{
-			const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
+        void FinishSceneRendering( ) override
+        {
+            const bool hasFrameBuffer = g_RenderingContext->m_FrameBuffer != nullptr;
 
-			// Setup frame buffer
-			if ( hasFrameBuffer )
-			{
-				g_RenderingContext->m_FrameBuffer->Bind( );
+            // Setup frame buffer
+            if ( hasFrameBuffer )
+            {
+                g_RenderingContext->m_FrameBuffer->Bind( );
 
-				// Override rendering context's size variables.
-				if ( g_RenderingContext->m_AutoUpdateSize )
-				{
-					g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
-					g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
-				}
-			}
-			else
-			{
-				glBindFramebuffer( GL_FRAMEBUFFER, 0 );
-			}
+                // Override rendering context's size variables.
+                if ( g_RenderingContext->m_AutoUpdateSize )
+                {
+                    g_RenderingContext->m_Width = g_RenderingContext->m_FrameBuffer->GetWidth( );
+                    g_RenderingContext->m_Height = g_RenderingContext->m_FrameBuffer->GetHeight( );
+                }
+            } else
+            {
+                glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+            }
 
-			PostProcessing->Render( );
-		}
+            PostProcessing->Render( );
+        }
 
-		void Setup( ) override
-		{
-			Log->Debug( "Pine::RenderManager->Setup( )" );
+        void Setup( ) override
+        {
+            Log->Debug( "Pine::RenderManager->Setup( )" );
 
-			g_RenderingImGuiContext = ImGui::CreateContext( );
-		}
+            g_RenderingImGuiContext = ImGui::CreateContext( );
+        }
 
-	};
+    };
 
-	IRenderManager* CreateRenderManagerInterface( )
-	{
-		return new CRenderManager;
-	}
+    IRenderManager* CreateRenderManagerInterface( )
+    {
+        return new CRenderManager;
+    }
 
 }

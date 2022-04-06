@@ -30,6 +30,7 @@ namespace Pine
 
 			m_PhysicsWorld = m_PhysicsCommon->createPhysicsWorld( );
             m_PhysicsWorld->setIsDebugRenderingEnabled(false);
+            m_PhysicsWorld->enableSleeping(true);
 		}
 
 		void Dispose( ) override
@@ -53,16 +54,27 @@ namespace Pine
 
 			accumulator += deltaTime;
 
+            if (accumulator <= timeStep)
+            {
+                return;
+            }
+
+            const double physicsTimeDelta = accumulator;
+
+            accumulator = 0;
+
             Timer prePhysTimer;
 
-			const auto rigidBodyCount = Components->GetComponentCount( ComponentType::RigidBody );
-			const auto collider3DCount = Components->GetComponentCount( ComponentType::Collider3D );
+			const auto rigidBodyData = Components->GetComponentData( ComponentType::RigidBody );
+			const auto collider3DData = Components->GetComponentData( ComponentType::Collider3D );
 
 			// Call pre-physics update
 
-			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigid body
+			for ( int i = 0; i < rigidBodyData->m_DataValidSize; i++ ) // Rigid body
 			{
-				const auto component = Components->GetComponent( ComponentType::RigidBody, i );
+                if (!rigidBodyData->m_DataValid[i]) continue;
+
+				const auto component = rigidBodyData->GetComponent( i );
 
 				if ( !component )
 					continue;
@@ -70,9 +82,11 @@ namespace Pine
 				dynamic_cast< RigidBody* >( component )->OnPrePhysicsUpdate( );
 			}
 
-			for ( int i = 0; i < collider3DCount; i++ ) // Collider 3D
-			{
-				const auto component = Components->GetComponent( ComponentType::Collider3D, i );
+            for ( int i = 0; i < collider3DData->m_DataValidSize; i++ ) // Rigid body
+            {
+                if (!collider3DData->m_DataValid[i]) continue;
+
+                const auto component = collider3DData->GetComponent( i );
 
 				if ( !component )
 					continue;
@@ -85,7 +99,7 @@ namespace Pine
 
             Timer physTime;
 
-            m_PhysicsWorld->update( deltaTime );
+            m_PhysicsWorld->update( physicsTimeDelta );
 
             physTime.Stop();
             m_PhysicsTime = physTime.GetElapsedTimeInMs();
@@ -93,9 +107,11 @@ namespace Pine
 			// Call post-physics update
             Timer postPhys;
 
-			for ( int i = 0; i < rigidBodyCount; i++ ) // Rigidbody
-			{
-				const auto component = Components->GetComponent( ComponentType::RigidBody, i );
+            for ( int i = 0; i < rigidBodyData->m_DataValidSize; i++ ) // Rigid body
+            {
+                if (!rigidBodyData->m_DataValid[i]) continue;
+
+                const auto component = rigidBodyData->GetComponent( i );
 
 				if ( !component )
 					continue;

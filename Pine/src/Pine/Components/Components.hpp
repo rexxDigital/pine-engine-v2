@@ -6,7 +6,26 @@
 namespace Pine
 {
 
-	class IComponents : public IInterface
+    struct ComponentData_t
+    {
+        Pine::IComponent* m_Component;
+        size_t m_ComponentSize;
+
+        const char* m_Name;
+
+        void* m_Data = nullptr;
+        size_t m_DataSize = 0;
+
+        bool* m_DataValid = nullptr;
+        size_t m_DataValidSize = 0;
+
+        __forceinline IComponent* GetComponent( int index )
+        {
+            return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( m_Data ) + ( m_ComponentSize * index ) );
+        }
+    };
+
+    class IComponents : public IInterface
 	{
 	public:
 
@@ -16,7 +35,11 @@ namespace Pine
 
 		// Enumerate components within types
 		virtual int GetComponentCount( ComponentType type ) = 0;
+
+        // Please don't enumerate through every component wit this, since it would be very slow.
+        // Call GetComponentData() and enumerate manually instead, use ComponentData_t::m_DataValidSize for count, ComponentData_t::m_DataValid[i] and ComponentData_t::GetComponent(i)
 		virtual IComponent* GetComponent( ComponentType type, int index ) = 0;
+		virtual ComponentData_t* GetComponentData( ComponentType type ) = 0;
 
 		// Manage components
 		virtual IComponent* CreateComponent( ComponentType type, bool standalone = false ) = 0;

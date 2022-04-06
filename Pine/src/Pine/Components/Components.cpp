@@ -18,21 +18,9 @@
 namespace
 {
 
-	struct Component_t
-	{
-		Pine::IComponent* m_Component;
-		size_t m_ComponentSize;
+    using namespace Pine;
 
-		const char* m_Name;
-
-		void* m_Data = nullptr;
-		size_t m_DataSize = 0;
-
-		bool* m_DataValid = nullptr;
-		size_t m_DataValidSize = 0;
-	};
-
-	int FindAvailableDataSlot( const Component_t* comp )
+	int FindAvailableDataSlot( const ComponentData_t* comp )
 	{
 		for ( int i = 0; i < comp->m_DataValidSize; i++ )
 		{
@@ -43,7 +31,7 @@ namespace
 		return -1; // ran out of data?
 	}
 
-	void ResizeData( Component_t* comp, const size_t elementSize, const size_t newSize )
+	void ResizeData( ComponentData_t* comp, const size_t elementSize, const size_t newSize )
 	{
 		if ( elementSize == 0 )
 			return;
@@ -93,7 +81,7 @@ namespace Pine
 	{
 	private:
 
-		std::vector<Component_t> g_Components;
+		std::vector<ComponentData_t> g_Components;
 
 		void RegisterInternalComponents( )
 		{
@@ -147,7 +135,7 @@ namespace Pine
 
 		int GetComponentCount( ComponentType type ) override
 		{
-			Component_t* comp = nullptr;
+			ComponentData_t* comp = nullptr;
 
 			for ( auto& component : g_Components )
 			{
@@ -177,7 +165,7 @@ namespace Pine
 
 		IComponent* GetComponent( ComponentType type, int index ) override
 		{
-			Component_t* comp = nullptr;
+			ComponentData_t* comp = nullptr;
 
 			for ( auto& component : g_Components )
 			{
@@ -200,6 +188,28 @@ namespace Pine
 			return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * index ) );
 		}
 
+        ComponentData_t* GetComponentData( ComponentType type ) override
+        {
+            ComponentData_t* comp = nullptr;
+
+            for ( auto& component : g_Components )
+            {
+                if ( !component.m_Component )
+                    continue;
+
+                if ( component.m_Component->GetType( ) == type )
+                {
+                    comp = &component;
+                    break;
+                }
+            }
+
+            if ( !comp )
+                return nullptr;
+
+            return comp;
+        }
+
 		const char* GetComponentTypeName( ComponentType type ) override
 		{
 			return g_Components[ static_cast< int >( type ) ].m_Name;
@@ -207,7 +217,7 @@ namespace Pine
 
 		IComponent* CreateComponent( ComponentType type, bool standalone ) override
 		{
-			Component_t* comp = nullptr;
+			ComponentData_t* comp = nullptr;
 
 			for ( auto& component : g_Components )
 			{
@@ -282,7 +292,7 @@ namespace Pine
 				return true;
 			}
 
-			Component_t* comp = nullptr;
+			ComponentData_t* comp = nullptr;
 
 			for ( auto& component : g_Components )
 			{
@@ -319,7 +329,7 @@ namespace Pine
 		{
 			Log->Debug( "Pine::Components->CopyComponent( ): standalone -> " + std::to_string( standalone ) );
 
-			Component_t* comp = nullptr;
+			ComponentData_t* comp = nullptr;
 
 			for ( auto& component : g_Components )
 			{
@@ -374,7 +384,7 @@ namespace Pine
 
 		void RegisterComponent( IComponent* component, const size_t componentSize, const char* str ) override
 		{
-			Component_t comp;
+			ComponentData_t comp;
 
 			comp.m_Component = component;
 			comp.m_Name = str;
@@ -384,7 +394,7 @@ namespace Pine
 			{
 				component->SetStandalone( false );
 
-				ResizeData( &comp, componentSize, 1024 ); // By default make space for 256 components
+				ResizeData( &comp, componentSize, 512 ); // By default make space for 256 components
 			}
 
 			g_Components.push_back( comp );

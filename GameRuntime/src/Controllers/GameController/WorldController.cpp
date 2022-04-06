@@ -11,10 +11,10 @@ void WorldController::OnSetup( )
 {
     Pine::Log->Message( "WorldController::OnSetup( )" );
 
-    auto treeBlueprint = Pine::Assets->GetAsset<Pine::Blueprint>( "Projects\\Debug\\Blueprints\\Tree.bpt" );
+    auto treeBlueprint = Pine::Assets->GetAsset<Pine::Blueprint>( "Projects\\Debug\\Blueprints\\TreeNonPhys.bpt" );
     if ( treeBlueprint )
     {
-        constexpr int treeAmount = 256;
+        constexpr int treeAmount = 200;
 
         srand( time( NULL ) );
 
