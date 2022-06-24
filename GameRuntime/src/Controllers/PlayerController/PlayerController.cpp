@@ -6,14 +6,14 @@
 #include "Pine/Entity/Entity.hpp"
 #include "Pine/Components/RigidBody/RigidBody.hpp"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
+
 
 void PlayerController::OnSetup( )
 {
     Pine::Log->Message( "PlayerController::OnSetup( )" );
 
     // This would eventually be configured within the editor, instead of being created through code.
-
     m_Pitch = Pine::Input->CreateBinding("Player Pitch");
     m_Pitch->AddAxisBinding(Pine::Axis::MouseY, 0.1f );
 

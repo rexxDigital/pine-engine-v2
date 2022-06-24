@@ -128,7 +128,7 @@ namespace Pine
 
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-			io.Fonts->AddFontFromFileTTF( "Assets/Engine/OpenSans-Regular.ttf", 17.f );
+			io.Fonts->AddFontFromFileTTF( "Assets/Engine/Fonts/OpenSans-Regular.ttf", 17.f );
 		}
 
 		void Dispose( ) override

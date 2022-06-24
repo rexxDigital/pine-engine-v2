@@ -250,7 +250,7 @@ void Editor::Gui::Utility::AssetIcon::Update( )
 			icon = m_Icons[ asset->GetPath( ).string( ) ].get( );
 		}
 
-		if ( asset->GetType( ) == Pine::AssetType::Invalid && Pine::String::EndsWith( icon->m_Path, ".dll" ) )
+		if ( asset->GetType( ) == Pine::AssetType::Invalid && Pine::String::EndsWith( icon->m_Path, ".so" ) )
 		{
 			icon->m_Texture2D = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/code-file.png" );
 		}

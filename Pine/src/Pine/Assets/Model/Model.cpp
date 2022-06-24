@@ -109,16 +109,16 @@ namespace
 
                 std::string filePathStr = file_path.C_Str();
 
-                if ( !Pine::String::StartsWith( filePathStr, "C:\\" ) ) // Quick dirty fix for a "bug"
+                if ( !(Pine::String::StartsWith( filePathStr, "C:/" ) || Pine::String::StartsWith( filePathStr, "/" )) ) // Quick dirty fix for a "bug"
                 {
-                    eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + filePathStr ) ) );
+                    eMaterial->SetDiffuse( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "/" + filePathStr ) ) );
                 }
             }
 
 			//if ( material->GetTextureCount( aiTextureType_SPECULAR ) > 0 ) {
 			//	aiString file_path;
 			//	material->GetTexture( aiTextureType_SPECULAR, 0, &file_path );
-			//	eMaterial->SetSpecular( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "\\" + file_path.C_Str( ) ) ) );
+			//	eMaterial->SetSpecular( reinterpret_cast< Pine::Texture2D* >( Pine::Assets->LoadFromFile( parentDir + "/" + file_path.C_Str( ) ) ) );
 			//}
 
 			eMaterial->SetGenerated( true );
@@ -131,7 +131,7 @@ namespace
 		// Loop through all the meshes within the model
 		for ( int i = 0; i < node->mNumMeshes; i++ )
 		{
-			const auto mesh = scene->mMeshes[ node->mMeshes[ i ] ]; // Retrieve the ASSIMOP mesh class
+			const auto mesh = scene->mMeshes[ node->mMeshes[ i ] ]; // Retrieve the ASSIMP mesh class
 			const auto engineMesh = mdl->CreateMesh( ); // Create a new instance of the Mesh class within the engine
 
 			ProcessMesh( engineMesh, mesh, scene );
@@ -181,7 +181,7 @@ bool Pine::Model::LoadFromFile( )
 	ProcessNode( this, scene->mRootNode, scene );
 
 	// Load custom materials if we have any:
-	const auto assetFilePath = m_FilePath.parent_path( ).string( ) + "\\" + m_FilePath.filename( ).string( ) + ".asset";
+	const auto assetFilePath = m_FilePath.parent_path( ).string( ) + "/" + m_FilePath.filename( ).string( ) + ".asset";
 
 	if ( std::filesystem::exists( assetFilePath ) )
 	{
@@ -233,7 +233,7 @@ bool Pine::Model::SaveToFile( )
 	nlohmann::json j;
 	bool wroteData = false;
 
-	const auto assetFilePath = m_FilePath.parent_path( ).string( ) + "\\" + m_FilePath.filename( ).string( ) + ".asset";
+	const auto assetFilePath = m_FilePath.parent_path( ).string( ) + "/" + m_FilePath.filename( ).string( ) + ".asset";
 
 	// Check if we have any custom materials in place.
 	for ( int i = 0; i < m_MeshList.size( ); i++ )

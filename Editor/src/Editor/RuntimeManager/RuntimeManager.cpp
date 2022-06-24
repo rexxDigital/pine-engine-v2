@@ -8,7 +8,7 @@
 
 namespace
 {
-    std::string g_ProjectRuntimePath = "Debug/GameRuntime.dll";
+    std::string g_ProjectRuntimePath = "libGameRuntime.so";
     Pine::ModuleHandle* g_ProjectRuntime = nullptr;
 
     std::string g_RuntimeSourcePath = "";
@@ -160,6 +160,7 @@ bool Editor::RuntimeManager::CompileRuntime( )
         return false;
     }
 
+    /*
     if ( !std::filesystem::exists( "../bin-runtime" ) )
     {
         Pine::Log->Message( "Setting up make files..." );
@@ -172,8 +173,9 @@ bool Editor::RuntimeManager::CompileRuntime( )
             return false;
         }
     }
+    */
 
-    if ( std::system( "cd ../bin-runtime && cmake --build . --target GameRuntime" ) != 0 )
+    if ( std::system( "cd ../cmake-build-debug && cmake --build . --target GameRuntime" ) != 0 )
     {
         Pine::Log->Error( "Failed to compile game runtime." );
         return false;

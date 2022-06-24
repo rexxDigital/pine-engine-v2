@@ -150,7 +150,7 @@ namespace Pine
 			if ( factory != nullptr )
 			{
 				// Quick hack to prevent loading sky box images twice.
-				if ( factory->m_Type == AssetType::Texture2D && std::filesystem::exists( std::filesystem::path( filePath ).parent_path( ).string( ) + "\\IGNORE_TEXTURES" ) )
+				if ( factory->m_Type == AssetType::Texture2D && std::filesystem::exists( std::filesystem::path( filePath ).parent_path( ).string( ) + "/IGNORE_TEXTURES" ) )
 				{
 					return nullptr;
 				}

@@ -24,7 +24,7 @@ bool Pine::Window::Internal::Create( )
     glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
     glfwWindowHintString(GLFW_X11_CLASS_NAME, "floating_window");
 
-    m_Window = glfwCreateWindow( 1024, 768, "Pine", m_FullscreenMode ? glfwGetPrimaryMonitor() : nullptr, nullptr );
+    m_Window = glfwCreateWindow( 1280, 720, "Pine", m_FullscreenMode ? glfwGetPrimaryMonitor() : nullptr, nullptr );
     if ( m_Window == nullptr )
     {
         Log->Fatal( "Failed to create window." );

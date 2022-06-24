@@ -36,6 +36,9 @@ namespace Pine
 		// The texture we use if there is no texture applied, 1x1 white.
 		Texture2D* g_DefaultTexture = nullptr;
 
+        // If for some reason the mesh's material is nullptr
+        Material* g_MissingMaterial = nullptr;
+
 		// Some optimizations for OpenGL, we store stuff in CPU memory instead of querying the GPU each frame
 		uint32_t g_CurrentBoundTexture[ 32 ] = { };
 		uint8_t g_CurrentStencilMode = 0x00;
@@ -73,7 +76,7 @@ namespace Pine
 
             if (!material)
             {
-                return;
+                material = g_MissingMaterial;
             }
 
 			if ( overrideMaterial != nullptr )
@@ -378,9 +381,10 @@ namespace Pine
 			//g_DefaultTexture->CreateFromData( 1, 1, GL_RGBA, reinterpret_cast< void* >( &whiteData ) );
 
 			//// Fake a texture being loaded if it's required elsewhere.
-			//Assets->MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture.png" );
+			//Assets->MapAsset( g_DefaultTexture, "Assets/Engine/DefaultTexture.png" );
 
-			g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets/Engine/DefaultTexture.png" );
+			g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets/Engine/Textures/DefaultTexture.png" );
+            g_MissingMaterial = Assets->GetAsset<Material>("Assets/Engine/Materials/MissingMaterial.mat");
 			g_TerrainShader = Assets->GetAsset<Shader>( "Assets/Engine/Shaders/Terrain.shr" );
 		}
 

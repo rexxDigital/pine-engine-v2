@@ -6,7 +6,7 @@
 Pine::Material::Material( )
 {
 	m_Type = AssetType::Material;
-	m_Shader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
+	m_Shader = Assets->GetAsset<Shader>( "Assets/Engine/Shaders/Default.shr" );
 }
 
 glm::vec3& Pine::Material::DiffuseColor( )
@@ -167,7 +167,7 @@ bool Pine::Material::LoadFromFile( )
 		// Fall back to default shader if shit goes wrong
 		if ( m_Shader == nullptr )
 		{
-			m_Shader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\Default.shr" );
+			m_Shader = Pine::Assets->GetAsset<Pine::Shader>( "Assets/Engine/Shaders/Default.shr" );
 		}
 
 	}

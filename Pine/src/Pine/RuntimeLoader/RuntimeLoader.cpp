@@ -5,6 +5,12 @@
 #include <utility>
 #include <vector>
 
+#ifdef _WIN32
+    #include <Windows.h>
+#else
+    #include <dlfcn.h>
+#endif
+
 namespace Pine
 {
 
@@ -16,14 +22,15 @@ namespace Pine
 
 		ModuleHandle* LoadModule( const std::filesystem::path& modPath ) override
 		{
-			#ifdef WIN32
+            Log->Message( "Attempting to load runtime library: " + modPath.filename( ).string( ) );
 
-			Log->Message( "Attempting to load runtime library: " + modPath.filename( ).string( ) );
+            if ( !std::filesystem::exists( modPath ) )
+                return nullptr;
 
-			if ( !std::filesystem::exists( modPath ) )
-				return nullptr;
-			if ( modPath.filename( ).extension( ).string( ) != ".dll" )
-				return nullptr;
+    #ifdef WIN32
+
+            if ( modPath.filename( ).extension( ).string( ) != ".dll" )
+                return nullptr;
 
 			const auto handle = new ModuleHandle;
 
@@ -31,7 +38,8 @@ namespace Pine
 
 			const auto dllHandle = LoadLibraryA( modPath.string( ).c_str( ) );
 
-
+			if ( !dllHandle )
+            {
 				Log->Error( "Failed to load library, LoadLibraryA returned nullptr." );
 
 				delete handle;
@@ -54,50 +62,81 @@ namespace Pine
 				return nullptr;
 			}
 
-			modInit( handle, GetPineInstance( ) );
+    #else
 
-			handle->m_Loaded = true;
-			handle->m_Path = modPath;
-			handle->m_Instance = dllHandle;
+            if ( modPath.filename( ).extension( ).string( ) != ".so" )
+                return nullptr;
 
-			m_Modules.push_back( handle );
+            const auto handle = new ModuleHandle;
 
-			return handle;
+            // Attempt to load the library into memory
 
-			#else
 
-				return nullptr;
 
-			#endif
+            const auto dllHandle = dlopen( std::filesystem::absolute(modPath).string( ).c_str( ), RTLD_NOW );
+
+            if ( !dllHandle )
+            {
+                Log->Error( "Failed to load library, dlopen returned nullptr, reason: " + std::string( dlerror( ) ) );
+
+
+                return nullptr;
+            }
+
+            const auto modInit = reinterpret_cast< ModuleInitializeFn >( dlsym( dllHandle, "ModuleInitialize" ) );
+
+            if ( !modInit )
+            {
+                Log->Error( "Failed to load library, could not find 'ModuleInitialize'" );
+
+                dlclose( dllHandle );
+
+                return nullptr;
+            }
+
+    #endif
+
+            modInit( handle, GetPineInstance( ) );
+
+            handle->m_Loaded = true;
+            handle->m_Path = modPath;
+            handle->m_Instance = dllHandle;
+
+            m_Modules.push_back( handle );
+
+            return handle;
 
 		}
 
 		bool UnloadModule( ModuleHandle* handle ) override
 		{
+            const auto mod = handle->m_Instance;
+            const auto loaded = handle->m_Loaded;
+
+            for ( int i = 0; i < m_Modules.size( ); i++ )
+            {
+                if ( handle == m_Modules[ i ] )
+                {
+                    m_Modules.erase( m_Modules.begin( ) + i );
+                    break;
+                }
+            }
+
+            delete handle;
+
 			#ifdef WIN32
 
-			const auto mod = static_cast< HMODULE >( handle->m_Instance );
-			const auto loaded = handle->m_Loaded;
-
-			for ( int i = 0; i < m_Modules.size( ); i++ )
-			{
-				if ( handle == m_Modules[ i ] )
-				{
-					m_Modules.erase( m_Modules.begin( ) + i );
-					break;
-				}
-			}
-
-			delete handle;
-
 			if ( loaded )
-				FreeLibrary( mod );
+				FreeLibrary( static_cast< HMODULE >( mod ) );
 
 			return true;
 
 			#else
-			
-			return false;
+
+            if (loaded)
+                dlclose(mod);
+
+            return true;
 
 			#endif
 		}

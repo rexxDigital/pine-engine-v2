@@ -86,10 +86,10 @@ void Editor::Gui::Setup( )
 {
 	const ImGuiIO& io = ImGui::GetIO( );
 
-	Fonts::TitleFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/OpenSans-Regular.ttf", 34.f );
-	Fonts::BoldFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/OpenSans-Regular.ttf", 24.f );
+	Fonts::TitleFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/Fonts/OpenSans-Regular.ttf", 34.f );
+	Fonts::BoldFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/Fonts/OpenSans-Regular.ttf", 24.f );
 
-	Fonts::CodeFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/Consolas.ttf", 13.f );
+	Fonts::CodeFont = io.Fonts->AddFontFromFileTTF( "Assets/Engine/Fonts/Consolas.ttf", 13.f );
 
 	Pine::Gui->SetGuiRenderCallback( OnRenderGui );
 }

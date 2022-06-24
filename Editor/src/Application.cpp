@@ -9,7 +9,7 @@ int main( )
 		return 1;
 	}
 
-	Pine::Window::SetSize( 700, 400 );
+	Pine::Window::SetSize( 1280, 720 );
 
 	Editor::Setup( );
 

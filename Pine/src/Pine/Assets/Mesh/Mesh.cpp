@@ -6,7 +6,7 @@ Pine::Mesh::Mesh( Model* model )
 	m_VertexArray = std::make_unique<VertexArray>( );
 	m_VertexArray->Create( );
 
-	m_Material = Assets->GetAsset<Pine::Material>( "Assets\\Engine\\Materials\\Default.mat" );
+	m_Material = Assets->GetAsset<Pine::Material>( "Assets/Engine/Materials/Default.mat" );
 
 	m_ParentModel = model;
 }

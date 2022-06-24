@@ -1,4 +1,3 @@
-#include <Windows.h>
 #include <Pine/Pine.hpp>
 
 #include "Pine/Entitylist/EntityList.hpp"
@@ -10,7 +9,7 @@
 
 extern "C" {
 
-	bool __declspec( dllexport ) __stdcall ModuleInitialize( Pine::ModuleHandle* handle, const Pine::PineInstance* pineInstance )
+	bool ModuleInitialize( Pine::ModuleHandle* handle, const Pine::PineInstance* pineInstance )
     {
 		UseInstance( pineInstance );
 
@@ -21,6 +20,8 @@ extern "C" {
 	}
 
 }
+
+#ifdef WIN32
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved )
 {
@@ -35,3 +36,4 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReser
 	return TRUE;
 }
 
+#endif

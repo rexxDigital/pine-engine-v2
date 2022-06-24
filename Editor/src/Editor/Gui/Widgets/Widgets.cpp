@@ -148,7 +148,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	if ( currentAsset != nullptr )
 	{
-		strcpy( buff, currentAsset->GetPath( ).string( ).c_str( ) );
+		strcpy( buff, currentAsset->GetPath( ).filename().string().c_str() );
 	}
 	else
 	{
