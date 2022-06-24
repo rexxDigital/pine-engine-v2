@@ -1,6 +1,6 @@
 #pragma once
-#include "..\..\Components\Camera\Camera.hpp"
-#include "..\..\OpenGL\FrameBuffer\FrameBuffer.hpp"
+#include "../../Components/Camera/Camera.hpp"
+#include "../../OpenGL/FrameBuffer/FrameBuffer.hpp"
 #include <glm/vec4.hpp>
 
 namespace Pine {

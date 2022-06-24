@@ -96,11 +96,11 @@ namespace
 		{
 			Pine::Model* model;
 
-			static auto boxPrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\cube.fbx" );
-			static auto capsulePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\capsule.fbx" );
-			static auto spherePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets\\Engine\\Primitive Shapes\\sphere.fbx" );
+			static auto boxPrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets/Engine/Primitive Shapes/cube.fbx" );
+			static auto capsulePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets/Engine/Primitive Shapes/capsule.fbx" );
+			static auto spherePrimitiveModel = Pine::Assets->GetAsset<Pine::Model>( "Assets/Engine/Primitive Shapes/sphere.fbx" );
 
-			static auto boxColliderShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ColliderBox.shr" );
+			static auto boxColliderShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets/Editor/Shaders/ColliderBox.shr" );
 
 			glm::vec3 scaleSize = collider3D->GetSize( );
 
@@ -199,7 +199,7 @@ namespace
 		}
 
 		Editor::Gui::Utility::AssetIcon::Render( );
-		RenderPicPanelTexture(  );
+//		RenderPicPanelTexture(  );
 	}
 
 	void OnRenderingPass( Pine::RenderStage stage )
@@ -228,7 +228,7 @@ void Editor::RenderingHandler::Setup( )
 	Pine::RenderManager->SetRenderingCallback( OnRenderingPass );
 
 	g_EditorCamera = Editor::EditorEntity::GetEntity( )->GetComponent<Pine::Camera>( );
-	g_OutlineShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets\\Editor\\Shaders\\ObjectOutline.shr" );
+	g_OutlineShader = Pine::Assets->GetAsset<Pine::Shader>( "Assets/Editor/Shaders/ObjectOutline.shr" );
 }
 
 Pine::FrameBuffer* Editor::RenderingHandler::GetFrameBuffer( )

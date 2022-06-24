@@ -30,7 +30,7 @@ namespace Pine
 		void RegisterNativeScript( const std::string& name, size_t size, std::function<NativeScript* ( )> factory );
 	};
 
-	typedef bool( __stdcall* ModuleInitializeFn )( ModuleHandle* handle, PineInstance* pineInstance );
+	typedef bool( *ModuleInitializeFn )( ModuleHandle* handle, PineInstance* pineInstance );
 
 	class IRuntimeLoader : public IInterface
 	{

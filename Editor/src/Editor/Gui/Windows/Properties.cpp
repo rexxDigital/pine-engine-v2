@@ -2,8 +2,8 @@
 
 #include "../Gui.hpp"
 
-#include <Pine\Entity\Entity.hpp>
-#include <Pine\Assets\IAsset\IAsset.hpp>
+#include <Pine/Entity/Entity.hpp>
+#include <Pine/Assets/IAsset/IAsset.hpp>
 #include <Pine/Components/Components.hpp>
 
 #include "../Utility/ComponentPropertiesRenderer/ComponentPropertiesRenderer.hpp"
@@ -23,7 +23,7 @@ void DisplayEntityProperties( Pine::Entity* e )
 
 	ImGui::SameLine( );
 
-	strcpy_s( nameBuffer, e->GetName( ).c_str( ) );
+	strcpy( nameBuffer, e->GetName( ).c_str( ) );
 
 	if ( ImGui::InputText( std::string( "##Name" + std::to_string( e->GetId( ) ) ).c_str( ), nameBuffer, 64 ) )
 	{
@@ -134,7 +134,7 @@ void DisplayAddComponentPopup( )
 
 		if ( initialize )
 		{
-			strcpy_s( buff, "\0" );
+			strcpy( buff, "\0" );
 
 			components.clear( );
 			displayComponents.clear( );

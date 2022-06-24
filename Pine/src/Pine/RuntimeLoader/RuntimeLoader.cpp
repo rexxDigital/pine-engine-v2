@@ -4,7 +4,6 @@
 
 #include <utility>
 #include <vector>
-#include <Windows.h>
 
 namespace Pine
 {
@@ -17,6 +16,8 @@ namespace Pine
 
 		ModuleHandle* LoadModule( const std::filesystem::path& modPath ) override
 		{
+			#ifdef WIN32
+
 			Log->Message( "Attempting to load runtime library: " + modPath.filename( ).string( ) );
 
 			if ( !std::filesystem::exists( modPath ) )
@@ -30,8 +31,7 @@ namespace Pine
 
 			const auto dllHandle = LoadLibraryA( modPath.string( ).c_str( ) );
 
-			if ( !dllHandle )
-			{
+
 				Log->Error( "Failed to load library, LoadLibraryA returned nullptr." );
 
 				delete handle;
@@ -63,10 +63,19 @@ namespace Pine
 			m_Modules.push_back( handle );
 
 			return handle;
+
+			#else
+
+				return nullptr;
+
+			#endif
+
 		}
 
 		bool UnloadModule( ModuleHandle* handle ) override
 		{
+			#ifdef WIN32
+
 			const auto mod = static_cast< HMODULE >( handle->m_Instance );
 			const auto loaded = handle->m_Loaded;
 
@@ -85,6 +94,12 @@ namespace Pine
 				FreeLibrary( mod );
 
 			return true;
+
+			#else
+			
+			return false;
+
+			#endif
 		}
 
 		NativeScriptFactory* FindNativeScriptFactory( const std::string& name ) override

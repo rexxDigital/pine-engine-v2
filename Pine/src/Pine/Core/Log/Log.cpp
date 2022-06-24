@@ -1,7 +1,6 @@
 #include "Log.hpp"
 #include <iostream>
 #include <vector>
-#include <Windows.h>
 
 namespace Pine
 {

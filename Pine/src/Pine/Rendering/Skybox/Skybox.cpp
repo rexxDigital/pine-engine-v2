@@ -76,7 +76,7 @@ namespace Pine
 			g_SkyboxVertexArray->Bind( );
 			g_SkyboxVertexArray->StoreFloatBuffer( skyboxVertices, 3, 0 );
 
-			g_SkyboxShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Skybox.shr" );
+			g_SkyboxShader = Assets->GetAsset<Shader>( "Assets/Engine/Shaders/Skybox.shr" );
 		}
 
 		void Dispose( ) override

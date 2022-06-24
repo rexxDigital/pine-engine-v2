@@ -6,7 +6,7 @@
 #include "../Windows/Windows.hpp"
 #include "../../ProjectManager/ProjectManager.hpp"
 
-#include <imgui/imgui.h>
+#include <ImGui/imgui.h>
 
 #include "Pine/Assets/Assets.hpp"
 #include "Pine/Core/Log/Log.hpp"
@@ -30,8 +30,8 @@ void Editor::Gui::MainMenuBar::Render( )
 	{
 		Pine::Log->Message( "Loading engine assets..." );
 
-		Pine::Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true );
-		Pine::Assets->LoadFromDirectory( "Assets\\Engine", true );
+		Pine::Assets->LoadFromDirectory( "Assets/Engine/Shaders", true );
+		Pine::Assets->LoadFromDirectory( "Assets/Engine", true );
 	}
 
 	if ( ImGui::BeginMainMenuBar( ) )
@@ -91,8 +91,8 @@ void Editor::Gui::MainMenuBar::Render( )
 			{
 				Pine::Log->Message( "Loading engine assets..." );
 
-				Pine::Assets->LoadFromDirectory( "Assets\\Engine\\Shaders", true );
-				Pine::Assets->LoadFromDirectory( "Assets\\Engine", true );
+				Pine::Assets->LoadFromDirectory( "Assets/Engine/Shaders", true );
+				Pine::Assets->LoadFromDirectory( "Assets/Engine", true );
 			}
 
 			ImGui::EndMenu( );

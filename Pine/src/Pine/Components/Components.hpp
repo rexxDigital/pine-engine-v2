@@ -19,7 +19,7 @@ namespace Pine
         bool* m_DataValid = nullptr;
         size_t m_DataValidSize = 0;
 
-        __forceinline IComponent* GetComponent( int index )
+        IComponent* GetComponent( int index )
         {
             return reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( m_Data ) + ( m_ComponentSize * index ) );
         }

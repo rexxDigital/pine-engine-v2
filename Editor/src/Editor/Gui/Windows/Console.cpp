@@ -1,6 +1,6 @@
 #include "Windows.hpp"
-#include <Pine\Rendering\RenderManager\RenderManager.hpp>
-#include <Pine\Entity\Entity.hpp>
+#include <Pine/Rendering/RenderManager/RenderManager.hpp>
+#include <Pine/Entity/Entity.hpp>
 
 #include <Pine/Core/Log/Log.hpp>
 

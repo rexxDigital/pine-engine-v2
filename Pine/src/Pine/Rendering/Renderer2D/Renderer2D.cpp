@@ -28,7 +28,7 @@ namespace Pine
 
 		void Setup( ) override
 		{
-			m_RectShader = Assets->GetAsset<Pine::Shader>( "Assets\\Engine\\Shaders\\2D\\Rect.shr" );
+			m_RectShader = Assets->GetAsset<Pine::Shader>( "Assets/Engine/Shaders/2D/Rect.shr" );
 
 			// Setup the quad vertex array
 			m_ScreenQuad = new Pine::VertexArray(  );

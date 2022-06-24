@@ -1,5 +1,5 @@
 #include "UniformBuffer.hpp"
-#include <GL\glew.h>
+#include <GL/glew.h>
 
 void Pine::UniformBuffer::Create( int size, int binding )
 {

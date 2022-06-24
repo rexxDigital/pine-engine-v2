@@ -19,7 +19,7 @@ namespace
 			}
 
 			const std::string shaderDirectory = shader->GetPath( ).parent_path( ).string( );
-			const std::string filePath = shaderDirectory + "\\" + j[ name ].get<std::string>( );
+			const std::string filePath = shaderDirectory + "/" + j[ name ].get<std::string>( );
 
 			if ( !std::filesystem::exists( filePath ) )
 			{

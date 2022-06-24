@@ -1,6 +1,6 @@
 #include "EditorEntity.hpp"
 
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <Pine/Components/NativeScript/NativeScript.hpp>
 
 #include "Pine/Components/Camera/Camera.hpp"

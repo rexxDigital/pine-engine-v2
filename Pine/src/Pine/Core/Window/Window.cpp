@@ -5,9 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <cassert>
 
-#define GLFW_EXPOSE_NATIVE_WIN32
 
-#include <GLFW/glfw3native.h>
+#include <GLFW/glfw3.h>
 
 namespace
 {
@@ -23,6 +22,7 @@ bool Pine::Window::Internal::Create( )
     glfwDefaultWindowHints( );
 
     glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE );
+    glfwWindowHintString(GLFW_X11_CLASS_NAME, "floating_window");
 
     m_Window = glfwCreateWindow( 1024, 768, "Pine", m_FullscreenMode ? glfwGetPrimaryMonitor() : nullptr, nullptr );
     if ( m_Window == nullptr )
@@ -49,7 +49,8 @@ GLFWwindow* Pine::Window::Internal::GetWindowPointer( )
 
 void* Pine::Window::Internal::GetWindowHWND( )
 {
-    return glfwGetWin32Window( m_Window );
+    return nullptr;
+    //return glfwGetWin32Window( m_Window );
 }
 
 void Pine::Window::Show( )

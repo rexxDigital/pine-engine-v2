@@ -7,8 +7,8 @@ namespace Pine
 	class Timer
 	{
 	private:
-		std::chrono::steady_clock::time_point m_BeginTime;
-		std::chrono::steady_clock::time_point m_EndTime;
+		std::chrono::system_clock::time_point m_BeginTime;
+		std::chrono::system_clock::time_point m_EndTime;
 	public:
 		Timer( );
 

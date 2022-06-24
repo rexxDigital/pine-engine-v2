@@ -1,7 +1,0 @@
-{
-	"VertexShader": "ColliderBox\\Vertex.glsl",
-	"FragmentShader": "ColliderBox\\Fragment.glsl",
-	"UniformBuffers": {
-		"Matrices": "Matrices"
-	}
-}

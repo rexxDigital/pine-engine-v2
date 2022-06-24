@@ -1,7 +1,7 @@
 #pragma once
-#include <glm\glm.hpp>
+#include <glm/glm.hpp>
 #include <string>
-#include <Pine\Assets\IAsset\IAsset.hpp>
+#include <Pine/Assets/IAsset/IAsset.hpp>
 
 namespace Pine { class Texture2D; class Entity; }
 

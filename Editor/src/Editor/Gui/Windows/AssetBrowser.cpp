@@ -2,16 +2,16 @@
 #include <filesystem>
 #include <string>
 #include <memory>
-#include <Pine\Assets\IAsset\IAsset.hpp>
-#include <Pine\Assets\Texture2D\Texture2D.hpp>
-#include "Pine\Assets\Assets.hpp"
+#include <Pine/Assets/IAsset/IAsset.hpp>
+#include <Pine/Assets/Texture2D/Texture2D.hpp>
+#include "Pine/Assets/Assets.hpp"
 #include "Pine/Assets/Terrain/Terrain.hpp"
 #include "Pine/Core/Log/Log.hpp"
 #include "Pine/Core/String/String.hpp"
-#include "..\..\ProjectManager\ProjectManager.hpp"
-#include "..\Widgets\Widgets.hpp"
-#include "..\Gui.hpp"
-#include "..\Utility\AssetIcon\AssetIcon.hpp"
+#include "../../ProjectManager/ProjectManager.hpp"
+#include "../Widgets/Widgets.hpp"
+#include "../Gui.hpp"
+#include "../Utility/AssetIcon/AssetIcon.hpp"
 #include "Pine/Assets/Texture3D/Texture3D.hpp"
 #include "Pine/Entity/Entity.hpp"
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
@@ -119,8 +119,8 @@ namespace
 
 	void DisplayItems( PathItem_t* dir )
 	{
-		static auto directoryIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\folder.png" );
-		static auto unknownFileIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\corrupt.png" );
+		static auto directoryIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/folder.png" );
+		static auto unknownFileIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/corrupt.png" );
 
 		Pine::IAsset* selectedAsset = nullptr;
 
@@ -167,7 +167,7 @@ namespace
                     Pine::IAsset* asset = *reinterpret_cast<Pine::IAsset**>(payload->Data);
 
                     // Copy old asset and then remove it.
-                    std::filesystem::copy( asset->GetPath( ), directory->m_Path.string( ) + "\\" + asset->GetFileName( ) );
+                    std::filesystem::copy( asset->GetPath( ), directory->m_Path.string( ) + "/" + asset->GetFileName( ) );
 
                     std::filesystem::remove( asset->GetPath( ) );
 
@@ -330,7 +330,7 @@ void UpdateAssetCache( )
 	g_RootDirectory->m_IsDirectory = true;
 	g_RootDirectory->m_Path = Editor::ProjectManager::GetCurrentProjectDirectory( );
 
-	MapDirectory( "Engine", "Assets\\Engine", g_RootDirectory );
+	MapDirectory( "Engine", "Assets/Engine", g_RootDirectory );
 
 	Editor::Gui::Utility::AssetIcon::Update( );
 
@@ -516,7 +516,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 			{
 				renamePopupOpened = false;
 
-				strcpy_s( buff, Editor::Gui::Globals::SelectedAssetPtrs[ 0 ]->GetFileName( ).c_str( ) );
+				strcpy( buff, Editor::Gui::Globals::SelectedAssetPtrs[ 0 ]->GetFileName( ).c_str( ) );
 
 				ImGui::SetKeyboardFocusHere( 0 );
 			}
@@ -530,7 +530,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 
 				if ( !asset->GetReadOnly( ) )
 				{
-					std::filesystem::rename( asset->GetPath( ), std::string( asset->GetPath( ).parent_path( ).string( ) + "\\" + buff ) );
+					std::filesystem::rename( asset->GetPath( ), std::string( asset->GetPath( ).parent_path( ).string( ) + "/" + buff ) );
 
 					Pine::Assets->DisposeAsset( asset );
 
@@ -569,7 +569,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 			{
 				createPopupOpened = false;
 
-				strcpy_s( buff, "" );
+				strcpy( buff, "" );
 
 				ImGui::SetKeyboardFocusHere( 0 );
 			}
@@ -590,7 +590,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				// Directory
 				if ( g_CreateType == 0 )
 				{
-					std::filesystem::create_directory( std::string( baseDir + "\\" + buff ) );
+					std::filesystem::create_directory( std::string( baseDir + "/" + buff ) );
 
 					ProjectManager::ReloadProjectAssets( );
 				}
@@ -598,7 +598,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				// Material
 				if ( g_CreateType == 1 )
 				{
-					std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", baseDir + "\\" + buff + ".mat" );
+					std::filesystem::copy( "Assets/Engine/Materials/Default.mat", baseDir + "/" + buff + ".mat" );
 
 					ProjectManager::ReloadProjectAssets( );
 				}
@@ -606,7 +606,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				// Level
 				if ( g_CreateType == 2 )
 				{
-					ProjectManager::SaveLevel( baseDir + "\\" + buff + ".lvl" );
+					ProjectManager::SaveLevel( baseDir + "/" + buff + ".lvl" );
 					ProjectManager::ReloadProjectAssets( );
 				}
 
@@ -615,7 +615,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				{
 					const auto terrain = new Pine::Terrain( );
 
-					terrain->SetFilePath( baseDir + "\\" + buff + ".ter" );
+					terrain->SetFilePath( baseDir + "/" + buff + ".ter" );
 					terrain->SaveToFile( );
 					terrain->Dispose( );
 
@@ -629,7 +629,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				{
 					const auto texture3D = new Pine::Texture3D( );
 
-					texture3D->SetFilePath( baseDir + "\\" + buff + ".cmap" );
+					texture3D->SetFilePath( baseDir + "/" + buff + ".cmap" );
 					texture3D->SetUpdated( true );
 					texture3D->SaveToFile( );
 					texture3D->Dispose( );
@@ -671,7 +671,7 @@ void Editor::Gui::Windows::RenderAssetBrowser( )
 				blueprint.CreateFromEntity( entity );
 
 				// I don't feel so good about saving it with the entity's file name but whatever.
-				blueprint.SetFilePath( g_CurrentDirectory->m_Path.string( ) + "\\" + entity->GetName( ) + ".bpt" );
+				blueprint.SetFilePath( g_CurrentDirectory->m_Path.string( ) + "/" + entity->GetName( ) + ".bpt" );
 
 				blueprint.SaveToFile( );
 

@@ -69,7 +69,7 @@ namespace
 			const auto component = Pine::Components->CreateComponent( static_cast< Pine::ComponentType >( componentJson[ "type" ] ), true );
 			if ( component == nullptr )
 			{
-				Pine::Log->Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
+				//Pine::Log->Warning( "PARSING: Failed to create component of type " + componentJson[ "type" ] );
 				continue;
 			}
 

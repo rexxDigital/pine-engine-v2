@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Pine\Assets\Texture2D\Texture2D.hpp"
+#include "Pine/Assets/Texture2D/Texture2D.hpp"
 
 namespace Editor::Gui::Utility::AssetIcon {
 

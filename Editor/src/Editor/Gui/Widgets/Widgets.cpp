@@ -1,9 +1,8 @@
 #include "Widgets.hpp"
-#include <imgui/imgui.h>
+#include <ImGui/imgui.h>
 #include <ImGui/imgui_internal.h>
 #include "Pine/Assets/Texture2D/Texture2D.hpp"
 #include <optional>
-#include <windows.h>
 #include <Pine/Core/Window/Window.hpp>
 #include <Pine/Assets/Assets.hpp>
 #include <Pine/Assets/IAsset/IAsset.hpp>
@@ -16,6 +15,7 @@ namespace
 {
 	std::optional<std::string> OpenFile( const char* filter )
 	{
+#ifdef _WIN32
 		OPENFILENAMEA ofn;
 		CHAR szFile[ 260 ] = { 0 };
 		ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
@@ -29,6 +29,7 @@ namespace
 
 		if ( GetOpenFileNameA( &ofn ) == TRUE )
 			return ofn.lpstrFile;
+#endif
 
 		return std::nullopt;
 	}
@@ -147,11 +148,11 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 
 	if ( currentAsset != nullptr )
 	{
-		strcpy_s( buff, currentAsset->GetPath( ).string( ).c_str( ) );
+		strcpy( buff, currentAsset->GetPath( ).string( ).c_str( ) );
 	}
 	else
 	{
-		strcpy_s( buff, "\0" );
+		strcpy( buff, "\0" );
 	}
 
 	ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
@@ -220,7 +221,7 @@ PickerReturn Editor::Gui::Widgets::AssetPicker( const std::string& str, Pine::IA
 			}
 			else
 			{
-				MessageBoxA( reinterpret_cast< HWND >( Pine::Window::Internal::GetWindowHWND( ) ), "Asset is not loaded.", 0, 0 );
+				//MessageBoxA( reinterpret_cast< HWND >( Pine::Window::Internal::GetWindowHWND( ) ), "Asset is not loaded.", 0, 0 );
 			}
 		}
 	}
@@ -267,11 +268,11 @@ PickerReturn Editor::Gui::Widgets::EntityPicker( const std::string& str, Pine::E
 
 	if ( currentEntity != nullptr )
 	{
-		strcpy_s( buff, currentEntity->GetName( ).c_str( ) );
+		strcpy( buff, currentEntity->GetName( ).c_str( ) );
 	}
 	else
 	{
-		strcpy_s( buff, "\0" );
+		strcpy( buff, "\0" );
 	}
 
 	ImGui::PushStyleVar( ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
@@ -390,7 +391,7 @@ bool Editor::Gui::Widgets::Icon( const std::string& text, bool showBackground, P
 	if ( !showBackground )
 		ImGui::PopStyleColor( );
 
-	ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + ( size / 2.f - ( min( ImGui::CalcTextSize( text.c_str( ) ).x, 64.f ) / 2.f ) ) + 2.f );
+	ImGui::SetCursorPosX( ImGui::GetCursorPosX( ) + ( size / 2.f - ( std::min( ImGui::CalcTextSize( text.c_str( ) ).x, 64.f ) / 2.f ) ) + 2.f );
 	ImGui::TextWrapped( text.c_str( ) );
 
 	ImGui::EndGroup( );

@@ -1,8 +1,8 @@
 #include "ComponentPropertiesRenderer.hpp"
-#include "..\..\Widgets\Widgets.hpp"
+#include "../../Widgets/Widgets.hpp"
 
-#include <Pine\Components\Transform\Transform.hpp>
-#include <Pine\Components\ModelRenderer\ModelRenderer.hpp>
+#include <Pine/Components/Transform/Transform.hpp>
+#include <Pine/Components/ModelRenderer/ModelRenderer.hpp>
 #include <Pine/Components/Camera/Camera.hpp>
 #include <Pine/Rendering/RenderManager/RenderManager.hpp>
 
@@ -147,7 +147,7 @@ namespace
 
 			if ( ImGui::Button( "Create new Terrain", ImVec2( 200.f, 30.f ) ) )
 			{
-				const std::string terrainPath = Editor::ProjectManager::GetCurrentProjectDirectory( ) + "\\terrain.ter";
+				const std::string terrainPath = Editor::ProjectManager::GetCurrentProjectDirectory( ) + "/terrain.ter";
 
 				auto terrain = new Pine::Terrain;
 
@@ -266,7 +266,7 @@ namespace
 
 		char buff[ 64 ];
 
-		strcpy_s( buff, nativeScript->GetFactoryName( ).c_str( ) );
+		strcpy( buff, nativeScript->GetFactoryName( ).c_str( ) );
 
 		ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
 		ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );

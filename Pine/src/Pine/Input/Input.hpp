@@ -24,7 +24,7 @@ namespace Pine
 
 	struct AxisBinding_t
 	{
-		Axis Axis = Axis::None;
+		Pine::Axis Axis = Pine::Axis::None;
 		float Sensitivity = 0.f;
 	};
 

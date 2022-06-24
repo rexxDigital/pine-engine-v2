@@ -1,5 +1,5 @@
 #include "RenderingContext.hpp"
-#include "..\..\Core\Window\Window.hpp"
+#include "../../Core/Window/Window.hpp"
 
 Pine::RenderingContext* Pine::CreateDefaultRenderingContext( )
 {

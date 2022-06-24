@@ -54,12 +54,12 @@ namespace
 
     void ShowViewportControls( const bool inLevelViewport, ImVec2 cursorPos, ImVec2 avSize )
     {
-        static auto transformIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\transform.png" );
-        static auto rotateIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\rotate.png" );
-        static auto scaleIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\scale.png" );
+        static auto transformIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/transform.png" );
+        static auto rotateIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/rotate.png" );
+        static auto scaleIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/scale.png" );
 
-        static auto playIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\play.png" );
-        static auto stopIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\stop.png" );
+        static auto playIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/play.png" );
+        static auto stopIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/stop.png" );
 
         using namespace Editor::Gui;
 
@@ -173,8 +173,8 @@ namespace
     {
         constexpr float IconSize = 32.f;
 
-        static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\camera.png" );
-        static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets\\Editor\\Icons\\light-bulb.png" );
+        static auto cameraIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/camera.png" );
+        static auto lightIcon = Pine::Assets->GetAsset<Pine::Texture2D>( "Assets/Editor/Icons/light-bulb.png" );
 
         // Find the correct icon
 
@@ -348,7 +348,7 @@ void Editor::Gui::Windows::RenderViewports( )
                           avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
 
             char buff[32];
-            sprintf_s( buff, "FPS: %d", Pine::GetFPS( ) );
+            sprintf( buff, "FPS: %d", Pine::GetFPS( ) );
             ImGui::GetForegroundDrawList( )->AddText( ImVec2( cursorPos.x + 5, cursorPos.y + 5 ),
                                                       ImColor( 255, 255, 255, 130 ), buff );
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "..\RenderingContext\RenderingContext.hpp"
+#include "../RenderingContext/RenderingContext.hpp"
 #include "../../Core/Interfaces/Interfaces.hpp"
 
 namespace Pine

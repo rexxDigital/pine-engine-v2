@@ -8,7 +8,7 @@
 
 namespace
 {
-    std::string g_ProjectRuntimePath = "Debug\\GameRuntime.dll";
+    std::string g_ProjectRuntimePath = "Debug/GameRuntime.dll";
     Pine::ModuleHandle* g_ProjectRuntime = nullptr;
 
     std::string g_RuntimeSourcePath = "";
@@ -52,9 +52,9 @@ namespace
     {
         g_SourceFiles.clear( );
 
-        if ( std::filesystem::exists( g_RuntimeSourcePath + "\\src" ) )
+        if ( std::filesystem::exists( g_RuntimeSourcePath + "/src" ) )
         {
-            for ( auto item: std::filesystem::recursive_directory_iterator( g_RuntimeSourcePath + "\\src" ) )
+            for ( auto item: std::filesystem::recursive_directory_iterator( g_RuntimeSourcePath + "/src" ) )
             {
                 if ( item.is_directory( ) )
                     continue;
@@ -148,23 +148,23 @@ bool Editor::RuntimeManager::CompileRuntime( )
 
     Pine::Log->Message( "Compiling runtime..." );
 
-    if ( !std::filesystem::exists( g_RuntimeSourcePath + "\\src" ) )
+    if ( !std::filesystem::exists( g_RuntimeSourcePath + "/src" ) )
     {
         Pine::Log->Error( "Failed to compile run time, can't find src/" );
         return false;
     }
 
-    if ( !std::filesystem::exists( "..\\CMakeLists.txt" ) )
+    if ( !std::filesystem::exists( "../CMakeLists.txt" ) )
     {
         Pine::Log->Error( "Failed to compile run time, can't find CMakeLists.txt" );
         return false;
     }
 
-    if ( !std::filesystem::exists( "..\\bin-runtime" ) )
+    if ( !std::filesystem::exists( "../bin-runtime" ) )
     {
         Pine::Log->Message( "Setting up make files..." );
 
-        std::filesystem::create_directory( "..\\bin-runtime" );
+        std::filesystem::create_directory( "../bin-runtime" );
 
         if ( std::system( "cd ../bin-runtime && cmake .." ) != 0 )
         {
@@ -186,7 +186,7 @@ bool Editor::RuntimeManager::CompileRuntime( )
 
 void Editor::RuntimeManager::Setup( )
 {
-    g_RuntimeSourcePath = std::filesystem::absolute( "..\\GameRuntime" ).string( );
+    g_RuntimeSourcePath = std::filesystem::absolute( "../GameRuntime" ).string( );
     g_RuntimeSourceAutoCompile = true;
 
     // Setup initial source tree, if possible

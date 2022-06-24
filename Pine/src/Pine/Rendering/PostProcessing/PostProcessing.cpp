@@ -66,7 +66,7 @@ namespace Pine
 			g_ScreenQuad->StoreIntBuffer( indices );
 
 			// Prepare post processing shader
-			g_PostProcessingShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\PostProcessing.shr" );
+			g_PostProcessingShader = Assets->GetAsset<Shader>( "Assets/Engine/Shaders/PostProcessing.shr" );
 		}
 
 		void Dispose( ) override
@@ -85,7 +85,7 @@ namespace Pine
 			// At this point, the target frame buffer is already bound, so we don't need to worry about that.
 
 			// Clear the buffers
-			glClearColor( 0.f, 0.f, 0.f, 1.f );
+			glClearColor( 1.f, 0.f, 0.f, 1.f );
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 			// Reset the viewport size.

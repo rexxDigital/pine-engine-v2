@@ -5,7 +5,7 @@
 #include "../Core/Window/Window.hpp"
 
 #include <GL/glew.h>
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "../Core/Log/Log.hpp"
 #include "../Components/Components.hpp"
@@ -128,7 +128,7 @@ namespace Pine
 
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-			io.Fonts->AddFontFromFileTTF( "Assets\\Engine\\OpenSans-Regular.ttf", 17.f );
+			io.Fonts->AddFontFromFileTTF( "Assets/Engine/OpenSans-Regular.ttf", 17.f );
 		}
 
 		void Dispose( ) override

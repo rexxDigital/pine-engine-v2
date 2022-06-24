@@ -49,7 +49,7 @@ namespace
 		if ( comp->m_Data )
 		{
 			if ( elementSize * newSize > comp->m_DataSize )
-				memcpy_s( data, elementSize * newSize, comp->m_Data, comp->m_DataSize );
+				memcpy( data, comp->m_Data, comp->m_DataSize );
 
 			free( comp->m_Data );
 		}
@@ -59,7 +59,7 @@ namespace
 		{
 			if ( newSize > comp->m_DataValidSize )
 			{
-				memcpy_s( dataValid, elementSize, comp->m_DataValid, comp->m_DataValidSize );
+				memcpy( dataValid, comp->m_DataValid, comp->m_DataValidSize );
 			}
 
 			free( comp->m_DataValid );
@@ -242,7 +242,7 @@ namespace Pine
 			{
 				const auto component = static_cast< IComponent* >( malloc( comp->m_ComponentSize ) );
 
-				memcpy_s( component, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
+				memcpy( component, comp->m_Component, comp->m_ComponentSize );
 
 				component->SetStandalone( true );
 				component->OnCreated( );
@@ -260,7 +260,7 @@ namespace Pine
 
 			const auto componentPtr = reinterpret_cast< IComponent* >( reinterpret_cast< std::uintptr_t >( comp->m_Data ) + ( comp->m_ComponentSize * slot ) );
 
-			memcpy_s( componentPtr, comp->m_ComponentSize, comp->m_Component, comp->m_ComponentSize );
+			memcpy( componentPtr, comp->m_Component, comp->m_ComponentSize );
 
 			comp->m_DataValid[ slot ] = true;
 
@@ -371,7 +371,7 @@ namespace Pine
 			// pointers and such to other objects, but this means it won't copy the data within the pointers, and will probably cause issues
 			// for example the physics library.
 
-			memcpy_s( component, comp->m_ComponentSize, inputComponent, comp->m_ComponentSize );
+			memcpy( component, inputComponent, comp->m_ComponentSize );
 
             component->SetParent( newParent );
 			component->SetStandalone( standalone );

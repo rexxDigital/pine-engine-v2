@@ -19,7 +19,7 @@ namespace
 			{
 				if ( strlen( projectNameBuff ) > 1 )
 				{
-					Editor::ProjectManager::CreateProject( "Projects\\" + std::string( projectNameBuff ) );
+					Editor::ProjectManager::CreateProject( "Projects/" + std::string( projectNameBuff ) );
 					ImGui::CloseCurrentPopup( );
 				}
 			}

@@ -1,8 +1,8 @@
 #include "ProjectManager.hpp"
 #include <filesystem>
 #include <json.hpp>
-#include <Pine\Assets\Assets.hpp>
-#include <Pine\Core\Window\Window.hpp>
+#include <Pine/Assets/Assets.hpp>
+#include <Pine/Core/Window/Window.hpp>
 
 #include "Pine/Pine.hpp"
 #include "Pine/Core/Log/Log.hpp"

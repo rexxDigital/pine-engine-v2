@@ -71,6 +71,11 @@ namespace Pine
 		{
 			auto material = mesh->GetMaterial( );
 
+            if (!material)
+            {
+                return;
+            }
+
 			if ( overrideMaterial != nullptr )
 			{
 				material = overrideMaterial;
@@ -193,7 +198,7 @@ namespace Pine
 			if ( g_CurrentRenderMesh == nullptr )
 				return;
 
-			memcpy_s( UniformBuffers::GetTransformBufferData( )->transform, sizeof( glm::mat4 ) * 32, data, sizeof( glm::mat4 ) * count );
+			memcpy( UniformBuffers::GetTransformBufferData( )->transform, data, sizeof( glm::mat4 ) * count );
 
 			UniformBuffers::GetTransformDataUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::TransformData_t ), data );
 
@@ -375,8 +380,8 @@ namespace Pine
 			//// Fake a texture being loaded if it's required elsewhere.
 			//Assets->MapAsset( g_DefaultTexture, "Assets\\Engine\\DefaultTexture.png" );
 
-			g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets\\Engine\\DefaultTexture.png" );
-			g_TerrainShader = Assets->GetAsset<Shader>( "Assets\\Engine\\Shaders\\Terrain.shr" );
+			g_DefaultTexture = Assets->GetAsset<Texture2D>( "Assets/Engine/DefaultTexture.png" );
+			g_TerrainShader = Assets->GetAsset<Shader>( "Assets/Engine/Shaders/Terrain.shr" );
 		}
 
 		void Dispose( ) override

@@ -135,7 +135,7 @@ namespace Pine
 
             const auto window = Pine::Window::Internal::GetWindowPointer( );
 
-            memcpy_s( m_KeyStatesOld, sizeof( m_KeyStatesOld ), m_KeyStates, sizeof( m_KeyStates ) );
+            memcpy( m_KeyStatesOld, m_KeyStates, sizeof( m_KeyStates ) );
 
             for ( int i = 0; i < GLFW_KEY_LAST; i++ )
             {

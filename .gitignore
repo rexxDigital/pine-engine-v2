@@ -10,6 +10,7 @@ build/
 PicturePanel.cpp
 build_run.bat
 build.bat
+Libraries/
 
 cmake-build-debug/
 .idea/

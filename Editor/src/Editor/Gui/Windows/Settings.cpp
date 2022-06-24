@@ -1,6 +1,6 @@
 #include "Windows.hpp"
-#include <Pine\Rendering\RenderManager\RenderManager.hpp>
-#include <Pine\Entity\Entity.hpp>
+#include <Pine/Rendering/RenderManager/RenderManager.hpp>
+#include <Pine/Entity/Entity.hpp>
 
 #include "../Widgets/Widgets.hpp"
 #include "../Gui.hpp"
@@ -89,8 +89,8 @@ void Windows::RenderSettings( )
                 char gameName[128];
                 char startupLevel[128];
 
-                strcpy_s(gameName, properties->Name.c_str());
-                strcpy_s(startupLevel, properties->StartupLevel.c_str());
+                strcpy(gameName, properties->Name.c_str());
+                strcpy(startupLevel, properties->StartupLevel.c_str());
 
                 ImGui::Text("Name");
 
@@ -123,7 +123,7 @@ void Windows::RenderSettings( )
 
                 if (ImGui::Button("Save"))
                 {
-                    Pine::GameManager::Save(Editor::ProjectManager::GetCurrentProjectDirectory() + "\\game.asset");
+                    Pine::GameManager::Save(Editor::ProjectManager::GetCurrentProjectDirectory() + "/game.asset");
                 }
 
                 ImGui::EndTabItem( );

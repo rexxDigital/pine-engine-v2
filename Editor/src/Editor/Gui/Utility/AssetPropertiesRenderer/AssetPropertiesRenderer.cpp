@@ -1,11 +1,11 @@
 #include "AssetPropertiesRenderer.hpp"
-#include <Pine\Assets\IAsset\IAsset.hpp>
-#include <Pine\Assets\Texture2D\Texture2D.hpp>
-#include <ImGui\imgui.h>
-#include <Pine\Assets\Material\Material.hpp>
+#include <Pine/Assets/IAsset/IAsset.hpp>
+#include <Pine/Assets/Texture2D/Texture2D.hpp>
+#include <ImGui/imgui.h>
+#include <Pine/Assets/Material/Material.hpp>
 
 #include "../../../ProjectManager/ProjectManager.hpp"
-#include "..\..\Widgets\Widgets.hpp"
+#include "../../Widgets/Widgets.hpp"
 #include "Editor/Gui/Gui.hpp"
 #include "Editor/Gui/Utility/AssetIcon/AssetIcon.hpp"
 #include "Pine/Assets/Level/Level.hpp"
@@ -209,7 +209,7 @@ namespace
 				if ( showButton && ImGui::Button( std::string( "Create Custom Material##" + std::to_string( i ) ).c_str( ) ) )
 				{
 					// Clean readable code :tm:
-					std::string materialFile = model->GetPath( ).parent_path( ).string( ) + "\\" + model->GetPath( ).stem( ).string( ) + ".mat";
+					std::string materialFile = model->GetPath( ).parent_path( ).string( ) + "/" + model->GetPath( ).stem( ).string( ) + ".mat";
 
 					if ( std::filesystem::exists( materialFile ) )
 					{
@@ -217,7 +217,7 @@ namespace
 						return;
 					}
 
-					std::filesystem::copy( "Assets\\Engine\\Materials\\Default.mat", materialFile );
+					std::filesystem::copy( "Assets/Engine/Materials/Default.mat", materialFile );
 
 					mesh->SetMaterial( dynamic_cast< Pine::Material* >( Pine::Assets->LoadFromFile( materialFile ) ) );
 

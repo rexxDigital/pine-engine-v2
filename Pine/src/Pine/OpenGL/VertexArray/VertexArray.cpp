@@ -1,6 +1,6 @@
 #include "VertexArray.hpp"
 
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 uint32_t Pine::VertexArray::CreateBuffer( )
 {
