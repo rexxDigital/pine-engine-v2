@@ -8,8 +8,9 @@ namespace Pine
 	{
 	protected:
 
-        std::string m_FactoryName;
-		bool m_CreateFromFactory = true;
+        // Easier to use a char array here due to previous stupid decisions.
+       char m_FactoryName[64];
+       bool m_CreateFromFactory = true;
 
 		IComponent* m_InternalComponent = nullptr;
 
@@ -23,13 +24,14 @@ namespace Pine
 		bool GetCreateFromFactory( ) const;
 
 		void SetFactoryName( const std::string& str );
-		const std::string& GetFactoryName( ) const;
+		const char* GetFactoryName( ) const;
 
 		void SetInternalComponent( IComponent* component );
 		IComponent* GetInternalComponent( ) const;
 
 		void OnSetup( ) override;
 		void OnRender( ) override;
+        void OnRenderUI( ) override;
 		void OnUpdate( float deltaTime ) override;
 
 		void LoadFromJson( nlohmann::json& j ) override;

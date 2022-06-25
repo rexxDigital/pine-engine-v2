@@ -13,6 +13,7 @@
 #include "Pine/Core/Log/Log.hpp"
 #include "Editor/RuntimeManager/RuntimeManager.hpp"
 #include "Pine/GameManager/GameManager.hpp"
+#include "Gui/Utility/EntityPickSystem/EntityPickSystem.hpp"
 
 void UpdateAssetCache( );
 
@@ -33,6 +34,8 @@ void Editor::Setup( )
 
     Gui::Setup( );
     Gui::Utility::AssetIcon::Update( );
+
+    Gui::Utility::EntityPickSystem::Setup( );
 
 //    InitializePicPanel( );
 

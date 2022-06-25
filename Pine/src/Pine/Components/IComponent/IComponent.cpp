@@ -64,3 +64,7 @@ void Pine::IComponent::SaveToJson( nlohmann::json& j )
 {
 
 }
+
+void Pine::IComponent::OnRenderUI() {
+
+}

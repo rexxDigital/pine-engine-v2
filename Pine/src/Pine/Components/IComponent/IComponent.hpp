@@ -56,6 +56,7 @@ namespace Pine
 		virtual void OnSetup( ) = 0;
 		virtual void OnUpdate( float deltaTime ) = 0;
 		virtual void OnRender( );
+		virtual void OnRenderUI( );
 
 		virtual void OnCreated( );
 		virtual void OnCopied( const IComponent* old );

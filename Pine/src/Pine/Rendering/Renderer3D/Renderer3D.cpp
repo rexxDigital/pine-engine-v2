@@ -74,7 +74,7 @@ namespace Pine
 		{
 			auto material = mesh->GetMaterial( );
 
-            if (!material)
+            if ( !material )
             {
                 material = g_MissingMaterial;
             }
@@ -85,7 +85,6 @@ namespace Pine
 			}
 
 			mesh->GetVertexArray( )->Bind( );
-
 
 			// Figure out the correct shader version
 			std::uint32_t shaderVersion = material->GetShaderProperties( );
@@ -99,7 +98,6 @@ namespace Pine
 			SetBackfaceCulling( !( material->GetRenderFlags( ) & Pine::RenderFlags::DisableBackfaceCulling ) );
 			SetWireframeMode( material->GetRenderFlags( ) & Pine::RenderFlags::RenderWireframe );
 			SetBlending( material->GetRenderingMode( ) == MatRenderingMode::Transparent );
-
 
 			if ( !g_CurrentShader )
 				return;
@@ -165,8 +163,13 @@ namespace Pine
 			// Apply correct stencil buffer mode
 			if ( g_CurrentStencilMode != overrideStencilBuffer )
 			{
-				glStencilFunc( GL_ALWAYS, 1, overrideStencilBuffer );
-				glStencilMask( overrideStencilBuffer );
+                glStencilFunc( GL_ALWAYS, 1, overrideStencilBuffer );
+                glStencilMask( overrideStencilBuffer );
+
+                /*if (overrideStencilBuffer != 0)
+                    glEnable(GL_STENCIL);
+                else
+                    glDisable(GL_STENCIL);*/
 
 				g_CurrentStencilMode = overrideStencilBuffer;
 			}

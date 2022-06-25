@@ -24,6 +24,52 @@
 
 namespace Pine
 {
+    namespace
+    {
+
+        __inline bool ComponentSanityCheck(const IComponent* component)
+        {
+            return component && component->GetActive( ) && component->GetParent( )->GetActive( );
+        }
+
+        __inline std::unordered_map<Model*, std::vector<ModelRenderer*>> GetRenderBatch()
+        {
+            // Sort entities with the blend rendering mode in a different map
+            // This is kind of in-efficient due to re-allocations
+            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
+            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
+
+            auto modelRendererData = Components->GetComponentData( ComponentType::ModelRenderer );
+            for ( int i = 0; i < modelRendererData->m_DataValidSize; i++ )
+            {
+                if (!modelRendererData->m_DataValid[i]) continue;
+
+                const auto modelRenderer = dynamic_cast< ModelRenderer* >( modelRendererData->GetComponent( i ) );
+
+                if ( ComponentSanityCheck( modelRenderer ) && modelRenderer->GetModel( ) )
+                {
+                    auto blendRenderingMode = false;
+
+                    // Check if any of the material used within this model has a different rendering mode.
+                    for ( const auto mesh: modelRenderer->GetModel( )->GetMeshList( ) )
+                        if ( mesh->GetMaterial( ) &&
+                             mesh->GetMaterial( )->GetRenderingMode( ) == MatRenderingMode::Transparent )
+                            blendRenderingMode = true;
+                    if ( const auto ov = modelRenderer->GetMaterialOverride( ) )
+                        if ( ov->GetRenderingMode( ) == MatRenderingMode::Transparent )
+                            blendRenderingMode = true;
+
+                    if ( blendRenderingMode )
+                        renderBatchBlend[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
+                    else
+                        renderBatch[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
+                }
+            }
+
+            return renderBatch;
+        }
+
+    }
 
     class CRenderManager : public IRenderManager
     {
@@ -110,71 +156,21 @@ namespace Pine
 
             entityUpdateTime.Stop( );
 
-            // Sort entities with the blend rendering mode in a different map
-            // This is kind of in efficient due to re-allocations
-            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatch;
-            std::unordered_map<Model*, std::vector<ModelRenderer*>> renderBatchBlend;
-
             std::vector<Light*> lights;
-            std::vector<TerrainRenderer*> terrainRenderers;
-
-            auto componentSanityCheck = [ ]( const Pine::IComponent* component ) {
-                return component && component->GetActive( ) && component->GetParent( )->GetActive( );
-            };
 
             Timer entitySortTimer;
 
             // Model Renderer
-
-            auto modelRendererData = Components->GetComponentData( ComponentType::ModelRenderer );
-            for ( int i = 0; i < modelRendererData->m_DataValidSize; i++ )
-            {
-                if (!modelRendererData->m_DataValid[i]) continue;
-
-                const auto modelRenderer = dynamic_cast< ModelRenderer* >( modelRendererData->GetComponent( i ) );
-
-                if ( componentSanityCheck( modelRenderer ) && modelRenderer->GetModel( ) )
-                {
-                    auto blendRenderingMode = false;
-
-                    // Check if any of the material used within this model has a different rendering mode.
-                    for ( const auto mesh: modelRenderer->GetModel( )->GetMeshList( ) )
-                        if ( mesh->GetMaterial( ) &&
-                             mesh->GetMaterial( )->GetRenderingMode( ) == MatRenderingMode::Transparent )
-                            blendRenderingMode = true;
-                    if ( const auto ov = modelRenderer->GetMaterialOverride( ) )
-                        if ( ov->GetRenderingMode( ) == MatRenderingMode::Transparent )
-                            blendRenderingMode = true;
-
-                    if ( blendRenderingMode )
-                        renderBatchBlend[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
-                    else
-                        renderBatch[ modelRenderer->GetModel( ) ].push_back( modelRenderer );
-                }
-            }
+            auto renderBatch = GetRenderBatch();
 
             // Light
-
             for ( int i = 0; i < Components->GetComponentCount( ComponentType::Light ); i++ )
             {
                 const auto light = dynamic_cast< Light* >( Components->GetComponent( ComponentType::Light, i ) );
 
-                if ( componentSanityCheck( light ) )
+                if ( ComponentSanityCheck( light ) )
                 {
                     lights.push_back( light );
-                }
-            }
-
-            // Terrain Renderer
-
-            for ( int i = 0; i < Components->GetComponentCount( ComponentType::TerrainRenderer ); i++ )
-            {
-                const auto terrainRenderer = dynamic_cast< TerrainRenderer* >( Components->GetComponent(
-                        ComponentType::TerrainRenderer, i ) );
-
-                if ( componentSanityCheck( terrainRenderer ) )
-                {
-                    terrainRenderers.push_back( terrainRenderer );
                 }
             }
 
@@ -194,24 +190,6 @@ namespace Pine
             entitySortTimer.Stop( );
 
             Timer entityRenderTime;
-
-            // Render Terrain Chunks
-
-            for ( const auto terrainRenderer: terrainRenderers )
-            {
-                const auto terrain = terrainRenderer->GetTerrain( );
-
-                if ( !terrain )
-                    continue;
-
-                Renderer3D->PrepareTerrain( terrain );
-
-                for ( auto& chunk: terrain->GetChunks( ) )
-                {
-                    Renderer3D->RenderTerrainChunk( chunk );
-                    g_RenderingContext->m_DrawCalls++;
-                }
-            }
 
             // Render entities
 
@@ -352,6 +330,11 @@ namespace Pine
             Log->Debug( "Pine::RenderManager->Setup( )" );
 
             g_RenderingImGuiContext = ImGui::CreateContext( );
+        }
+
+        std::unordered_map<Model*, std::vector<ModelRenderer*>> GetRenderingBatch( ) override
+        {
+            return GetRenderBatch( );
         }
 
     };

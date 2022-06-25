@@ -76,6 +76,11 @@ namespace Pine
 
         InputBinding* CreateBinding( const std::string& name ) override
         {
+            if (const auto binding = FindBinding(name))
+            {
+                return binding;
+            }
+
             m_InputBindings.push_back( std::make_unique<InputBinding>( name ) );
 
             return m_InputBindings[ m_InputBindings.size( ) - 1 ].get( );
@@ -202,41 +207,16 @@ namespace Pine
             }
         }
 
-        void Save( const std::string& file ) override
+        void SaveToFile( const std::string& file ) override
         {
             std::ofstream stream( file );
-            nlohmann::json json;
 
-            for ( int i = 0; i < m_InputBindings.size( ); i++ )
-            {
-                const auto binding = m_InputBindings[ i ].get( );
+            stream << Save( ).dump( );
 
-                json[ i ][ "Name" ] = binding->Name( );
-
-                // Write keyboard bindings
-                for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ )
-                {
-                    const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
-
-                    json[ i ][ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
-                    json[ i ][ "Keyboard" ][ j ][ "Key" ] = keyboard->Key;
-                }
-
-                // Write axis bindings
-                for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ )
-                {
-                    const auto axis = binding->GetAxisBindings( )[ j ].get( );
-
-                    json[ i ][ "Axis" ][ j ][ "Axis" ] = axis->Axis;
-                    json[ i ][ "Axis" ][ j ][ "Sensitivity" ] = axis->Sensitivity;
-                }
-            }
-
-            stream << json.dump( );
             stream.close( );
         }
 
-        bool Load( const std::string& file ) override
+        bool LoadFromFile( const std::string& file ) override
         {
             std::ifstream stream( file );
 
@@ -254,7 +234,52 @@ namespace Pine
 
             nlohmann::json json = nlohmann::json::parse( str );
 
-            for ( const auto& bindingJson: json.items( ) )
+            Load(json);
+
+            return true;
+        }
+
+        nlohmann::json Save() override
+        {
+            nlohmann::json json;
+
+            for ( int i = 0; i < m_InputBindings.size( ); i++ )
+            {
+                const auto binding = m_InputBindings[ i ].get( );
+
+                nlohmann::json bindingJson;
+
+                bindingJson[ "Name" ] = binding->Name( );
+
+                // Write keyboard bindings
+                for ( int j = 0; j < binding->GetKeyboardBindings( ).size( ); j++ )
+                {
+                    const auto keyboard = binding->GetKeyboardBindings( )[ j ].get( );
+
+                    bindingJson[ "Keyboard" ][ j ][ "ActivationValue" ] = keyboard->ActivationValue;
+                    bindingJson[ "Keyboard" ][ j ][ "Key" ] = keyboard->Key;
+                }
+
+                // Write axis bindings
+                for ( int j = 0; j < binding->GetAxisBindings( ).size( ); j++ )
+                {
+                    const auto axis = binding->GetAxisBindings( )[ j ].get( );
+
+                    bindingJson[ "Axis" ][ j ][ "Axis" ] = axis->Axis;
+                    bindingJson[ "Axis" ][ j ][ "Sensitivity" ] = axis->Sensitivity;
+                }
+
+                json.push_back(bindingJson);
+            }
+
+            return json;
+        }
+
+        bool Load(const nlohmann::json& json) override
+        {
+            m_InputBindings.clear( );
+
+            for ( const auto& bindingJson : json.items( ) )
             {
                 const auto binding = CreateBinding( bindingJson.value( )[ "Name" ] );
 

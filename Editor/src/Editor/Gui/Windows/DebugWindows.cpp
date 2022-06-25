@@ -7,12 +7,14 @@
 #include "../Widgets/Widgets.hpp"
 
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
+#include "Editor/Gui/Utility/EntityPickSystem/EntityPickSystem.hpp"
 
 using namespace Editor::Gui;
 
 namespace {
 
 	void RenderRenderingContext( ) {
+
 		if ( ImGui::Begin( "Rendering Context", &Windows::ShowRenderingContext, 0 ) ) {
 			auto context = Pine::RenderManager->GetRenderingContext( );
 
@@ -47,6 +49,10 @@ namespace {
     {
         if ( ImGui::Begin( "Rendering Context", &Windows::ShowRenderingContext, 0 ) ) {
 
+            const auto avSize = ImGui::GetContentRegionAvail( );
+
+            ImGui::Image( reinterpret_cast< ImTextureID >( Editor::Gui::Utility::EntityPickSystem::GetFrameBuffer( )->GetTextureId() ),
+                          avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
 
 
         }

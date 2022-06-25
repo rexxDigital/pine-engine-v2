@@ -1,5 +1,6 @@
 #include "NativeScript.hpp"
 #include "../../RuntimeLoader/RuntimeLoader.hpp"
+#include "../../Core/Log/Log.hpp"
 
 void Pine::NativeScript::SetupInternalComponent( )
 {
@@ -40,10 +41,10 @@ bool Pine::NativeScript::GetCreateFromFactory( ) const
 
 void Pine::NativeScript::SetFactoryName( const std::string& str )
 {
-	m_FactoryName = str;
+   strcpy(m_FactoryName, str.c_str());
 }
 
-const std::string& Pine::NativeScript::GetFactoryName( ) const
+const char* Pine::NativeScript::GetFactoryName( ) const
 {
 	return m_FactoryName;
 }
@@ -88,7 +89,6 @@ void Pine::NativeScript::OnUpdate( float deltaTime )
 void Pine::NativeScript::LoadFromJson( nlohmann::json& j )
 {
     SetFactoryName(j[ "factoryName" ]);
-    ;
 }
 
 void Pine::NativeScript::SaveToJson( nlohmann::json& j )
@@ -112,4 +112,9 @@ void Pine::NativeScript::OnDestroyed( )
 
 		m_InternalComponent = nullptr;
 	}
+}
+
+void Pine::NativeScript::OnRenderUI() {
+    if ( m_InternalComponent )
+        m_InternalComponent->OnRenderUI( );
 }

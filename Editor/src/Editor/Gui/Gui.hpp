@@ -27,6 +27,8 @@ namespace Editor::Gui {
 
 		inline bool IsInLevelView = false;
 		inline bool IsHoveringLevelView = false;
+        inline bool IsUsingGizmo = false;
+        inline bool IgnorePickInput = false;
 
         inline bool IsGameFocused = false;
 

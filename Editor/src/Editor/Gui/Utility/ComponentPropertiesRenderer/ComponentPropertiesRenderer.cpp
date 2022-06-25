@@ -266,7 +266,7 @@ namespace
 
 		char buff[ 64 ];
 
-		strcpy( buff, nativeScript->GetFactoryName( ).c_str( ) );
+		strcpy( buff, nativeScript->GetFactoryName( ) );
 
 		ImGui::PushStyleVar( ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing, ImVec2( 3.f, 4.f ) );
 		ImGui::SetNextItemWidth( ImGui::GetContentRegionAvail( ).x - 60.f );

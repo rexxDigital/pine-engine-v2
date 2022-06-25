@@ -1,3 +1,4 @@
-## TODO
-* Figure out why sphere and capsule objects do not get their materials generated properly
-* Fix asset preview
+* Prepare new frame buffer
+* Render each entity with custom shader, embedding entity index within the color
+* On click, read the color with glReadPixels (should be fine if we use that *only* on each mouse click event)
+* Translate that color to the entity index, select the corresponding entity

@@ -5,6 +5,7 @@
 
 #include "Controllers/GameController/WorldController.hpp"
 #include "Controllers/PlayerController/PlayerController.hpp"
+#include "Controllers/MainMenuController/MainMenuController.hpp"
 #include "Pine/Assets/Level/Level.hpp"
 
 extern "C" {
@@ -15,6 +16,7 @@ extern "C" {
 
 		handle->RegisterNativeScript("WorldController", sizeof( WorldController ), [ ] { return new WorldController( ); } );
 		handle->RegisterNativeScript("PlayerController", sizeof( PlayerController ), [ ] { return new PlayerController( ); } );
+		handle->RegisterNativeScript("MainMenuController", sizeof( MainMenuController ), [ ] { return new MainMenuController( ); } );
 
 		return true;
 	}

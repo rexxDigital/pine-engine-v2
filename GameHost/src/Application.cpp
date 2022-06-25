@@ -16,15 +16,9 @@ int main()
 
     Pine::Window::SetSize(1280, 720);
 
-    //Pine::Assets->LoadFromDirectory("Projects\\Debug" );
-    //Pine::RuntimeLoader->LoadModule("Debug\\GameRuntime.dll");
-    //Pine::GameManager::Load( "Projects\\Debug\\game.asset" );
-
-    auto player = Pine::EntityList->CreateEntity("Player");
-
-    player->AddComponent(Pine::ComponentType::Camera);
-
-    Pine::RenderManager->GetRenderingContext( )->m_Camera = player->GetComponent<Pine::Camera>();
+    Pine::Assets->LoadFromDirectory("Projects/Debug" );
+    Pine::RuntimeLoader->LoadModule("libGameRuntime.so");
+    Pine::GameManager::Load( "Projects/Debug/game.asset" );
 
     Pine::Run( );
 

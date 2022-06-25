@@ -20,6 +20,7 @@
 #include "Pine/Entitylist/EntityList.hpp"
 
 #include "Editor/Gui/Utility/HotkeyManager/HotkeyManager.hpp"
+#include "Editor/Gui/Utility/EntityPickSystem/EntityPickSystem.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Pine.hpp"
 #include "Pine/Components/ModelRenderer/ModelRenderer.hpp"
@@ -66,8 +67,13 @@ namespace
         static auto renderIconButton = [ ]( bool active, const Pine::Texture2D* texture ) {
             ImGui::PushStyleColor( ImGuiCol_Button,
                                    active ? ImVec4( 0.26f, 0.48f, 0.35f, 1.0f ) : ImVec4( 0.26f, 0.78f, 0.35f, 1.0f ) );
+
             const bool ret = ImGui::ImageButton( reinterpret_cast< ImTextureID >( texture->GetId( ) ),
                                                  ImVec2( 16.f, 16.f ) );
+
+            if (ret)
+                Globals::IgnorePickInput = true;
+
             ImGui::PopStyleColor( );
             return ret;
         };
@@ -248,6 +254,9 @@ namespace
 
 void Editor::Gui::Windows::RenderViewports( )
 {
+    Globals::IsUsingGizmo = false;
+    Globals::IgnorePickInput = false;
+
     // --- Game viewport ---
 
     if ( ShowGameViewport )
@@ -344,7 +353,7 @@ void Editor::Gui::Windows::RenderViewports( )
 
             ImGuizmo::SetRect( cursorPos.x, cursorPos.y, avSize.x, avSize.y );
 
-            ImGui::Image( reinterpret_cast< ImTextureID >( RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
+            ImGui::Image( reinterpret_cast< ImTextureID >(  RenderingHandler::GetFrameBuffer( )->GetTextureId( ) ),
                           avSize, ImVec2( 0.f, 1.f ), ImVec2( 1.f, 0.f ) );
 
             char buff[32];
@@ -356,6 +365,9 @@ void Editor::Gui::Windows::RenderViewports( )
             Pine::DebugOverlay->Render( );
 
             Globals::IsHoveringLevelView = ImGui::IsItemHovered( );
+
+            Gui::Utility::EntityPickSystem::SetViewportPosition(cursorPos.x, cursorPos.y);
+            Gui::Utility::EntityPickSystem::SetViewportSize(avSize.x, avSize.y);
 
             HandleAssetViewportDrop( );
 
@@ -390,25 +402,37 @@ void Editor::Gui::Windows::RenderViewports( )
 
                     glm::mat4 temp = e->GetTransform( )->GetTransformationMatrix( );
 
+                    bool shouldSnap = false;
+                    glm::vec3 snapAngles;
+
+                    if (ImGui::GetIO().KeyCtrl)
+                    {
+                        shouldSnap = true;
+                        snapAngles = glm::vec3(0.5f);
+                    }
+
+                    glm::mat4 deltaMatrix;
+
+                    Globals::IsUsingGizmo = ImGuizmo::IsOver();
+
                     if ( Manipulate( glm::value_ptr( cam->GetViewMatrix( ) ),
                                      glm::value_ptr( cam->GetProjectionMatrix( ) ), op, ImGuizmo::WORLD,
-                                     glm::value_ptr( temp ), nullptr, nullptr ) )
+                                     glm::value_ptr( temp ), glm::value_ptr( deltaMatrix ), shouldSnap ? glm::value_ptr( snapAngles ) : nullptr ) )
                     {
                         glm::vec3 translation;
                         glm::quat rotation;
                         glm::vec3 scale;
 
-                        DecomposeMatrix( temp, translation, rotation, scale );
+                        DecomposeMatrix( deltaMatrix, translation, rotation, scale );
 
-                        auto base_position = glm::vec3( 0.f );
+                        const auto rot = glm::degrees( glm::eulerAngles( rotation ) );
 
-                        if ( e->GetParent( ) != nullptr )
-                            base_position = e->GetParent( )->GetTransform( )->Position;
-
-                        e->GetTransform( )->Position =
-                                glm::vec3( translation[ 0 ], translation[ 1 ], translation[ 2 ] ) - base_position;
-                        e->GetTransform( )->Rotation = glm::degrees( glm::eulerAngles( rotation ) );
-                        e->GetTransform( )->Scale = glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
+                        if (op == ImGuizmo::TRANSLATE)
+                            e->GetTransform( )->Position += translation;
+                        if (op == ImGuizmo::ROTATE)
+                            e->GetTransform( )->Rotation += glm::vec3(rot.x, rot.z, rot.y);
+                        if (op == ImGuizmo::SCALE)
+                            e->GetTransform( )->Scale += glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
                     }
 
                     ImGui::GetWindowDrawList( )->PopClipRect( );

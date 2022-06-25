@@ -44,7 +44,7 @@ namespace Pine
 
             return;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 			SetConsoleColor( 8 );
 
 			std::cout << "[Debug] ";
@@ -53,7 +53,7 @@ namespace Pine
 
 			AddToLogBuffer( "[Debug] " + msg, LogLevel::Debug );
 
-#endif
+//#endif
 		}
 
 		void Message( const std::string& str ) override

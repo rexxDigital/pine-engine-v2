@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include <glm/vec2.hpp>
+#include <json.hpp>
 
 #include "../Core/Interfaces/Interfaces.hpp"
 
@@ -69,9 +70,13 @@ namespace Pine
 		virtual void Setup( ) = 0;
 		virtual void Update( ) = 0;
 
+        // Saves/Loads all input bindings to json object
+        virtual nlohmann::json Save() = 0;
+        virtual bool Load(const nlohmann::json& j) = 0;
+
 		// Saves all input bindings to a file
-		virtual void Save( const std::string& file ) = 0;
-		virtual bool Load( const std::string& file ) = 0;
+		virtual void SaveToFile( const std::string& file ) = 0;
+		virtual bool LoadFromFile( const std::string& file ) = 0;
 
 		// Simple wrappers
 		virtual bool IsKeyDown( int key ) = 0;

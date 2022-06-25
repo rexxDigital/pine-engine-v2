@@ -1,10 +1,14 @@
 #pragma once
 #include "../RenderingContext/RenderingContext.hpp"
 #include "../../Core/Interfaces/Interfaces.hpp"
+#include <vector>
+#include <unordered_map>
 
 namespace Pine
 {
 	class Camera;
+    class Model;
+    class ModelRenderer;
 
 	enum class RenderStage
 	{
@@ -33,6 +37,11 @@ namespace Pine
 
 		virtual void Render( ) = 0;
 
+        // Returns a map of all entities with a ModelRenderer that the engine would render,
+        // useful if you for need to render entities yourself.
+        virtual std::unordered_map<Model*, std::vector<ModelRenderer*>> GetRenderingBatch( ) = 0;
+
+        
 	};
 
 }

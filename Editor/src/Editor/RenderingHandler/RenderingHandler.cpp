@@ -10,6 +10,7 @@
 #include "Editor/EditorEntity/EditorEntity.hpp"
 #include "Editor/Gui/Gui.hpp"
 #include "Editor/Gui/Utility/AssetIcon/AssetIcon.hpp"
+#include "Editor/Gui/Utility/EntityPickSystem/EntityPickSystem.hpp"
 #include "Editor/ProjectManager/ProjectManager.hpp"
 #include "Pine/Components/Components.hpp"
 #include "Pine/Components/Collider3D/Collider3D.hpp"
@@ -52,7 +53,7 @@ namespace
 
 					glm::mat4 mat = glm::mat4( 1.f );
 
-					const glm::vec3 scaleSize = entity->GetTransform()->Scale + 0.04f;
+					const glm::vec3 scaleSize = entity->GetTransform()->Scale * 1.02f;
                     const glm::vec3 rotate = entity->GetTransform()->GetRotationSum();
 
                     mat = glm::translate( mat, entity->GetTransform()->GetPositionSum() );
@@ -124,9 +125,9 @@ namespace
 
 			const auto mesh = model->GetMeshList( )[ 0 ];
 
-			dummyEntity->GetTransform( )->Position = entity->GetTransform( )->Position + collider3D->GetPosition( );
+			dummyEntity->GetTransform( )->Position = entity->GetTransform( )->GetPositionSum( ) + collider3D->GetPosition( );
 			dummyEntity->GetTransform( )->Scale = scaleSize * entity->GetTransform( )->Scale;
-			dummyEntity->GetTransform( )->Rotation = entity->GetTransform( )->Rotation;
+			dummyEntity->GetTransform( )->Rotation = entity->GetTransform( )->GetRotationSum( );
 
 			if ( collider3D->GetColliderType( ) == Pine::ColliderType::Capsule )
 			{
@@ -168,7 +169,7 @@ namespace
 
 			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_EditorCamera;
 
-			// Prepare the stencil buffer for the outline for the selected entity.
+            // Prepare the stencil buffer for the outline for the selected entity.
 			if ( !Editor::Gui::Globals::SelectedEntityPtrs.empty( ) )
 			{
 				const auto entity = Editor::Gui::Globals::SelectedEntityPtrs[ 0 ];
@@ -179,7 +180,7 @@ namespace
 					modelRenderer->OverrideStencilBuffer( true, 0xFF );
 				}
 			}
-		}
+        }
 	}
 
 	void OnPostEntityRender( )
@@ -188,15 +189,17 @@ namespace
 		{
 			RenderHighlightedEntity( );
 			RenderSelectedColliderAABB( );
-		}
+        }
 	}
 
 	void OnPostRenderFinal( )
 	{
 		if ( Editor::Gui::Globals::IsInLevelView )
 		{
-			Pine::RenderManager->GetRenderingContext( )->m_Camera = g_BackupCamera;
-		}
+            Editor::Gui::Utility::EntityPickSystem::Render( );
+
+            Pine::RenderManager->GetRenderingContext( )->m_Camera = g_BackupCamera;
+        }
 
 		Editor::Gui::Utility::AssetIcon::Render( );
 //		RenderPicPanelTexture(  );

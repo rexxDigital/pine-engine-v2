@@ -2,6 +2,7 @@
 
 #include "Pine/Pine.hpp"
 #include "Pine/Entitylist/EntityList.hpp"
+#include "Pine/Input/Input.hpp"
 
 namespace
 {
@@ -9,6 +10,7 @@ namespace
 	bool g_ShouldRestoreLevel = true;
 	
 	Pine::Level* g_BackupLevel = nullptr;
+    nlohmann::json g_BackupInput;
 }
 
 void Editor::PlayManager::SetShouldRestoreLevel( bool value )
@@ -34,6 +36,8 @@ void Editor::PlayManager::Start( )
 		g_BackupLevel = new Pine::Level;
 
 	g_BackupLevel->CreateFromCurrentLevel( );
+    g_BackupInput = Pine::Input->Save();
+
 	g_IsPlaying = true;
 
 	Pine::SetAllowUpdates( true );
@@ -61,6 +65,8 @@ void Editor::PlayManager::Stop( )
 	}
 
 	g_BackupLevel->DisposeBlueprints( );
+
+    Pine::Input->Load(g_BackupInput);
 
 	g_IsPlaying = false;
 

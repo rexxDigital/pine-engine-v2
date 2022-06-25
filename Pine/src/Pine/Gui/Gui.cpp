@@ -10,6 +10,7 @@
 #include "../Core/Log/Log.hpp"
 #include "../Components/Components.hpp"
 #include "../Pine.hpp"
+#include "../Components/NativeScript/NativeScript.hpp"
 
 namespace Pine
 {
