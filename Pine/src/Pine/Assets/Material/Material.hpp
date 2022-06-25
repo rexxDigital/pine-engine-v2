@@ -27,7 +27,7 @@ namespace Pine
 	private:
 		glm::vec3 m_DiffuseColor = glm::vec3( 1.f, 1.f, 1.f );
 		glm::vec3 m_SpecularColor = glm::vec3( 0.f, 0.f, 0.f );
-		glm::vec3 m_AmbientColor = glm::vec3( 0.5f, 0.5f, 0.5f );
+		glm::vec3 m_AmbientColor = glm::vec3( 0.05f, 0.05f, 0.05f );
 
         AssetContainer<Texture2D*> m_Diffuse;
         AssetContainer<Texture2D*> m_Specular;

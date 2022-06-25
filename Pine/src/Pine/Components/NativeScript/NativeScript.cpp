@@ -87,7 +87,8 @@ void Pine::NativeScript::OnUpdate( float deltaTime )
 
 void Pine::NativeScript::LoadFromJson( nlohmann::json& j )
 {
-	m_FactoryName = j[ "factoryName" ];
+    SetFactoryName(j[ "factoryName" ]);
+    ;
 }
 
 void Pine::NativeScript::SaveToJson( nlohmann::json& j )

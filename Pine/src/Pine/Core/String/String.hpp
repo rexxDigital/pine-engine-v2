@@ -8,5 +8,7 @@ namespace Pine::String
 	bool StartsWith(const std::string& str, const std::string& start);
 	bool EndsWith(const std::string& str, const std::string& end);
 
+    std::string Replace(const std::string& str, const std::string& pattern, const std::string& replacement);
+
 	std::vector<std::string> Split(const std::string& str, const std::string& deli);
 }

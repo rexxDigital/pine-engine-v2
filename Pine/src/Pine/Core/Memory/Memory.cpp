@@ -72,6 +72,7 @@ void Pine::Memory::Free( void* ptr )
 	Log->Warning( "Failed to free allocated memory." );
 }
 
+/*
 void* operator new( size_t size )
 {
 	return Pine::Memory::Allocate( size );
@@ -81,3 +82,4 @@ void operator delete( void* ptr )
 {
 	Pine::Memory::Free( ptr );
 }
+ */

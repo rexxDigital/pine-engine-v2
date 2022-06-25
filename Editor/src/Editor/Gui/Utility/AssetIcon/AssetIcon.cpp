@@ -109,7 +109,7 @@ namespace
 
 	void RenderMaterialPreview( AssetIcon_t* icon )
 	{
-		// We'll rendering the material on a sphere.
+		// We'll be rendering the material on a sphere.
 		static auto sphereModel = Pine::Assets->GetAsset<Pine::Model>( "Assets/Engine/Primitive Shapes/sphere.fbx" );
 
 		const auto material = dynamic_cast< Pine::Material* >( icon->m_Asset );
@@ -157,10 +157,10 @@ namespace
 
 		const glm::vec3 size = highestBounds + glm::abs( lowestBounds );
 
-		// Setup the actor's positon accordingly
-		LiveScene::m_Actor->GetTransform( )->Position.y = -( size.y / 2.f );
+		// Setup the actor's position accordingly
+		//LiveScene::m_Actor->GetTransform( )->Position.y = -( size.y / 2.f );
 		LiveScene::m_Actor->GetTransform( )->Position.z = size.x * 1.5f;
-		LiveScene::m_Actor->GetTransform( )->Rotation.y = 00.f;
+		LiveScene::m_Actor->GetTransform( )->Rotation.y = 0.f;
 
 		LiveScene::UpdateEntities( );
 
@@ -256,7 +256,7 @@ void Editor::Gui::Utility::AssetIcon::Update( )
 		}
 		else
 		{
-			// Update the asset icon, depending on it's type:
+			// Update the asset icon, depending on its type:
 			switch ( asset->GetType( ) )
 			{
 			case Pine::AssetType::Texture2D:

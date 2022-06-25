@@ -8,8 +8,8 @@ namespace Pine
 	{
 	protected:
 
+        std::string m_FactoryName;
 		bool m_CreateFromFactory = true;
-		std::string m_FactoryName = "";
 
 		IComponent* m_InternalComponent = nullptr;
 

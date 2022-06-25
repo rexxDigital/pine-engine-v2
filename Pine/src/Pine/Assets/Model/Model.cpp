@@ -95,7 +95,7 @@ namespace
 
 			eMaterial->DiffuseColor( ) = glm::vec3( diffuse_color.r, diffuse_color.g, diffuse_color.b );
 			eMaterial->AmbientColor( ) = glm::vec3( ambient_color.r, ambient_color.g, ambient_color.b );
-			eMaterial->SpecularColor( ) = glm::vec3( specular_color.r, specular_color.g, specular_color.b );
+			//eMaterial->SpecularColor( ) = glm::vec3( specular_color.r, specular_color.g, specular_color.b );
 
 			eMaterial->SetShininess( shininess );
 

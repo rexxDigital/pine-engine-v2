@@ -12,9 +12,9 @@ namespace Pine
 	private:
 		glm::mat4 m_TransformationMatrix;
 
-		float m_LastPositionLen = 0.0f;
-		float m_LastRotationLen = 0.0f;
-		float m_LastScaleLen = 0.0f;
+        glm::vec3 m_LastPosition;
+        glm::vec3 m_LastRotation;
+        glm::vec3 m_LastScale;
 
 		glm::vec3 m_Forward;
 		glm::vec3 m_Right;

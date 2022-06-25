@@ -160,6 +160,9 @@ bool Pine::Setup( )
 		return false;
 	}
 
+    // Precache some stuff that's required to load before loading other assets.
+    Assets->LoadFromFile("Assets/Engine/Materials/Default.mat");
+
 	Log->Message( "Loading engine assets..." );
 
 	if ( Assets->LoadFromDirectory( "Assets/Engine", true ) == 0 )

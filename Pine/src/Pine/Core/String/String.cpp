@@ -29,3 +29,11 @@ std::vector<std::string> Pine::String::Split(const std::string& str, const std::
 	return tokens;
 }
 
+std::string Pine::String::Replace(const std::string &str, const std::string &pattern, const std::string &replacement) {
+    std::string s = str;
+    if(!pattern.empty())
+        for(size_t pos = 0; (pos = s.find(pattern, pos)) != std::string::npos; pos += replacement.size())
+            s.replace(pos, pattern.size(), replacement);
+    return s;
+}
+

@@ -60,25 +60,19 @@ void Pine::Transform::OnUpdate( float deltaTime )
 
 void Pine::Transform::OnRender( )
 {
-	// UPDATE 2022: Wouldn't this like break if we moved from (2, 0, 0) to (0, 2, 0) ???
-	// This seems really stupid.
-	
-	// FIXME: This is really ugly code...
-	const float posLength = Position.x + Position.y + Position.z;
-	const float rotLength = Rotation.x + Rotation.y + Rotation.z;
-	const float sclLength = Scale.x + Scale.y + Scale.z;
+    // I don't like this at all.
 
-	bool update = false;
+    bool update = false;
 
-	if ( posLength != m_LastPositionLen )
+	if ( Position != m_LastPosition )
 	{
 		update = true;
 	}
-	else if ( rotLength != m_LastRotationLen )
+	else if ( Rotation != m_LastRotation )
 	{
 		update = true;
 	}
-	else if ( sclLength != m_LastScaleLen )
+	else if ( Scale != m_LastScale )
 	{
 		update = true;
 	}
@@ -91,9 +85,9 @@ void Pine::Transform::OnRender( )
 		return;
 	}
 
-	m_LastPositionLen = posLength;
-	m_LastRotationLen = rotLength;
-	m_LastScaleLen = sclLength;
+    m_LastPosition = Position;
+	m_LastRotation = Rotation;
+	m_LastScale = Scale;
 
 	BuildTransformationMatrix( );
 	BuildDirections( );

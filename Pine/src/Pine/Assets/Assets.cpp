@@ -77,8 +77,11 @@ namespace Pine
 
 	public:
 
-		IAsset* LoadFromFile( const std::string& filePath, bool readOnly ) override
+		IAsset* LoadFromFile( const std::string& inputFilePath, bool readOnly ) override
 		{
+            // Replace Windows stupid \\ separator with /, that works on both platforms.
+            const auto filePath = String::Replace(inputFilePath, "\\", "/");
+
 			// ".asset" files are files that some assets use to store additional data for the asset,
 			// since some asset files have standards, such as model files.
 			if ( String::EndsWith( filePath, ".asset" ) )
