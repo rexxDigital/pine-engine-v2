@@ -13,7 +13,11 @@ void Pine::Camera::BuildProjectionMatrix( )
 	const auto renderingContext = RenderManager->GetRenderingContext( );
 
 	m_AspectRatio = static_cast< float >( renderingContext->m_Width ) / static_cast< float >( renderingContext->m_Height );
-	m_ProjectionMatrix = glm::perspective( glm::radians( m_FieldOfView ), m_AspectRatio, m_NearPlane, m_FarPlane );
+
+    if (m_CameraType == Pine::CameraType::Perspective)
+	    m_ProjectionMatrix = glm::perspective( glm::radians( m_FieldOfView ), m_AspectRatio, m_NearPlane, m_FarPlane );
+    if (m_CameraType == Pine::CameraType::Orthographic)
+        m_ProjectionMatrix = glm::ortho( -10.0f, 10.0f, -10.0f, 10.0f, m_NearPlane, m_FarPlane );
 }
 
 void Pine::Camera::BuildViewMatrix( )
@@ -111,6 +115,7 @@ void Pine::Camera::SaveToJson( nlohmann::json& j )
 	j[ "near_plane" ] = m_NearPlane;
 	j[ "far_plane" ] = m_FarPlane;
 	j[ "fov" ] = m_FieldOfView;
+	j[ "camType" ] = m_CameraType;
 }
 
 void Pine::Camera::LoadFromJson( nlohmann::json& j )
@@ -118,4 +123,15 @@ void Pine::Camera::LoadFromJson( nlohmann::json& j )
 	m_NearPlane = j[ "near_plane" ];
 	m_FarPlane = j[ "far_plane" ];
 	m_FieldOfView = j[ "fov" ];
+
+    if (j.contains("camType"))
+        m_CameraType = static_cast<Pine::CameraType>(j["camType"].get<int>());
+}
+
+Pine::CameraType Pine::Camera::GetCameraType() const {
+    return m_CameraType;
+}
+
+void Pine::Camera::SetCameraType(Pine::CameraType type) {
+    m_CameraType = type;
 }

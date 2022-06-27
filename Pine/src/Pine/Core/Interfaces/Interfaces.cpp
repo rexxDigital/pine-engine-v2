@@ -17,6 +17,7 @@ namespace Pine
 	IRuntimeLoader* CreateRuntimeLoaderInterface( );
 	IDebugOverlay* CreateDebugOverlay( );
 	IMath* CreateMath( );
+	IShadowManager* CreateShadowManager( );
 }
 
 void Pine::IInterface::Setup( )
@@ -46,6 +47,7 @@ Pine::PineInstance Pine::CreateInstance( )
 	in.RuntimeLoader = CreateRuntimeLoaderInterface( );
 	in.DebugOverlay = CreateDebugOverlay( );
 	in.Math = CreateMath( );
+	in.ShadowManager = CreateShadowManager( );
 
 	return in;
 }
@@ -67,4 +69,5 @@ void Pine::UseInstance( const PineInstance* instance )
 	RuntimeLoader = instance->RuntimeLoader;
 	DebugOverlay = instance->DebugOverlay;
 	Math = instance->Math;
+	ShadowManager = instance->ShadowManager;
 }

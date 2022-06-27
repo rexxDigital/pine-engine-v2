@@ -36,8 +36,7 @@ void Editor::PlayManager::Start( )
 		g_BackupLevel = new Pine::Level;
 
 	g_BackupLevel->CreateFromCurrentLevel( );
-    g_BackupInput = Pine::Input->Save();
-
+    g_BackupInput = Pine::Input->Save( );
 	g_IsPlaying = true;
 
 	Pine::SetAllowUpdates( true );

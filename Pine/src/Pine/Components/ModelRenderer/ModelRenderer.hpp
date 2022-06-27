@@ -13,7 +13,9 @@ namespace Pine
 
 		bool m_OverrideStencilBuffer = false;
 		std::uint8_t m_StencilBufferMask = 0x00;
-	public:
+
+        bool m_ReceiveShadows = true;
+    public:
 		ModelRenderer( );
 
 		Model* GetModel( ) const;
@@ -26,6 +28,9 @@ namespace Pine
 
 		bool GetOverridingStencilBuffer( ) const;
 		std::uint8_t GetOverridedStencilBufferMask( ) const;
+
+        bool GetReceiveShadows( ) const;
+        void SetReceiveShadows( bool value );
 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;

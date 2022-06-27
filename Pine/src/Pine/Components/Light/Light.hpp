@@ -22,6 +22,8 @@ namespace Pine
 
 		float m_SpotLightAngle = 0.0f;
 		float m_SpotLightSmoothness = 0.0f;
+
+        bool m_CastShadows = false;
 	public:
 		Light( );
 
@@ -39,6 +41,9 @@ namespace Pine
 
 		void SetSpotlightSmoothness( float value );
 		float GetSpotlightSmoothness( ) const;
+
+        void SetCastShadows( bool value );
+        bool GetCastShadows( ) const;
 
 		void OnSetup( ) override;
 		void OnUpdate( float deltaTime ) override;

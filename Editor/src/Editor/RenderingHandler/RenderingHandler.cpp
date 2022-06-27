@@ -219,7 +219,7 @@ namespace
 void Editor::RenderingHandler::Setup( )
 {
 	g_RenderingFrameBuffer = new Pine::FrameBuffer( );
-	g_RenderingFrameBuffer->Create( 1920, 1080 );
+	g_RenderingFrameBuffer->Create( 1920, 1080, Pine::Buffers::TextureBuffer | Pine::Buffers::DepthStencilBuffer );
 
 	Pine::RenderManager->GetRenderingContext( )->m_FrameBuffer = g_RenderingFrameBuffer;
 

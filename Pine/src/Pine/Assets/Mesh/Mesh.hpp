@@ -13,6 +13,8 @@ namespace Pine
 		constexpr int VERTEX_ARRAY_BUFFER = 0;
 		constexpr int NORMAL_ARRAY_BUFFER = 1;
 		constexpr int UV_ARRAY_BUFFER = 2;
+		constexpr int TANGENT_ARRAY_BUFFER = 3;
+		constexpr int BITANGENT_ARRAY_BUFFER = 4;
 	}
 
 	class Model;
@@ -52,6 +54,8 @@ namespace Pine
 		void SetVertices( const std::vector<float>& vertices );
 		void SetIndices( const std::vector<int>& indices );
 		void SetNormals( const std::vector<float>& normals );
+		void SetTangents( const std::vector<float>& tangents );
+		void SetBitangents( const std::vector<float>& bitangents );
 		void SetUvs( const std::vector<float>& uvs );
 
 		void Dispose( );

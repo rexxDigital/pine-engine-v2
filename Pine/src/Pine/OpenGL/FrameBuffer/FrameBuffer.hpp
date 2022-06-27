@@ -1,7 +1,16 @@
 #pragma once
+#include <cstdint>
 
 namespace Pine
 {
+
+    enum Buffers
+    {
+        TextureBuffer = (1 << 0),
+        DepthBuffer = (1 << 1),
+        DepthStencilBuffer = (1 << 2),
+        NormalBuffer= (1 << 3),
+    };
 
 	class FrameBuffer
 	{
@@ -28,9 +37,8 @@ namespace Pine
 		void Bind( ) const;
 		void Unbind( ) const;
 
-		void Dispose( ) const;
-
-		void Create( int width, int height, bool createNormal = false, bool multiSample = false );
+        void Create( int width, int height, uint32_t buffers, bool multiSample = false );
+        void Dispose( ) const;
 
 		void BlitMultisample( const FrameBuffer* target ) const;
 	};

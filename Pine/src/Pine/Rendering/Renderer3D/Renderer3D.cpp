@@ -177,6 +177,15 @@ namespace Pine
 			g_CurrentRenderMesh = mesh;
 		}
 
+        void RenderMesh( Mesh* mesh, const glm::mat4& transformationMatrix ) override
+        {
+            g_CurrentRenderMesh = mesh;
+
+            mesh->GetVertexArray( )->Bind( );
+
+            RenderMesh( transformationMatrix );
+        }
+
 		void RenderMesh( const glm::mat4& transformationMatrix ) override
 		{
 			if ( g_CurrentRenderMesh == nullptr )
@@ -237,12 +246,17 @@ namespace Pine
 
 		void UploadCameraData( Camera* camera ) override
 		{
-			UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = camera->GetProjectionMatrix( );
-			UniformBuffers::GetMatrixBufferData( )->ViewMatrix = camera->GetViewMatrix( );
-
-			UniformBuffers::GetMatrixUniformBuffer( )->Bind( );
-			UniformBuffers::GetMatrixUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MatrixBufferData_t ), UniformBuffers::GetMatrixBufferData( ) );
+            UploadCameraData(camera->GetProjectionMatrix(), camera->GetViewMatrix());
 		}
+
+        void UploadCameraData( const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix ) override
+        {
+            UniformBuffers::GetMatrixBufferData( )->ProjectionMatrix = projectionMatrix;
+            UniformBuffers::GetMatrixBufferData( )->ViewMatrix = viewMatrix;
+
+            UniformBuffers::GetMatrixUniformBuffer( )->Bind( );
+            UniformBuffers::GetMatrixUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::MatrixBufferData_t ), UniformBuffers::GetMatrixBufferData( ) );
+        }
 
 		void UploadLightData( ) override
 		{

@@ -19,6 +19,7 @@
 #include "PhysicsManager/PhysicsManager.hpp"
 #include "Rendering/PostProcessing/PostProcessing.hpp"
 #include "Core/Timer/Timer.hpp"
+#include "Rendering/ShadowManager/ShadowManager.hpp"
 
 namespace
 {
@@ -44,7 +45,7 @@ namespace
 		while ( !g_StopUpdateThread )
 		{
 			const double currentTime = glfwGetTime( );
-			const float deltaTime = static_cast< float >( currentTime - g_LastUpdateWindowTime );
+			const auto deltaTime = static_cast< float >( currentTime - g_LastUpdateWindowTime );
 
 			g_LastUpdateTime = deltaTime;
 
@@ -176,6 +177,7 @@ bool Pine::Setup( )
 	PhysicsManager->Setup( );
 	Renderer3D->Setup( );
 	Renderer2D->Setup( );
+    ShadowManager->Setup( );
 	Skybox->Setup( );
 	Gui->Setup( );
 	RenderManager->Setup( );
@@ -243,6 +245,7 @@ void Pine::Terminate( )
 	Assets->Dispose( );
 	Renderer3D->Dispose( );
 	Renderer2D->Dispose( );
+    ShadowManager->Dispose( );
 	Gui->Dispose( );
 	Skybox->Dispose( );
 	PostProcessing->Dispose( );

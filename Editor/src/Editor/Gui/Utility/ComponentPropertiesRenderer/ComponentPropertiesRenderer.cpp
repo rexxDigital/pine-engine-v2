@@ -47,6 +47,12 @@ namespace
 		{
 			renderer->SetMaterialOverride( reinterpret_cast< Pine::Material* >( materialRet.asset ) );
 		}
+
+        bool receiveShadows = renderer->GetReceiveShadows( );
+        if (Widgets::Checkbox("Receive Shadows", receiveShadows))
+        {
+            renderer->SetReceiveShadows( receiveShadows );
+        }
 	}
 
 	void RenderCamera( Pine::Camera* camera )
@@ -124,6 +130,12 @@ namespace
 				}
 			}
 		}
+
+        bool castShadows = light->GetCastShadows();
+        if (Widgets::Checkbox("Cast Shadows", castShadows))
+        {
+            light->SetCastShadows(castShadows);
+        }
 	}
 
 	void RenderTerrainRenderer( Pine::TerrainRenderer* terrainRenderer )

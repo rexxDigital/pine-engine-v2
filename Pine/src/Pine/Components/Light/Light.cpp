@@ -69,6 +69,7 @@ void Pine::Light::SaveToJson( nlohmann::json& j )
 	j[ "light_type" ] = m_LightType;
 	j[ "angle" ] = m_SpotLightAngle;
 	j[ "smoothness" ] = m_SpotLightSmoothness;
+	j[ "castShadows" ] = m_CastShadows;
 }
 
 void Pine::Light::LoadFromJson( nlohmann::json& j )
@@ -81,5 +82,15 @@ void Pine::Light::LoadFromJson( nlohmann::json& j )
 		m_SpotLightAngle = j[ "angle" ].get<float>( );
 	if ( j.contains( "smoothness" ) )
 		m_SpotLightSmoothness = j[ "smoothness" ].get<float>( );
+    if ( j.contains( "castShadows" ) )
+        m_CastShadows = j[ "castShadows" ].get<bool>( );
+}
+
+void Pine::Light::SetCastShadows( bool value ) {
+    m_CastShadows = value;
+}
+
+bool Pine::Light::GetCastShadows( ) const {
+    return m_CastShadows;
 }
 

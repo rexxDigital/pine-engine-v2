@@ -32,7 +32,7 @@ namespace Pine
 
 			// Setup rendering frame buffer
 			g_PostProcessingBuffer = new Pine::FrameBuffer;
-			g_PostProcessingBuffer->Create( 1920, 1080, false );
+			g_PostProcessingBuffer->Create( 1920, 1080, Buffers::TextureBuffer | Buffers::DepthStencilBuffer );
 
 			// Setup the quad vertex array
 			g_ScreenQuad = new Pine::VertexArray;

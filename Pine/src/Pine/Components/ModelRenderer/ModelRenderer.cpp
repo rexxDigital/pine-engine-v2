@@ -59,10 +59,23 @@ void Pine::ModelRenderer::SaveToJson( nlohmann::json& j )
 {
 	Serialization::SaveAsset( j[ "model" ], m_Model.Get( ) );
 	Serialization::SaveAsset( j[ "matOverride" ], m_MaterialOverride.Get( ) );
+
+    j["receiveShadows"] = m_ReceiveShadows;
 }
 
 void Pine::ModelRenderer::LoadFromJson( nlohmann::json& j )
 {
 	m_Model = dynamic_cast< Pine::Model* >( Serialization::LoadAsset( j, "model" ) );
 	m_MaterialOverride = dynamic_cast< Pine::Material* >( Serialization::LoadAsset( j, "matOverride" ) );
+
+    if (j.contains("receiveShadows"))
+        m_ReceiveShadows = j["receiveShadows"].get<bool>();
+}
+
+bool Pine::ModelRenderer::GetReceiveShadows() const {
+    return m_ReceiveShadows;
+}
+
+void Pine::ModelRenderer::SetReceiveShadows(bool value) {
+    m_ReceiveShadows = value;
 }

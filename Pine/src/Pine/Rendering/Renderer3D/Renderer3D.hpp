@@ -32,6 +32,7 @@ namespace Pine
 
 		// Renders the prepared mesh via the transformation matrix.
 		virtual void RenderMesh( const glm::mat4& transformationMatrix ) = 0;
+		virtual void RenderMesh( Mesh* mesh, const glm::mat4& transformationMatrix ) = 0;
 		virtual void RenderMeshInstanced( int count, glm::mat4* data ) = 0;
 
 		// Terrain stuff
@@ -43,6 +44,7 @@ namespace Pine
 
 		// Uploads matrices and from the camera, so the shaders that require them can use them.
 		virtual void UploadCameraData( Camera* camera ) = 0;
+		virtual void UploadCameraData( const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix ) = 0;
 
 		// This below could and will be confusing, if we're rendering a scene we want to first call ResetLightData, as it will reset the light data we have on the CPU,
 		// we then call PrepareLightData for all the lights in the scene, if we don't have any then don't call it at all. After all lights have been prepared then call

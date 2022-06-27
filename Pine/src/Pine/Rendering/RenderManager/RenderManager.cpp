@@ -93,6 +93,11 @@ namespace Pine
 
     public:
 
+        void RenderShadowPass( std::vector<Light*>& lights, std::unordered_map<Model*, std::vector<ModelRenderer*>>& renderBatch )
+        {
+
+        }
+
         void Render( ) override
         {
             Timer totalRenderTime;
@@ -114,8 +119,6 @@ namespace Pine
 
             if ( g_RenderingCallback )
                 g_RenderingCallback( RenderStage::PreRender );
-
-            PrepareSceneRendering( );
 
             // Reset stats
             g_RenderingContext->m_DrawCalls = 0;
@@ -161,7 +164,7 @@ namespace Pine
             Timer entitySortTimer;
 
             // Model Renderer
-            auto renderBatch = GetRenderBatch();
+            auto renderBatch = GetRenderBatch( );
 
             // Light
             for ( int i = 0; i < Components->GetComponentCount( ComponentType::Light ); i++ )
@@ -174,6 +177,14 @@ namespace Pine
                 }
             }
 
+            Timer shadowPassTimer;
+
+            // Run shadow pass
+            RenderShadowPass( lights, renderBatch );
+
+            shadowPassTimer.Stop( );
+
+            PrepareSceneRendering( );
 
             // Prepare the light data before uploading it to the GPU
             Renderer3D->ResetLightData( );
@@ -184,7 +195,6 @@ namespace Pine
             }
 
             Renderer3D->UploadLightData( );
-
             Renderer3D->PrepareMeshRendering( );
 
             entitySortTimer.Stop( );
@@ -192,7 +202,6 @@ namespace Pine
             Timer entityRenderTime;
 
             // Render entities
-
             for ( auto& renderItem: renderBatch )
             {
                 for ( auto& mesh: renderItem.first->GetMeshList( ) )

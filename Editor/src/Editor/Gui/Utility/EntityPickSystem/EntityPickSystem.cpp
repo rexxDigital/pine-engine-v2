@@ -26,7 +26,7 @@ namespace
 void Editor::Gui::Utility::EntityPickSystem::Setup()
 {
     m_FrameBuffer = new Pine::FrameBuffer();
-    m_FrameBuffer->Create(1920, 1080);
+    m_FrameBuffer->Create(1920, 1080, Pine::Buffers::TextureBuffer | Pine::Buffers::DepthBuffer);
 
     m_RenderingContext = new Pine::RenderingContext();
     m_RenderingContext->m_Width = 1920;
@@ -74,10 +74,9 @@ void Editor::Gui::Utility::EntityPickSystem::Render()
     const auto renderBatch = Pine::RenderManager->GetRenderingBatch();
 
     Pine::RenderManager->PrepareSceneRendering();
+    Pine::Renderer3D->PrepareMeshRendering();
 
     Pine::UniformVariable* renderColorUniform = nullptr;
-
-    Pine::Renderer3D->PrepareMeshRendering();
 
     // I do not like having to replicate what the render manager does here, since what if I update the render manager in the future
     // but this will do for now.
@@ -139,6 +138,7 @@ void Editor::Gui::Utility::EntityPickSystem::Render()
     // now have to up scale our cursor coordinates back to 1920x1080
     mousePositionViewport *= glm::vec2(1920, 1080) / m_ViewportSize;
 
+    // Flip Y axis
     mousePositionViewport.y = 1080 - mousePositionViewport.y;
 
     std::uint8_t mouseColorData[4];

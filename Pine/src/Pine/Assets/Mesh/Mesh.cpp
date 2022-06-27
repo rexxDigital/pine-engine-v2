@@ -93,3 +93,15 @@ void Pine::Mesh::Dispose( )
 {
 	m_VertexArray->Dispose( );
 }
+
+void Pine::Mesh::SetTangents(const std::vector<float>& tangents)
+{
+    m_VertexArray->Bind( );
+    m_VertexArray->StoreFloatBuffer( tangents, 3, Internal::TANGENT_ARRAY_BUFFER );
+}
+
+void Pine::Mesh::SetBitangents(const std::vector<float> &bitangents)
+{
+    m_VertexArray->Bind( );
+    m_VertexArray->StoreFloatBuffer( bitangents, 3, Internal::BITANGENT_ARRAY_BUFFER );
+}

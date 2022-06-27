@@ -28,6 +28,7 @@ namespace Pine
 	class IRuntimeLoader;
 	class IDebugOverlay;
 	class IMath;
+    class IShadowManager;
 
 	inline ILog* Log;
 	inline IAssets* Assets;
@@ -45,6 +46,7 @@ namespace Pine
 	inline IRuntimeLoader* RuntimeLoader;
 	inline IDebugOverlay* DebugOverlay;
 	inline IMath* Math;
+	inline IShadowManager* ShadowManager;
 
 	struct PineInstance
 	{
@@ -64,6 +66,7 @@ namespace Pine
 		IRuntimeLoader* RuntimeLoader;
 		IDebugOverlay* DebugOverlay;
 		IMath* Math;
+		IShadowManager* ShadowManager;
 	};
 
 	PineInstance CreateInstance( );

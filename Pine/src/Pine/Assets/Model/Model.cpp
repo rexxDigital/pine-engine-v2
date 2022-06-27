@@ -21,6 +21,8 @@ namespace
 		// Fill all the vectors below with the data imported from ASSIMP
 		std::vector<float> vertices;
 		std::vector<float> normals;
+		std::vector<float> tangents;
+		std::vector<float> bitangents;
 		std::vector<float> uvs;
 		std::vector<int> indices;
 
@@ -34,6 +36,14 @@ namespace
 			normals.push_back( mesh->mNormals[ i ].x );
 			normals.push_back( mesh->mNormals[ i ].y );
 			normals.push_back( mesh->mNormals[ i ].z );
+
+            tangents.push_back( mesh->mTangents[ i ].x );
+            tangents.push_back( mesh->mTangents[ i ].y );
+            tangents.push_back( mesh->mTangents[ i ].z );
+
+            bitangents.push_back( mesh->mBitangents[ i ].x );
+            bitangents.push_back( mesh->mBitangents[ i ].y );
+            bitangents.push_back( mesh->mBitangents[ i ].z );
 
 			if ( mesh->HasTextureCoords( 0 ) )
 			{
@@ -63,6 +73,8 @@ namespace
 		eMesh->SetVertices( vertices );
 		eMesh->SetNormals( normals );
 		eMesh->SetIndices( indices );
+		eMesh->SetTangents( tangents );
+		eMesh->SetBitangents( bitangents );
 		eMesh->SetUvs( uvs );
 
 		// Setup generated AABB
@@ -170,7 +182,7 @@ bool Pine::Model::LoadFromFile( )
 
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
-	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices );
+	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
 	{

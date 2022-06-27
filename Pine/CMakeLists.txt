@@ -12,6 +12,6 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 add_compile_definitions(GLEW_STATIC)
 
-add_library(PineEngine STATIC ${SOURCES})
+add_library(PineEngine STATIC ${SOURCES} src/Pine/Rendering/ShadowManager/ShadowManager.hpp src/Pine/Rendering/ShadowManager/ShadowManager.cpp)
 
 target_link_libraries(PineEngine glfw GL GLEW assimp reactphysics3d)

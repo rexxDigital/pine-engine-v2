@@ -68,7 +68,7 @@ namespace
 			m_RenderingContext->m_ClearColor = glm::vec4( 0.06f, 0.06f, 0.06f, 1.f );
 
 			m_ThumbnailFrameBuffer = new Pine::FrameBuffer( );
-			m_ThumbnailFrameBuffer->Create( 256, 256, true );
+			m_ThumbnailFrameBuffer->Create( 256, 256, Pine::TextureBuffer | Pine::DepthStencilBuffer );
 
 			m_ThumbnailTexture = new Pine::Texture2D( );
 			m_ThumbnailTexture->CreateFromFrameBuffer( m_ThumbnailFrameBuffer );
@@ -101,7 +101,7 @@ namespace
 			return;
 
 		icon->m_FrameBuffer = new Pine::FrameBuffer;
-		icon->m_FrameBuffer->Create( 64, 64, true );
+		icon->m_FrameBuffer->Create( 64, 64, Pine::TextureBuffer | Pine::DepthStencilBuffer );
 
 		icon->m_FrameBufferTexture = new Pine::Texture2D;
 		icon->m_FrameBufferTexture->CreateFromFrameBuffer( icon->m_FrameBuffer );
