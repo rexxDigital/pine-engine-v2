@@ -37,13 +37,13 @@ namespace
 			normals.push_back( mesh->mNormals[ i ].y );
 			normals.push_back( mesh->mNormals[ i ].z );
 
-            tangents.push_back( mesh->mTangents[ i ].x );
-            tangents.push_back( mesh->mTangents[ i ].y );
-            tangents.push_back( mesh->mTangents[ i ].z );
+       //     tangents.push_back( mesh->mTangents[ i ].x );
+       //     tangents.push_back( mesh->mTangents[ i ].y );
+       //     tangents.push_back( mesh->mTangents[ i ].z );
 
-            bitangents.push_back( mesh->mBitangents[ i ].x );
-            bitangents.push_back( mesh->mBitangents[ i ].y );
-            bitangents.push_back( mesh->mBitangents[ i ].z );
+        //    bitangents.push_back( mesh->mBitangents[ i ].x );
+        //    bitangents.push_back( mesh->mBitangents[ i ].y );
+        //    bitangents.push_back( mesh->mBitangents[ i ].z );
 
 			if ( mesh->HasTextureCoords( 0 ) )
 			{

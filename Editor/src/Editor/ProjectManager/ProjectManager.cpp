@@ -7,6 +7,7 @@
 #include "Pine/Pine.hpp"
 #include "Pine/Core/Log/Log.hpp"
 #include "Pine/RuntimeLoader/RuntimeLoader.hpp"
+#include "Pine/Core/Timer/Timer.hpp"
 
 // TODO: Store project meta data, and verify stuff.
 // This will probably never get done, lol.
@@ -34,7 +35,13 @@ namespace
 
         Pine::Log->Message( "Loading project '" + g_CurrentProject + "' assets..." );
 
+        Pine::Timer loadTimer;
+
         Pine::Assets->LoadFromDirectory( directory );
+
+        loadTimer.Stop();
+
+        Pine::Log->Message("Project assets took " + std::to_string(loadTimer.GetElapsedTimeInMs() / 1000.f) + "s to load.");
 
         Pine::Window::SetSize( 1024, 768 );
         Pine::Window::UpdateCachedSize( );
