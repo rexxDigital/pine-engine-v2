@@ -30,7 +30,7 @@ namespace Pine::UniformBuffers
 
 	struct LightBufferData_t
 	{
-		LightData_t lights[ 4 ];
+		LightData_t lights[ 32 ];
 	};
 
 	struct MaterialBufferData_t

@@ -11,10 +11,18 @@
 #include "../../Components/Transform/Transform.hpp"
 #include "../../Components/Light/Light.hpp"
 #include "../../Components/Camera/Camera.hpp"
+
+#include <glm/gtx/fast_square_root.hpp>
 #include <glm/trigonometric.hpp>
 
 namespace Pine
 {
+
+    struct LightData_t
+    {
+        bool valid = false;
+        glm::vec3 position;
+    };
 
 	class CRenderer3D : public IRenderer3D
 	{
@@ -26,6 +34,7 @@ namespace Pine
 		Shader* g_CurrentShader = nullptr;
 		Shader* g_TerrainShader = nullptr;
 		UniformVariable* g_ShaderTransformationVariable = nullptr;
+		UniformVariable* g_ShaderLightIndicesVariable = nullptr;
 
 		std::uint32_t g_CurrentShaderVersion = 0;
 
@@ -42,6 +51,15 @@ namespace Pine
 		// Some optimizations for OpenGL, we store stuff in CPU memory instead of querying the GPU each frame
 		uint32_t g_CurrentBoundTexture[ 32 ] = { };
 		uint8_t g_CurrentStencilMode = 0x00;
+
+        // Lightning stuff
+        bool m_LightSplittingRequired = false;
+        LightData_t m_LightData[ 32 ];
+
+        void ResetLights( )
+        {
+            std::memset(m_LightData, 0, sizeof (m_LightData));
+        }
 
 		// TODO: When and if this engine gets a little bit more advanced, we should get the nearest cube map
 		int GetBestEnvironmentMap( )
@@ -191,6 +209,55 @@ namespace Pine
 			if ( g_CurrentRenderMesh == nullptr )
 				return;
 
+            if ( m_LightSplittingRequired )
+            {
+                if (g_ShaderLightIndicesVariable != nullptr)
+                {
+                    const auto meshPosition = glm::vec3(transformationMatrix[3]);
+
+                    int lights[4] = { -1, -1, -1, -1 };
+
+                    // Find the closest lights
+                    for (int& light : lights)
+                    {
+                        float currentDistance = std::numeric_limits<float>::max();
+                        int bestLight = -1;
+
+                        for (int j = 1; j < g_CurrentDynamicLightCount;j++)
+                        {
+                            // I know this looks stupid but this code gotta be super-duper fast.
+                            if (j == lights[0] || j == lights[1] || j == lights[2] || j == lights[3])
+                                continue;
+
+                            const float distance = glm::fastDistance(m_LightData[j].position, meshPosition);
+
+                            if (currentDistance > distance)
+                            {
+                                currentDistance = distance;
+                                bestLight = j;
+                            }
+                        }
+
+                        if (bestLight != -1)
+                            light = bestLight;
+
+                        if (light == -1)
+                        {
+                            light = 31;
+                        }
+                    }
+
+                    g_ShaderLightIndicesVariable->LoadVector4(glm::ivec4(lights[0], lights[1], lights[2], lights[3]));
+                }
+            }
+            else
+            {
+                if (g_ShaderLightIndicesVariable != nullptr)
+                {
+                    g_ShaderLightIndicesVariable->LoadVector4(glm::ivec4(1, 2, 3, 4));
+                }
+            }
+
 			if ( g_ShaderTransformationVariable != nullptr )
 			{
 				g_ShaderTransformationVariable->LoadMatrix4( transformationMatrix );
@@ -246,7 +313,7 @@ namespace Pine
 
 		void UploadCameraData( Camera* camera ) override
 		{
-            UploadCameraData(camera->GetProjectionMatrix(), camera->GetViewMatrix());
+            UploadCameraData( camera->GetProjectionMatrix( ), camera->GetViewMatrix( ) );
 		}
 
         void UploadCameraData( const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix ) override
@@ -262,6 +329,11 @@ namespace Pine
 		{
 			UniformBuffers::GetLightsUniformBuffer( )->Bind( );
 			UniformBuffers::GetLightsUniformBuffer( )->UploadData( 0, sizeof( UniformBuffers::LightBufferData_t ), UniformBuffers::GetLightsBufferData( ) );
+
+            if ( g_CurrentDynamicLightCount >= 3 )
+            {
+                m_LightSplittingRequired = true;
+            }
 		}
 
 		void PrepareMeshRendering( ) override
@@ -272,7 +344,7 @@ namespace Pine
 		void PrepareLightData( Light* light ) override
 		{
 			// Make sure we're not overflowing the lights buffer
-			if ( g_CurrentDynamicLightCount == 3 )
+			if ( g_CurrentDynamicLightCount == 32 )
 			{
 				// This will spam the living fuck out of the console.
 				Log->Warning( "Maximum level of dynamic lights reached." );
@@ -291,6 +363,9 @@ namespace Pine
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = light->GetLightType( ) == LightType::SpotLight ? glm::cos( glm::radians( light->GetSpotlightAngle( ) ) ) : -1.f;
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = 0.0f;
 
+            m_LightData[ lightSlot ].valid = true;
+            m_LightData[ lightSlot ].position = light->GetParent( )->GetTransform( )->GetPositionSum( );
+
 			if ( light->GetLightType( ) != LightType::Directional )
 				g_CurrentDynamicLightCount++;
 		}
@@ -307,6 +382,9 @@ namespace Pine
 			}
 
 			g_CurrentDynamicLightCount = 0;
+            m_LightSplittingRequired = false;
+
+            ResetLights( );
 		}
 
 		Shader* GetShader( ) override
@@ -385,6 +463,7 @@ namespace Pine
 
 			// Set cached uniform variables
 			g_ShaderTransformationVariable = shader->GetUniformVariable( "transform" );
+            g_ShaderLightIndicesVariable = shader->GetUniformVariable( "lightIndices" );
 		}
 
 		void Setup( ) override

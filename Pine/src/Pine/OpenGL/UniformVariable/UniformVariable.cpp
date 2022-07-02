@@ -53,3 +53,18 @@ void Pine::UniformVariable::LoadMatrix4( const glm::mat4& value )
 {
 	glUniformMatrix4fv( m_Location, 1, false, &value[ 0 ][ 0 ] );
 }
+
+void Pine::UniformVariable::LoadVector2( const glm::ivec2& value )
+{
+    glUniform2i( m_Location, value.x, value.y );
+}
+
+void Pine::UniformVariable::LoadVector3( const glm::ivec3& value )
+{
+    glUniform3i( m_Location, value.x, value.y, value.z );
+}
+
+void Pine::UniformVariable::LoadVector4(const glm::ivec4 &value)
+{
+    glUniform4i(m_Location, value.x, value.y, value.z, value.w);
+}

@@ -24,9 +24,15 @@ namespace Pine
 
 		void LoadInteger( int value );
 		void LoadFloat( float value );
+
 		void LoadVector2( const glm::vec2& value );
 		void LoadVector3( const glm::vec3& value );
 		void LoadVector4( const glm::vec4& value );
+
+        void LoadVector2( const glm::ivec2& value );
+        void LoadVector3( const glm::ivec3& value );
+        void LoadVector4( const glm::ivec4& value );
+
 		void LoadMatrix4( const glm::mat4& value );
 	};
 
