@@ -19,3 +19,6 @@
 [submodule "Libraries/reactphysics3d"]
 	path = Libraries/reactphysics3d
 	url = https://github.com/DanielChappuis/reactphysics3d
+[submodule "Libraries/glm"]
+	path = Libraries/glm
+	url = https://github.com/g-truc/glm.git
