@@ -107,7 +107,7 @@ namespace Pine
                 return;
             }
 
-            // This is fucking retarded, please write a proper solution.
+            // This is fucking stupid, please write a proper solution.
             // Everything beyond this point should also respect the render context's
             // target size, but it won't so keep that in mind.
 

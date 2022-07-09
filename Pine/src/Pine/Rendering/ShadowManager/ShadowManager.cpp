@@ -99,7 +99,7 @@ namespace Pine
 
                     glm::mat4 viewMatrix;
 
-                    Renderer3D->UploadCameraData( m_ShadowProjectionMatrix, CalculateViewMatrix( light->GetParent( )->GetTransform( )->GetPositionSum( ), light->GetParent( )->GetTransform( )->GetRotationSum( ) ) );
+                    //Renderer3D->UploadCameraData( m_ShadowProjectionMatrix, CalculateViewMatrix( light->GetParent( )->GetTransform( )->GetPositionSum( ), light->GetParent( )->GetTransform( )->GetRotationSum( ) ) );
                     Renderer3D->SetShader( m_ShadowShader );
 
 

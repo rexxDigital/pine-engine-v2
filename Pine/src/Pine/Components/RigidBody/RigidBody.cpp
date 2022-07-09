@@ -48,11 +48,10 @@ void Pine::RigidBody::UpdateColliders( )
 
 		tr.identity( );
 
-		const auto rotRadians = glm::radians( transform->Rotation );
-		const auto quat = glm::quat( rotRadians );
+        const auto rot = transform->GetRotationSum( );
 
 		tr.setPosition( reactphysics3d::Vector3( collider->GetPosition( ).x, collider->GetPosition( ).y, collider->GetPosition( ).z ) );
-		//	tr.setOrientation(  );
+		//tr.setOrientation( reactphysics3d::Quaternion( rot.x, rot.y, rot.z, rot.w ) );
 
 		m_Collider->setLocalToBodyTransform( tr );
         m_Collider->getMaterial().setBounciness(0);
@@ -108,7 +107,7 @@ void Pine::RigidBody::DetachCollider( )
 	m_Collider = nullptr;
 }
 
-bool Pine::RigidBody::IsColliderAttatched( Collider3D* collider ) const
+bool Pine::RigidBody::IsColliderAttached( Collider3D* collider ) const
 {
 	return m_Collider3D == collider;
 }
@@ -139,7 +138,7 @@ void Pine::RigidBody::OnPostPhysicsUpdate( )
 	const auto transform = GetParent( )->GetTransform( );
 	const auto& physTransform = m_RigidBody->getTransform( );
 
-//	transform->Rotation = glm::degrees( glm::eulerAngles( glm::quat( physTransform.getOrientation( ).w, physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z ) ) );
+	transform->Rotation = glm::quat( physTransform.getOrientation( ).w, physTransform.getOrientation( ).x, physTransform.getOrientation( ).y, physTransform.getOrientation( ).z );
 	transform->Position = glm::vec3( physTransform.getPosition( ).x, physTransform.getPosition( ).y, physTransform.getPosition( ).z );
 }
 
@@ -179,6 +178,10 @@ void Pine::RigidBody::SaveToJson( nlohmann::json& j )
 	j[ "rgType" ] = m_RigidBodyType;
 	j[ "mass" ] = m_Mass;
 	j[ "gvEnabled" ] = m_GravityEnabled;
+
+	j[ "lockRot" ][ "x" ] = m_LockRotation[0];
+	j[ "lockRot" ][ "y" ] = m_LockRotation[1];
+	j[ "lockRot" ][ "z" ] = m_LockRotation[2];
 }
 
 void Pine::RigidBody::LoadFromJson( nlohmann::json& j )
@@ -187,6 +190,13 @@ void Pine::RigidBody::LoadFromJson( nlohmann::json& j )
 
 	m_Mass = j[ "mass" ];
 	m_GravityEnabled = j[ "gvEnabled" ];
+
+    if (j.contains("lockRot"))
+    {
+        m_LockRotation[0] = j[ "lockRot" ][ "x" ];
+        m_LockRotation[1] = j[ "lockRot" ][ "y" ];
+        m_LockRotation[2] = j[ "lockRot" ][ "z" ];
+    }
 }
 
 void Pine::RigidBody::UpdateRigidbodyProperties( )
@@ -195,8 +205,7 @@ void Pine::RigidBody::UpdateRigidbodyProperties( )
 
     reactphysics3d::Transform tr;
 
-    const auto rotRadians = glm::radians( transform->Rotation );
-    const auto quat = glm::quat( rotRadians );
+    const auto quat = transform->GetRotationSum();
 
     tr.setPosition( reactphysics3d::Vector3( transform->Position.x, transform->Position.y, transform->Position.z ) );
     tr.setOrientation( reactphysics3d::Quaternion( quat.x, quat.y, quat.z, quat.w ) );
@@ -204,6 +213,10 @@ void Pine::RigidBody::UpdateRigidbodyProperties( )
     m_RigidBody->setMass( m_Mass );
     m_RigidBody->enableGravity( m_GravityEnabled );
     m_RigidBody->setTransform( tr );
+
+    m_RigidBody->setAngularLockAxisFactor(reactphysics3d::Vector3(m_LockRotation[0] ? 0.f : 1.f, m_LockRotation[1] ? 0.f : 1.f, m_LockRotation[2] ? 0.f : 1.f));
+
+    m_RigidBody->setLinearDamping(.2f);
 
     switch ( m_RigidBodyType )
     {
@@ -219,4 +232,12 @@ void Pine::RigidBody::UpdateRigidbodyProperties( )
     }
 
     UpdateColliders( );
+}
+
+std::array<bool, 3> Pine::RigidBody::GetRotationLock() {
+    return m_LockRotation;
+}
+
+void Pine::RigidBody::SetRotationLock(std::array<bool, 3> rot) {
+    m_LockRotation = rot;
 }

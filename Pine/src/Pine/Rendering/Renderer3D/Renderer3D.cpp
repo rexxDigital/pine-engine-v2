@@ -357,11 +357,11 @@ namespace Pine
 			const int lightSlot = light->GetLightType( ) == LightType::Directional ? 0 : 1 + g_CurrentDynamicLightCount;
 
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].position = light->GetParent( )->GetTransform( )->GetPositionSum( );
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = ( light->GetParent( )->GetTransform( )->GetRotationSum( ) );
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].rotation = glm::eulerAngles(light->GetParent( )->GetTransform( )->GetRotationSum( ));
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].color = light->GetLightColor( );
 			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].attenuation = light->GetAttenuation( );
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = light->GetLightType( ) == LightType::SpotLight ? glm::cos( glm::radians( light->GetSpotlightAngle( ) ) ) : -1.f;
-			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = 0.0f;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle = light->GetLightType( ) == LightType::SpotLight ? light->GetSpotlightAngle( ) : -1.f;
+			UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffSmoothness = UniformBuffers::GetLightsBufferData( )->lights[ lightSlot ].cutOffAngle + light->GetSpotlightSmoothness( );
 
             m_LightData[ lightSlot ].valid = true;
             m_LightData[ lightSlot ].position = light->GetParent( )->GetTransform( )->GetPositionSum( );

@@ -54,14 +54,12 @@ namespace
 					glm::mat4 mat = glm::mat4( 1.f );
 
 					const glm::vec3 scaleSize = entity->GetTransform()->Scale * 1.02f;
-                    const glm::vec3 rotate = entity->GetTransform()->GetRotationSum();
+                    const glm::quat rotate = entity->GetTransform()->GetRotationSum();
 
                     mat = glm::translate( mat, entity->GetTransform()->GetPositionSum() );
 
-                    mat = glm::rotate( mat, glm::radians( rotate.x ), glm::vec3( 1.f, 0.f, 0.f ) );
-                    mat = glm::rotate( mat, glm::radians( rotate.y ), glm::vec3( 0.f, 1.f, 0.f ) );
-                    mat = glm::rotate( mat, glm::radians( rotate.z ), glm::vec3( 0.f, 0.f, 1.f ) );
-
+                    mat *= glm::toMat4(rotate);
+                    
                     mat = glm::scale( mat, scaleSize );
 
 					Pine::Renderer3D->RenderMesh( mat );

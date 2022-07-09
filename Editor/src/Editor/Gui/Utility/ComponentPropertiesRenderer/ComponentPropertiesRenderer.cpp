@@ -26,8 +26,15 @@ namespace
 		if ( !transform )
 			return;
 
+        auto eulerRot = transform->EulerAngles;
+
 		Widgets::Vector3( "Position", transform->Position );
-		Widgets::Vector3( "Rotation", transform->Rotation );
+
+        if ( Widgets::Vector3( "Rotation", eulerRot ) )
+        {
+            transform->SetEulerAngles( eulerRot );
+        }
+
 		Widgets::Vector3( "Scale", transform->Scale );
 	}
 
@@ -89,7 +96,7 @@ namespace
 			return;
 
 		int lightType = static_cast< int >( light->GetLightType( ) );
-		if ( Widgets::Combobox( "Type", lightType, "Directional\0Point light\0Spot light" ) )
+		if ( Widgets::Combobox( "Type", lightType, "Directional\0Point light\0Spot light\0" ) )
 		{
 			light->SetLightType( static_cast< Pine::LightType >( lightType ) );
 		}
@@ -191,6 +198,7 @@ namespace
 		int currentType = static_cast< int >( rigidBody->GetRigidBodyType( ) );
 		float currentMass = rigidBody->GetMass( );
 		bool currentGravityEnabled = rigidBody->GetGravityEnabled( );
+        auto rotationLock = rigidBody->GetRotationLock();
 
 		if ( Widgets::Combobox( "Type", currentType, "Static\0Kinematic\0Dynamic\0" ) )
 		{
@@ -206,6 +214,11 @@ namespace
 		{
 			rigidBody->SetGravityEnabled( currentGravityEnabled );
 		}
+
+        if (Widgets::Vector3Toggle("Rotation Lock", rotationLock))
+        {
+            rigidBody->SetRotationLock(rotationLock);
+        }
 	}
 
 	void RenderCollider3D( Pine::Collider3D* collider3d )

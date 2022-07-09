@@ -21,7 +21,9 @@ namespace Editor::Gui::Widgets {
 	bool Vector3( const std::string& str, glm::vec3& vec );
 	bool SliderFloat( const std::string& str, float& value, float min, float max, const std::string& format );
 
-	bool Combobox( const std::string& str, int& value, const char* items );
+    bool Vector3Toggle( const std::string& str, std::array<bool, 3>& vec );
+
+    bool Combobox( const std::string& str, int& value, const char* items );
 
 	bool ColorPicker( const std::string& str, glm::vec3& vec );
 

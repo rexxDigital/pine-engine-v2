@@ -167,7 +167,7 @@ void DisplayAddComponentPopup( )
 
 			for ( int i = 2; i < components.size( ); i++ )
 			{
-				// To search case insensitive I have to this retarded stuff.
+				// To search case in-sensitive I have to this stupid stuff.
 				char componentNameLowercase[ 64 ];
 				char searchBufferLowercase[ 64 ];
 

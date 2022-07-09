@@ -5,6 +5,7 @@
 #include "Pine/Pine.hpp"
 #include "Pine/Entity/Entity.hpp"
 #include "Pine/Components/RigidBody/RigidBody.hpp"
+#include "Pine/Entitylist/EntityList.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -32,7 +33,8 @@ void PlayerController::OnSetup( )
     Pine::Input->SetCursorVisible( false );
 
     // "Cache" the camera entity
-    m_CameraEntity = m_Parent->GetChildren()[0];
+    m_CameraEntity = Pine::EntityList->FindEntity("Player Camera");
+    m_HeadEntity = m_Parent->GetChildren()[0];
 }
 
 void PlayerController::OnRender( )
@@ -42,17 +44,13 @@ void PlayerController::OnRender( )
     auto transform = m_Parent->GetTransform();
     auto camTransform = m_CameraEntity->GetTransform();
 
+    m_Angle += glm::vec3( m_Pitch->Value( ), m_Yaw->Value( ), 0.f );
+
     // Handle rotation, however rotate only the camera for the pitch axis
-    camTransform->Rotation.x += m_Pitch->Value();
-    transform->Rotation.y += m_Yaw->Value();
+    camTransform->SetEulerAngles(glm::vec3(m_Angle.x, m_Angle.y, 0.f));
+    transform->SetEulerAngles(glm::vec3(0.f, m_Angle.y, 0.f));
 
-    // Clamp and normalize angles
-    camTransform->Rotation.x = std::clamp(camTransform->Rotation.x, -90.f, 90.f);
-
-    while ( transform->Rotation.y >= 180.f )
-        transform->Rotation.y -= 360.f;
-    while ( transform->Rotation.y <= -180.f )
-        transform->Rotation.y += 360.f;
+    camTransform->Position = m_HeadEntity->GetTransform()->GetPositionSum();
 
     // Handle movement
     transform->Position += transform->GetForward() * speed * m_Forward->Value();

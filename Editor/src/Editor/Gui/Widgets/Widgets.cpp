@@ -416,3 +416,30 @@ bool Editor::Gui::Widgets::ColorPicker( const std::string& str, glm::vec3& vec )
 
 	return ret;
 }
+
+bool Editor::Gui::Widgets::Vector3Toggle(const std::string &str, std::array<bool, 3> &vec)
+{
+    ImGui::Columns( 2, nullptr, false );
+
+    ImGui::Text( "%s", str.c_str( ) );
+
+    ImGui::NextColumn( );
+
+    ImGui::BeginChild( str.c_str( ), ImVec2( -1.f, 30.f ), false, 0 );
+
+    const bool xChanged = ImGui::Checkbox( std::string( "X##" + str ).c_str( ), &vec[0] );
+
+    ImGui::SameLine( );
+
+    const bool yChanged = ImGui::Checkbox( std::string( "Y##" + str ).c_str( ), &vec[1] );
+
+    ImGui::SameLine( );
+
+    const bool zChanged = ImGui::Checkbox( std::string( "Z##" + str ).c_str( ), &vec[2] );
+
+    ImGui::EndChild( );
+
+    ImGui::Columns( 1 );
+
+    return xChanged || yChanged || zChanged;
+}

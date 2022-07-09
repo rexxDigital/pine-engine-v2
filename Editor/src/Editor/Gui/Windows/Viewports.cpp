@@ -425,12 +425,10 @@ void Editor::Gui::Windows::RenderViewports( )
 
                         DecomposeMatrix( deltaMatrix, translation, rotation, scale );
 
-                        const auto rot = glm::degrees( glm::eulerAngles( rotation ) );
-
                         if (op == ImGuizmo::TRANSLATE)
                             e->GetTransform( )->Position += translation;
                         if (op == ImGuizmo::ROTATE)
-                            e->GetTransform( )->Rotation += glm::vec3(rot.x, rot.z, rot.y);
+                            e->GetTransform( )->Rotation += rotation;
                         if (op == ImGuizmo::SCALE)
                             e->GetTransform( )->Scale += glm::vec3( scale[ 0 ], scale[ 1 ], scale[ 2 ] );
                     }

@@ -248,7 +248,7 @@ void Pine::Collider3D::OnDestroyed( )
 	const auto rigidBody = m_Parent->GetComponent<Pine::RigidBody>( );
 	if ( rigidBody )
 	{
-		if ( rigidBody->IsColliderAttatched( this ) )
+		if ( rigidBody->IsColliderAttached( this ) )
 		{
 	    	rigidBody->DetachCollider( );
 		}

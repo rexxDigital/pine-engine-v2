@@ -37,13 +37,16 @@ namespace
 			normals.push_back( mesh->mNormals[ i ].y );
 			normals.push_back( mesh->mNormals[ i ].z );
 
-       //     tangents.push_back( mesh->mTangents[ i ].x );
-       //     tangents.push_back( mesh->mTangents[ i ].y );
-       //     tangents.push_back( mesh->mTangents[ i ].z );
+            if ( mesh->HasTangentsAndBitangents( ) )
+            {
+                tangents.push_back( mesh->mTangents[ i ].x );
+                tangents.push_back( mesh->mTangents[ i ].y );
+                tangents.push_back( mesh->mTangents[ i ].z );
 
-        //    bitangents.push_back( mesh->mBitangents[ i ].x );
-        //    bitangents.push_back( mesh->mBitangents[ i ].y );
-        //    bitangents.push_back( mesh->mBitangents[ i ].z );
+                bitangents.push_back( mesh->mBitangents[ i ].x );
+                bitangents.push_back( mesh->mBitangents[ i ].y );
+                bitangents.push_back( mesh->mBitangents[ i ].z );
+            }
 
 			if ( mesh->HasTextureCoords( 0 ) )
 			{
@@ -182,7 +185,7 @@ bool Pine::Model::LoadFromFile( )
 
 	// Load the model file into a aiScene object, where we can later on read the data
 	Assimp::Importer importer;
-	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_TransformUVCoords | aiProcess_FlipUVs | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace );
+	const auto scene = importer.ReadFile( m_FilePath.string( ), aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_GenNormals | aiProcess_TransformUVCoords | aiProcess_FlipUVs | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
 	{

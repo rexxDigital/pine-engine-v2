@@ -23,24 +23,10 @@ void Pine::Camera::BuildProjectionMatrix( )
 void Pine::Camera::BuildViewMatrix( )
 {
 	const auto transform = m_Parent->GetTransform( );
-    const auto rotation = transform->GetRotationSum( );
+    const auto rotation = glm::normalize( transform->GetRotationSum( ) );
 
-	const float verticalAngle = glm::radians( rotation.x );
-	const float horizontalAngle = glm::radians( rotation.y );
-
-	const glm::vec3 direction(
-		std::cos( verticalAngle ) * std::sin( horizontalAngle ),
-		std::sin( verticalAngle ),
-		std::cos( verticalAngle ) * std::cos( horizontalAngle )
-	);
-
-	const glm::vec3 right = glm::vec3(
-		std::sin( horizontalAngle - 3.14159265359f / 2.0f ),
-		0,
-		std::cos( horizontalAngle - 3.14159265359f / 2.0f )
-	);
-
-	const glm::vec3 up = glm::cross( right, direction );
+    const auto direction = rotation * glm::vec3(0.f, 0.f, -1.0f);
+    const auto up = rotation * glm::vec3(0.f, 1.f, 0.0f);
 
     const auto position = transform->GetPositionSum( );
 

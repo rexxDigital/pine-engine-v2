@@ -23,6 +23,8 @@ class EditorEntityScript : public Pine::IComponent
 {
 private:
 	bool m_IsMovingCamera = false;
+
+    glm::vec3 m_Angles = glm::vec3(0.f);
 public:
 
 	void OnSetup( ) override
@@ -56,7 +58,9 @@ public:
 			const auto pitch = mouseDelta.y * 0.15f;
 			const auto yaw = mouseDelta.x * 0.15f;
 
-			GetParent( )->GetTransform( )->Rotation += glm::vec3( pitch, yaw, 0.f );
+            m_Angles += glm::vec3( pitch, yaw, 0.f );
+
+			GetParent( )->GetTransform( )->SetEulerAngles(m_Angles);
 
             auto forwardMove = 0.f;
             auto sideMove = 0.f;
@@ -69,7 +73,6 @@ public:
                 sideMove += 1.f;
             if ( Pine::Input->IsKeyDown( GLFW_KEY_A ) )
                 sideMove -= 1.f;
-
 
 			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetForward( ) * .15f * forwardMove;
 			GetParent( )->GetTransform( )->Position += GetParent( )->GetTransform( )->GetRight( ) * .15f * sideMove;

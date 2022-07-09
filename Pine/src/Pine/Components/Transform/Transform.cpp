@@ -1,5 +1,6 @@
 #include "Transform.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/fwd.hpp>
 
 #include "../../../ImGui/imgui.h"
 #include "../../Core/Serialization/Serialization.hpp"
@@ -8,19 +9,11 @@
 
 void Pine::Transform::BuildDirections( )
 {
-	m_Forward = glm::vec3(
-		cos( glm::radians( Rotation.x ) ) * sin( glm::radians( Rotation.y ) ),
-		sin( glm::radians( Rotation.x ) ),
-		cos( glm::radians( Rotation.x ) ) * cos( glm::radians( Rotation.y ) )
-	);
+    const auto rotation = GetRotationSum( );
 
-	m_Right = glm::vec3(
-		sin( glm::radians( Rotation.y ) - 3.14f / 2.0f ),
-		0,
-		cos( glm::radians( Rotation.y ) - 3.14f / 2.0f )
-	);
-
-	m_Up = glm::cross( m_Right, m_Forward );
+    m_Forward = rotation * glm::vec3(0.f, 0.f, -1.0f);
+    m_Up = rotation * glm::vec3(0.f, 1.f, 0.0f);
+    m_Right = rotation * glm::vec3(1.f, 0.f, 0.0f);
 }
 
 void Pine::Transform::BuildTransformationMatrix( )
@@ -38,9 +31,7 @@ void Pine::Transform::BuildTransformationMatrix( )
 
 	m_TransformationMatrix = glm::translate( m_TransformationMatrix, pos );
 
-	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.x ), glm::vec3( 1.f, 0.f, 0.f ) );
-	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.y ), glm::vec3( 0.f, 1.f, 0.f ) );
-	m_TransformationMatrix = glm::rotate( m_TransformationMatrix, glm::radians( Rotation.z ), glm::vec3( 0.f, 0.f, 1.f ) );
+    m_TransformationMatrix *= glm::toMat4(Rotation);
 
 	m_TransformationMatrix = glm::scale( m_TransformationMatrix, Scale );
 }
@@ -48,6 +39,9 @@ void Pine::Transform::BuildTransformationMatrix( )
 Pine::Transform::Transform( )
 {
 	m_ComponentType = ComponentType::Transform;
+    m_EulerAngles = glm::vec3( 0.f );
+
+    Rotation = glm::quat( m_EulerAngles );
 }
 
 void Pine::Transform::OnSetup( )
@@ -68,7 +62,7 @@ void Pine::Transform::OnRender( )
 	{
 		update = true;
 	}
-	else if ( Rotation != m_LastRotation )
+	else if ( true )
 	{
 		update = true;
 	}
@@ -89,6 +83,9 @@ void Pine::Transform::OnRender( )
 	m_LastRotation = Rotation;
 	m_LastScale = Scale;
 
+    m_EulerAngles = glm::degrees(glm::eulerAngles(Rotation));
+    EulerAngles = static_cast<glm::vec3>(m_EulerAngles);
+
 	BuildTransformationMatrix( );
 	BuildDirections( );
 }
@@ -96,15 +93,16 @@ void Pine::Transform::OnRender( )
 void Pine::Transform::SaveToJson( nlohmann::json& j )
 {
 	Serialization::SaveVec3( j[ "pos" ], Position );
-	Serialization::SaveVec3( j[ "rot" ], Rotation );
+	Serialization::SaveVec3( j[ "rot" ], glm::degrees( glm::eulerAngles( Rotation ) ) );
 	Serialization::SaveVec3( j[ "scl" ], Scale );
 }
 
 void Pine::Transform::LoadFromJson( nlohmann::json& j )
 {
 	Position = Serialization::LoadVec3( j, "pos" );
-	Rotation = Serialization::LoadVec3( j, "rot" );
 	Scale = Serialization::LoadVec3( j, "scl" );
+
+    SetEulerAngles(Serialization::LoadVec3( j, "rot" ));
 }
 
 glm::mat4& Pine::Transform::GetTransformationMatrix( )
@@ -139,14 +137,23 @@ glm::vec3 Pine::Transform::GetPositionSum() const
     return pos;
 }
 
-glm::vec3 Pine::Transform::GetRotationSum( ) const
+glm::quat Pine::Transform::GetRotationSum( ) const
 {
-    glm::vec3 rot = Rotation;
+    glm::quat rot = Rotation;
 
     if (m_Parent->GetParent() != nullptr)
     {
-        rot += m_Parent->GetParent()->GetTransform()->GetRotationSum();
+        rot *= m_Parent->GetParent()->GetTransform()->GetRotationSum();
     }
 
-    return rot;
+    return glm::normalize( rot );
+}
+
+void Pine::Transform::SetEulerAngles(glm::vec3 eulerAngles)
+{
+   Rotation = glm::quat(glm::radians(eulerAngles));
+}
+
+void Pine::Transform::Rotate(const glm::vec3 &eulerAngles) {
+    SetEulerAngles(m_EulerAngles + eulerAngles);
 }

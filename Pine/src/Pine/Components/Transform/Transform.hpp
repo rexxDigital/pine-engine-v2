@@ -3,6 +3,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace Pine
 {
@@ -12,8 +13,10 @@ namespace Pine
 	private:
 		glm::mat4 m_TransformationMatrix;
 
+        glm::vec3 m_EulerAngles;
+
         glm::vec3 m_LastPosition;
-        glm::vec3 m_LastRotation;
+        glm::quat m_LastRotation;
         glm::vec3 m_LastScale;
 
 		glm::vec3 m_Forward;
@@ -38,12 +41,19 @@ namespace Pine
 		const glm::vec3& GetRight( ) const;
 		const glm::vec3& GetUp( ) const;
 
+        // Calculate the final position, taking account of every parent's position/rotation.
         glm::vec3 GetPositionSum( ) const;
-        glm::vec3 GetRotationSum( ) const;
+        glm::quat GetRotationSum( ) const;
 
-		glm::vec3 Position = glm::vec3( 0.f, 0.f, 0.f );
-		glm::vec3 Rotation = glm::vec3( 0.f, 0.f, 0.f );
-		glm::vec3 Scale = glm::vec3( 1.f, 1.f, 1.f );
-	};
+        void SetEulerAngles(glm::vec3 eulerAngles);
+        void Rotate(const glm::vec3& eulerAngles);
+
+        glm::vec3 Position = glm::vec3(0.f);
+        glm::vec3 Scale = glm::vec3(1.f);
+        glm::quat Rotation;
+
+        // Read only, to apply euler angles, use either SetEulerAngles() or calculate a new quaternion directly via glm.
+        glm::vec3 EulerAngles;
+    };
 
 }

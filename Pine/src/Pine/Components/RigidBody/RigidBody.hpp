@@ -23,6 +23,7 @@ namespace Pine
 
 		float m_Mass = 1.0f;
 		bool m_GravityEnabled = true;
+        std::array<bool, 3> m_LockRotation = {false, false, false};
 
 		RigidBodyType m_RigidBodyType = RigidBodyType::Kinematic;
 
@@ -39,6 +40,9 @@ namespace Pine
 
 		reactphysics3d::RigidBody* GetRigidBody( ) const;
 
+        void SetRotationLock(std::array<bool, 3> rot);
+        std::array<bool, 3> GetRotationLock( );
+
 		void SetMass( float mass );
 		float GetMass( ) const;
 
@@ -51,7 +55,7 @@ namespace Pine
 		// This will detach the collider3d from this rigidbody for 1 physics update only.
 		void DetachCollider( );
 
-		bool IsColliderAttatched( Collider3D* collider ) const;
+		bool IsColliderAttached( Collider3D* collider ) const;
 
 		void OnPrePhysicsUpdate( );
 		void OnPostPhysicsUpdate( );
