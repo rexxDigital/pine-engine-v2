@@ -48,6 +48,7 @@ void PlayerController::OnRender( )
 * json by nlohmann (JSON parsing library)
 * stb_image (Part of the single-file public domain for loading images)
 * ImGui (Engine GUI library)
+* ImGuizmo (3D guizmos with ImGui integration)
 * Freetype (Font renderer)
 * ReactPhysics3D (3D physics library)
 
